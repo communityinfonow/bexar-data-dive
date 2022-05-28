@@ -1,0 +1,35 @@
+{
+  "app": {
+    "name": "CI:Now Web Mapping and Reporting",
+    "tagline": "[tagline]"
+  },
+  "tools": {
+    "my_community": {
+      "name": "My Community",
+      "short_description": "My Community is...",
+      "long_description": "My Community is a tool...",
+      "get_started": "To get started, browse or search for an indicator using the menu above, or click on a location on th emap below."
+    },
+    "dashboard": {
+      "name": "Dashboard",
+      "short_description": "Dashboard is...",
+      "long_description": "Dashboard is a tool...",
+      "get_started": "To get started, browse or search for an indicator using the menu above, or click on one of the Featured Indicators below."
+    },
+    "explore_data": {
+      "name": "Explore Data",
+      "short_description": "Explore Data is...",
+      "long_description": "Explore data is a tool...",
+      "get_started": "To get started, browse or search for an indicator using the menu above, or click on one of the Featured Indicators below."
+    },
+    "common": {
+      "featured_indicators": "Featured Indicators"
+    }
+  },
+  "home_view": {
+    "welcome_message": "Welcome to...",
+    "available_tools": "Available Tools",
+    "learn_more": "Learn More",
+    "view": "View"
+  }
+}
