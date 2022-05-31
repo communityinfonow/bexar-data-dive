@@ -42,7 +42,7 @@
         </l-map>
       </v-col>
       <v-col v-if="community" cols="auto" class="pa-4 grow">
-        <h1 class="text-h3 mb-2">{{ community.name }}</h1>
+        <h1 class="text-h3 mb-2">{{ communityName }}</h1>
       </v-col>
     </v-row>
   </v-container>
@@ -68,12 +68,18 @@ export default {
     }
   },
   computed: {
-    ...mapState(['locationMenu', 'community']),
+    ...mapState(['locale', 'locationMenu', 'community']),
+    communityName() {
+      return this.community['name_' + this.locale]
+    }
+  },
+  mounted () {
+    ;
   },
   methods: {
     ...mapActions(['setCommunity']),
     selectItem(item) {
-      this.setCommunity(item.id)
+      this.setCommunity(item)
     },
     initializeMap() {},
     resizeHandler() {

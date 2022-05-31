@@ -1,14 +1,17 @@
 {
   "app": {
     "name": "CI:Now Web Mapping and Reporting",
-    "tagline": "[tagline]"
+    "tagline": "[tagline]",
+    "copyright": "Copyright",
+    "cinow": "Community Information Now",
+    "all_rights_reserved": "All rights reserved."
   },
   "tools": {
     "my_community": {
       "name": "My Community",
       "short_description": "My Community is...",
       "long_description": "My Community is a tool...",
-      "get_started": "To get started, browse or search for an indicator using the menu above, or click on a location on th emap below."
+      "get_started": "To get started, browse or search for an indicator using the menu above, or click on a location on the map below."
     },
     "dashboard": {
       "name": "Dashboard",

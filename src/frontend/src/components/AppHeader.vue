@@ -1,7 +1,7 @@
 <template>
   <v-app-bar app color="primary" dark>
     <v-toolbar-title>
-      {{ $t('app.name') }} <sup class="text-caption">BETA</sup>
+      {{ $t('app.name') }} <sup class="text-caption">ALPHA</sup>
     </v-toolbar-title>
     <v-spacer></v-spacer>
     <v-btn-toggle :value="locale" mandatory group dark>

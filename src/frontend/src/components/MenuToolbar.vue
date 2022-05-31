@@ -1,33 +1,9 @@
 <template>
   <v-toolbar dense class="menu-toolbar">
     <v-toolbar-items class="d-flex flex-grow-1">
-      <template v-for="item in menu.items">
-        <v-btn v-if="!item.items" text :key="item.id" @click="selectItem(item)">
-          {{ item.name }}
-        </v-btn>
-        <v-menu v-else offset-y :internal-activator="true" :key="item.id">
-          <template v-slot:activator="{ on }">
-            <v-btn text v-on="on">
-              {{ item.name }}
-              <v-icon right>mdi-chevron-down</v-icon>
-            </v-btn>
-          </template>
-          <v-list>
-            <template v-for="item in item.items">
-              <MenuGroup
-                v-if="item.items"
-                :item="item"
-                :key="'cat_' + item.id"
-              ></MenuGroup>
-              <MenuItem
-                v-else
-                :item="item"
-                :key="'item_' + item.id"
-                :selectItem="selectItem"
-              ></MenuItem>
-            </template>
-          </v-list>
-        </v-menu>
+      <template v-for="category in menu.categories">
+        <MenuCategory v-if="category.items.length > 1" :category="category" :selectItem="selectItem" :key="'category_' + category.id"></MenuCategory>
+        <MenuButton text v-else :key="'category_' + category.id" :item="category.items[0]" :selectItem="selectItem"></MenuButton>
       </template>
       <v-spacer class="flex-grow-1"></v-spacer>
       <v-autocomplete
@@ -48,13 +24,14 @@
 </template>
 
 <script>
-import MenuGroup from '@/components/MenuGroup'
-import MenuItem from '@/components/MenuItem'
+import { mapState } from 'vuex'
+import MenuCategory from '@/components/MenuCategory'
+import MenuButton from '@/components/MenuButton'
+
 export default {
   name: 'MenuToolbar',
   components: {
-    MenuGroup,
-    MenuItem,
+    MenuCategory, MenuButton
   },
   props: {
     menu: {
@@ -72,14 +49,13 @@ export default {
     }
   },
   computed: {
+    ...mapState(['locale']),
     itemNames() {
-      return this.menu.items.flatMap(function mapItem(item) {
-        if (item.items) {
-          return item.items.flatMap(mapItem)
-        } else {
-          return item.name
-        }
-      })
+      return this.menu.categories.flatMap(category => {
+        return category.items.map(item => {
+          return item['name_' + this.locale]
+        });
+      });
     },
   },
   watch: {

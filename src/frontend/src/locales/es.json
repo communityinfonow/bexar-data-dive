@@ -1,7 +1,10 @@
 {
   "app": {
     "name": "CI:Now Mapeo e informes web",
-    "tagline": "[eslogan]"
+    "tagline": "[eslogan]",
+    "copyright": "Copyright (es)",
+    "cinow": "Community Information Now (es)",
+    "all_rights_reserved": "All rights reserved (es)."
   },
   "tools": {
     "my_community": {

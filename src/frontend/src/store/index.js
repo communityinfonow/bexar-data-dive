@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import router from '@/router/index'
 import i18n from '@/i18n'
+import axios from 'axios'
 
 Vue.use(Vuex)
 
@@ -67,97 +68,22 @@ export default new Vuex.Store({
             },
           })
         }
-        context.dispatch('setIndicatorMenu')
-        context.dispatch('setLocationMenu')
-        if (
-          router.currentRoute.name === 'my-community' &&
-          this.state.community
-        ) {
-          context.dispatch('setCommunity')
-        }
+        context.dispatch('getIndicatorMenu')
+        context.dispatch('getLocationMenu')
       }
     },
-    setIndicatorMenu(context) {
-      //TODO: call API
-      if (this.state.locale === 'en') {
-        context.commit('SET_INDICATOR_MENU', {
-          items: [
-            {
-              id: 1,
-              name: 'Category 1',
-              items: [
-                { id: 1, name: 'ind 1' },
-                { id: 1, name: 'ind 2' },
-              ],
-            },
-          ],
-        })
-      } else if (this.state.locale === 'es') {
-        context.commit('SET_INDICATOR_MENU', {
-          items: [
-            {
-              id: 1,
-              name: 'Category 1 (es)',
-              items: [
-                { id: 1, name: 'ind 1 (es)' },
-                { id: 2, name: 'ind 2 (es)' },
-              ],
-            },
-          ],
-        })
-      }
+    getIndicatorMenu(context) {
+      axios.get('/api/indicator-menu').then(response => {
+        context.commit('SET_INDICATOR_MENU', response.data)
+      })
     },
-    setLocationMenu(context) {
-      //TODO: call API
-      if (this.state.locale === 'en') {
-        context.commit('SET_LOCATION_MENU', {
-          items: [
-            {
-              id: 1,
-              name: 'Bexar County',
-            },
-            {
-              id: 2,
-              name: 'Super Neighborhoods',
-              items: [
-                { id: 1, name: 'SNH 1' },
-                { id: 2, name: 'SNH 2' },
-              ],
-            },
-          ],
-        })
-      } else if (this.state.locale === 'es') {
-        context.commit('SET_LOCATION_MENU', {
-          items: [
-            {
-              id: 1,
-              name: 'Bexar County (es)',
-            },
-            {
-              id: 2,
-              name: 'Super Neighborhoods (es)',
-              items: [
-                { id: 1, name: 'SNH 1 (es)' },
-                { id: 2, name: 'SNH 2 (es)' },
-              ],
-            },
-          ],
-        })
-      }
+    getLocationMenu(context) {
+      axios.get('/api/location-menu').then(response => {
+        context.commit('SET_LOCATION_MENU', response.data)
+      })
     },
-    setCommunity(context, communityId) {
-      //TODO: call API
-      if (this.state.locale === 'en') {
-        context.commit('SET_COMMUNITY', {
-          id: communityId,
-          name: 'Bexar County',
-        })
-      } else if (this.state.locale == 'es') {
-        context.commit('SET_COMMUNITY', {
-          id: communityId,
-          name: 'Bexar County (es)',
-        })
-      }
+    setCommunity(context, community) {
+      context.commit('SET_COMMUNITY', community)
     },
   },
   modules: {},

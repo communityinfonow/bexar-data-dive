@@ -1,16 +1,16 @@
 <template>
-  <v-list-item @click="selectItem(item)">
+  <v-btn text @click="selectItem(item)">
     <v-list-item-title>
       {{ itemName }}
     </v-list-item-title>
-  </v-list-item>
+  </v-btn>
 </template>
 
 <script>
 import { mapState } from 'vuex'
 
 export default {
-  name: 'MenuItem',
+  name: 'MenuButton',
   props: {
     item: {
       type: Object,
@@ -20,10 +20,10 @@ export default {
     },
   },
   computed: {
-    ...mapState(['locale']),
-    itemName() {
-      return this.item['name_' + this.locale];
-    }
+	...mapState(['locale']),
+	itemName() {
+		return this.item['name_' + this.locale];
+	}
   },
   methods: {},
 }
