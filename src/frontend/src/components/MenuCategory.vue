@@ -1,5 +1,5 @@
 <template>
-	<v-menu offset-y :internal-activator="true" :key="'category_' + category.id">
+	<v-menu offset-y :internal-activator="true" :key="'category_' + category.id" max-height="400px">
 		<template v-slot:activator="{ on }">
 			<v-btn text v-on="on">
 				{{ categoryName }}

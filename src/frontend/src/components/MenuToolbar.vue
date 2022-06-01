@@ -11,9 +11,12 @@
         prepend-icon="mdi-magnify"
         label="Search"
         placeholder="Search"
-        v-model="select"
-        :items="items"
+        v-model="selectedItem"
+        :items="searchItems"
+        :item-text="'name_' + locale"
         :search-input.sync="search"
+        @change="selectMatch"
+        return-object
         hide-no-data
         hide-details
         solo
@@ -44,30 +47,27 @@ export default {
   data() {
     return {
       items: [],
-      search: null,
-      select: null,
+      search: '',
+      selectedItem: null,
     }
   },
   computed: {
     ...mapState(['locale']),
-    itemNames() {
+    searchItems() {
       return this.menu.categories.flatMap(category => {
-        return category.items.map(item => {
-          return item['name_' + this.locale]
-        });
+        return category.items;
       });
     },
   },
-  watch: {
-    search(val) {
-      if (val && val !== this.select) {
-        this.items = this.itemNames
-      } else {
-        this.items = []
-      }
-    },
+  methods: {
+    selectMatch() {
+        this.selectItem(this.selectedItem)
+        this.$nextTick(() => {
+          this.search = ''
+          this.selectedItem = null
+        });
+    }
   },
-  methods: {},
 }
 </script>
 

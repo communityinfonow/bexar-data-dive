@@ -9,7 +9,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     locale: '',
-    locationMenu: {},
+    locationMenu: null,
     indicatorMenu: {},
     community: null,
   },

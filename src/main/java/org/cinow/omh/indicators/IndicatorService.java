@@ -23,6 +23,7 @@ public class IndicatorService {
 			indicators.stream().forEach(indicator -> {
 				IndicatorMenuItem item = new IndicatorMenuItem();
 				item.setId(indicator.getId());
+				item.setCategoryId(menuCategory.getId());
 				item.setName_en(indicator.getName_en());
 				item.setName_es(indicator.getName_es());
 				menuCategory.getItems().add(item);

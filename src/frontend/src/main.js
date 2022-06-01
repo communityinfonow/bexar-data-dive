@@ -14,8 +14,7 @@ new Vue({
   vuetify,
   i18n,
   render: (h) => h(App),
-  created: function () {},
-  mounted: function () {
+  created: function () {
     let queryLocale = router.currentRoute.query.lang
     let storedLocale
     try {
@@ -30,5 +29,8 @@ new Vue({
     } else {
       this.$store.dispatch('setLocale', 'en')
     }
+  },
+  mounted: function () {
+    
   },
 }).$mount('#app')

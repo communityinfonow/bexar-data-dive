@@ -26,6 +26,7 @@ public class LocationService {
 			locations.stream().forEach(location -> {
 				LocationMenuItem item = new LocationMenuItem();
 				item.setId(location.getId());
+				item.setCategoryId(type.getId());
 				item.setName_en(location.getName_en());
 				item.setName_es(location.getName_es());
 				category.getItems().add(item);
