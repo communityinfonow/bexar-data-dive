@@ -12,7 +12,7 @@ public class IndicatorController {
 	@Autowired
 	private IndicatorService indicatorService;
 
-	@GetMapping(path = "/indicator-menu", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/api/indicator-menu", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<IndicatorMenu> getIndicatorMenu() {
 		return ResponseEntity.ok(this.indicatorService.buildIndicatorMenu());
 	}

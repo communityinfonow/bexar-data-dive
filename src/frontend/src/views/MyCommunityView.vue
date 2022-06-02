@@ -75,7 +75,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['locale', 'locationMenu', 'community', 'indicatorMenu']),
+    ...mapState(['locale', 'locationMenu', 'community', 'indicatorMenu', ]),
   },
   beforeRouteEnter(to, from, next) {
     next(vm => {
@@ -99,9 +99,12 @@ export default {
   },
   updated () {
     if (router.currentRoute.query.location && this.locationMenu) {
-      this.setCommunity(this.locationMenu.categories
+      let matchedCommunity = this.locationMenu.categories
         .flatMap(category => category.items)
-        .find(item => item.id == router.currentRoute.query.location && item.categoryId == router.currentRoute.query.locationType))
+        .find(item => item.id == router.currentRoute.query.location && item.categoryId == router.currentRoute.query.locationType)
+      if (matchedCommunity?.id !== this.community?.id || matchedCommunity?.categoryId !== this.community?.categoryId) {
+        this.setCommunity(matchedCommunity)
+      }
     } else {
       this.setCommunity(null)
     }
@@ -117,7 +120,7 @@ export default {
             location: item.id,
             locationType: item.categoryId
           },
-        })
+        });
       }
     },
     initializeMap() {},

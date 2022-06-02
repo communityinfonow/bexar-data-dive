@@ -19,7 +19,7 @@ public class LocationTypeRepositoryPostgresql implements LocationTypeRepository 
 	public List<LocationType> findLocationTypes() {
 		String sql = ""
 			+ " select id_, name_en, name_es "
-			+ " from omh.tbl_location_types "
+			+ " from tbl_location_types "
 			+ " order by sort_order ";
 
 		return this.jdbcTemplate.query(sql, new RowMapper<LocationType>() {

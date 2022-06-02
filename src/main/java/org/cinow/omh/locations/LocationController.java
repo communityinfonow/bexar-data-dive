@@ -12,7 +12,7 @@ public class LocationController {
 	@Autowired
 	private LocationService locationService;
 
-	@GetMapping(path = "/location-menu", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/api/location-menu", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<LocationMenu> getLocationMenu() {
 		return ResponseEntity.ok(this.locationService.buildLocationMenu());
 	}

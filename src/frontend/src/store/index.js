@@ -84,7 +84,19 @@ export default new Vuex.Store({
     },
     setCommunity(context, community) {
       context.commit('SET_COMMUNITY', community)
+      if (community !== null) {
+        context.dispatch('getCommunityData', community)
+      }
     },
+    getCommunityData(context, community) {
+      axios.get('/api/community-data', { params: { 
+          location: community.id, 
+          type: community.categoryId 
+        }
+      }).then(response => {
+        console.log(response.data)
+      })
+    }
   },
   modules: {},
 })

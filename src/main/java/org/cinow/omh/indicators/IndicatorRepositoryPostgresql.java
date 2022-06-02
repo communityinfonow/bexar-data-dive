@@ -24,7 +24,7 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 	public List<IndicatorCategory> findIndicatorCategories() {
 		String sql = ""
 			+ " select id_, name_en, name_es "
-			+ " from omh.tbl_indicator_categories "
+			+ " from tbl_indicator_categories "
 			+ " order by sort_order ";
 
 		return this.jdbcTemplate.query(sql, new RowMapper<IndicatorCategory>() {
@@ -44,7 +44,7 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 	public List<Indicator> findIndicatorsByCategory(long categoryId) {
 		String sql = ""
 			+ " select id_, indicator_category_id, name_en, name_es, description_en, description_es "
-			+ " from omh.tbl_indicators "
+			+ " from tbl_indicators "
 			+ " where indicator_category_id = :indicator_category_id ";
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
 		paramMap.addValue("indicator_category_id", categoryId);

@@ -14,18 +14,18 @@ import org.springframework.stereotype.Repository;
 public class LocationRepositoryPostgresql implements LocationRepository {
 
 	@Autowired
-	private NamedParameterJdbcTemplate jdbcTemplate;
+	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 	@Override
 	public List<Location> findLocationByType(long typeId) {
 		String sql = ""
 			+ " select id_, name_en, name_es "
-			+ " from omh.tbl_locations "
+			+ " from tbl_locations "
 			+ " where location_type_id = :location_type_id ";
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
 		paramMap.addValue("location_type_id", typeId);
 
-		return this.jdbcTemplate.query(sql, paramMap, new RowMapper<Location>() {
+		return this.namedParameterJdbcTemplate.query(sql, paramMap, new RowMapper<Location>() {
 			@Override
 			public Location mapRow(ResultSet rs, int rowNum) throws SQLException {
 				Location location = new Location();
