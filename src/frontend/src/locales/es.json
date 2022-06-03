@@ -34,5 +34,11 @@
     "available_tools": "Herramientas Disponibles",
     "learn_more": "Aprende Más",
     "view": "Vista"
+  },
+  "data": {
+    "value": "Value (es)",
+    "moe": "MOE (es)",
+    "low": "low (es)",
+    "high": "high (es)"
   }
 }

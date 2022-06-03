@@ -34,5 +34,11 @@
     "available_tools": "Available Tools",
     "learn_more": "Learn More",
     "view": "View"
+  },
+  "data": {
+    "value": "Value",
+    "moe": "MOE",
+    "low": "low",
+    "high": "high"
   }
 }

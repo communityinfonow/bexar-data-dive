@@ -6,6 +6,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import i18n from '@/i18n'
 import * as echarts from 'echarts/core';
 import { SVGRenderer } from 'echarts/renderers';
 import { LegendComponent, GridComponent } from 'echarts/components';
@@ -26,13 +27,27 @@ export default {
 			type: Array,
 		},
 	},
+	data() {
+		return {
+			chart: null
+		}
+	},
 	computed: {
     ...mapState(['locale']),
-  },
+  	},
+	  watch: {
+		  locale() {
+			  this.drawChart()
+		  }
+	  },
 	mounted () {
 		echarts.use([SVGRenderer, LegendComponent, GridComponent, BarChart]);
-		let chart = echarts.init(this.$refs['chart_container_' + this.indicatorId], null, { renderer: 'svg'});
-		let option = {};
+		this.chart = echarts.init(this.$refs['chart_container_' + this.indicatorId], null, { renderer: 'svg'});
+		this.drawChart();
+	},
+	methods: {
+		drawChart() {
+			let option = {};
 		if (this.data[0].baseFilter) {
 			option.legend = { data: this.data.map(d => d.baseFilter['name_' + this.locale])};
 		}
@@ -55,13 +70,13 @@ export default {
 					show: true, 
 					position: 'top',
 					formatter: (o) => {
-						let rows = ['Value: ' + format(this.indicatorType, o.data.value)];
+						let rows = [i18n.t('data.value') +': ' + format(this.indicatorType, o.data.value)];
 						if (o.data.moeLow || o.data.moeHigh) {
 							if (o.data.moeLow === o.data.moeHigh) {
-								rows.push('MOE: ' + format(this.indicatorType, o.data.moeLow))
+								rows.push(i18n.t('data.moe') + ': ' + format(this.indicatorType, o.data.moeLow))
 							} else {
-								rows.push('MOE (high): ' + format(this.indicatorType, o.data.moeHigh));
-								rows.push('MOE (high): ' + format(this.indicatorType, o.data.moeLow));
+								rows.push(i18n.t('data.moe') + ' (' + i18n.t('data.high') + '): ' + format(this.indicatorType, o.data.moeHigh));
+								rows.push(i18n.t('data.moe') + ' (' + i18n.t('data.low') + '): ' + format(this.indicatorType, o.data.moeLow));
 							}
 						}
 						return rows.join('\n');
@@ -78,7 +93,8 @@ export default {
 				})
 			option.series.push(series)
 		});
-		chart.setOption(option);
+		this.chart.setOption(option);
+		}
 	},
 }
 </script>
