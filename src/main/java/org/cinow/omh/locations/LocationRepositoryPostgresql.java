@@ -19,23 +19,40 @@ public class LocationRepositoryPostgresql implements LocationRepository {
 	@Override
 	public List<Location> findLocationByType(long typeId) {
 		String sql = ""
-			+ " select id_, name_en, name_es "
+			+ " select id_, location_type_id, name_en, name_es "
 			+ " from tbl_locations "
 			+ " where location_type_id = :location_type_id ";
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
 		paramMap.addValue("location_type_id", typeId);
 
-		return this.namedParameterJdbcTemplate.query(sql, paramMap, new RowMapper<Location>() {
+		return this.namedParameterJdbcTemplate.query(sql, paramMap, this.locationRowMapper());
+	}
+
+	@Override
+	public Location findLocation(long id, long typeId) {
+		String sql = ""
+			+ " select id_, location_type_id, name_en, name_es "
+			+ " from tbl_locations "
+			+ " where id_ = :id and location_type_id = :location_type_id ";
+		MapSqlParameterSource paramMap = new MapSqlParameterSource();
+		paramMap.addValue("id", id);
+		paramMap.addValue("location_type_id", typeId);
+
+		return this.namedParameterJdbcTemplate.queryForObject(sql, paramMap, this.locationRowMapper());
+	}
+	
+	private RowMapper<Location> locationRowMapper() {
+		return new RowMapper<Location>() {
 			@Override
 			public Location mapRow(ResultSet rs, int rowNum) throws SQLException {
 				Location location = new Location();
 				location.setId(rs.getLong("id_"));
 				location.setName_en(rs.getString("name_en"));
 				location.setName_es(rs.getString("name_es"));
-				location.setTypeId(typeId);
+				location.setTypeId(rs.getLong("location_type_id"));
 
 				return location;
 			}
-		});
-	}	
+		};
+	}
 }

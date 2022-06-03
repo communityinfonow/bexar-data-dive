@@ -43,7 +43,7 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 	@Override
 	public List<Indicator> findIndicatorsByCategory(long categoryId) {
 		String sql = ""
-			+ " select id_, indicator_category_id, name_en, name_es, description_en, description_es "
+			+ " select id_, indicator_type_id, indicator_category_id, name_en, name_es, description_en, description_es "
 			+ " from tbl_indicators "
 			+ " where indicator_category_id = :indicator_category_id ";
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
@@ -53,6 +53,7 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 			@Override
 			public Indicator mapRow(ResultSet rs, int rowNum) throws SQLException {
 				Indicator indicator = new Indicator();
+				indicator.setTypeId(rs.getLong("indicator_type_id"));
 				indicator.setCategoryId(rs.getLong("indicator_category_id"));
 				indicator.setId(rs.getLong("id_"));
 				indicator.setName_en(rs.getString("name_en"));

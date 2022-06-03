@@ -42,11 +42,28 @@
         </l-map>-->
       </v-col>
       <v-col v-if="community" cols="auto" class="pa-4 grow">
-        <h1 class="text-h3 mb-2">{{ community['name_' + locale] }}</h1>
-        <section v-for="category in indicatorMenu.categories" :key="'category_' + category.id">
-          <h2>{{ category['name_' + locale]}}</h2>
-          <section v-for="indicator in category.items" :key="'indicator_' + indicator.id" class="ml-8">
-            <h3>{{ indicator['name_' + locale]}}</h3>
+        <h1 class="text-h3 mb-4">{{ community.location['name_' + locale] }}</h1>
+        <section v-for="data in community.indicatorData" :key="'category_' + data.category.id">
+          <h2 class="text-h4 mb-2">{{ data.category['name_' + locale]}}</h2>
+          <section v-for="item in data.indicators" :key="'indicator_' + item.indicator.id" class="ml-8">
+            <h3 class="text-h5">{{ item.indicator['name_' + locale]}}</h3>
+            <section class="mb-8">
+            <template v-if="item.year">
+              <p class="text-subtitle-1 mb-4">{{ item.source['name_' + locale] }} ({{ item.year }})</p>
+              <v-row>
+                <v-col cols="3">
+                  <p class="text-h4">{{ formatValue(item.indicatorType.name, item.demographicData[0].value) }}</p>
+                  <p class="text-subtitle-1" v-if="item.indicator.baseFilterTypeId">{{ item.demographicData[0].baseFilter['name_' + locale] }}</p>
+                </v-col>
+                <v-col cols="9">
+                    <my-community-chart :indicatorId="item.indicator.id" :indicatorType=item.indicatorType.name :data="item.demographicData"></my-community-chart>
+                </v-col>
+              </v-row>
+            </template>
+            <template v-else>
+              <p>Sorry, no data is available for this indicator</p>
+            </template>
+            </section>
           </section>
         </section>
       </v-col>
@@ -60,18 +77,22 @@ import router from '@/router/index'
 import { latLng } from 'leaflet'
 //import { LMap, LTileLayer } from 'vue2-leaflet'
 import MenuToolbar from '@/components/MenuToolbar'
+import MyCommunityChart from '@/components/MyCommunityChart'
+import { format } from '@/formatter/formatter'
 export default {
   name: 'MyCommunityView',
   components: {
     //LMap,
     //LTileLayer,
     MenuToolbar,
+    MyCommunityChart
   },
   data() {
     return {
       zoom: 9,
       center: latLng(29.43445, -98.473562383),
       communityId: null,
+      formatter: new Intl.NumberFormat()
     }
   },
   computed: {
@@ -102,18 +123,18 @@ export default {
       let matchedCommunity = this.locationMenu.categories
         .flatMap(category => category.items)
         .find(item => item.id == router.currentRoute.query.location && item.categoryId == router.currentRoute.query.locationType)
-      if (matchedCommunity?.id !== this.community?.id || matchedCommunity?.categoryId !== this.community?.categoryId) {
-        this.setCommunity(matchedCommunity)
+      if (matchedCommunity?.id !== this.community?.location.id || matchedCommunity?.categoryId !== this.community?.location.typeId) {
+        this.getCommunity(matchedCommunity)
       }
     } else {
       this.setCommunity(null)
     }
   },
   methods: {
-    ...mapActions(['setCommunity']),
+    ...mapActions(['setCommunity', 'getCommunity']),
     selectItem(item) {
       if (item.id !== this.community?.id || item.categoryId !== this.community?.locationTypeId) {
-        this.setCommunity(item)
+        this.getCommunity(item)
         router.replace({
           query: {
             ...router.currentRoute.query,
@@ -127,6 +148,9 @@ export default {
     resizeHandler() {
       this.$refs.indicatorMap?.mapObject?.invalidateSize()
     },
+    formatValue(type, value) {
+      return format(type, value)
+    }
   },
 }
 </script>

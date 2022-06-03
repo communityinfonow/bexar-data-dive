@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.cinow.omh.indicators.Indicator;
+import org.cinow.omh.indicators.IndicatorType;
 import org.cinow.omh.sources.Source;
 
 /**
@@ -15,6 +16,11 @@ public class MyCommunityDataIndicator {
 	 * The indicator.
 	 */
 	private Indicator indicator;
+
+	/**
+	 * The indicator type.
+	 */
+	private IndicatorType indicatorType;
 	
 	/**
 	 * The data source.
@@ -46,7 +52,16 @@ public class MyCommunityDataIndicator {
 	public Source getSource() {
 		return source;
 	}
+	
+	public IndicatorType getIndicatorType() {
+		return indicatorType;
+	}
 
+	public void setIndicatorType(IndicatorType indicatorType) {
+		this.indicatorType = indicatorType;
+	}
+
+	
 	public void setSource(Source source) {
 		this.source = source;
 	}

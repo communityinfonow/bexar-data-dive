@@ -5,17 +5,25 @@ import org.cinow.omh.menu.Item;
 public class Indicator implements Item, IndicatorDetails {
 	
 	private long id;
+	private long typeId;
 	private long categoryId;
 	private String name_en;
 	private String name_es;
 	private String description_en;
 	private String description_es;
+	private long baseFilterTypeId;
 
 	public long getId() {
 		return id;
 	}
 	public void setId(long id) {
 		this.id = id;
+	}
+	public long getTypeId() {
+		return typeId;
+	}
+	public void setTypeId(long typeId) {
+		this.typeId = typeId;
 	}
 	public long getCategoryId() {
 		return categoryId;
@@ -46,5 +54,11 @@ public class Indicator implements Item, IndicatorDetails {
 	}
 	public void setDescription_es(String description_es) {
 		this.description_es = description_es;
+	}
+	public long getBaseFilterTypeId() {
+		return baseFilterTypeId;
+	}
+	public void setBaseFilterTypeId(long baseFilterTypeId) {
+		this.baseFilterTypeId = baseFilterTypeId;
 	}	
 }

@@ -44,9 +44,15 @@ create table tbl_indicator_categories (
 	sort_order numeric not null unique
 );
 
+create table tbl_indicator_types (
+	id_ numeric primary key,
+	name_ text not null
+);
+
 create table tbl_indicators (
 	id_ numeric primary key,
 	indicator_category_id numeric not null references tbl_indicator_categories,
+	indicator_type_id numeric not null references tbl_indicator_types,
 	name_en text not null,
 	name_es text not null,
 	description_en text not null,
@@ -659,26 +665,34 @@ values (1, 'ACS 5-year Estimates', 'ACS 5-year Estimates (es)', 'https://data.ce
 
 insert into tbl_indicator_categories (id_, name_en, name_es, sort_order)
 values (1, 'Demographics', 'Demographics 1 (es)', 1), 
-	(2, 'Education', 'Education (es)', 2);
+	(2, 'Education', 'Education (es)', 3),
+	(3, 'Economics', 'Economics (es)', 2);
 
-insert into tbl_indicators (id_, indicator_category_id, name_en, name_es, description_en, description_es, base_filter_type_id)
-values (1, 1, 'Population', 'Population (es)', 'Population is...', 'Population is...(es)', null),
-	(2, 1, 'Indicator 2', 'Indicator 2 (es)', 'Indicator 2 is...', 'Indicator 2 is...(es)', null),
-	(3, 2, 'Educational Attainment', 'Educational Attainment (es)', 'Educational Attainment is...', 'Educational Attainment is...(es)', 4),
-	(4, 2, 'Indicator 4', 'Indicator 4 (es)', 'Indicator 4 is...', 'Indicator 4 is...(es)', 4);
+insert into tbl_indicator_types (id_, name_)
+values (1, 'Count'), (2, 'Percent'), (3, 'Currency');
+
+insert into tbl_indicators (id_, indicator_category_id, indicator_type_id, name_en, name_es, description_en, description_es, base_filter_type_id)
+values (1, 1, 1, 'Population', 'Population (es)', 'Population is...', 'Population is...(es)', null),
+	(2, 3, 3, 'Median Household Income', 'Median Household Income (es)', 'Median Household Income...', 'Indicator 2 is...(es)', null),
+	(3, 2, 2, 'Educational Attainment', 'Educational Attainment (es)', 'Educational Attainment is...', 'Educational Attainment is...(es)', 4);
 
 --changeset herronrb:3
 insert into tbl_indicator_values (indicator_id,year_,source_id,location_id,location_type_id,indicator_value,moe_low,moe_high,universe_value,race_id,age_id,sex_id,education_id,income_id)
 values (1,'2020',1,1,1,487,4,4,487,1,null,null,null,null),
 	(1,'2020',1,1,1,18,12,12,487,2,null,null,null,null),
 	(1,'2020',1,1,1,71,9,9,487,3,null,null,null,null),
-	(3,'2020',1,1,1,104,2,6,487,1,null,null,10,null),
-	(3,'2020',1,1,1,138,3,7,487,2,null,null,11,null);
+	(2,'2020',1,1,1,52430,2300,1700,null,1,null,null,null,null),
+	(2,'2020',1,1,1,51430,1300,700,null,2,null,null,null,null),
+	(2,'2020',1,1,1,53430,1300,700,null,3,null,null,null,null),
+	(3,'2020',1,1,1,28.5,2,6,487,1,null,null,10,null),
+	(3,'2020',1,1,1,31.4,3,7,487,1,null,null,11,null),
+	(3,'2020',1,1,1,17.6,2,6,43,2,null,null,10,null),
+	(3,'2020',1,1,1,22.8,3,7,43,2,null,null,11,null);
 
 --changeset herronrb:4
 insert into tbl_indicator_values (indicator_id,year_,source_id,location_id,location_type_id,indicator_value,moe_low,moe_high,universe_value,race_id,age_id,sex_id,education_id,income_id)
 values (1,'2016',1,1,1,482,4,4,482,1,null,null,null,null),
 	(1,'2016',1,1,1,16,12,12,482,2,null,null,null,null),
 	(1,'2016',1,1,1,70,9,9,482,3,null,null,null,null),
-	(3,'2016',1,1,1,99,2,6,482,1,null,null,10,null),
-	(3,'2016',1,1,1,133,3,7,482,2,null,null,11,null);
+	(3,'2016',1,1,1,25.1,2,6,482,1,null,null,10,null),
+	(3,'2016',1,1,1,18.3,3,7,482,2,null,null,11,null);
