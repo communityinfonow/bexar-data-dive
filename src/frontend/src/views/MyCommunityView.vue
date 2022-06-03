@@ -8,12 +8,12 @@
           :selectItem="selectItem"
         ></MenuToolbar>
       </v-col>
-      <v-col v-if="!community" cols="auto" class="pa-4 shrink">
+      <v-col v-if="showIntro" cols="auto" class="pa-4 shrink">
         <h1 class="text-h3 mb-2">{{ $t('tools.my_community.name') }}</h1>
         <p>{{ $t('tools.my_community.long_description') }}</p>
         <p>{{ $t('tools.my_community.get_started') }}</p>
       </v-col>
-      <v-col v-if="!community" cols="auto" class="pa-4 grow">
+      <v-col v-if="showIntro" cols="auto" class="pa-4 grow">
         <!--<l-map
           ref="communityMap"
           :zoom="zoom"
@@ -52,7 +52,7 @@
               <p class="text-subtitle-1 mb-4">{{ item.source['name_' + locale] }} ({{ item.year }})</p>
               <v-row>
                 <v-col cols="3">
-                  <p class="text-h4">{{ formatValue(item.indicatorType.name, item.demographicData[0].value) }}</p>
+                  <p class="text-h4 mb-0">{{ formatValue(item.indicatorType.name, item.demographicData[0].value) }}</p>
                   <p class="text-subtitle-1" v-if="item.indicator.baseFilterTypeId">{{ item.demographicData[0].baseFilter['name_' + locale] }}</p>
                 </v-col>
                 <v-col cols="9">
@@ -97,6 +97,9 @@ export default {
   },
   computed: {
     ...mapState(['locale', 'locationMenu', 'community', 'indicatorMenu', ]),
+    showIntro() {
+      return !this.community && !router.currentRoute.query.location;
+    }
   },
   beforeRouteEnter(to, from, next) {
     next(vm => {
