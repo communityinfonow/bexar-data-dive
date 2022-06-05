@@ -35,6 +35,9 @@
             </v-tab-item>
           </v-tabs-items>
         </v-col>
+        <v-col cols="3">
+          <filters-panel></filters-panel>
+        </v-col>
       </v-row>
       <v-row>
       </v-row>
@@ -46,10 +49,11 @@
 import { mapActions, mapState } from 'vuex'
 import router from '@/router/index'
 import MenuToolbar from '@/components/MenuToolbar'
+import FiltersPanel from '@/components/FiltersPanel'
 export default {
   name: 'MyCommunityView',
   components: {
-    MenuToolbar,
+    MenuToolbar, FiltersPanel
   },
   data() {
     return {

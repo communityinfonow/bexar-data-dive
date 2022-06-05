@@ -21,8 +21,8 @@ public class FilterRepositoryPostgresql implements FilterRepository {
 	@Override
 	public List<Filter> getFilters(long indicatorId) {
 		String sql = ""
-			+ " select ft.id_ as type_id, ft.name_en as type_name_en, ft.name_es as type_name_es, "
-			+ " 	fo.id_ as option_id, fo.name_en as option_name_en, fo.name_es as option_name_es "
+			+ " select distinct ft.id_ as type_id, ft.name_en as type_name_en, ft.name_es as type_name_es, "
+			+ " 	fo.id_ as option_id, fo.name_en as option_name_en, fo.name_es as option_name_es, fo.sort_order "
 			+ " from tbl_indicators i "
 			+ " 	join tbl_indicator_values iv on i.id_ = iv.indicator_id "
 			+ " 	join tbl_filter_options fo on fo.id_ in (iv.race_id, iv.age_id, iv.sex_id, iv.education_id, iv.income_id) "
@@ -43,6 +43,7 @@ public class FilterRepositoryPostgresql implements FilterRepository {
 				long typeId = 0;
 				while (rs.next()) {
 					if (rs.getLong("type_id") != typeId) {
+						typeId = rs.getLong("type_id");
 						filter = new Filter();
 						FilterType type = new FilterType();
 						type.setId(rs.getLong("type_id"));

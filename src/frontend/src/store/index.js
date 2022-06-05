@@ -13,6 +13,7 @@ export default new Vuex.Store({
     indicatorMenu: null,
     community: null,
     indicator: null,
+    filters: null,
   },
   getters: {
     tools: () => {
@@ -56,6 +57,9 @@ export default new Vuex.Store({
     },
     SET_INDICATOR(state, indicator) {
       state.indicator = indicator
+    },
+    SET_FILTERS(state, filters) {
+      state.filters = filters
     }
   },
   actions: {
@@ -104,7 +108,19 @@ export default new Vuex.Store({
     },
     setIndicator(context, indicator) {
       context.commit('SET_INDICATOR', indicator)
+      if (indicator == null) {
+        context.commit('SET_FILTERS', null)
+      } else {
+        context.dispatch('getFilters', indicator)
+      }
     },
+    getFilters(context, indicator) {
+      axios.get('/api/filters', { params: {
+        indicator: indicator.id
+      }}).then(response => { 
+        context.commit('SET_FILTERS', response.data)
+      })
+    }
   },
   modules: {},
 })

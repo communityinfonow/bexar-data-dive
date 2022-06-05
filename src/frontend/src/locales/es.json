@@ -22,7 +22,8 @@
         "map": "Map (es)",
         "trend": "Trend Chart (es)",
         "compare": "Comparison Chart (es)"
-      }
+      },
+      "filters": "Filters (es)"
     },
     "explore_data": {
       "name": "Explorar Datos",
