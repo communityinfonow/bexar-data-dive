@@ -17,7 +17,12 @@
       "name": "Panel",
       "short_description": "Panel es...",
       "long_description": "Panel es una herramienta...",
-      "get_started": "Para comenzar, navegue o busque un indicador usando el menú de arriba, o haga clic en uno de los Indicadores destacados a continuación."
+      "get_started": "Para comenzar, navegue o busque un indicador usando el menú de arriba, o haga clic en uno de los Indicadores destacados a continuación.",
+      "tabs": {
+        "map": "Map (es)",
+        "trend": "Trend Chart (es)",
+        "compare": "Comparison Chart (es)"
+      }
     },
     "explore_data": {
       "name": "Explorar Datos",

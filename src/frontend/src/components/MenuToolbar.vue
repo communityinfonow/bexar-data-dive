@@ -2,8 +2,7 @@
   <v-toolbar dense class="menu-toolbar">
     <v-toolbar-items class="d-flex flex-grow-1">
       <template v-for="category in menu.categories">
-        <MenuCategory v-if="category.items.length > 1" :category="category" :selectItem="selectItem" :key="'category_' + category.id"></MenuCategory>
-        <MenuButton text v-else :key="'category_' + category.id" :item="category.items[0]" :selectItem="selectItem"></MenuButton>
+        <MenuCategory :category="category" :selectItem="selectItem" :key="'category_' + category.id"></MenuCategory>
       </template>
       <v-spacer class="flex-grow-1"></v-spacer>
       <v-autocomplete
@@ -29,12 +28,11 @@
 <script>
 import { mapState } from 'vuex'
 import MenuCategory from '@/components/MenuCategory'
-import MenuButton from '@/components/MenuButton'
 
 export default {
   name: 'MenuToolbar',
   components: {
-    MenuCategory, MenuButton
+    MenuCategory
   },
   props: {
     menu: {

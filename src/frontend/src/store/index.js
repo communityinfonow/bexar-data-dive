@@ -10,8 +10,9 @@ export default new Vuex.Store({
   state: {
     locale: '',
     locationMenu: null,
-    indicatorMenu: {},
+    indicatorMenu: null,
     community: null,
+    indicator: null,
   },
   getters: {
     tools: () => {
@@ -53,6 +54,9 @@ export default new Vuex.Store({
     SET_COMMUNITY(state, community) {
       state.community = community
     },
+    SET_INDICATOR(state, indicator) {
+      state.indicator = indicator
+    }
   },
   actions: {
     setLocale(context, locale) {
@@ -83,9 +87,10 @@ export default new Vuex.Store({
       })
     },
     setCommunity(context, community) {
-      context.commit('SET_COMMUNITY', community)
       if (community !== null) {
         context.dispatch('getCommunity', community)
+      } else {
+        context.commit('SET_COMMUNITY', community)
       }
     },
     getCommunity(context, community) {
@@ -96,7 +101,10 @@ export default new Vuex.Store({
       }).then(response => {
         context.commit('SET_COMMUNITY', response.data)
       })
-    }
+    },
+    setIndicator(context, indicator) {
+      context.commit('SET_INDICATOR', indicator)
+    },
   },
   modules: {},
 })

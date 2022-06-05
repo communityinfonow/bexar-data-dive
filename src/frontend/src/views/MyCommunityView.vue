@@ -1,7 +1,7 @@
 <template>
   <v-container v-if="locationMenu" fluid class="pa-0 fill-height">
     <v-row class="no-gutters flex-column fill-height">
-      <v-col cols="auto" class="shrink">
+      <v-col cols="auto">
         <MenuToolbar
           class="flex-column"
           :menu="locationMenu"
@@ -90,13 +90,11 @@ export default {
   data() {
     return {
       zoom: 9,
-      center: latLng(29.43445, -98.473562383),
-      communityId: null,
-      formatter: new Intl.NumberFormat()
+      center: latLng(29.43445, -98.473562383)
     }
   },
   computed: {
-    ...mapState(['locale', 'locationMenu', 'community', 'indicatorMenu', ]),
+    ...mapState(['locale', 'locationMenu', 'community' ]),
     showIntro() {
       return !this.community && !router.currentRoute.query.location;
     }
