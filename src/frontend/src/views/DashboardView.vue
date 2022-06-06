@@ -1,47 +1,49 @@
 <template>
-  <v-container v-if="indicatorMenu" fluid class="pa-0 fill-height align-start">
-    <v-container fluid class="pa-0">
-      <v-row class="no-gutters">
-        <v-col cols="12">
-          <MenuToolbar
-            class="flex-column"
-            :menu="indicatorMenu"
-            :selectItem="selectItem"
-          ></MenuToolbar>
-        </v-col>
+  <v-container v-if="indicatorMenu" fluid class="fill-height pa-0">
+    <v-row class="no-gutters flex-wrap flex-column fill-height">
+      <v-col cols="auto">
+        <MenuToolbar
+          class="flex-column"
+          :menu="indicatorMenu"
+          :selectItem="selectItem"
+        ></MenuToolbar>
+      </v-col>
+      <v-col v-if="showIntro" cols="auto" class="pa-4">
+          <h1 class="text-h3 mb-2">{{ $t('tools.dashboard.name') }}</h1>
+          <p>{{ $t('tools.dashboard.long_description') }}</p>
+          <p>{{ $t('tools.dashboard.get_started') }}</p>
+      </v-col>
+      <v-col v-if="indicator" cols="auto" class="pt-4 px-4">
+          <h1 class="text-h3 mb-2">{{ indicator['name_' + locale] }}</h1>
+      </v-col>
+      <v-col v-if="indicator" cols="auto" class="grow">
+        <v-row class="fill-height no-gutters">
+          <v-col cols="9" class="px-4">
+            <v-row class="fill-height no-gutters flex-column">
+              <v-col cols="auto" class="shrink">
+                <v-tabs v-model="tab" grow>
+                  <v-tab v-for="tab in tabs" :key="tab" @click="selectTab(tab)">
+                    {{ $t('tools.dashboard.tabs.' + tab) }}
+                  </v-tab>
+                </v-tabs>
+              </v-col>
+              <v-col cols="auto" class="grow">
+                <v-tabs-items v-model="tab" class="fill-height">
+                  <v-tab-item v-for="tab in tabs" :key="tab" :transition="false" :reverse-transition="false" class="fill-height">
+                    <dashboard-map v-if="tab === 'map'"></dashboard-map>
+                    <dashboard-trend-chart v-if="tab === 'trend'"></dashboard-trend-chart>
+                    <dashboard-compare-chart v-if="tab === 'compare'"></dashboard-compare-chart>
+                  </v-tab-item>
+                </v-tabs-items>
+              </v-col>
+            </v-row>
+          </v-col>
+          <v-col cols="3">
+            <filters-panel></filters-panel>
+          </v-col>
         </v-row>
-      <v-row v-if="showIntro" class="no-gutters">
-        <v-col cols="12" class="pa-4">
-            <h1 class="text-h3 mb-2">{{ $t('tools.dashboard.name') }}</h1>
-            <p>{{ $t('tools.dashboard.long_description') }}</p>
-            <p>{{ $t('tools.dashboard.get_started') }}</p>
-        </v-col>
-      </v-row>
-      <v-row v-if="indicator" class="no-gutters">
-        <v-col cols="12" class="pt-4 px-4">
-            <h1 class="text-h3 mb-2">{{ indicator['name_' + locale] }}</h1>
-        </v-col>
-      </v-row>
-      <v-row v-if="indicator" class="no-gutters">
-        <v-col cols="9" class="px-4">
-          <v-tabs v-model="tab" grow>
-            <v-tab v-for="tab in tabs" :key="tab" @click="selectTab(tab)">
-              {{ $t('tools.dashboard.tabs.' + tab) }}
-            </v-tab>
-          </v-tabs>
-          <v-tabs-items v-model="tab" class="fill-height">
-            <v-tab-item v-for="tab in tabs" :key="tab" :transition="false" :reverse-transition="false" class="fill-height">
-              <dashboard-map v-if="tab === 'map'"></dashboard-map>
-            </v-tab-item>
-          </v-tabs-items>
-        </v-col>
-        <v-col cols="3">
-          <filters-panel></filters-panel>
-        </v-col>
-      </v-row>
-      <v-row>
-      </v-row>
-    </v-container>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -50,13 +52,17 @@ import { mapActions, mapState } from 'vuex'
 import router from '@/router/index'
 import MenuToolbar from '@/components/MenuToolbar'
 import FiltersPanel from '@/components/FiltersPanel'
-import DashboardMap from '../components/DashboardMap.vue'
+import DashboardMap from '@/components/DashboardMap'
+import DashboardTrendChart from '@/components/DashboardTrendChart'
+import DashboardCompareChart from '@/components/DashboardCompareChart'
 export default {
   name: 'MyCommunityView',
   components: {
     MenuToolbar, 
     FiltersPanel,
-    DashboardMap
+    DashboardMap,
+    DashboardTrendChart,
+    DashboardCompareChart
   },
   data() {
     return {
