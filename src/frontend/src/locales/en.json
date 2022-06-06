@@ -7,6 +7,7 @@
     "all_rights_reserved": "All rights reserved."
   },
   "tools": {
+    "tools": "Tools",
     "my_community": {
       "name": "My Community",
       "short_description": "My Community is...",
@@ -23,7 +24,8 @@
         "trend": "Trend Chart",
         "compare": "Comparison Chart"
       },
-      "filters": "Filters"
+      "filters": "Filters",
+      "apply_filters": "Apply Filters"
     },
     "explore_data": {
       "name": "Explore Data",
@@ -32,7 +34,8 @@
       "get_started": "To get started, browse or search for an indicator using the menu above."
     },
     "common": {
-      "featured_indicators": "Featured Indicators"
+      "featured_indicators": "Featured Indicators",
+      "search": "Search"
     }
   },
   "home_view": {

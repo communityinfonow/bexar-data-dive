@@ -1,6 +1,9 @@
 <template>
-	<div :ref="'chart_container_' + this.indicatorId" style="width: 100%; height: 200px;">
-
+	<div 
+		:ref="'chart_container_' + this.indicatorId" 
+		:id="'chart_container_' + this.indicatorId" 
+		style="width: 100%; height: 200px;"
+	>
 	</div>
 </template>
 
@@ -9,7 +12,7 @@ import { mapState } from 'vuex'
 import i18n from '@/i18n'
 import * as echarts from 'echarts/core';
 import { SVGRenderer } from 'echarts/renderers';
-import { LegendComponent, GridComponent } from 'echarts/components';
+import { AriaComponent, LegendComponent, GridComponent } from 'echarts/components';
 import { BarChart } from 'echarts/charts';
 import colorbrewer from 'colorbrewer'
 import { format } from '@/formatter/formatter'
@@ -41,8 +44,8 @@ export default {
 		  }
 	  },
 	mounted () {
-		echarts.use([SVGRenderer, LegendComponent, GridComponent, BarChart]);
-		this.chart = echarts.init(this.$refs['chart_container_' + this.indicatorId], null, { renderer: 'svg'});
+		echarts.use([SVGRenderer, AriaComponent, LegendComponent, GridComponent, BarChart]);
+		this.chart = echarts.init(document.getElementById('chart_container_' + this.indicatorId), null, { renderer: 'svg'});
 		window.addEventListener('resize', () => {
 			this.chart.resize();
 		});
@@ -97,6 +100,7 @@ export default {
 					})
 				option.series.push(series)
 			});
+			option.aria = { enabled: true };
 			this.chart.setOption(option);
 		}
 	},

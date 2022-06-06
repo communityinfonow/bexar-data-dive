@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -16,10 +17,96 @@ import org.springframework.stereotype.Repository;
 public class FilterRepositoryPostgresql implements FilterRepository {
 
 	@Autowired
+	private JdbcTemplate jdbcTemplate;
+
+	@Autowired
 	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 	@Override
-	public List<Filter> getFilters(long indicatorId) {
+	public Filter getLocationTypeFilter() {
+		String sql = ""
+			+ " select id_, name_en, name_es "
+			+ " from tbl_location_types "
+			+ " order by sort_order ";
+
+		return this.jdbcTemplate.query(sql, new ResultSetExtractor<Filter>() {
+			@Override
+			public Filter extractData(ResultSet rs) throws SQLException, DataAccessException {
+				Filter filter = new Filter();
+				filter.setType(new FilterType());
+				filter.getType().setName_en("Location Type");
+				filter.getType().setName_es("Location Type (es)");
+				while (rs.next()) {
+					FilterOption option = new FilterOption();
+					option.setId(rs.getLong("id_"));
+					option.setName_en(rs.getString("name_en"));
+					option.setName_es(rs.getString("name_es"));
+					filter.getOptions().add(option);
+				}
+				return filter;
+			}	
+		});
+	}
+
+	@Override
+	public Filter getLocationFilter() {
+		String sql = ""
+			+ " select l.id_, l.location_type_id, l.name_en, l.name_es "
+			+ " from tbl_locations l "
+			+ " 	join tbl_location_types lt on lt.id_ = l.location_type_id "
+			+ " order by lt.sort_order, l.id_ ";
+
+		return this.jdbcTemplate.query(sql, new ResultSetExtractor<Filter>() {
+			@Override
+			public Filter extractData(ResultSet rs) throws SQLException, DataAccessException {
+				Filter filter = new Filter();
+				filter.setType(new FilterType());
+				filter.getType().setName_en("Location");
+				filter.getType().setName_es("Location (es)");
+				while (rs.next()) {
+					FilterOption option = new FilterOption();
+					option.setId(rs.getLong("id_"));
+					option.setName_en(rs.getString("name_en"));
+					option.setName_es(rs.getString("name_es"));
+					option.setTypeId(rs.getLong("location_type_id"));
+					filter.getOptions().add(option);
+				}
+				return filter;
+			}	
+		});
+	}
+
+	@Override
+	public Filter getYearFilter(long indicatorId) {
+		String sql = ""
+			+ " select distinct year_ "
+			+ " from tbl_indicator_values "
+			+ " where indicator_id = :indicator_id "
+			+ " order by year_ desc ";
+
+		MapSqlParameterSource paramMap = new MapSqlParameterSource();
+		paramMap.addValue("indicator_id", indicatorId);
+
+		return this.namedParameterJdbcTemplate.query(sql, paramMap, new ResultSetExtractor<Filter>() {
+			@Override
+			public Filter extractData(ResultSet rs) throws SQLException, DataAccessException {
+				Filter filter = new Filter();
+				filter.setType(new FilterType());
+				filter.getType().setName_en("Year");
+				filter.getType().setName_es("Year (es)");
+				while (rs.next()) {
+					FilterOption option = new FilterOption();
+					option.setName_en(rs.getString("year_"));
+					option.setName_es(rs.getString("year_"));
+					filter.getOptions().add(option);
+				}
+				return filter;
+			}	
+		});
+	}
+
+	@Override
+	public List<Filter> getIndicatorFilters(long indicatorId) {
 		String sql = ""
 			+ " select distinct ft.id_ as type_id, ft.name_en as type_name_en, ft.name_es as type_name_es, "
 			+ " 	fo.id_ as option_id, fo.name_en as option_name_en, fo.name_es as option_name_es, fo.sort_order "
@@ -62,5 +149,4 @@ public class FilterRepositoryPostgresql implements FilterRepository {
 			}	
 		});
 	}
-	
 }

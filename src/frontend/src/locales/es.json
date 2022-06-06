@@ -7,6 +7,7 @@
     "all_rights_reserved": "All rights reserved (es)."
   },
   "tools": {
+    "tools": "Tools (es)",
     "my_community": {
       "name": "Mi Comunidad",
       "short_description": "Mi Comunidad es...",
@@ -23,7 +24,8 @@
         "trend": "Trend Chart (es)",
         "compare": "Comparison Chart (es)"
       },
-      "filters": "Filters (es)"
+      "filters": "Filters (es)",
+      "apply_filters": "Apply Filters (es)"
     },
     "explore_data": {
       "name": "Explorar Datos",
@@ -32,7 +34,8 @@
       "get_started": "Para comenzar, navegue o busque un indicador usando el menú de arriba, o haga clic en uno de los Indicadores destacados a continuación."
     },
     "common": {
-      "featured_indicators": "Indicadores destacados"
+      "featured_indicators": "Indicadores destacados",
+      "search": "Search (es)"
     }
   },
   "home_view": {

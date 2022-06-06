@@ -1,7 +1,5 @@
 package org.cinow.omh.filters;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +9,13 @@ public class FilterService {
 	@Autowired
 	private FilterRepository filterRepository;
 
-	public List<Filter> getFilters(long indicatorId) {
-		return this.filterRepository.getFilters(indicatorId);
+	public Filters getFilters(long indicatorId) {
+		Filters filters = new Filters();
+		filters.setLocationTypeFilter(this.filterRepository.getLocationTypeFilter());
+		filters.setLocationFilter(this.filterRepository.getLocationFilter());
+		filters.setYearFilter(this.filterRepository.getYearFilter(indicatorId));
+		filters.setIndicatorFilters(this.filterRepository.getIndicatorFilters(indicatorId));
+
+		return filters;
 	}
 }

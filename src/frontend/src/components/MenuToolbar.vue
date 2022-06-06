@@ -8,8 +8,8 @@
       <v-autocomplete
         class="flex-grow-0"
         prepend-icon="mdi-magnify"
-        label="Search"
-        placeholder="Search"
+        :label="$t('tools.common.search')"
+        :placeholder="$t('tools.common.search')"
         v-model="selectedItem"
         :items="searchItems"
         :item-text="'name_' + locale"

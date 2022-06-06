@@ -17,11 +17,11 @@
         <v-card-text>{{ tool.shortDescription }}</v-card-text>
         <v-spacer></v-spacer>
         <v-card-actions>
-          <v-btn text plain color="primary" :to="{ name: 'about-the-tools' }">{{
+          <v-btn plain text link color="primary" :to="{ name: 'about-the-tools' }">{{
             $t('home_view.learn_more')
           }}</v-btn>
           <v-spacer></v-spacer>
-          <v-btn color="primary" :to="{ name: tool.route }">{{
+          <v-btn color="primary" :to="{ name: tool.route }" :aria-label="$t('home_view.view') + ' ' + tool.name">{{
             $t('home_view.view')
           }}</v-btn>
         </v-card-actions>

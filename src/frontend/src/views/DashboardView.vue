@@ -29,9 +29,9 @@
               {{ $t('tools.dashboard.tabs.' + tab) }}
             </v-tab>
           </v-tabs>
-          <v-tabs-items v-model="tab">
-            <v-tab-item v-for="tab in tabs" :key="tab" :transition="false" :reverse-transition="false">
-              TODO: {{ tab }}
+          <v-tabs-items v-model="tab" class="fill-height">
+            <v-tab-item v-for="tab in tabs" :key="tab" :transition="false" :reverse-transition="false" class="fill-height">
+              <dashboard-map v-if="tab === 'map'"></dashboard-map>
             </v-tab-item>
           </v-tabs-items>
         </v-col>
@@ -50,10 +50,13 @@ import { mapActions, mapState } from 'vuex'
 import router from '@/router/index'
 import MenuToolbar from '@/components/MenuToolbar'
 import FiltersPanel from '@/components/FiltersPanel'
+import DashboardMap from '../components/DashboardMap.vue'
 export default {
   name: 'MyCommunityView',
   components: {
-    MenuToolbar, FiltersPanel
+    MenuToolbar, 
+    FiltersPanel,
+    DashboardMap
   },
   data() {
     return {
