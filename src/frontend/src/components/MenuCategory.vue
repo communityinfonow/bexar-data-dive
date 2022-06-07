@@ -12,6 +12,7 @@
 			:item="item"
 			:key="'item_' + item.id"
 			:selectItem="selectItem"
+      :singleItem="false"
 			></MenuItem>
 		</template>
 		</v-list>

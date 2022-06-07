@@ -2,7 +2,8 @@
   <v-toolbar dense class="menu-toolbar">
     <v-toolbar-items class="d-flex flex-grow-1">
       <template v-for="category in menu.categories">
-        <MenuCategory :category="category" :selectItem="selectItem" :key="'category_' + category.id"></MenuCategory>
+        <MenuButton text v-if="category.items.length === 1 && flattenSingleItems" :key="'category_' + category.id" :item="category.items[0]" :selectItem="selectItem" :singleItem="true"></MenuButton>
+        <MenuCategory v-else :category="category" :selectItem="selectItem" :key="'category_' + category.id"></MenuCategory>
       </template>
       <v-spacer class="flex-grow-1"></v-spacer>
       <v-autocomplete
@@ -28,11 +29,13 @@
 <script>
 import { mapState } from 'vuex'
 import MenuCategory from '@/components/MenuCategory'
+import MenuButton from '@/components/MenuButton'
 
 export default {
   name: 'MenuToolbar',
   components: {
-    MenuCategory
+    MenuCategory,
+    MenuButton
   },
   props: {
     menu: {
@@ -41,6 +44,9 @@ export default {
     selectItem: {
       type: Function,
     },
+    flattenSingleItems: {
+      type: Boolean
+    }
   },
   data() {
     return {

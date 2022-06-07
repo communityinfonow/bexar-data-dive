@@ -696,3 +696,14 @@ values (1,'2016',1,1,1,482,4,4,482,1,null,null,null,null),
 	(1,'2016',1,1,1,70,9,9,482,3,null,null,null,null),
 	(3,'2016',1,1,1,25.1,2,6,482,1,null,null,10,null),
 	(3,'2016',1,1,1,18.3,3,7,482,2,null,null,11,null);
+
+--changeset herronrb:5
+update tbl_location_types set sort_order = 6 where sort_order = 5;
+update tbl_location_types set sort_order = 5 where sort_order = 4;
+update tbl_location_types set sort_order = 4 where sort_order = 3;
+update tbl_location_types set sort_order = 3 where sort_order = 2;
+update tbl_location_types set sort_order = 2 where sort_order = 1;
+insert into tbl_location_types (id_, name_en, name_es, sort_order)
+values (5, 'Counties', 'Counties (es)', 1);
+insert into tbl_locations(id_, location_type_id, name_en, name_es) 
+values (48029,5, 'Bexar County', 'Bexar County (es)');

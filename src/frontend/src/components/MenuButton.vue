@@ -1,8 +1,11 @@
 <template>
   <v-btn text @click="selectItem(item)">
-    <v-list-item-title>
+    <v-list-item-title v-if="!singleItem">
       {{ itemName }}
     </v-list-item-title>
+    <span v-else>
+      {{ itemName }}
+    </span>
   </v-btn>
 </template>
 
@@ -18,6 +21,9 @@ export default {
     selectItem: {
       type: Function,
     },
+    singleItem: {
+      type: Boolean
+    }
   },
   computed: {
 	...mapState(['locale']),

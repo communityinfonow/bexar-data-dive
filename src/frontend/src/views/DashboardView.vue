@@ -6,6 +6,7 @@
           class="flex-column"
           :menu="indicatorMenu"
           :selectItem="selectItem"
+          :flattenSingleItems="false"
         ></MenuToolbar>
       </v-col>
       <v-col v-if="showIntro" cols="auto" class="pa-4">
