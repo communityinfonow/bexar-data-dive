@@ -25,7 +25,7 @@
 import { mapState } from 'vuex'
 import MenuToolbar from '@/components/MenuToolbar'
 export default {
-  name: 'MyCommunityView',
+  name: 'ExploreDataView',
   components: {
     MenuToolbar,
   },

@@ -64,7 +64,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 export default {
 	name: 'FiltersPanel',
 	data() {
@@ -81,20 +81,25 @@ export default {
 		locationFilterOptions() {
 			return this.filters.locationFilter.options
 				.filter(option => option.typeId === this.selectedLocationType)
-		}
+		},
 	},
 	watch: {
-		filters(newValue) {
-			this.indicatorFilterSelections = {}
-			this.selectedLocationType = newValue.locationTypeFilter.options[0].id
-			this.selectedLocation = newValue.locationFilter.options[0].id
-			this.selectedYear = newValue.yearFilter.options[0].name_en
-			newValue.indicatorFilters.forEach((filter) => {
-				this.indicatorFilterSelections[filter.type.id] = filter.options[0].id
-			})
+		filters() {
+			this.initFilters();
+			this.$nextTick(() => this.applyFilters());
 		}
 	},
 	methods: {
+		...mapActions(['getDashboardData']),
+		initFilters() {
+			this.indicatorFilterSelections = {}
+			this.selectedLocationType = this.filters?.locationTypeFilter.options[0].id
+			this.selectedLocation = this.filters?.locationFilter.options[0].id
+			this.selectedYear = this.filters?.yearFilter.options[0].name_en
+			this.filters?.indicatorFilters.forEach((filter) => {
+				this.indicatorFilterSelections[filter.type.id] = filter.options[0].id
+			});
+		},
 		selectLocationType() {
 			this.selectedLocation = this.filters.locationFilter.options
 				.filter(option => option.typeId === this.selectedLocationType)[0]?.id
@@ -102,10 +107,19 @@ export default {
 		validateFilters() {
 			this.$refs.filtersForm.validate()
 		},
+		getFilterSelections() {	
+			return {
+				locationType: this.selectedLocationType,
+				location: this.selectedLocation,
+				year: this.selectedYear,
+				filterTypes: Object.keys(this.indicatorFilterSelections).join(','),
+				filterOptions: Object.values(this.indicatorFilterSelections).join(',')
+			};
+		},
 		applyFilters() { 
 			this.validateFilters()
 			if (this.valid) {
-				//TODO
+				this.getDashboardData(this.getFilterSelections())
 			}
 		}
 	},

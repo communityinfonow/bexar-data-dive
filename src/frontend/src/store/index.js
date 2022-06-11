@@ -14,6 +14,7 @@ export default new Vuex.Store({
     community: null,
     indicator: null,
     filters: null,
+    dashboardData: null,
   },
   getters: {
     tools: () => {
@@ -60,6 +61,9 @@ export default new Vuex.Store({
     },
     SET_FILTERS(state, filters) {
       state.filters = filters
+    },
+    SET_DASHBOARD_DATA(state, dashboardData) {
+      state.dashboardData = dashboardData
     }
   },
   actions: {
@@ -92,13 +96,13 @@ export default new Vuex.Store({
     },
     setCommunity(context, community) {
       if (community !== null) {
-        context.dispatch('getCommunity', community)
+        context.dispatch('getCommunityData', community)
       } else {
         context.commit('SET_COMMUNITY', community)
       }
     },
-    getCommunity(context, community) {
-      axios.get('/api/my-community', { params: { 
+    getCommunityData(context, community) {
+      axios.get('/api/community-data', { params: { 
           location: community.id, 
           locationType: community.categoryId 
         }
@@ -120,7 +124,14 @@ export default new Vuex.Store({
       }}).then(response => { 
         context.commit('SET_FILTERS', response.data)
       })
-    }
+    },
+    getDashboardData(context, filters) {
+      console.log(filters)
+      axios.get('/api/dashboard-data', { params: filters })
+      .then(response => {
+        context.commit('SET_DASHBOARD_DATA', response.data)
+      })
+    },
   },
   modules: {},
 })

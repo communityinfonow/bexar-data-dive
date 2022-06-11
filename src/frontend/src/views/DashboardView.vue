@@ -57,7 +57,7 @@ import DashboardMap from '@/components/DashboardMap'
 import DashboardTrendChart from '@/components/DashboardTrendChart'
 import DashboardCompareChart from '@/components/DashboardCompareChart'
 export default {
-  name: 'MyCommunityView',
+  name: 'DashboardView',
   components: {
     MenuToolbar, 
     FiltersPanel,

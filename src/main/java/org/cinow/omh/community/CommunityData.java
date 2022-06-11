@@ -1,13 +1,13 @@
-package org.cinow.omh.mycommunity;
+package org.cinow.omh.community;
 
 import java.util.List;
 
 import org.cinow.omh.locations.Location;
 
-public class MyCommunity {
+public class CommunityData {
 	
 	private Location location;
-	private List<MyCommunityDataCategory> indicatorData;
+	private List<CommunityDataCategory> indicatorData;
 
 	public Location getLocation() {
 		return location;
@@ -17,11 +17,11 @@ public class MyCommunity {
 		this.location = location;
 	}
 
-	public List<MyCommunityDataCategory> getIndicatorData() {
+	public List<CommunityDataCategory> getIndicatorData() {
 		return indicatorData;
 	}
 
-	public void setIndicatorData(List<MyCommunityDataCategory> indicatorData) {
+	public void setIndicatorData(List<CommunityDataCategory> indicatorData) {
 		this.indicatorData = indicatorData;
 	}
 }

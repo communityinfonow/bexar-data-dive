@@ -1,4 +1,4 @@
-package org.cinow.omh.mycommunity;
+package org.cinow.omh.community;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,9 +8,9 @@ import org.cinow.omh.indicators.IndicatorType;
 import org.cinow.omh.sources.Source;
 
 /**
- * Represents all of the data for an indicator in the MyCommunity feature.
+ * Represents all of the data for an indicator in the Community feature.
  */
-public class MyCommunityDataIndicator {
+public class CommunityDataIndicator {
 
 	/**
 	 * The indicator.
@@ -35,9 +35,9 @@ public class MyCommunityDataIndicator {
 	/**
 	 * The individual indicator data points.
 	 */
-	private List<MyCommunityDataPoint> demographicData;
+	private List<CommunityDataPoint> demographicData;
 
-	public MyCommunityDataIndicator() {
+	public CommunityDataIndicator() {
 		this.demographicData = new ArrayList<>();
 	}
 
@@ -74,11 +74,11 @@ public class MyCommunityDataIndicator {
 		this.year = year;
 	}
 
-	public List<MyCommunityDataPoint> getDemographicData() {
+	public List<CommunityDataPoint> getDemographicData() {
 		return demographicData;
 	}
 
-	public void setDemographicData(List<MyCommunityDataPoint> demographicData) {
+	public void setDemographicData(List<CommunityDataPoint> demographicData) {
 		this.demographicData = demographicData;
 	}
 }

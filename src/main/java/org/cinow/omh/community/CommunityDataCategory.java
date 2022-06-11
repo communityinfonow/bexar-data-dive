@@ -1,16 +1,16 @@
-package org.cinow.omh.mycommunity;
+package org.cinow.omh.community;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.cinow.omh.indicators.IndicatorCategory;
 
-public class MyCommunityDataCategory {
+public class CommunityDataCategory {
 	
 	private IndicatorCategory category;
-	private List<MyCommunityDataIndicator> indicators;
+	private List<CommunityDataIndicator> indicators;
 
-	public MyCommunityDataCategory() {
+	public CommunityDataCategory() {
 		this.indicators = new ArrayList<>();
 	}
 	
@@ -22,11 +22,11 @@ public class MyCommunityDataCategory {
 		this.category = category;
 	}
 	
-	public List<MyCommunityDataIndicator> getIndicators() {
+	public List<CommunityDataIndicator> getIndicators() {
 		return indicators;
 	}
 	
-	public void setIndicators(List<MyCommunityDataIndicator> indicators) {
+	public void setIndicators(List<CommunityDataIndicator> indicators) {
 		this.indicators = indicators;
 	}
 }

@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
-import MyCommunityView from '@/views/MyCommunityView.vue'
+import CommunityView from '@/views/CommunityView.vue'
 import DashboardView from '@/views/DashboardView.vue'
 import ExploreDataView from '@/views/ExploreDataView.vue'
 import AboutTheToolsView from '@/views/AboutTheToolsView.vue'
@@ -17,8 +17,8 @@ const routes = [
   },
   {
     path: '/my-community',
-    name: 'my-community',
-    component: MyCommunityView,
+    name: 'community',
+    component: CommunityView,
   },
   {
     path: '/dashboard',

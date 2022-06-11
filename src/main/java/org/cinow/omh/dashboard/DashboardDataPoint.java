@@ -1,11 +1,8 @@
-package org.cinow.omh.mycommunity;
+package org.cinow.omh.dashboard;
 
 import org.cinow.omh.filters.FilterOption;
 
-/**
- * Represents a data point in the My Commmunity Feature.
- */
-public class MyCommunityDataPoint {
+public class DashboardDataPoint {
 	
 	/**
 	 * The 'base' filter is one that is required for an indicator. 
@@ -18,9 +15,9 @@ public class MyCommunityDataPoint {
 	private FilterOption baseFilter;
 
 	/**
-	 * The My Community feature will disaggregate by race/ethnicity whenever possible.
+	 * The optional comparison filter.
 	 */
-	private FilterOption raceFilter;
+	private FilterOption comparisonFilter;
 
 	/**
 	 * The indicator value.
@@ -50,12 +47,12 @@ public class MyCommunityDataPoint {
 		this.baseFilter = baseFilter;
 	}
 
-	public FilterOption getRaceFilter() {
-		return raceFilter;
+	public FilterOption getComparisonFilter() {
+		return comparisonFilter;
 	}
 
-	public void setRaceFilter(FilterOption raceFilter) {
-		this.raceFilter = raceFilter;
+	public void setComparisonFilter(FilterOption comparisonFilter) {
+		this.comparisonFilter = comparisonFilter;
 	}
 
 	public Double getValue() {

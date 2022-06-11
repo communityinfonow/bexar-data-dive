@@ -1,4 +1,4 @@
-package org.cinow.omh.mycommunity;
+package org.cinow.omh.community;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,13 +18,13 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class MyCommunityRepositoryPostgresql implements MyCommunityRepository {
+public class CommunityRepositoryPostgresql implements CommunityRepository {
 
 	@Autowired
 	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 	@Override
-	public List<MyCommunityDataCategory> getMyCommunityData(long location, long locationType) {
+	public List<CommunityDataCategory> getCommunityData(long location, long locationType) {
 		String sql = ""
 			+ " select * "
 			+ " from ( "
@@ -58,15 +58,15 @@ public class MyCommunityRepositoryPostgresql implements MyCommunityRepository {
 		paramMap.addValue("location_id", location);
 		paramMap.addValue("location_type_id", locationType);
 
-		return this.namedParameterJdbcTemplate.query(sql, paramMap, new ResultSetExtractor<List<MyCommunityDataCategory>>() {
+		return this.namedParameterJdbcTemplate.query(sql, paramMap, new ResultSetExtractor<List<CommunityDataCategory>>() {
 			@Override
-			public List<MyCommunityDataCategory> extractData(ResultSet rs) throws SQLException, DataAccessException {
-				List<MyCommunityDataCategory> communityData = new ArrayList<>();
-				MyCommunityDataCategory categoryData = null;
-				MyCommunityDataIndicator indicatorData = null;
+			public List<CommunityDataCategory> extractData(ResultSet rs) throws SQLException, DataAccessException {
+				List<CommunityDataCategory> communityData = new ArrayList<>();
+				CommunityDataCategory categoryData = null;
+				CommunityDataIndicator indicatorData = null;
 				while (rs.next()) {
 					if (categoryData == null || categoryData.getCategory().getId() != rs.getLong("category_id")) {
-						categoryData = new MyCommunityDataCategory();
+						categoryData = new CommunityDataCategory();
 						categoryData.setCategory(new IndicatorCategory());
 						categoryData.getCategory().setId(rs.getLong("category_id"));
 						categoryData.getCategory().setName_en(rs.getString("category_name_en"));
@@ -74,7 +74,7 @@ public class MyCommunityRepositoryPostgresql implements MyCommunityRepository {
 						communityData.add(categoryData);
 					}
 					if (indicatorData == null || indicatorData.getIndicator().getId() != rs.getLong("indicator_id")) {
-						indicatorData = new MyCommunityDataIndicator();
+						indicatorData = new CommunityDataIndicator();
 						categoryData.getIndicators().add(indicatorData);
 						indicatorData.setIndicator(new Indicator());
 						indicatorData.getIndicator().setId(rs.getLong("indicator_id"));
@@ -94,7 +94,7 @@ public class MyCommunityRepositoryPostgresql implements MyCommunityRepository {
 						indicatorData.setYear(rs.getString("year_"));
 					}
 					if (rs.getString("year_") != null) {
-						MyCommunityDataPoint dataPoint = new MyCommunityDataPoint();
+						CommunityDataPoint dataPoint = new CommunityDataPoint();
 						if (rs.getLong("base_filter_type_id") != 0) {
 							dataPoint.setBaseFilter(new FilterOption());
 							dataPoint.getBaseFilter().setId(rs.getLong("base_filter_option_id"));

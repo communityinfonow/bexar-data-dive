@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  name: 'MyCommunityView',
+  name: 'AboutTheToolsView',
   data() {
     return {}
   },

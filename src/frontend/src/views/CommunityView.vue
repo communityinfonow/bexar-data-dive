@@ -57,7 +57,7 @@
                   <p class="text-subtitle-1" v-if="item.indicator.baseFilterTypeId">{{ item.demographicData[0].baseFilter['name_' + locale] }}</p>
                 </v-col>
                 <v-col cols="9">
-                    <my-community-chart :indicatorId="item.indicator.id" :indicatorType=item.indicatorType.name :data="item.demographicData"></my-community-chart>
+                    <community-chart :indicatorId="item.indicator.id" :indicatorType=item.indicatorType.name :data="item.demographicData"></community-chart>
                 </v-col>
               </v-row>
             </template>
@@ -78,15 +78,15 @@ import router from '@/router/index'
 import { latLng } from 'leaflet'
 //import { LMap, LTileLayer } from 'vue2-leaflet'
 import MenuToolbar from '@/components/MenuToolbar'
-import MyCommunityChart from '@/components/MyCommunityChart'
+import CommunityChart from '@/components/CommunityChart'
 import { format } from '@/formatter/formatter'
 export default {
-  name: 'MyCommunityView',
+  name: 'CommunityView',
   components: {
     //LMap,
     //LTileLayer,
     MenuToolbar,
-    MyCommunityChart
+    CommunityChart
   },
   data() {
     return {
@@ -126,17 +126,17 @@ export default {
         .flatMap(category => category.items)
         .find(item => item.id == router.currentRoute.query.location && item.categoryId == router.currentRoute.query.locationType)
       if (matchedCommunity?.id !== this.community?.location.id || matchedCommunity?.categoryId !== this.community?.location.typeId) {
-        this.getCommunity(matchedCommunity)
+        this.getCommunityData(matchedCommunity)
       }
     } else {
       this.setCommunity(null)
     }
   },
   methods: {
-    ...mapActions(['setCommunity', 'getCommunity']),
+    ...mapActions(['setCommunity', 'getCommunityData']),
     selectItem(item) {
       if (item.id !== this.community?.id || item.categoryId !== this.community?.locationTypeId) {
-        this.getCommunity(item)
+        this.getCommunityData(item)
         router.replace({
           query: {
             ...router.currentRoute.query,

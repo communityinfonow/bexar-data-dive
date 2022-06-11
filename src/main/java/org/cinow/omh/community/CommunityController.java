@@ -1,4 +1,4 @@
-package org.cinow.omh.mycommunity;
+package org.cinow.omh.community;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -8,15 +8,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class MyCommunityController {
+public class CommunityController {
 
 	@Autowired
-	private MyCommunityService myCommunityService;
+	private CommunityService communityService;
 
-	@GetMapping(path = "/api/my-community", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<MyCommunity> getLocationMenu(
+	@GetMapping(path = "/api/community-data", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<CommunityData> getCommunityData(
 			@RequestParam long location, @RequestParam long locationType) {
 		
-		return ResponseEntity.ok(this.myCommunityService.getMyCommunity(location, locationType));
+		return ResponseEntity.ok(this.communityService.getCommunityData(location, locationType));
 	}
 }

@@ -18,7 +18,7 @@ import colorbrewer from 'colorbrewer'
 import { format } from '@/formatter/formatter'
 
 export default {
-	name: 'MyCommunityView',
+	name: 'CommunityChart',
 	props: {
 		indicatorId: {
 			type: Number
