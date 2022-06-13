@@ -42,7 +42,7 @@ public class CommunityRepositoryPostgresql implements CommunityRepository {
 			+ "   join tbl_indicator_types it on it.id_ = i.indicator_type_id "
 			+ "   left join tbl_indicator_values iv on iv.indicator_id = i.id_ "
 			+ "     and iv.location_id = :location_id and iv.location_type_id = :location_type_id "
-			+ "   left join tbl_sources s on s.id_ = iv.source_id "
+			+ "   left join tbl_sources s on s.id_ = i.source_id "
 			+ "   left join tbl_filter_options fr on fr.id_ = iv.race_id "
 			+ "   left join tbl_filter_options fb on fb.id_ = case "
 			+ "     when i.base_filter_type_id = 2 then iv.age_id "

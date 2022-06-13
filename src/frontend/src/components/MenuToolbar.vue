@@ -1,27 +1,35 @@
 <template>
   <v-toolbar dense class="menu-toolbar">
-    <v-toolbar-items class="d-flex flex-grow-1">
-      <template v-for="category in menu.categories">
-        <MenuButton text v-if="category.items.length === 1 && flattenSingleItems" :key="'category_' + category.id" :item="category.items[0]" :selectItem="selectItem" :singleItem="true"></MenuButton>
-        <MenuCategory v-else :category="category" :selectItem="selectItem" :key="'category_' + category.id"></MenuCategory>
-      </template>
-      <v-spacer class="flex-grow-1"></v-spacer>
-      <v-autocomplete
-        class="flex-grow-0"
-        prepend-icon="mdi-magnify"
-        :label="$t('tools.common.search')"
-        :placeholder="$t('tools.common.search')"
-        v-model="selectedItem"
-        :items="searchItems"
-        :item-text="'name_' + locale"
-        :search-input.sync="search"
-        @change="selectMatch"
-        return-object
-        hide-no-data
-        hide-details
-        solo
-        flat
-      ></v-autocomplete>
+    <v-toolbar-items style="width: 100%;">
+      <v-row>
+        <v-col cols="10">
+          <v-slide-group show-arrows style="height: 100%;">
+            <template v-for="category in menu.categories">
+              <v-slide-item :key="'category_' + category.id">
+              <MenuButton text v-if="category.items.length === 1 && flattenSingleItems" :item="category.items[0]" :selectItem="selectItem" :singleItem="true"></MenuButton>
+              <MenuCategory v-else :category="category" :selectItem="selectItem"></MenuCategory>
+              </v-slide-item>
+            </template>
+          </v-slide-group>
+        </v-col>
+        <v-col cols="2">
+          <v-autocomplete
+            prepend-icon="mdi-magnify"
+            :label="$t('tools.common.search')"
+            :placeholder="$t('tools.common.search')"
+            v-model="selectedItem"
+            :items="searchItems"
+            :item-text="'name_' + locale"
+            :search-input.sync="search"
+            @change="selectMatch"
+            return-object
+            hide-no-data
+            hide-details
+            solo
+            flat
+          ></v-autocomplete>
+        </v-col>
+      </v-row>
     </v-toolbar-items>
   </v-toolbar>
 </template>

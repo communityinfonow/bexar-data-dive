@@ -1,7 +1,7 @@
 <template>
-	<v-menu offset-y :internal-activator="true" :key="'category_' + category.id" max-height="400px">
+	<v-menu offset-y :internal-activator="true" :key="'category_' + category.id" max-height="400px" eager>
 		<template v-slot:activator="{ on }">
-			<v-btn text v-on="on">
+			<v-btn text v-on="on" style="height: 100%;">
 				{{ categoryName }}
 				<v-icon right>mdi-chevron-down</v-icon>
 			</v-btn>
@@ -65,5 +65,8 @@ export default {
 <style lang="scss" scoped>
 .menu-toolbar ::v-deep .v-toolbar__content {
   padding: 0;
+}
+::v-deep .v-menu__content {
+  z-index: 1000 !important;
 }
 </style>
