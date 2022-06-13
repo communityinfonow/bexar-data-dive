@@ -19,3 +19,9 @@ export default {
   components: { AppHeader, AppFooter, NavigationDrawer },
 }
 </script>
+
+<style lang="scss" scoped>
+::v-deep .v-menu__content {
+  z-index: 1000 !important;
+}
+</style>

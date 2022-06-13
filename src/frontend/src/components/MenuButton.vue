@@ -1,5 +1,5 @@
 <template>
-  <v-btn text @click="selectItem(item)" style="height: 100%;">
+  <v-btn text tile @click="selectItem(item)" style="height: 100%;">
     <v-list-item-title v-if="!singleItem">
       {{ itemName }}
     </v-list-item-title>
