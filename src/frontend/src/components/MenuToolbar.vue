@@ -1,7 +1,7 @@
 <template>
   <v-toolbar dense class="menu-toolbar">
     <v-toolbar-items style="width: 100%;">
-      <v-row>
+      <v-row style="max-width: 100%;">
         <v-col cols="10">
           <v-slide-group show-arrows style="height: 100%;">
             <template v-for="category in menu.categories">
