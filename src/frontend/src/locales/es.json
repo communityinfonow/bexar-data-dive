@@ -47,6 +47,7 @@
   "data": {
     "value": "Value (es)",
     "moe": "MOE (es)",
+    "moe_range": "Range (es)",
     "low": "low (es)",
     "high": "high (es)"
   }

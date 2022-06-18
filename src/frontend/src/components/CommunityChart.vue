@@ -53,19 +53,27 @@ export default {
 	},
 	methods: {
 		drawChart() {
+			let textStyle = {
+				fontFamily: '"Roboto", sans-serif !important',
+				fontSize: '16px'
+			};
 			let option = {};
 			if (this.data[0].baseFilter) {
 				option.legend = { data: this.data.map(d => d.baseFilter['name_' + this.locale])};
 			}
 			option.yAxis = { 
 				type: 'value', 
-				splitLine: { show: false }
+				splitLine: { show: false },
+				splitNumber: 1,
+				axisLabel: textStyle
 			};
 			option.xAxis = { 
 				type: 'category', 
 				data: Array.from(new Set(this.data.map(d => d.raceFilter['name_' + this.locale]))),
-				axisTick: { show: false }
+				axisTick: { show: false },
+				axisLabel: textStyle
 			};
+			option.textStyle = textStyle;
 			let filters = new Set(this.data.map(d => d.baseFilter?.id || 0))
 			option.color = colorbrewer.Blues[Math.max(3, filters.size)].slice(0).reverse()
 			option.series = [];
@@ -79,14 +87,13 @@ export default {
 						formatter: (o) => {
 							let rows = [i18n.t('data.value') +': ' + format(this.indicatorType, o.data.value)];
 							if (o.data.moeLow || o.data.moeHigh) {
-								if (o.data.moeLow === o.data.moeHigh) {
-									rows.push(i18n.t('data.moe') + ': ' + format(this.indicatorType, o.data.moeLow))
-								} else {
-									rows.push(i18n.t('data.moe') + ' (' + i18n.t('data.high') + '): ' + format(this.indicatorType, o.data.moeHigh));
-									rows.push(i18n.t('data.moe') + ' (' + i18n.t('data.low') + '): ' + format(this.indicatorType, o.data.moeLow));
-								}
+								rows.push(i18n.t('data.moe_range') 
+									+ ': ' 
+									+ format(this.indicatorType, o.data.value - o.data.moeLow)
+									+ " - "
+									+ format(this.indicatorType, o.data.value + o.data.moeHigh))
 							}
-							return rows.join('\n');
+							return rows.join('\n\n');
 						}
 					}
 				};
@@ -101,6 +108,14 @@ export default {
 				option.series.push(series)
 			});
 			option.aria = { enabled: true };
+			let maxValue = Math.max(...option.series.flatMap(s => s.data).map(d => d.value));
+			let rounder = 1;
+			for (let i = 1; i < Math.floor(maxValue).toString().length; i++) {
+				rounder = rounder * 10;
+			}
+			let axisMax = Math.ceil(maxValue / rounder) * rounder;
+			option.yAxis.interval = axisMax;
+			option.yAxis.max = axisMax;
 			this.chart.setOption(option);
 		}
 	},
