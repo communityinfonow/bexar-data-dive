@@ -1,5 +1,7 @@
 package org.cinow.omh.dashboard;
 
+import java.util.List;
+
 import org.cinow.omh.filters.FilterRequest;
 import org.springframework.stereotype.Repository;
 
@@ -7,7 +9,7 @@ import org.springframework.stereotype.Repository;
 public class DashboardRepositoryPostgresql implements DashboardRepository {
 
 	@Override
-	public DashboardDataLocation getDashboardData(FilterRequest filterRequest) {
+	public List<DashboardDataLocation> getDashboardData(FilterRequest filterRequest) {
 		// TODO Auto-generated method stub
 		return null;
 	}

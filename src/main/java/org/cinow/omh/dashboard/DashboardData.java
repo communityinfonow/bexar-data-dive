@@ -11,7 +11,7 @@ public class DashboardData {
 	private Indicator indicator;
 	private List<Filter> filters;
 	private Source source;
-	private DashboardDataLocation locationData;
+	private List<DashboardDataLocation> locationData;
 	
 	public Indicator getIndicator() {
 		return indicator;
@@ -31,10 +31,10 @@ public class DashboardData {
 	public void setSource(Source source) {
 		this.source = source;
 	}
-	public DashboardDataLocation getLocationData() {
+	public List<DashboardDataLocation> getLocationData() {
 		return locationData;
 	}
-	public void setLocationData(DashboardDataLocation locationData) {
+	public void setLocationData(List<DashboardDataLocation> locationData) {
 		this.locationData = locationData;
 	}
 }
