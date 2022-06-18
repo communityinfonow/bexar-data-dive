@@ -96,6 +96,7 @@ public class FilterRepositoryPostgresql implements FilterRepository {
 				filter.getType().setName_es("Year (es)");
 				while (rs.next()) {
 					FilterOption option = new FilterOption();
+					option.setId(rs.getLong("year_"));
 					option.setName_en(rs.getString("year_"));
 					option.setName_es(rs.getString("year_"));
 					filter.getOptions().add(option);

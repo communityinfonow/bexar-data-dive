@@ -15,7 +15,8 @@
           <p>{{ $t('tools.dashboard.get_started') }}</p>
       </v-col>
       <v-col v-if="indicator" cols="auto" class="pt-4 px-4">
-          <h1 class="text-h3 mb-2">{{ indicator['name_' + locale] }}</h1>
+          <h1 class="text-h3 mb-1">{{ indicator['name_' + locale] }}</h1>
+          <h2 v-if="source" class="text-subtitle-1 mb-2">{{ source['name_' + locale] }}</h2>
       </v-col>
       <v-col v-if="indicator" cols="auto" class="grow">
         <v-row class="fill-height no-gutters">
@@ -72,7 +73,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['indicatorMenu', 'indicator', 'locale']),
+    ...mapState(['indicatorMenu', 'indicator', 'source', 'locale']),
     showIntro() {
       return !this.indicator && !router.currentRoute.query.indicator;
     }

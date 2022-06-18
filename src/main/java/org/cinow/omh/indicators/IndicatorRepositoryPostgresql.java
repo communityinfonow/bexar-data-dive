@@ -63,5 +63,32 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 			}
 		});
 	}
-	
+
+	@Override
+	public Indicator getIndicator(long id) {
+		String sql = ""
+			+ " select indicator_category_id, indicator_type_id, base_filter_type_id, "
+			+ "   name_en, name_es, description_en, description_es "
+			+ " from tbl_indicators "
+			+ " where id_ = :id ";
+		MapSqlParameterSource paramMap = new MapSqlParameterSource();
+		paramMap.addValue("id", id);
+		
+		return this.namedParameterJdbcTemplate.queryForObject(sql, paramMap, new RowMapper<Indicator>() {
+			@Override
+			public Indicator mapRow(ResultSet rs, int rowNum) throws SQLException {
+				Indicator indicator = new Indicator();
+				indicator.setId(id);
+				indicator.setCategoryId(rs.getLong("indicator_category_id"));
+				indicator.setTypeId(rs.getLong("indicator_type_id"));
+				indicator.setBaseFilterTypeId(rs.getLong("base_filter_type_id"));
+				indicator.setName_en(rs.getString("name_en"));
+				indicator.setName_es(rs.getString("name_es"));
+				indicator.setDescription_en(rs.getString("description_en"));
+				indicator.setDescription_es(rs.getString("description_es"));
+
+				return indicator;
+			}
+		});
+	}
 }

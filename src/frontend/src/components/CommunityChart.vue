@@ -36,13 +36,13 @@ export default {
 		}
 	},
 	computed: {
-    ...mapState(['locale']),
-  	},
-	  watch: {
-		  locale() {
-			  this.drawChart()
-		  }
-	  },
+		...mapState(['locale']),
+	},
+	watch: {
+		locale() {
+			this.drawChart()
+		}
+	},
 	mounted () {
 		echarts.use([SVGRenderer, AriaComponent, LegendComponent, GridComponent, BarChart]);
 		this.chart = echarts.init(document.getElementById('chart_container_' + this.indicatorId), null, { renderer: 'svg'});

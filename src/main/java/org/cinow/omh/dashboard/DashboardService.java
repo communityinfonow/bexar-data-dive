@@ -1,7 +1,14 @@
 package org.cinow.omh.dashboard;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import org.cinow.omh.filters.Filter;
+import org.cinow.omh.filters.FilterRepository;
 import org.cinow.omh.filters.FilterRequest;
+import org.cinow.omh.filters.Filters;
 import org.cinow.omh.indicators.IndicatorRepository;
+import org.cinow.omh.sources.SourceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,14 +18,61 @@ public class DashboardService {
 	@Autowired
 	private DashboardRepository dashboardRepository;
 
-	//TODO: build a source repository and add a source_id column to the indicator table since it is a 1:1 mapping and remove that from the 'data' table
-	//TODO: but first, run by Jeremy one last time that ind:src is a 1:1 because we can drop that from the data sharing format if true. and if not true or could change, don't do 1:1 setup noted above...
-	//@Autowired
-	//private SourceRepository sourceRepository;
+	@Autowired
+	private IndicatorRepository indicatorRepository;
+
+	@Autowired
+	private SourceRepository sourceRepository;
+
+	@Autowired
+	private FilterRepository filterRepository;
 	
-	//public DashboardData getDashboardData(FilterRequest filterRequest) {
-	//	DashboardData dashboardData = new DashboardData();
-	//	dashboardData.setSource(this.sourceRepository.getSource(filterRequest.getIndicator());
-	//	dashboardData.setLocationData(this.dashboardRepository.getDashboardData(filterRequest));
-	//}
+	public DashboardData getDashboardData(FilterRequest filterRequest) {
+		DashboardData dashboardData = new DashboardData();
+		dashboardData.setIndicator(this.indicatorRepository.getIndicator(filterRequest.getIndicator()));
+		dashboardData.setSource(this.sourceRepository.getSourceByIndicator(filterRequest.getIndicator()));
+		dashboardData.setFilters(this.getIndicatorFilters(filterRequest));
+		dashboardData.setLocationData(this.dashboardRepository.getDashboardData(filterRequest));
+
+		return dashboardData;
+	}
+
+	private List<Filter> getIndicatorFilters(FilterRequest filterRequest) {
+		List<Filter> indicatorFilters = new ArrayList<>();
+		Filters filters = new Filters();
+		filters.setLocationTypeFilter(this.filterRepository.getLocationTypeFilter());
+		filters.getLocationTypeFilter().setOptions(filters.getLocationTypeFilter().getOptions()
+			.stream()
+			.filter(o -> o.getId() == filterRequest.getLocationType())
+			.collect(Collectors.toList()));
+		indicatorFilters.add(filters.getLocationTypeFilter());
+		filters.setLocationFilter(this.filterRepository.getLocationFilter());
+		filters.getLocationFilter().setOptions(filters.getLocationFilter().getOptions()
+			.stream()
+			.filter(o -> o.getId() == filterRequest.getLocation())
+			.collect(Collectors.toList()));
+		indicatorFilters.add(filters.getLocationFilter());
+		filters.setYearFilter(this.filterRepository.getYearFilter(filterRequest.getIndicator()));
+		filters.getYearFilter().setOptions(filters.getYearFilter().getOptions()
+			.stream()
+			.filter(o -> Long.toString(o.getId()).equals(filterRequest.getYear()))
+			.collect(Collectors.toList()));
+		indicatorFilters.add(filters.getYearFilter());
+		filters.setIndicatorFilters(this.filterRepository.getIndicatorFilters(filterRequest.getIndicator()));
+		for (int i = 0; i < filterRequest.getFilterTypes().size(); i++) {
+			final int j = i;
+			Filter filter = filters.getIndicatorFilters()
+				.stream()
+				.filter(f -> f.getType().getId() == filterRequest.getFilterTypes().get(j))
+				.findFirst()
+				.get();
+			filter.setOptions(filter.getOptions()
+				.stream()
+				.filter(o -> o.getId() == filterRequest.getFilterOptions().get(j))
+				.collect(Collectors.toList()));
+			indicatorFilters.add(filter);
+		}
+
+		return indicatorFilters;
+	}
 }

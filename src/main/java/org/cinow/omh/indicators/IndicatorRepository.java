@@ -7,4 +7,6 @@ public interface IndicatorRepository {
 	List<IndicatorCategory> findIndicatorCategories();
 
 	List<Indicator> findIndicatorsByCategory(long categoryId);
+
+	Indicator getIndicator(long id);
 }

@@ -13,6 +13,7 @@ export default new Vuex.Store({
     indicatorMenu: null,
     community: null,
     indicator: null,
+    source: null,
     filters: null,
     dashboardData: null,
   },
@@ -58,6 +59,9 @@ export default new Vuex.Store({
     },
     SET_INDICATOR(state, indicator) {
       state.indicator = indicator
+    },
+    SET_SOURCE(state, source) {
+      state.source = source
     },
     SET_FILTERS(state, filters) {
       state.filters = filters
@@ -113,10 +117,19 @@ export default new Vuex.Store({
     setIndicator(context, indicator) {
       context.commit('SET_INDICATOR', indicator)
       if (indicator == null) {
+        context.commit('SET_SOURCE', null)
         context.commit('SET_FILTERS', null)
       } else {
+        context.dispatch('getSource', indicator)
         context.dispatch('getFilters', indicator)
       }
+    },
+    getSource(context, indicator) {
+      axios.get('/api/indicator-source', { params: {
+        indicator: indicator.id
+      }}).then(response => {
+        context.commit('SET_SOURCE', response.data)
+      })
     },
     getFilters(context, indicator) {
       axios.get('/api/filters', { params: {
@@ -126,9 +139,10 @@ export default new Vuex.Store({
       })
     },
     getDashboardData(context, filters) {
-      console.log(filters)
-      axios.get('/api/dashboard-data', { params: filters })
-      .then(response => {
+      axios.get('/api/dashboard-data', { params: { 
+        indicator: context.state.indicator.id, 
+        ...filters 
+      }}).then(response => {
         context.commit('SET_DASHBOARD_DATA', response.data)
       })
     },
