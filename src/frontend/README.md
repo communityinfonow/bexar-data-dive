@@ -39,3 +39,8 @@ yarn lint
 ### Customize configuration
 
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+
+sudo docker create --name omh-local -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASS=example -e POSTGRES_DBNAME=omh_local -t kartoza/postgis
+sudo docker start omh-local
+sudo docker stop omh-local

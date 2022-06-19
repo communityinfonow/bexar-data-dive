@@ -829,3 +829,13 @@ values (1,'2016',48029,1,482,4,4,482,1,null,null,null,null),
 	(1,'2016',48029,1,70,9,9,482,3,null,null,null,null),
 	(3,'2016',48029,1,25.1,2,6,482,1,null,null,10,null),
 	(3,'2016',48029,1,18.3,3,7,482,2,null,null,11,null);
+
+--changeset herronrb:5
+create table tbl_location_geometries (
+	location_id numeric,
+	location_type_id numeric,
+	min_year text,
+	max_year text,
+	geometry_ geometry(geometry, 4326)
+);
+create index idx_location_geometries on tbl_location_geometries (location_id, location_type_id);
