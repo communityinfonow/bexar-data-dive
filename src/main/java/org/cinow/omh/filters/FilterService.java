@@ -9,7 +9,7 @@ public class FilterService {
 	@Autowired
 	private FilterRepository filterRepository;
 
-	public Filters getFilters(long indicatorId) {
+	public Filters getFilters(String indicatorId) {
 		Filters filters = new Filters();
 		filters.setLocationTypeFilter(this.filterRepository.getLocationTypeFilter());
 		filters.setLocationFilter(this.filterRepository.getLocationFilter());

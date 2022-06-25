@@ -2,14 +2,14 @@ package org.cinow.omh.filters;
 
 public class FilterType {
 	
-	private long id;
+	private String id;
 	private String name_en;
 	private String name_es;
 	
-	public long getId() {
+	public String getId() {
 		return id;
 	}
-	public void setId(long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 	public String getName_en() {

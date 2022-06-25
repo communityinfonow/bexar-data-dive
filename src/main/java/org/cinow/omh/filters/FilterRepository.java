@@ -8,7 +8,7 @@ public interface FilterRepository {
 
 	Filter getLocationFilter();
 
-	Filter getYearFilter(long indicatorId);
+	Filter getYearFilter(String indicatorId);
 	
-	List<Filter> getIndicatorFilters(long indicatorId);
+	List<Filter> getIndicatorFilters(String indicatorId);
 }

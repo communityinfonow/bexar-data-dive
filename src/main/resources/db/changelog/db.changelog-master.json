@@ -1,0 +1,6 @@
+{
+	"databaseChangeLog": [
+		{ "include": { "file": "/sql/changelog_01.sql" } },
+		{ "include": { "file": "/sql/changelog_02.sql" } }
+	]
+}

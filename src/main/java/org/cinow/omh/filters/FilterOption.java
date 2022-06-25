@@ -2,21 +2,21 @@ package org.cinow.omh.filters;
 
 public class FilterOption {
 	
-	private long id;
-	private long typeId;
+	private String id;
+	private String typeId;
 	private String name_en;
 	private String name_es;
 
-	public long getId() {
+	public String getId() {
 		return id;
 	}
-	public void setId(long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
-	public long getTypeId() {
+	public String getTypeId() {
 		return typeId;
 	}
-	public void setTypeId(long typeId) {
+	public void setTypeId(String typeId) {
 		this.typeId = typeId;
 	}
 	public String getName_en() {

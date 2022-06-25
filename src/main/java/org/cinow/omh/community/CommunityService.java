@@ -13,7 +13,7 @@ public class CommunityService {
 	@Autowired
 	private LocationRepository locationRepository;
 	
-	public CommunityData getCommunityData(long location, long locationType) {
+	public CommunityData getCommunityData(String location, String locationType) {
 		CommunityData communityData = new CommunityData();
 		communityData.setLocation(this.locationRepository.findLocation(location, locationType));
 		communityData.setIndicatorData(this.communityRepository.getCommunityData(location, locationType));

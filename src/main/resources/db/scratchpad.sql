@@ -23,3 +23,17 @@ order by ic.sort_order, i.id_, fb.sort_order, fr.sort_order
 ) ranked_data
 where rank = 1
 ;
+
+
+drop table databasechangeloglock;
+drop table databasechangelog;
+drop table tbl_location_geometries;
+drop table tbl_indicator_values;
+drop table tbl_indicators;
+drop table tbl_indicator_types;
+drop table tbl_indicator_categories;
+drop table tbl_sources;
+drop table tbl_filter_options;
+drop table tbl_filter_types;
+drop table tbl_locations;
+drop table tbl_location_types;

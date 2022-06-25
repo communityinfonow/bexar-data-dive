@@ -1,10 +1,10 @@
 package org.cinow.omh.menu;
 
 public interface Item {
-	long getId();
-	void setId(long id);
-	long getCategoryId();
-	void setCategoryId(long id);
+	String getId();
+	void setId(String id);
+	String getCategoryId();
+	void setCategoryId(String id);
 	String getName_en();
 	void setName_en(String name_en);
 	String getName_es();

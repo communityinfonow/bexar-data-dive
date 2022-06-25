@@ -64,6 +64,7 @@
 </template>
 
 <script>
+//TODO: need to persist filters in route
 import { mapActions, mapState } from 'vuex'
 export default {
 	name: 'FiltersPanel',

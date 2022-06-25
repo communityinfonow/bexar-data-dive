@@ -4,8 +4,8 @@ import java.util.List;
 
 public interface Category<T extends Item> {
 	
-	long getId();
-	void setId(long id);
+	String getId();
+	void setId(String id);
 	String getName_en();
 	void setName_en(String name_en);
 	String getName_es();

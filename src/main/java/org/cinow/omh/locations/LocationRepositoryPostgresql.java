@@ -17,11 +17,11 @@ public class LocationRepositoryPostgresql implements LocationRepository {
 	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 	@Override
-	public List<Location> findLocationByType(long typeId) {
+	public List<Location> findLocationByType(String typeId) {
 		String sql = ""
 			+ " select id_, location_type_id, name_en, name_es "
 			+ " from tbl_locations "
-			+ " where location_type_id = :location_type_id ";
+			+ " where location_type_id = :location_type_id::numeric ";
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
 		paramMap.addValue("location_type_id", typeId);
 
@@ -29,11 +29,11 @@ public class LocationRepositoryPostgresql implements LocationRepository {
 	}
 
 	@Override
-	public Location findLocation(long id, long typeId) {
+	public Location findLocation(String id, String typeId) {
 		String sql = ""
 			+ " select id_, location_type_id, name_en, name_es "
 			+ " from tbl_locations "
-			+ " where id_ = :id and location_type_id = :location_type_id ";
+			+ " where id_ = :id and location_type_id = :location_type_id::numeric ";
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
 		paramMap.addValue("id", id);
 		paramMap.addValue("location_type_id", typeId);
@@ -46,10 +46,10 @@ public class LocationRepositoryPostgresql implements LocationRepository {
 			@Override
 			public Location mapRow(ResultSet rs, int rowNum) throws SQLException {
 				Location location = new Location();
-				location.setId(rs.getLong("id_"));
+				location.setId(rs.getString("id_"));
 				location.setName_en(rs.getString("name_en"));
 				location.setName_es(rs.getString("name_es"));
-				location.setTypeId(rs.getLong("location_type_id"));
+				location.setTypeId(rs.getString("location_type_id"));
 
 				return location;
 			}

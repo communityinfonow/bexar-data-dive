@@ -16,13 +16,13 @@ public class SourceRepositoryPostgresql implements SourceRepository {
 	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 	@Override
-	public Source getSourceByIndicator(long indicatorId) {
+	public Source getSourceByIndicator(String indicatorId) {
 		String sql = ""
 			+ " select id_, name_en, name_es, url_ "
 			+ " from tbl_sources "
 			+ " where id_ = (select source_id "
 			+ "              from tbl_indicators "
-			+ "              where id_ = :indicator_id) ";
+			+ "              where id_ = :indicator_id::numeric) ";
 		
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
 		paramMap.addValue("indicator_id", indicatorId);
@@ -31,7 +31,7 @@ public class SourceRepositoryPostgresql implements SourceRepository {
 			@Override
 			public Source mapRow(ResultSet rs, int rowNum) throws SQLException {
 				Source source = new Source();
-				source.setId(rs.getLong("id_"));
+				source.setId(rs.getString("id_"));
 				source.setName_en(rs.getString("name_en"));
 				source.setName_es(rs.getString("name_es"));
 				source.setUrl(rs.getString("url_"));

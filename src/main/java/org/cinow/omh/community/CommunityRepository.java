@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface CommunityRepository {
 	
-	List<CommunityDataCategory> getCommunityData(long location, long locationType);
+	List<CommunityDataCategory> getCommunityData(String location, String locationType);
 }

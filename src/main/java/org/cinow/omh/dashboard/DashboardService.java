@@ -43,19 +43,19 @@ public class DashboardService {
 		filters.setLocationTypeFilter(this.filterRepository.getLocationTypeFilter());
 		filters.getLocationTypeFilter().setOptions(filters.getLocationTypeFilter().getOptions()
 			.stream()
-			.filter(o -> o.getId() == filterRequest.getLocationType())
+			.filter(o -> o.getId().equals(filterRequest.getLocationType()))
 			.collect(Collectors.toList()));
 		indicatorFilters.add(filters.getLocationTypeFilter());
 		filters.setLocationFilter(this.filterRepository.getLocationFilter());
 		filters.getLocationFilter().setOptions(filters.getLocationFilter().getOptions()
 			.stream()
-			.filter(o -> o.getId() == filterRequest.getLocation())
+			.filter(o -> o.getId().equals(filterRequest.getLocation()))
 			.collect(Collectors.toList()));
 		indicatorFilters.add(filters.getLocationFilter());
 		filters.setYearFilter(this.filterRepository.getYearFilter(filterRequest.getIndicator()));
 		filters.getYearFilter().setOptions(filters.getYearFilter().getOptions()
 			.stream()
-			.filter(o -> Long.toString(o.getId()).equals(filterRequest.getYear()))
+			.filter(o -> o.getId().equals(filterRequest.getYear()))
 			.collect(Collectors.toList()));
 		indicatorFilters.add(filters.getYearFilter());
 		filters.setIndicatorFilters(this.filterRepository.getIndicatorFilters(filterRequest.getIndicator()));
@@ -63,12 +63,12 @@ public class DashboardService {
 			final int j = i;
 			Filter filter = filters.getIndicatorFilters()
 				.stream()
-				.filter(f -> f.getType().getId() == filterRequest.getFilterTypes().get(j))
+				.filter(f -> f.getType().getId().equals(filterRequest.getFilterTypes().get(j)))
 				.findFirst()
 				.get();
 			filter.setOptions(filter.getOptions()
 				.stream()
-				.filter(o -> o.getId() == filterRequest.getFilterOptions().get(j))
+				.filter(o -> o.getId().equals(filterRequest.getFilterOptions().get(j)))
 				.collect(Collectors.toList()));
 			indicatorFilters.add(filter);
 		}

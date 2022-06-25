@@ -38,7 +38,7 @@ public class FilterRepositoryPostgresql implements FilterRepository {
 				filter.getType().setName_es("Location Type (es)");
 				while (rs.next()) {
 					FilterOption option = new FilterOption();
-					option.setId(rs.getLong("id_"));
+					option.setId(rs.getString("id_"));
 					option.setName_en(rs.getString("name_en"));
 					option.setName_es(rs.getString("name_es"));
 					filter.getOptions().add(option);
@@ -65,10 +65,10 @@ public class FilterRepositoryPostgresql implements FilterRepository {
 				filter.getType().setName_es("Location (es)");
 				while (rs.next()) {
 					FilterOption option = new FilterOption();
-					option.setId(rs.getLong("id_"));
+					option.setId(rs.getString("id_"));
 					option.setName_en(rs.getString("name_en"));
 					option.setName_es(rs.getString("name_es"));
-					option.setTypeId(rs.getLong("location_type_id"));
+					option.setTypeId(rs.getString("location_type_id"));
 					filter.getOptions().add(option);
 				}
 				return filter;
@@ -77,11 +77,11 @@ public class FilterRepositoryPostgresql implements FilterRepository {
 	}
 
 	@Override
-	public Filter getYearFilter(long indicatorId) {
+	public Filter getYearFilter(String indicatorId) {
 		String sql = ""
 			+ " select distinct year_ "
 			+ " from tbl_indicator_values "
-			+ " where indicator_id = :indicator_id "
+			+ " where indicator_id = :indicator_id::numeric "
 			+ " order by year_ desc ";
 
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
@@ -96,7 +96,7 @@ public class FilterRepositoryPostgresql implements FilterRepository {
 				filter.getType().setName_es("Year (es)");
 				while (rs.next()) {
 					FilterOption option = new FilterOption();
-					option.setId(rs.getLong("year_"));
+					option.setId(rs.getString("year_"));
 					option.setName_en(rs.getString("year_"));
 					option.setName_es(rs.getString("year_"));
 					filter.getOptions().add(option);
@@ -107,7 +107,7 @@ public class FilterRepositoryPostgresql implements FilterRepository {
 	}
 
 	@Override
-	public List<Filter> getIndicatorFilters(long indicatorId) {
+	public List<Filter> getIndicatorFilters(String indicatorId) {
 		String sql = ""
 			+ " select distinct ft.id_ as type_id, ft.name_en as type_name_en, ft.name_es as type_name_es, "
 			+ " 	fo.id_ as option_id, fo.name_en as option_name_en, fo.name_es as option_name_es, fo.sort_order "
@@ -115,7 +115,7 @@ public class FilterRepositoryPostgresql implements FilterRepository {
 			+ " 	join tbl_indicator_values iv on i.id_ = iv.indicator_id "
 			+ " 	join tbl_filter_options fo on fo.id_ in (iv.race_id, iv.age_id, iv.sex_id, iv.education_id, iv.income_id) "
 			+ " 	join tbl_filter_types ft on fo.type_id = ft.id_ "
-			+ " where i.id_ = :indicator_id "
+			+ " where i.id_ = :indicator_id::numeric "
 			+ " order by ft.id_, fo.sort_order ";
 
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
@@ -128,20 +128,20 @@ public class FilterRepositoryPostgresql implements FilterRepository {
 				
 				List<Filter> filters = new ArrayList<>();
 				Filter filter = new Filter();
-				long typeId = 0;
+				String typeId = "0";
 				while (rs.next()) {
-					if (rs.getLong("type_id") != typeId) {
-						typeId = rs.getLong("type_id");
+					if (!rs.getString("type_id").equals(typeId)) {
+						typeId = rs.getString("type_id");
 						filter = new Filter();
 						FilterType type = new FilterType();
-						type.setId(rs.getLong("type_id"));
+						type.setId(rs.getString("type_id"));
 						type.setName_en(rs.getString("type_name_en"));
 						type.setName_es(rs.getString("type_name_es"));
 						filter.setType(type);
 						filters.add(filter);
 					}
 					FilterOption option = new FilterOption();
-					option.setId(rs.getLong("option_id"));
+					option.setId(rs.getString("option_id"));
 					option.setName_en(rs.getString("option_name_en"));
 					option.setName_es(rs.getString("option_name_es"));
 					filter.getOptions().add(option);

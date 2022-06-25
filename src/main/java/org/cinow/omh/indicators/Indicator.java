@@ -4,31 +4,31 @@ import org.cinow.omh.menu.Item;
 
 public class Indicator implements Item, IndicatorDetails {
 	
-	private long id;
-	private long typeId;
-	private long categoryId;
+	private String id;
+	private String typeId;
+	private String categoryId;
 	private String name_en;
 	private String name_es;
 	private String description_en;
 	private String description_es;
-	private long baseFilterTypeId;
+	private String baseFilterTypeId;
 
-	public long getId() {
+	public String getId() {
 		return id;
 	}
-	public void setId(long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
-	public long getTypeId() {
+	public String getTypeId() {
 		return typeId;
 	}
-	public void setTypeId(long typeId) {
+	public void setTypeId(String typeId) {
 		this.typeId = typeId;
 	}
-	public long getCategoryId() {
+	public String getCategoryId() {
 		return categoryId;
 	}
-	public void setCategoryId(long categoryId) {
+	public void setCategoryId(String categoryId) {
 		this.categoryId = categoryId;
 	}
 	public String getName_en() {
@@ -55,10 +55,10 @@ public class Indicator implements Item, IndicatorDetails {
 	public void setDescription_es(String description_es) {
 		this.description_es = description_es;
 	}
-	public long getBaseFilterTypeId() {
+	public String getBaseFilterTypeId() {
 		return baseFilterTypeId;
 	}
-	public void setBaseFilterTypeId(long baseFilterTypeId) {
+	public void setBaseFilterTypeId(String baseFilterTypeId) {
 		this.baseFilterTypeId = baseFilterTypeId;
 	}	
 }

@@ -4,26 +4,26 @@ import org.cinow.omh.menu.Item;
 
 public class LocationMenuItem implements Item {
 
-	private long id;
-	private long categoryId;
+	private String id;
+	private String categoryId;
 	private String name_en;
 	private String name_es;
 
 	@Override
-	public long getId() {
+	public String getId() {
 		return this.id;
 	}
 
 	@Override
-	public void setId(long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
-	public long getCategoryId() {
+	public String getCategoryId() {
 		return categoryId;
 	}
 
-	public void setCategoryId(long categoryId) {
+	public void setCategoryId(String categoryId) {
 		this.categoryId = categoryId;
 	}
 

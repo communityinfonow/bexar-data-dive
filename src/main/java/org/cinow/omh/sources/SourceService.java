@@ -9,7 +9,7 @@ public class SourceService {
 	@Autowired
 	private SourceRepository sourceRepository;
 
-	public Source getSourceByIndicator(long indicatorId) {
+	public Source getSourceByIndicator(String indicatorId) {
 		return this.sourceRepository.getSourceByIndicator(indicatorId);
 	}
 }

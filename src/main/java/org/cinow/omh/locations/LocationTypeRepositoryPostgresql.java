@@ -26,7 +26,7 @@ public class LocationTypeRepositoryPostgresql implements LocationTypeRepository 
 			@Override
 			public LocationType mapRow(ResultSet rs, int rowNum) throws SQLException {
 				LocationType locationType = new LocationType();
-				locationType.setId(rs.getLong("id_"));
+				locationType.setId(rs.getString("id_"));
 				locationType.setName_en(rs.getString("name_en"));
 				locationType.setName_es(rs.getString("name_es"));
 				return locationType;

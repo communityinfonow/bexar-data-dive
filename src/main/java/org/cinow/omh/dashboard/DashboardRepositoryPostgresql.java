@@ -10,16 +10,12 @@ import org.cinow.omh.filters.FilterRequest;
 import org.cinow.omh.filters.FilterTypes;
 import org.cinow.omh.locations.Location;
 import org.cinow.omh.locations.LocationType;
-import org.geojson.GeoJsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Repository
 public class DashboardRepositoryPostgresql implements DashboardRepository {
@@ -33,42 +29,43 @@ public class DashboardRepositoryPostgresql implements DashboardRepository {
 		String sql = ""
 			+ " select l.id_ as l_id, l.name_en as l_name_en, l.name_es as l_name_es, "
 			+ "   lt.id_ as lt_id, lt.name_en as lt_name_en, lt.name_es as lt_name_es, "
-			+ "   st_asgeojson(lg.geometry_) as lg_geometry, "
+			+ "   lg.geojson as lg_geojson, "
 			+ "   iv.year_ as iv_year, iv.indicator_value as iv_indicator_value, iv.moe_low as iv_moe_low, iv.moe_high as iv_moe_high, iv.universe_value as iv_universe_value "
 			+ " from tbl_locations l "
-			+ "   join tbl_location_types lt on lt.id_ = l.location_type_id "
+			+ "   join tbl_location_types lt on lt.id_ = l.location_type_id and lt.id_ = :location_type_id::numeric "
 			+ "   left join tbl_location_geometries lg on lg.location_id = l.id_ "
 			+ "     and lg.location_type_id = lt.id_ "
-			+ "     and :year between lg.min_year and lg.max_year "
+			+ "     and ((lg.min_year is null and lg.max_year is null) or (:year::numeric between lg.min_year and lg.max_year)) "
 			+ "   left join tbl_indicator_values iv on iv.location_id = l.id_ "
 			+ "     and iv.location_type_id = lt.id_ "
-			+ "     and iv.indicator_id = :indicator ";
+			+ "     and iv.indicator_id = :indicator::numeric ";
 
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
 		paramMap.addValue("year", filterRequest.getYear());
 		paramMap.addValue("indicator", filterRequest.getIndicator());
+		paramMap.addValue("location_type_id", filterRequest.getLocationType());
 		if (filterRequest.getFilterTypes().contains(FilterTypes.RACE.getId())) {
-			sql += "     and iv.race_id = :race ";
+			sql += "     and iv.race_id = :race::numeric ";
 			paramMap.addValue("race", filterRequest.getFilterOptions()
 				.get(filterRequest.getFilterTypes().indexOf(FilterTypes.RACE.getId())));
 		}
 		if (filterRequest.getFilterTypes().contains(FilterTypes.AGE.getId())) {
-			sql += "     and iv.age_id = :age ";
+			sql += "     and iv.age_id = :age::numeric ";
 			paramMap.addValue("age", filterRequest.getFilterOptions()
 				.get(filterRequest.getFilterTypes().indexOf(FilterTypes.AGE.getId())));
 		}
 		if (filterRequest.getFilterTypes().contains(FilterTypes.SEX.getId())) {	
-			sql += "     and iv.sex_id = :sex ";
+			sql += "     and iv.sex_id = :sex::numeric ";
 			paramMap.addValue("sex", filterRequest.getFilterOptions()
 				.get(filterRequest.getFilterTypes().indexOf(FilterTypes.SEX.getId())));
 		}
 		if (filterRequest.getFilterTypes().contains(FilterTypes.EDUCATION.getId())) {
-			sql += "     and iv.education_id = :education ";
+			sql += "     and iv.education_id = :education::numeric ";
 			paramMap.addValue("education", filterRequest.getFilterOptions()
 				.get(filterRequest.getFilterTypes().indexOf(FilterTypes.EDUCATION.getId())));
 		}
 		if (filterRequest.getFilterTypes().contains(FilterTypes.INCOME.getId())) {
-			sql += "     and iv.income_id = :income ";
+			sql += "     and iv.income_id = :income::numeric ";
 			paramMap.addValue("income", filterRequest.getFilterOptions()
 				.get(filterRequest.getFilterTypes().indexOf(FilterTypes.INCOME.getId())));
 		}
@@ -78,37 +75,31 @@ public class DashboardRepositoryPostgresql implements DashboardRepository {
 		return this.namedParameterJdbcTemplate.query(sql, paramMap, new ResultSetExtractor<List<DashboardDataLocation>>() {
 			@Override
 			public List<DashboardDataLocation> extractData(ResultSet rs) throws SQLException, DataAccessException {
-				long currentLocationId = -1;
-				long currentLocationTypeId = -1;
+				String currentLocationId = "-1";
+				String currentLocationTypeId = "-1";
 				List<DashboardDataLocation> locationDataList = new ArrayList<>();
 				DashboardDataLocation locationData = new DashboardDataLocation();
-				ObjectMapper objectMapper = new ObjectMapper();
 				while (rs.next()) {
-					if (rs.getLong("l_id") != currentLocationId && rs.getLong("lt_id") != currentLocationTypeId) {
-						currentLocationId = rs.getLong("l_id");
-						currentLocationTypeId = rs.getLong("lt_id");
+					if (!rs.getString("l_id").equals(currentLocationId) || !rs.getString("lt_id").equals(currentLocationTypeId)) {
+						currentLocationId = rs.getString("l_id");
+						currentLocationTypeId = rs.getString("lt_id");
 						
 						locationData = new DashboardDataLocation();
 						locationDataList.add(locationData);
 
 						Location location = new Location();
-						location.setId(rs.getLong("l_id"));
-						location.setTypeId(rs.getLong("lt_id"));
+						location.setId(rs.getString("l_id"));
+						location.setTypeId(rs.getString("lt_id"));
 						location.setName_en(rs.getString("l_name_en"));
 						location.setName_es(rs.getString("l_name_es"));
 						locationData.setLocation(location);
 
 						LocationType locationType = new LocationType();
-						locationType.setId(rs.getLong("lt_id"));
+						locationType.setId(rs.getString("lt_id"));
 						locationType.setName_en(rs.getString("lt_name_en"));
 						locationType.setName_es(rs.getString("lt_name_es"));
 						locationData.setLocationType(locationType);
-
-						try {
-							locationData.setGeometry(objectMapper.readValue(rs.getString("lg_geometry"), GeoJsonObject.class));
-						} catch (JsonProcessingException|IllegalArgumentException e) {
-							locationData.setGeometry(null);
-						}
+						locationData.setGeojson(rs.getString("lg_geojson"));
 						locationData.setYearData(new LinkedHashMap<>());
 					}
 					if (rs.getString("iv_year") != null) {

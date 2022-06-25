@@ -1,8 +1,8 @@
 package org.cinow.omh.indicators;
 
 public interface IndicatorDetails {
-	long getId();
-	void setId(long id);
+	String getId();
+	void setId(String id);
 	String getName_en();
 	void setName_en(String name_en);
 	String getName_es();

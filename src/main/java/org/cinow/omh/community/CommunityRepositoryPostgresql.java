@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.cinow.omh.filters.FilterOption;
+import org.cinow.omh.filters.FilterTypes;
 import org.cinow.omh.indicators.Indicator;
 import org.cinow.omh.indicators.IndicatorCategory;
 import org.cinow.omh.indicators.IndicatorType;
@@ -24,7 +25,7 @@ public class CommunityRepositoryPostgresql implements CommunityRepository {
 	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 	@Override
-	public List<CommunityDataCategory> getCommunityData(long location, long locationType) {
+	public List<CommunityDataCategory> getCommunityData(String location, String locationType) {
 		String sql = ""
 			+ " select * "
 			+ " from ( "
@@ -41,7 +42,7 @@ public class CommunityRepositoryPostgresql implements CommunityRepository {
 			+ "   join tbl_indicators i on i.indicator_category_id = ic.id_ "
 			+ "   join tbl_indicator_types it on it.id_ = i.indicator_type_id "
 			+ "   left join tbl_indicator_values iv on iv.indicator_id = i.id_ "
-			+ "     and iv.location_id = :location_id and iv.location_type_id = :location_type_id "
+			+ "     and iv.location_id = :location_id and iv.location_type_id = :location_type_id::numeric "
 			+ "   left join tbl_sources s on s.id_ = i.source_id "
 			+ "   left join tbl_filter_options fr on fr.id_ = iv.race_id "
 			+ "   left join tbl_filter_options fb on fb.id_ = case "
@@ -65,29 +66,29 @@ public class CommunityRepositoryPostgresql implements CommunityRepository {
 				CommunityDataCategory categoryData = null;
 				CommunityDataIndicator indicatorData = null;
 				while (rs.next()) {
-					if (categoryData == null || categoryData.getCategory().getId() != rs.getLong("category_id")) {
+					if (categoryData == null || !categoryData.getCategory().getId().equals(rs.getString("category_id"))) {
 						categoryData = new CommunityDataCategory();
 						categoryData.setCategory(new IndicatorCategory());
-						categoryData.getCategory().setId(rs.getLong("category_id"));
+						categoryData.getCategory().setId(rs.getString("category_id"));
 						categoryData.getCategory().setName_en(rs.getString("category_name_en"));
 						categoryData.getCategory().setName_es(rs.getString("category_name_es"));
 						communityData.add(categoryData);
 					}
-					if (indicatorData == null || indicatorData.getIndicator().getId() != rs.getLong("indicator_id")) {
+					if (indicatorData == null || !indicatorData.getIndicator().getId().equals(rs.getString("indicator_id"))) {
 						indicatorData = new CommunityDataIndicator();
 						categoryData.getIndicators().add(indicatorData);
 						indicatorData.setIndicator(new Indicator());
-						indicatorData.getIndicator().setId(rs.getLong("indicator_id"));
-						indicatorData.getIndicator().setTypeId(rs.getLong("indicator_type_id"));
+						indicatorData.getIndicator().setId(rs.getString("indicator_id"));
+						indicatorData.getIndicator().setTypeId(rs.getString("indicator_type_id"));
 						indicatorData.getIndicator().setCategoryId(categoryData.getCategory().getId());
 						indicatorData.getIndicator().setName_en(rs.getString("indicator_name_en"));
 						indicatorData.getIndicator().setName_es(rs.getString("indicator_name_es"));
-						indicatorData.getIndicator().setBaseFilterTypeId(rs.getLong("base_filter_type_id"));
+						indicatorData.getIndicator().setBaseFilterTypeId(rs.getString("base_filter_type_id"));
 						indicatorData.setIndicatorType(new IndicatorType());
-						indicatorData.getIndicatorType().setId(rs.getLong("indicator_type_id"));
+						indicatorData.getIndicatorType().setId(rs.getString("indicator_type_id"));
 						indicatorData.getIndicatorType().setName(rs.getString("indicator_type_name"));
 						indicatorData.setSource(new Source());
-						indicatorData.getSource().setId(rs.getLong("source_id"));
+						indicatorData.getSource().setId(rs.getString("source_id"));
 						indicatorData.getSource().setName_en(rs.getString("source_name_en"));
 						indicatorData.getSource().setName_es(rs.getString("source_name_es"));
 						indicatorData.getSource().setUrl(rs.getString("source_url"));
@@ -97,14 +98,14 @@ public class CommunityRepositoryPostgresql implements CommunityRepository {
 						CommunityDataPoint dataPoint = new CommunityDataPoint();
 						if (rs.getLong("base_filter_type_id") != 0) {
 							dataPoint.setBaseFilter(new FilterOption());
-							dataPoint.getBaseFilter().setId(rs.getLong("base_filter_option_id"));
-							dataPoint.getBaseFilter().setTypeId(rs.getLong("base_filter_type_id"));
+							dataPoint.getBaseFilter().setId(rs.getString("base_filter_option_id"));
+							dataPoint.getBaseFilter().setTypeId(rs.getString("base_filter_type_id"));
 							dataPoint.getBaseFilter().setName_en(rs.getString("base_filter_name_en"));
 							dataPoint.getBaseFilter().setName_es(rs.getString("base_filter_name_es"));
 						}
 						dataPoint.setRaceFilter(new FilterOption());
-						dataPoint.getRaceFilter().setId(rs.getLong("race_filter_option_id"));
-						dataPoint.getRaceFilter().setTypeId(1);
+						dataPoint.getRaceFilter().setId(rs.getString("race_filter_option_id"));
+						dataPoint.getRaceFilter().setTypeId(FilterTypes.RACE.getId());
 						dataPoint.getRaceFilter().setName_en(rs.getString("race_filter_name_en"));
 						dataPoint.getRaceFilter().setName_es(rs.getString("race_filter_name_es"));
 						dataPoint.setMoeHigh(rs.getDouble("moe_high"));

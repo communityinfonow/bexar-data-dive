@@ -31,7 +31,7 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 			@Override
 			public IndicatorCategory mapRow(ResultSet rs, int rowNum) throws SQLException {
 				IndicatorCategory indicatorCategory = new IndicatorCategory();
-				indicatorCategory.setId(rs.getLong("id_"));
+				indicatorCategory.setId(rs.getString("id_"));
 				indicatorCategory.setName_en(rs.getString("name_en"));
 				indicatorCategory.setName_es(rs.getString("name_es"));
 				
@@ -41,11 +41,11 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 	}
 
 	@Override
-	public List<Indicator> findIndicatorsByCategory(long categoryId) {
+	public List<Indicator> findIndicatorsByCategory(String categoryId) {
 		String sql = ""
 			+ " select id_, indicator_type_id, indicator_category_id, name_en, name_es, description_en, description_es "
 			+ " from tbl_indicators "
-			+ " where indicator_category_id = :indicator_category_id ";
+			+ " where indicator_category_id = :indicator_category_id::numeric ";
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
 		paramMap.addValue("indicator_category_id", categoryId);
 
@@ -53,9 +53,9 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 			@Override
 			public Indicator mapRow(ResultSet rs, int rowNum) throws SQLException {
 				Indicator indicator = new Indicator();
-				indicator.setTypeId(rs.getLong("indicator_type_id"));
-				indicator.setCategoryId(rs.getLong("indicator_category_id"));
-				indicator.setId(rs.getLong("id_"));
+				indicator.setTypeId(rs.getString("indicator_type_id"));
+				indicator.setCategoryId(rs.getString("indicator_category_id"));
+				indicator.setId(rs.getString("id_"));
 				indicator.setName_en(rs.getString("name_en"));
 				indicator.setName_es(rs.getString("name_es"));
 
@@ -65,12 +65,12 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 	}
 
 	@Override
-	public Indicator getIndicator(long id) {
+	public Indicator getIndicator(String id) {
 		String sql = ""
 			+ " select indicator_category_id, indicator_type_id, base_filter_type_id, "
 			+ "   name_en, name_es, description_en, description_es "
 			+ " from tbl_indicators "
-			+ " where id_ = :id ";
+			+ " where id_ = :id::numeric ";
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
 		paramMap.addValue("id", id);
 		
@@ -79,9 +79,9 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 			public Indicator mapRow(ResultSet rs, int rowNum) throws SQLException {
 				Indicator indicator = new Indicator();
 				indicator.setId(id);
-				indicator.setCategoryId(rs.getLong("indicator_category_id"));
-				indicator.setTypeId(rs.getLong("indicator_type_id"));
-				indicator.setBaseFilterTypeId(rs.getLong("base_filter_type_id"));
+				indicator.setCategoryId(rs.getString("indicator_category_id"));
+				indicator.setTypeId(rs.getString("indicator_type_id"));
+				indicator.setBaseFilterTypeId(rs.getString("base_filter_type_id"));
 				indicator.setName_en(rs.getString("name_en"));
 				indicator.setName_es(rs.getString("name_es"));
 				indicator.setDescription_en(rs.getString("description_en"));

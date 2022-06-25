@@ -4,13 +4,12 @@ import java.util.Map;
 
 import org.cinow.omh.locations.Location;
 import org.cinow.omh.locations.LocationType;
-import org.geojson.GeoJsonObject;
 
 public class DashboardDataLocation {
 	
 	private Location location;
 	private LocationType locationType;
-	private GeoJsonObject geometry;
+	private String geojson;
 	private Map<String, DashboardDataPoint> yearData;
 	
 	public Location getLocation() {
@@ -31,10 +30,10 @@ public class DashboardDataLocation {
 	public void setLocationType(LocationType locationType) {
 		this.locationType = locationType;
 	}
-	public GeoJsonObject getGeometry() {
-		return geometry;
+	public String getGeojson() {
+		return geojson;
 	}
-	public void setGeometry(GeoJsonObject geometry) {
-		this.geometry = geometry;
+	public void setGeojson(String geojson) {
+		this.geojson = geojson;
 	}
 }

@@ -15,7 +15,7 @@ public class CommunityController {
 
 	@GetMapping(path = "/api/community-data", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<CommunityData> getCommunityData(
-			@RequestParam long location, @RequestParam long locationType) {
+			@RequestParam String location, @RequestParam String locationType) {
 		
 		return ResponseEntity.ok(this.communityService.getCommunityData(location, locationType));
 	}

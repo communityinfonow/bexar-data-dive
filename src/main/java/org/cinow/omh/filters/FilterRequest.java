@@ -4,31 +4,31 @@ import java.util.List;
 
 public class FilterRequest {
 	
-	private long indicator;
-	private long locationType;
-	private long location;
+	private String indicator;
+	private String locationType;
+	private String location;
 	private String year;
-	private List<Long> filterTypes;
-	private List<Long> filterOptions;
-	private long comparisonType;
-	private List<Long> comparisonOptions;
+	private List<String> filterTypes;
+	private List<String> filterOptions;
+	private String comparisonType;
+	private List<String> comparisonOptions;
 
-	public long getIndicator() {
+	public String getIndicator() {
 		return indicator;
 	}
-	public void setIndicator(long indicator) {
+	public void setIndicator(String indicator) {
 		this.indicator = indicator;
 	}
-	public long getLocationType() {
+	public String getLocationType() {
 		return locationType;
 	}
-	public void setLocationType(long locationType) {
+	public void setLocationType(String locationType) {
 		this.locationType = locationType;
 	}
-	public long getLocation() {
+	public String getLocation() {
 		return location;
 	}
-	public void setLocation(long location) {
+	public void setLocation(String location) {
 		this.location = location;
 	}
 	public String getYear() {
@@ -37,28 +37,28 @@ public class FilterRequest {
 	public void setYear(String year) {
 		this.year = year;
 	}
-	public List<Long> getFilterTypes() {
+	public List<String> getFilterTypes() {
 		return filterTypes;
 	}
-	public void setFilterTypes(List<Long> filterTypes) {
+	public void setFilterTypes(List<String> filterTypes) {
 		this.filterTypes = filterTypes;
 	}
-	public List<Long> getFilterOptions() {
+	public List<String> getFilterOptions() {
 		return filterOptions;
 	}
-	public void setFilterOptions(List<Long> filterOptions) {
+	public void setFilterOptions(List<String> filterOptions) {
 		this.filterOptions = filterOptions;
 	}
-	public long getComparisonType() {
+	public String getComparisonType() {
 		return comparisonType;
 	}
-	public void setComparisonType(long comparisonType) {
+	public void setComparisonType(String comparisonType) {
 		this.comparisonType = comparisonType;
 	}
-	public List<Long> getComparisonOptions() {
+	public List<String> getComparisonOptions() {
 		return comparisonOptions;
 	}
-	public void setComparisonOptions(List<Long> comparisonOptions) {
+	public void setComparisonOptions(List<String> comparisonOptions) {
 		this.comparisonOptions = comparisonOptions;
 	}
 }
