@@ -15,6 +15,7 @@ export default new Vuex.Store({
     indicator: null,
     source: null,
     filters: null,
+    dockedTooltip: null,
     dashboardData: null,
   },
   getters: {
@@ -68,6 +69,9 @@ export default new Vuex.Store({
     },
     SET_DASHBOARD_DATA(state, dashboardData) {
       state.dashboardData = dashboardData
+    },
+    SET_DOCKED_TOOLTIP(state, dockedTooltip) {
+      state.dockedTooltip = dockedTooltip
     }
   },
   actions: {
@@ -146,6 +150,9 @@ export default new Vuex.Store({
         context.commit('SET_DASHBOARD_DATA', response.data)
       })
     },
+    setDockedTooltip(context, data) {
+      context.commit('SET_DOCKED_TOOLTIP', data)
+    }
   },
   modules: {},
 })

@@ -42,6 +42,7 @@
           </v-col>
           <v-col cols="3">
             <filters-panel></filters-panel>
+            <docked-tooltip :helpMessage="dockedTooltipHelpMessage"></docked-tooltip>
           </v-col>
         </v-row>
       </v-col>
@@ -52,8 +53,10 @@
 <script>
 import { mapActions, mapState } from 'vuex'
 import router from '@/router/index'
+import i18n from '@/i18n'
 import MenuToolbar from '@/components/MenuToolbar'
 import FiltersPanel from '@/components/FiltersPanel'
+import DockedTooltip from '@/components/DockedTooltip'
 import DashboardMap from '@/components/DashboardMap'
 import DashboardTrendChart from '@/components/DashboardTrendChart'
 import DashboardCompareChart from '@/components/DashboardCompareChart'
@@ -62,6 +65,7 @@ export default {
   components: {
     MenuToolbar, 
     FiltersPanel,
+    DockedTooltip,
     DashboardMap,
     DashboardTrendChart,
     DashboardCompareChart
@@ -76,6 +80,17 @@ export default {
     ...mapState(['indicatorMenu', 'indicator', 'source', 'locale']),
     showIntro() {
       return !this.indicator && !router.currentRoute.query.indicator;
+    },
+    dockedTooltipHelpMessage() {
+      switch (this.tab) {
+        case 0:
+          return i18n.t('tools.dashboard.docked_tooltip.help_messages.map');
+        case 1:
+          return i18n.t('tools.dashboard.docked_tooltip.help_messages.trend');
+        case 2:
+          return i18n.t('tools.dashboard.docked_tooltip.help_messages.compare');
+      }
+      return null
     }
   },
   beforeRouteEnter(to, from, next) {

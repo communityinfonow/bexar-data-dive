@@ -24,6 +24,14 @@
         "trend": "Trend Chart (es)",
         "compare": "Comparison Chart (es)"
       },
+      "docked_tooltip": {
+        "now_viewing": "Now Viewing (es)",
+        "help_messages": {
+          "map": "Hover over a shaded area on the map to view more information. (es)",
+          "trend": "Hover over a point on the chart to view more information. (es)",
+          "compare": "Hover over a column on the chart to view more information. (es)"
+        }
+      },
       "filters": "Filters (es)",
       "apply_filters": "Apply Filters (es)"
     },

@@ -2,14 +2,14 @@ package org.cinow.omh.dashboard;
 
 import java.util.List;
 
-import org.cinow.omh.filters.Filter;
+import org.cinow.omh.filters.Filters;
 import org.cinow.omh.indicators.Indicator;
 import org.cinow.omh.sources.Source;
 
 public class DashboardData {
 	
 	private Indicator indicator;
-	private List<Filter> filters;
+	private Filters filters;
 	private Source source;
 	private List<DashboardDataLocation> locationData;
 	
@@ -19,10 +19,10 @@ public class DashboardData {
 	public void setIndicator(Indicator indicator) {
 		this.indicator = indicator;
 	}
-	public List<Filter> getFilters() {
+	public Filters getFilters() {
 		return filters;
 	}
-	public void setFilters(List<Filter> filters) {
+	public void setFilters(Filters filters) {
 		this.filters = filters;
 	}
 	public Source getSource() {

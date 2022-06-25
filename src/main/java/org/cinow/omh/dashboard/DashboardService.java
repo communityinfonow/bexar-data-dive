@@ -1,6 +1,4 @@
 package org.cinow.omh.dashboard;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import org.cinow.omh.filters.Filter;
@@ -37,27 +35,23 @@ public class DashboardService {
 		return dashboardData;
 	}
 
-	private List<Filter> getIndicatorFilters(FilterRequest filterRequest) {
-		List<Filter> indicatorFilters = new ArrayList<>();
+	private Filters getIndicatorFilters(FilterRequest filterRequest) {
 		Filters filters = new Filters();
 		filters.setLocationTypeFilter(this.filterRepository.getLocationTypeFilter());
 		filters.getLocationTypeFilter().setOptions(filters.getLocationTypeFilter().getOptions()
 			.stream()
 			.filter(o -> o.getId().equals(filterRequest.getLocationType()))
 			.collect(Collectors.toList()));
-		indicatorFilters.add(filters.getLocationTypeFilter());
 		filters.setLocationFilter(this.filterRepository.getLocationFilter());
 		filters.getLocationFilter().setOptions(filters.getLocationFilter().getOptions()
 			.stream()
-			.filter(o -> o.getId().equals(filterRequest.getLocation()))
+			.filter(o -> o.getId().equals(filterRequest.getLocation()) && o.getTypeId().equals(filterRequest.getLocationType()))
 			.collect(Collectors.toList()));
-		indicatorFilters.add(filters.getLocationFilter());
 		filters.setYearFilter(this.filterRepository.getYearFilter(filterRequest.getIndicator()));
 		filters.getYearFilter().setOptions(filters.getYearFilter().getOptions()
 			.stream()
 			.filter(o -> o.getId().equals(filterRequest.getYear()))
 			.collect(Collectors.toList()));
-		indicatorFilters.add(filters.getYearFilter());
 		filters.setIndicatorFilters(this.filterRepository.getIndicatorFilters(filterRequest.getIndicator()));
 		for (int i = 0; i < filterRequest.getFilterTypes().size(); i++) {
 			final int j = i;
@@ -70,9 +64,8 @@ public class DashboardService {
 				.stream()
 				.filter(o -> o.getId().equals(filterRequest.getFilterOptions().get(j)))
 				.collect(Collectors.toList()));
-			indicatorFilters.add(filter);
 		}
 
-		return indicatorFilters;
+		return filters;
 	}
 }

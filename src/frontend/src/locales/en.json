@@ -24,6 +24,14 @@
         "trend": "Trend Chart",
         "compare": "Comparison Chart"
       },
+      "docked_tooltip": {
+        "now_viewing": "Now Viewing",
+        "help_messages": {
+          "map": "Hover over a shaded area on the map to view more information.",
+          "trend": "Hover over a point on the chart to view more information.",
+          "compare": "Hover over a column on the chart to view more information."
+        }
+      },
       "filters": "Filters",
       "apply_filters": "Apply Filters"
     },

@@ -37,3 +37,82 @@ drop table tbl_filter_options;
 drop table tbl_filter_types;
 drop table tbl_locations;
 drop table tbl_location_types;
+
+
+insert into tbl_indicator_values (indicator_id,year_,location_id,location_type_id,indicator_value,moe_low,moe_high,universe_value,race_id,age_id,sex_id,education_id,income_id)
+values (1,'2020','2',4,487,4,4,487,1,null,null,null,null),
+	(1,'2020','2',4,18,12,12,487,2,null,null,null,null),
+	(1,'2020','2',4,71,9,9,487,3,null,null,null,null),
+	(2,'2020','2',4,52430,2300,1700,null,1,null,null,null,null),
+	(2,'2020','2',4,51430,1300,700,null,2,null,null,null,null),
+	(2,'2020','2',4,53430,1300,700,null,3,null,null,null,null),
+	(3,'2020','2',4,28.5,2,6,487,1,null,null,10,null),
+	(3,'2020','2',4,31.4,3,7,487,1,null,null,11,null),
+	(3,'2020','2',4,17.6,2,6,43,2,null,null,10,null),
+	(3,'2020','2',4,22.8,3,7,43,2,null,null,11,null);
+
+insert into tbl_indicator_values (indicator_id,year_,location_id,location_type_id,indicator_value,moe_low,moe_high,universe_value,race_id,age_id,sex_id,education_id,income_id)
+values (1,'2016','2',4,482,4,4,482,1,null,null,null,null),
+	(1,'2016','2',4,16,12,12,482,2,null,null,null,null),
+	(1,'2016','2',4,70,9,9,482,3,null,null,null,null),
+	(3,'2016','2',4,25.1,2,6,482,1,null,null,10,null),
+	(3,'2016','2',4,18.3,3,7,482,2,null,null,11,null);
+
+  insert into tbl_indicator_values (indicator_id,year_,location_id,location_type_id,indicator_value,moe_low,moe_high,universe_value,race_id,age_id,sex_id,education_id,income_id)
+values (1,'2020','3',4,487,4,4,487,1,null,null,null,null),
+	(1,'2020','3',4,18,12,12,487,2,null,null,null,null),
+	(1,'2020','3',4,71,9,9,487,3,null,null,null,null),
+	(2,'2020','3',4,52430,2300,1700,null,1,null,null,null,null),
+	(2,'2020','3',4,51430,1300,700,null,2,null,null,null,null),
+	(2,'2020','3',4,53430,1300,700,null,3,null,null,null,null),
+	(3,'2020','3',4,28.5,2,6,487,1,null,null,10,null),
+	(3,'2020','3',4,31.4,3,7,487,1,null,null,11,null),
+	(3,'2020','3',4,17.6,2,6,43,2,null,null,10,null),
+	(3,'2020','3',4,22.8,3,7,43,2,null,null,11,null);
+
+insert into tbl_indicator_values (indicator_id,year_,location_id,location_type_id,indicator_value,moe_low,moe_high,universe_value,race_id,age_id,sex_id,education_id,income_id)
+values (1,'2016','3',4,482,4,4,482,1,null,null,null,null),
+	(1,'2016','3',4,16,12,12,482,2,null,null,null,null),
+	(1,'2016','3',4,70,9,9,482,3,null,null,null,null),
+	(3,'2016','3',4,25.1,2,6,482,1,null,null,10,null),
+	(3,'2016','3',4,18.3,3,7,482,2,null,null,11,null);
+
+  insert into tbl_indicator_values (indicator_id,year_,location_id,location_type_id,indicator_value,moe_low,moe_high,universe_value,race_id,age_id,sex_id,education_id,income_id)
+values (1,'2020','4',4,487,4,4,487,1,null,null,null,null),
+	(1,'2020','4',4,18,12,12,487,2,null,null,null,null),
+	(1,'2020','4',4,71,9,9,487,3,null,null,null,null),
+	(2,'2020','4',4,52430,2300,1700,null,1,null,null,null,null),
+	(2,'2020','4',4,51430,1300,700,null,2,null,null,null,null),
+	(2,'2020','4',4,53430,1300,700,null,3,null,null,null,null),
+	(3,'2020','4',4,28.5,2,6,487,1,null,null,10,null),
+	(3,'2020','4',4,31.4,3,7,487,1,null,null,11,null),
+	(3,'2020','4',4,17.6,2,6,43,2,null,null,10,null),
+	(3,'2020','4',4,22.8,3,7,43,2,null,null,11,null);
+
+insert into tbl_indicator_values (indicator_id,year_,location_id,location_type_id,indicator_value,moe_low,moe_high,universe_value,race_id,age_id,sex_id,education_id,income_id)
+values (1,'2016','4',4,482,4,4,482,1,null,null,null,null),
+	(1,'2016','4',4,16,12,12,482,2,null,null,null,null),
+	(1,'2016','4',4,70,9,9,482,3,null,null,null,null),
+	(3,'2016','4',4,25.1,2,6,482,1,null,null,10,null),
+	(3,'2016','4',4,18.3,3,7,482,2,null,null,11,null);
+
+  insert into tbl_indicator_values (indicator_id,year_,location_id,location_type_id,indicator_value,moe_low,moe_high,universe_value,race_id,age_id,sex_id,education_id,income_id)
+values (1,'2020','5',4,487,4,4,487,1,null,null,null,null),
+	(1,'2020','5',4,18,12,12,487,2,null,null,null,null),
+	(1,'2020','5',4,71,9,9,487,3,null,null,null,null),
+	(2,'2020','5',4,52430,2300,1700,null,1,null,null,null,null),
+	(2,'2020','5',4,51430,1300,700,null,2,null,null,null,null),
+	(2,'2020','5',4,53430,1300,700,null,3,null,null,null,null),
+	(3,'2020','5',4,28.5,2,6,487,1,null,null,10,null),
+	(3,'2020','5',4,31.4,3,7,487,1,null,null,11,null),
+	(3,'2020','5',4,17.6,2,6,43,2,null,null,10,null),
+	(3,'2020','5',4,22.8,3,7,43,2,null,null,11,null);
+
+insert into tbl_indicator_values (indicator_id,year_,location_id,location_type_id,indicator_value,moe_low,moe_high,universe_value,race_id,age_id,sex_id,education_id,income_id)
+values (1,'2016','5',4,482,4,4,482,1,null,null,null,null),
+	(1,'2016','5',4,16,12,12,482,2,null,null,null,null),
+	(1,'2016','5',4,70,9,9,482,3,null,null,null,null),
+	(3,'2016','5',4,25.1,2,6,482,1,null,null,10,null),
+	(3,'2016','5',4,18.3,3,7,482,2,null,null,11,null);
+
+update tbl_indicator_values set indicator_value = indicator_value + location_id::numeric;
