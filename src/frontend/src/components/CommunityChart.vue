@@ -24,7 +24,7 @@ export default {
 			type: Number
 		},
 		indicatorType: {
-			type: String
+			type: Number
 		},
 		data: {
 			type: Array,

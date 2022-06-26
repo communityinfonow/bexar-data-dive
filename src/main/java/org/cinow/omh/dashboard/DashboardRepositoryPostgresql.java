@@ -25,8 +25,11 @@ public class DashboardRepositoryPostgresql implements DashboardRepository {
 
 	@Override
 	public List<DashboardDataLocation> getDashboardData(FilterRequest filterRequest) {
-		//TODO: want this to get all years, but the year-bound geometries won't allow that. hmm...
+		//TODO: testing for the following scenarios:
+		// 1. 5-year trend intervals for ACS 5-year
+		// 2. only trending years that are between the geom years for tracts
 		String sql = ""
+			+ " with trend_interval as (select trend_interval from tbl_sources where id_ = (select source_id from tbl_indicators where id_ = :indicator::numeric)) "
 			+ " select l.id_ as l_id, l.name_en as l_name_en, l.name_es as l_name_es, "
 			+ "   lt.id_ as lt_id, lt.name_en as lt_name_en, lt.name_es as lt_name_es, "
 			+ "   lg.geojson as lg_geojson, "
@@ -38,7 +41,9 @@ public class DashboardRepositoryPostgresql implements DashboardRepository {
 			+ "     and ((lg.min_year is null and lg.max_year is null) or (:year::numeric between lg.min_year and lg.max_year)) "
 			+ "   left join tbl_indicator_values iv on iv.location_id = l.id_ "
 			+ "     and iv.location_type_id = lt.id_ "
-			+ "     and iv.indicator_id = :indicator::numeric ";
+			+ "     and iv.indicator_id = :indicator::numeric "
+			+ "     and mod(:year::numeric - iv.year_::numeric, coalesce((select trend_interval from trend_interval), 1)) = 0 "
+			+ "     and ((lg.min_year is null and lg.max_year is null) or (iv.year_::numeric between lg.min_year and lg.max_year)) ";
 
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
 		paramMap.addValue("year", filterRequest.getYear());

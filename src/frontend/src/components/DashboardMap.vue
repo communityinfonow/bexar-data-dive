@@ -1,79 +1,82 @@
 <template>
-	<l-map
-		ref="dashboardMap"
-		:zoom="zoom"
-		:center="center"
-		:options="{ zoomDelta: 0.5, zoomSnap: 0.5, preferCanvas: true }"
-		:style="{ height: '100%' }"
-		v-resize:debounce.100="resizeHandler"
-		@ready="initializeMap"
-	>
-		<l-tile-layer
-			url="https://stamen-tiles.a.ssl.fastly.net/toner-background/{z}/{x}/{y}.png"
-			:options="{ crossOrigin: 'anonymous' }"
-			attribution="Map tiles by <a href='http://stamen.com'>Stamen Design</a>, 
-			under <a href='http://creativecommons.org/licenses/by/3.0'>CC BY 3.0</a>. 
-			Data by <a href='http://openstreetmap.org'>OpenStreetMap</a>, 
-			under <a href='http://www.openstreetmap.org/copyright'>ODbL</a>."
-		></l-tile-layer>
-		<l-tile-layer
-			url="https://stamen-tiles.a.ssl.fastly.net/toner-hybrid/{z}/{x}/{y}.png"
-			:options="{ crossOrigin: 'anonymous' }"
-			attribution="Map tiles by <a href='http://stamen.com'>Stamen Design</a>, 
-			under <a href='http://creativecommons.org/licenses/by/3.0'>CC BY 3.0</a>. 
-			Data by <a href='http://openstreetmap.org'>OpenStreetMap</a>, 
-			under <a href='http://www.openstreetmap.org/copyright'>ODbL</a>."
-		></l-tile-layer>
-		<l-geo-json
-			v-if="geojson"
-			:geojson="geojson"
-			:options="options"
-			:options-style="style"
-		></l-geo-json>
-		<l-control
-			position="bottomleft"
-			class="legend-control"
-			v-if="dashboardData && shadingRanges.length"
+	<div class="fill-height">
+		<l-map
+			v-if="componentInitialized"
+			ref="dashboardMap"
+			:zoom="zoom"
+			:center="center"
+			:options="{ zoomDelta: 0.5, zoomSnap: 0.5, preferCanvas: true }"
+			:style="{ height: '100%' }"
+			v-resize:debounce.100="resizeHandler"
+			@ready="initializeMap"
 		>
-			<v-card tile outlined :style="{ boxShadow: 'none !important' }">
-				<v-card-title class="pb-0 text--primary">
-					{{ dashboardData.indicator['name_' + locale] }}
-				</v-card-title>
-				<v-card-text>
-					<v-list
-						dense
-						class="py-0"
-						:style="{ boxShadow: 'none !important' }"
-					>
-						<v-list-item
-							v-for="(range, index) in shadingRanges"
-							:key="'range_' + index"
+			<l-tile-layer
+				url="https://stamen-tiles.a.ssl.fastly.net/toner-background/{z}/{x}/{y}.png"
+				:options="{ crossOrigin: 'anonymous' }"
+				attribution="Map tiles by <a href='http://stamen.com'>Stamen Design</a>, 
+				under <a href='http://creativecommons.org/licenses/by/3.0'>CC BY 3.0</a>. 
+				Data by <a href='http://openstreetmap.org'>OpenStreetMap</a>, 
+				under <a href='http://www.openstreetmap.org/copyright'>ODbL</a>."
+			></l-tile-layer>
+			<l-tile-layer
+				url="https://stamen-tiles.a.ssl.fastly.net/toner-hybrid/{z}/{x}/{y}.png"
+				:options="{ crossOrigin: 'anonymous' }"
+				attribution="Map tiles by <a href='http://stamen.com'>Stamen Design</a>, 
+				under <a href='http://creativecommons.org/licenses/by/3.0'>CC BY 3.0</a>. 
+				Data by <a href='http://openstreetmap.org'>OpenStreetMap</a>, 
+				under <a href='http://www.openstreetmap.org/copyright'>ODbL</a>."
+			></l-tile-layer>
+			<l-geo-json
+				v-if="geojson"
+				:geojson="geojson"
+				:options="options"
+				:options-style="style"
+			></l-geo-json>
+			<l-control
+				position="bottomleft"
+				class="legend-control"
+				v-if="dashboardData && shadingRanges.length"
+			>
+				<v-card tile outlined :style="{ boxShadow: 'none !important' }">
+					<v-card-title class="pb-0 text--primary">
+						{{ dashboardData.indicator['name_' + locale] }}
+					</v-card-title>
+					<v-card-text>
+						<v-list
 							dense
-							class="pl-0"
+							class="py-0"
+							:style="{ boxShadow: 'none !important' }"
 						>
-							<v-list-item-avatar
-								size="20"
-								:color="shadingColors[index]"
-								:style="{ opacity: 0.8 }"
-								class="my-0"
+							<v-list-item
+								v-for="(range, index) in shadingRanges"
+								:key="'range_' + index"
+								dense
+								class="pl-0"
 							>
-							</v-list-item-avatar>
-							<span>
-								{{ Number(range[0]).toLocaleString() }}
-								<span v-if="range[0] !== range[1]">
-									&nbsp;-&nbsp;
-									{{ Number(range[1]).toLocaleString() }}
+								<v-list-item-avatar
+									size="20"
+									:color="shadingColors[index]"
+									:style="{ opacity: 0.8 }"
+									class="my-0"
+								>
+								</v-list-item-avatar>
+								<span>
+									{{ Number(range[0]).toLocaleString() }}
+									<span v-if="range[0] !== range[1]">
+										&nbsp;-&nbsp;
+										{{ Number(range[1]).toLocaleString() }}
+									</span>
 								</span>
-							</span>
-						</v-list-item>
-					</v-list>
-					<div class="text--primary text-caption">
-						Source: {{ dashboardData.source['name_' + locale] }}
-					</div>
-				</v-card-text>
-			</v-card>
-		</l-control>
-	</l-map>
+							</v-list-item>
+						</v-list>
+						<div class="text--primary text-caption">
+							Source: {{ dashboardData.source['name_' + locale] }}
+						</div>
+					</v-card-text>
+				</v-card>
+			</l-control>
+		</l-map>
+	</div>
 </template>
 
 <script>
@@ -96,6 +99,8 @@ export default {
 	},
 	data() {
 		return {
+			componentInitialized: false,
+			mapInitialized: false,
 			zoom: 9,
 			center: latLng(29.43445, -98.473562383),
 			geojson: null,
@@ -155,33 +160,50 @@ export default {
 	},
 	watch: {
 		dashboardData(newValue) {
-			if (newValue) {
-				this.geojson = featureCollection(newValue.locationData
-					.filter(ld => !!ld.geojson)
-					.map(ld => feature(JSON.parse(ld.geojson), 
-						{
-							locationName: ld.location['name_' + this.locale],
-							value: ld.yearData[this.dashboardData.filters.yearFilter.options[0].id]?.value,
-							suppressed: false, //TODO: suppression from DB -> UI
-						}, 
-						{ id: ld.location.id }))
-				)
-				this.refreshOptions = Math.random(); // force a refresh
-				this.$refs.dashboardMap?.mapObject.fitBounds(L.geoJSON(this.geojson).getBounds())
+			if (this.mapInitialized && newValue) {
+				this.drawMap();
 			}
 		}
 	},
+	mounted () {
+		setTimeout(() => { 
+			this.componentInitialized = true;
+			if (this.mapInitialized && this.dashboardData) {
+				this.drawMap();
+			}
+		}, 100);
+		
+	},
 	methods: {
 		...mapActions(['setDockedTooltip']),
-		initializeMap() {},
+		initializeMap() {
+			this.mapInitialized = true;
+			if (this.dashboardData) {
+				this.drawMap();
+			}
+		},
 		resizeHandler() {
-			this.$refs.indicatorMap?.mapObject?.invalidateSize()
+			this.$refs.indicatorMap?.mapObject?.invalidateSize();
+		},
+		drawMap() {
+			this.geojson = featureCollection(this.dashboardData.locationData
+				.filter(ld => !!ld.geojson)
+				.map(ld => feature(JSON.parse(ld.geojson), 
+					{
+						locationName: ld.location['name_' + this.locale],
+						value: ld.yearData[this.dashboardData.filters.yearFilter.options[0].id]?.value,
+						suppressed: false, //TODO: suppression from DB -> UI
+					}, 
+					{ id: ld.location.id }))
+			)
+			this.refreshOptions = Math.random(); // force a refresh
+			this.$refs.dashboardMap?.mapObject.fitBounds(L.geoJSON(this.geojson).getBounds());
 		},
 		onEachFeature(feature, layer) {
 			let filteredFeature = feature.id === this.dashboardData.filters.locationFilter.options[0].id;
 			if (filteredFeature) {
 				layer.options.weight = 4;
-				layer.options.color = 'orange';
+				layer.options.color = 'orange'; //TODO: what color for filtered geo?
 			}
 			layer.options.fillColor = this.getLayerShadingColor(feature);
 

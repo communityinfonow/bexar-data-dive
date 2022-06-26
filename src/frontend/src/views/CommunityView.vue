@@ -53,11 +53,11 @@
               <p class="text-subtitle-1 mb-4">{{ item.source['name_' + locale] }} ({{ item.year }})</p>
               <v-row>
                 <v-col cols="3">
-                  <p class="text-h4 mb-0">{{ formatValue(item.indicatorType.name, item.demographicData[0].value) }}</p>
+                  <p class="text-h4 mb-0">{{ formatValue(item.indicatorType.id, item.demographicData[0].value) }}</p>
                   <p class="text-subtitle-1" v-if="item.indicator.baseFilterTypeId">{{ item.demographicData[0].baseFilter['name_' + locale] }}</p>
                 </v-col>
                 <v-col cols="9">
-                    <community-chart :indicatorId="item.indicator.id" :indicatorType=item.indicatorType.name :data="item.demographicData"></community-chart>
+                    <community-chart :indicatorId="item.indicator.id" :indicatorType=item.indicatorType.id :data="item.demographicData"></community-chart>
                 </v-col>
               </v-row>
             </template>

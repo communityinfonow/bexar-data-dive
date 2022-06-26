@@ -11,13 +11,10 @@ public class DashboardDataPoint {
 	 * because there is no 'overall' educational attainment.
 	 * Other indicators, such as population total, do not require a 'base' filter,
 	 * because 'overall' population is a legitimate metric.
+	 * 
+	 * TODO: is this needed? we may just have separate indicators in this scenario
 	 */
 	private FilterOption baseFilter;
-
-	/**
-	 * The optional comparison filter.
-	 */
-	private FilterOption comparisonFilter;
 
 	/**
 	 * The indicator value.
@@ -45,14 +42,6 @@ public class DashboardDataPoint {
 
 	public void setBaseFilter(FilterOption baseFilter) {
 		this.baseFilter = baseFilter;
-	}
-
-	public FilterOption getComparisonFilter() {
-		return comparisonFilter;
-	}
-
-	public void setComparisonFilter(FilterOption comparisonFilter) {
-		this.comparisonFilter = comparisonFilter;
 	}
 
 	public Double getValue() {

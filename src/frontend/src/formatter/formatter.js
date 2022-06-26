@@ -1,13 +1,11 @@
 let formatter = new Intl.NumberFormat();
 export function format(type, value) {
 	switch (type) {
-        case "Percent":
-        case 3:
+        case 3: // percent
           return formatter.format(value) + "%";
-        case "Currency":
-        case 4:
+        case 4: //currency
           return "$" + formatter.format(value);
-        default:
+        default: // count and rate
           return formatter.format(value);
       }
 }

@@ -31,7 +31,7 @@
               </v-col>
               <v-col cols="auto" class="grow">
                 <v-tabs-items v-model="tab" class="fill-height">
-                  <v-tab-item v-for="tab in tabs" :key="tab" :transition="false" :reverse-transition="false" class="fill-height">
+                  <v-tab-item v-for="tab in tabs" :key="tab" transition="none" reverse-transition="none" class="fill-height">
                     <dashboard-map v-if="tab === 'map'"></dashboard-map>
                     <dashboard-trend-chart v-if="tab === 'trend'"></dashboard-trend-chart>
                     <dashboard-compare-chart v-if="tab === 'compare'"></dashboard-compare-chart>

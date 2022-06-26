@@ -1,7 +1,7 @@
 <template>
 	<div 
-		ref="'compare_chart_container'" 
-		id="'compare_chart_container'" 
+		ref="compare_chart_container" 
+		id="compare_chart_container" 
 		style="width: 100%; height: 100%;"
 	>
 	</div>
@@ -38,7 +38,7 @@ export default {
 	},
 	mounted () {
 		echarts.use([SVGRenderer, AriaComponent, LegendComponent, GridComponent, BarChart]);
-		this.chart = echarts.init(document.getElementById('chart_container_' + this.indicatorId), null, { renderer: 'svg'});
+		this.chart = echarts.init(document.getElementById('compare_chart_container'), null, { renderer: 'svg'});
 		window.addEventListener('resize', () => {
 			this.chart.resize();
 		});
