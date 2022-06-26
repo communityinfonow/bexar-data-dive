@@ -11,11 +11,12 @@
 
 <script>
 
-import { mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import * as echarts from 'echarts/core';
 import { SVGRenderer } from 'echarts/renderers';
 import { AriaComponent, LegendComponent, GridComponent } from 'echarts/components';
 import { LineChart } from 'echarts/charts';
+import { format } from '@/formatter/formatter'
 
 export default {
 	name: 'DashboardTrendChart',
@@ -55,6 +56,7 @@ export default {
 		
 	},
 	methods: {
+		...mapActions(['setDockedTooltip']),
 		drawChart() {
 			let textStyle = {
 				fontFamily: '"Roboto", sans-serif !important',
@@ -86,6 +88,21 @@ export default {
 			option.aria = { enabled: true };
 
 			this.chart.setOption(option);
+
+			this.chart.on('mouseover', (params) => {
+				if (params.componentType === 'series') {
+					this.setDockedTooltip({
+						primaryName: params.name,
+						secondaryName: this.dashboardData.indicator['name_' + this.locale],
+						value: format(this.dashboardData.indicator.typeId, params.value)
+					});
+				}
+			});
+			this.chart.on('mouseout', (params) => {
+				if (params.componentType === 'series') {
+					this.setDockedTooltip(null);
+				}
+			});
 		}
 	}
 }

@@ -7,8 +7,8 @@
 			{{ helpMessage }}
 		</v-card-subtitle>
 		<v-card-text v-else>
-			<div class="text-h5">{{ dockedTooltip.locationName }}</div>
-			<div class="text-subtitle-1">{{ dockedTooltip.indicatorName }}: {{ dockedTooltip.indicatorValue }}</div>
+			<div class="text-h5">{{ dockedTooltip.primaryName }}</div>
+			<div class="text-subtitle-1">{{ dockedTooltip.secondaryName }}: {{ dockedTooltip.value }}</div>
 		</v-card-text>
 	</v-card>
 </template>

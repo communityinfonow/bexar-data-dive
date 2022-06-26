@@ -209,9 +209,9 @@ export default {
 
 			layer.on('mouseover', (layer) => {
 				this.setDockedTooltip({
-					locationName: layer.target.feature.properties.locationName,
-					indicatorName: this.dashboardData.indicator['name_' + this.locale],
-					indicatorValue: format(this.dashboardData.indicator.typeId, layer.target.feature.properties.value)
+					primaryName: layer.target.feature.properties.locationName,
+					secondaryName: this.dashboardData.indicator['name_' + this.locale],
+					value: format(this.dashboardData.indicator.typeId, layer.target.feature.properties.value)
 				});
 			});
 			layer.on('mouseout', () => {
