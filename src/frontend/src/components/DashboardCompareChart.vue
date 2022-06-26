@@ -23,6 +23,7 @@ import { SVGRenderer } from 'echarts/renderers';
 import { AriaComponent, LegendComponent, GridComponent } from 'echarts/components';
 import { BarChart } from 'echarts/charts';
 import { format } from '@/formatter/formatter'
+import colorbrewer from 'colorbrewer'
 import DashboardToolsPanel from '@/components/DashboardToolsPanel'
 
 export default {
@@ -36,7 +37,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['locale', 'dashboardData']),
+		...mapState(['locale', 'dashboardData', 'compareSelections']),
 	},
 	watch: {
 		locale() {
@@ -88,19 +89,40 @@ export default {
 				splitNumber: 1,
 				axisLabel: textStyle
 			};
+			let xAxisData = [];
+			if (this.dashboardData.compareData) {
+				xAxisData.push(this.compareSelections.type.name_en === 'Location' 
+					? this.dashboardData.filters.locationFilter.options[0]['name_' + this.locale]
+					: this.dashboardData.filters.indicatorFilters.find(f => f.type.id === this.compareSelections.type.id).options[0]['name_' + this.locale])
+				xAxisData.push(...this.compareSelections.filterOptions.map(o => o['name_' + this.locale]))
+			} else {
+				xAxisData.push('')
+			}
 			option.xAxis = { 
-				//TODO: needs refactored for this chart's data
 				type: 'category', 
-				//data: Array.from(new Set(this.data.map(d => d.raceFilter['name_' + this.locale]))),
-				data: [this.dashboardData.indicator['name_' + this.locale]], //TODO: this will change if a comparison is selected
+				data: xAxisData, //TODO: this will change if a comparison is selected
 				axisTick: { show: false },
-				axisLabel: textStyle
+				axisLabel: textStyle,
+				name: this.compareSelections ? '' : this.dashboardData.indicator['name_' + this.locale],
+				nameLocation: 'center',
+				nameTextStyle: textStyle
 			};
-			option.series = {
-				data: [this.dashboardData.locationData.find(ld => 
+			option.color = colorbrewer.Blues[3][2];
+			let seriesData = [];
+			let filteredLocation = this.dashboardData.locationData.find(ld => 
 						ld.location.id === this.dashboardData.filters.locationFilter.options[0].id && 
 						ld.location.typeId === this.dashboardData.filters.locationTypeFilter.options[0].id)
-					.yearData[this.dashboardData.filters.yearFilter.options[0].id].value],
+					.yearData[this.dashboardData.filters.yearFilter.options[0].id];
+			seriesData.push(filteredLocation?.value || 0) //TODO: null doesn't render, but zero seems like a bad idea since 0 != null...see if there's another way
+			if (this.dashboardData.compareData) {
+				seriesData.push(...this.dashboardData.compareData.map((cd) => {
+					return  cd.yearData[this.dashboardData.filters.yearFilter.options[0].id]
+						? cd.yearData[this.dashboardData.filters.yearFilter.options[0].id].value
+						: 0;
+			 	}))
+			}
+			option.series = {
+				data: seriesData,
 				type: 'bar'
 			};
 			option.aria = { enabled: true };

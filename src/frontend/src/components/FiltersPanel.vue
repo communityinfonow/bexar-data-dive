@@ -47,7 +47,7 @@
 						v-model="indicatorFilterSelections[filter.type.id]"
 						:items="filter.options"
 						:item-text="'name_' + locale"
-						item-value="id"
+						return-object
 						hide-no-data
 						flat
 						:rules="[v => !!v || 'Please make a selection']"
@@ -91,14 +91,14 @@ export default {
 		}
 	},
 	methods: {
-		...mapActions(['getDashboardData']),
+		...mapActions(['setFilterSelections']),
 		initFilters() {
 			this.indicatorFilterSelections = {}
 			this.selectedLocationType = this.filters?.locationTypeFilter.options[0].id
 			this.selectedLocation = this.filters?.locationFilter.options[0].id
 			this.selectedYear = this.filters?.yearFilter.options[0].name_en
 			this.filters?.indicatorFilters.forEach((filter) => {
-				this.indicatorFilterSelections[filter.type.id] = filter.options[0].id
+				this.indicatorFilterSelections[filter.type.id] = filter.options[0]
 			});
 		},
 		selectLocationType() {
@@ -113,14 +113,13 @@ export default {
 				locationType: this.selectedLocationType,
 				location: this.selectedLocation,
 				year: this.selectedYear,
-				filterTypes: Object.keys(this.indicatorFilterSelections).join(','),
-				filterOptions: Object.values(this.indicatorFilterSelections).join(',')
+				indicatorFilters: this.indicatorFilterSelections
 			};
 		},
 		applyFilters() { 
-			this.validateFilters()
+			this.validateFilters();
 			if (this.valid) {
-				this.getDashboardData(this.getFilterSelections())
+				this.setFilterSelections(this.getFilterSelections())
 			}
 		}
 	},

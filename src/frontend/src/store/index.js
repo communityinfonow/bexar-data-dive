@@ -18,6 +18,8 @@ export default new Vuex.Store({
     dockedTooltip: null,
     dashboardData: null,
     dashboardTab: null,
+    filterSelections: null,
+    compareSelections: null
   },
   getters: {
     tools: () => {
@@ -76,6 +78,12 @@ export default new Vuex.Store({
     },
     SET_DASHBOARD_TAB(state, dashboardTab) {
       state.dashboardTab = dashboardTab
+    },
+    SET_FILTER_SELECTIONS(state, selections) { 
+      state.filterSelections = selections
+    },
+    SET_COMPARE_SELECTIONS(state, selections) {
+      state.compareSelections = selections
     }
   },
   actions: {
@@ -146,11 +154,12 @@ export default new Vuex.Store({
         context.commit('SET_FILTERS', response.data)
       })
     },
-    getDashboardData(context, filters) {
-      axios.get('/api/dashboard-data', { params: { 
+    getDashboardData(context) {
+      axios.post('/api/dashboard-data', {
         indicator: context.state.indicator.id, 
-        ...filters 
-      }}).then(response => {
+        filters: this.state.filterSelections,
+        comparisons: this.state.compareSelections
+      }).then(response => {
         context.commit('SET_DASHBOARD_DATA', response.data)
       })
     },
@@ -159,6 +168,14 @@ export default new Vuex.Store({
     },
     setDashboardTab(context, tab) {
       context.commit('SET_DASHBOARD_TAB', tab)
+    },
+    setFilterSelections(context, selections) {
+      context.commit('SET_FILTER_SELECTIONS', selections)
+      context.dispatch('getDashboardData')
+    },
+    setCompareSelections(context, selections) {
+      context.commit('SET_COMPARE_SELECTIONS', selections)
+      context.dispatch('getDashboardData')
     }
   },
   modules: {},

@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import org.cinow.omh.filters.FilterRequest;
 import org.cinow.omh.filters.FilterTypes;
 import org.cinow.omh.locations.Location;
 import org.cinow.omh.locations.LocationType;
@@ -24,7 +23,7 @@ public class DashboardRepositoryPostgresql implements DashboardRepository {
 	NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 	@Override
-	public List<DashboardDataLocation> getDashboardData(FilterRequest filterRequest) {
+	public List<DashboardDataLocation> getDashboardData(DashboardDataRequest dataRequest, boolean allLocations) {
 		//TODO: testing for the following scenarios:
 		// 1. 5-year trend intervals for ACS 5-year
 		// 2. only trending years that are between the geom years for tracts
@@ -46,35 +45,38 @@ public class DashboardRepositoryPostgresql implements DashboardRepository {
 			+ "     and ((lg.min_year is null and lg.max_year is null) or (iv.year_::numeric between lg.min_year and lg.max_year)) ";
 
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
-		paramMap.addValue("year", filterRequest.getYear());
-		paramMap.addValue("indicator", filterRequest.getIndicator());
-		paramMap.addValue("location_type_id", filterRequest.getLocationType());
-		if (filterRequest.getFilterTypes().contains(FilterTypes.RACE.getId())) {
+		paramMap.addValue("year", dataRequest.getFilters().getYear());
+		paramMap.addValue("indicator", dataRequest.getIndicator());
+		paramMap.addValue("location_type_id", dataRequest.getFilters().getLocationType());
+		if (dataRequest.getFilters().getIndicatorFilters().get(FilterTypes.RACE.getId()) != null) {
 			sql += "     and iv.race_id = :race::numeric ";
-			paramMap.addValue("race", filterRequest.getFilterOptions()
-				.get(filterRequest.getFilterTypes().indexOf(FilterTypes.RACE.getId())));
+			paramMap.addValue("race", dataRequest.getFilters().getIndicatorFilters()
+				.get(FilterTypes.RACE.getId()).getId());
 		}
-		if (filterRequest.getFilterTypes().contains(FilterTypes.AGE.getId())) {
+		if (dataRequest.getFilters().getIndicatorFilters().get(FilterTypes.AGE.getId()) != null) {
 			sql += "     and iv.age_id = :age::numeric ";
-			paramMap.addValue("age", filterRequest.getFilterOptions()
-				.get(filterRequest.getFilterTypes().indexOf(FilterTypes.AGE.getId())));
+			paramMap.addValue("age", dataRequest.getFilters().getIndicatorFilters()
+				.get(FilterTypes.AGE.getId()).getId());
 		}
-		if (filterRequest.getFilterTypes().contains(FilterTypes.SEX.getId())) {	
+		if (dataRequest.getFilters().getIndicatorFilters().get(FilterTypes.SEX.getId()) != null) {
 			sql += "     and iv.sex_id = :sex::numeric ";
-			paramMap.addValue("sex", filterRequest.getFilterOptions()
-				.get(filterRequest.getFilterTypes().indexOf(FilterTypes.SEX.getId())));
+			paramMap.addValue("sex", dataRequest.getFilters().getIndicatorFilters()
+				.get(FilterTypes.SEX.getId()).getId());
 		}
-		if (filterRequest.getFilterTypes().contains(FilterTypes.EDUCATION.getId())) {
+		if (dataRequest.getFilters().getIndicatorFilters().get(FilterTypes.EDUCATION.getId()) != null) {
 			sql += "     and iv.education_id = :education::numeric ";
-			paramMap.addValue("education", filterRequest.getFilterOptions()
-				.get(filterRequest.getFilterTypes().indexOf(FilterTypes.EDUCATION.getId())));
+			paramMap.addValue("education", dataRequest.getFilters().getIndicatorFilters()
+				.get(FilterTypes.EDUCATION.getId()).getId());
 		}
-		if (filterRequest.getFilterTypes().contains(FilterTypes.INCOME.getId())) {
+		if (dataRequest.getFilters().getIndicatorFilters().get(FilterTypes.INCOME.getId()) != null) {
 			sql += "     and iv.income_id = :income::numeric ";
-			paramMap.addValue("income", filterRequest.getFilterOptions()
-				.get(filterRequest.getFilterTypes().indexOf(FilterTypes.INCOME.getId())));
+			paramMap.addValue("income", dataRequest.getFilters().getIndicatorFilters()
+				.get(FilterTypes.INCOME.getId()).getId());
 		}
-
+		if (!allLocations) {
+			sql += " where l.id_ = :location_id ";
+			paramMap.addValue("location_id", dataRequest.getFilters().getLocation());
+		}
 		sql += " order by lt.id_, l.id_, iv.year_ ";
 			
 		return this.namedParameterJdbcTemplate.query(sql, paramMap, new ResultSetExtractor<List<DashboardDataLocation>>() {

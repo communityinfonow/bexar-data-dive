@@ -16,6 +16,7 @@ import * as echarts from 'echarts/core';
 import { SVGRenderer } from 'echarts/renderers';
 import { AriaComponent, LegendComponent, GridComponent } from 'echarts/components';
 import { LineChart } from 'echarts/charts';
+import colorbrewer from 'colorbrewer'
 import { format } from '@/formatter/formatter'
 
 export default {
@@ -90,6 +91,7 @@ export default {
 				axisTick: { show: false },
 				axisLabel: textStyle
 			};
+			option.color = colorbrewer.Blues[3][2];
 			option.series = {
 				data: Object.values(this.dashboardData.locationData.find(ld => 
 						ld.location.id === this.dashboardData.filters.locationFilter.options[0].id && 

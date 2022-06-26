@@ -14,6 +14,7 @@ import * as echarts from 'echarts/core';
 import { SVGRenderer } from 'echarts/renderers';
 import { AriaComponent, LegendComponent, GridComponent } from 'echarts/components';
 import { BarChart } from 'echarts/charts';
+import colorbrewer from 'colorbrewer'
 import { format } from '@/formatter/formatter'
 
 export default {
@@ -74,6 +75,7 @@ export default {
 			};
 			option.textStyle = textStyle;
 			let filters = new Set(this.data.map(d => d.baseFilter?.id || 0))
+			option.color = colorbrewer.Blues[Math.max(3, filters.size)].slice(0).reverse()
 			option.series = [];
 			filters.forEach(filterId => {
 				let series = { 

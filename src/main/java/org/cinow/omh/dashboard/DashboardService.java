@@ -1,9 +1,11 @@
 package org.cinow.omh.dashboard;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import org.cinow.omh.filters.Filter;
+import org.cinow.omh.filters.FilterOption;
 import org.cinow.omh.filters.FilterRepository;
-import org.cinow.omh.filters.FilterRequest;
 import org.cinow.omh.filters.Filters;
 import org.cinow.omh.indicators.IndicatorRepository;
 import org.cinow.omh.sources.SourceRepository;
@@ -25,45 +27,52 @@ public class DashboardService {
 	@Autowired
 	private FilterRepository filterRepository;
 	
-	public DashboardData getDashboardData(FilterRequest filterRequest) {
+	public DashboardData getDashboardData(DashboardDataRequest dataRequest) {
 		DashboardData dashboardData = new DashboardData();
-		dashboardData.setIndicator(this.indicatorRepository.getIndicator(filterRequest.getIndicator()));
-		dashboardData.setSource(this.sourceRepository.getSourceByIndicator(filterRequest.getIndicator()));
-		dashboardData.setFilters(this.getIndicatorFilters(filterRequest));
-		dashboardData.setLocationData(this.dashboardRepository.getDashboardData(filterRequest));
+		dashboardData.setIndicator(this.indicatorRepository.getIndicator(dataRequest.getIndicator()));
+		dashboardData.setSource(this.sourceRepository.getSourceByIndicator(dataRequest.getIndicator()));
+		dashboardData.setFilters(this.getIndicatorFilters(dataRequest));
+		dashboardData.setLocationData(this.dashboardRepository.getDashboardData(dataRequest, true));
+
+		if (dataRequest.getComparisons() != null) {
+			dashboardData.setCompareData(new ArrayList<>());
+			if (dataRequest.getComparisons().getType().getName_en().equals("Location")) {
+				for (FilterOption option : dataRequest.getComparisons().getOptions()) {
+					dataRequest.getFilters().setLocation(option.getId());
+					dataRequest.getFilters().setLocationType(option.getTypeId());
+					dashboardData.getCompareData().addAll(this.dashboardRepository.getDashboardData(dataRequest, false));
+				}		
+			} else {
+				for (FilterOption option : dataRequest.getComparisons().getOptions()) {
+					dataRequest.getFilters().getIndicatorFilters().put(dataRequest.getComparisons().getType().getId(), option);
+					dashboardData.getCompareData().addAll(this.dashboardRepository.getDashboardData(dataRequest, false));
+				}
+			}
+		}
 
 		return dashboardData;
 	}
 
-	private Filters getIndicatorFilters(FilterRequest filterRequest) {
+	private Filters getIndicatorFilters(DashboardDataRequest dataRequest) {
 		Filters filters = new Filters();
 		filters.setLocationTypeFilter(this.filterRepository.getLocationTypeFilter());
 		filters.getLocationTypeFilter().setOptions(filters.getLocationTypeFilter().getOptions()
 			.stream()
-			.filter(o -> o.getId().equals(filterRequest.getLocationType()))
+			.filter(o -> o.getId().equals(dataRequest.getFilters().getLocationType()))
 			.collect(Collectors.toList()));
 		filters.setLocationFilter(this.filterRepository.getLocationFilter());
 		filters.getLocationFilter().setOptions(filters.getLocationFilter().getOptions()
 			.stream()
-			.filter(o -> o.getId().equals(filterRequest.getLocation()) && o.getTypeId().equals(filterRequest.getLocationType()))
+			.filter(o -> o.getId().equals(dataRequest.getFilters().getLocation()) && o.getTypeId().equals(dataRequest.getFilters().getLocationType()))
 			.collect(Collectors.toList()));
-		filters.setYearFilter(this.filterRepository.getYearFilter(filterRequest.getIndicator()));
+		filters.setYearFilter(this.filterRepository.getYearFilter(dataRequest.getIndicator()));
 		filters.getYearFilter().setOptions(filters.getYearFilter().getOptions()
 			.stream()
-			.filter(o -> o.getId().equals(filterRequest.getYear()))
+			.filter(o -> o.getId().equals(dataRequest.getFilters().getYear()))
 			.collect(Collectors.toList()));
-		filters.setIndicatorFilters(this.filterRepository.getIndicatorFilters(filterRequest.getIndicator()));
-		for (int i = 0; i < filterRequest.getFilterTypes().size(); i++) {
-			final int j = i;
-			Filter filter = filters.getIndicatorFilters()
-				.stream()
-				.filter(f -> f.getType().getId().equals(filterRequest.getFilterTypes().get(j)))
-				.findFirst()
-				.get();
-			filter.setOptions(filter.getOptions()
-				.stream()
-				.filter(o -> o.getId().equals(filterRequest.getFilterOptions().get(j)))
-				.collect(Collectors.toList()));
+		filters.setIndicatorFilters(this.filterRepository.getIndicatorFilters(dataRequest.getIndicator()));
+		for (Filter filter : filters.getIndicatorFilters()) {
+			filter.setOptions(Arrays.asList(dataRequest.getFilters().getIndicatorFilters().get(filter.getType().getId())));
 		}
 
 		return filters;
