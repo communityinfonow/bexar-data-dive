@@ -41,8 +41,10 @@
             </v-row>
           </v-col>
           <v-col cols="3">
-            <filters-panel></filters-panel>
-            <docked-tooltip :helpMessage="dockedTooltipHelpMessage"></docked-tooltip>
+            <v-row class="fill-height no-gutters flex-column">
+              <filters-panel></filters-panel>
+              <docked-tooltip class="grow" :helpMessage="dockedTooltipHelpMessage"></docked-tooltip>
+            </v-row>
           </v-col>
         </v-row>
       </v-col>
@@ -129,7 +131,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setIndicator']),
+    ...mapActions(['setIndicator', 'setDashboardTab']),
     selectItem(item) {
       if (item.id !== this.indicator?.id) {
         this.setIndicator(item)
@@ -154,6 +156,7 @@ export default {
       let tabIndex = this.tabs.indexOf(selectedTab)
       if (tabIndex !== this.tab) {
         this.tab = tabIndex;
+        this.setDashboardTab(selectedTab);
       }
     },
   },

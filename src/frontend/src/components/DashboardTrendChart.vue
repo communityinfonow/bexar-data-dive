@@ -20,12 +20,13 @@ import { format } from '@/formatter/formatter'
 
 export default {
 	name: 'DashboardTrendChart',
-	components: {
-		
+	props: {
+		tab: {
+			type: String,
+		},
 	},
 	data() {
 		return {
-			data: null,
 			chart: null
 		}
 	},
@@ -46,6 +47,20 @@ export default {
 		setTimeout(() => { 
 			echarts.use([SVGRenderer, AriaComponent, LegendComponent, GridComponent, LineChart]);
 			this.chart = echarts.init(document.getElementById('trend_chart_container'), null, { renderer: 'svg'});
+			this.chart.on('mouseover', (params) => {
+				if (params.componentType === 'series') {
+					this.setDockedTooltip({
+						primaryName: params.name,
+						secondaryName: this.dashboardData.indicator['name_' + this.locale],
+						value: format(this.dashboardData.indicator.typeId, params.value)
+					});
+				}
+			});
+			this.chart.on('mouseout', (params) => {
+				if (params.componentType === 'series') {
+					this.setDockedTooltip(null);
+				}
+			});
 			window.addEventListener('resize', () => {
 				this.chart.resize();
 			});
@@ -69,14 +84,12 @@ export default {
 				splitNumber: 1,
 				axisLabel: textStyle
 			};
-			
 			option.xAxis = { 
 				type: 'category', 
 				data: this.filters.yearFilter.options.map(o => o.id).reverse(), // filter dropdowns are desc, but location year values are asc
 				axisTick: { show: false },
 				axisLabel: textStyle
 			};
-
 			option.series = {
 				data: Object.values(this.dashboardData.locationData.find(ld => 
 						ld.location.id === this.dashboardData.filters.locationFilter.options[0].id && 
@@ -84,25 +97,9 @@ export default {
 					.map(yd => yd.value),
 				type: 'line'
 			};
-
 			option.aria = { enabled: true };
 
 			this.chart.setOption(option);
-
-			this.chart.on('mouseover', (params) => {
-				if (params.componentType === 'series') {
-					this.setDockedTooltip({
-						primaryName: params.name,
-						secondaryName: this.dashboardData.indicator['name_' + this.locale],
-						value: format(this.dashboardData.indicator.typeId, params.value)
-					});
-				}
-			});
-			this.chart.on('mouseout', (params) => {
-				if (params.componentType === 'series') {
-					this.setDockedTooltip(null);
-				}
-			});
 		}
 	}
 }
