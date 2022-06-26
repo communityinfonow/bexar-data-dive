@@ -21,7 +21,6 @@
 			<v-btn
 				color="primary"
 				tile
-				flat
 			>
 				Compare
 			</v-btn>

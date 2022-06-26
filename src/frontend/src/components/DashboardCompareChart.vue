@@ -1,12 +1,18 @@
 <template>
 	<div class="fill-height">
-		<dashboard-tools-panel></dashboard-tools-panel>
-		<div 
-			ref="compare_chart_container" 
-			id="compare_chart_container" 
-			style="width: 100%; height: 100%;"
-		>
-		</div>
+		<v-row class="no-gutters flex-wrap flex-column fill-height">
+			<v-col cols="auto">
+				<dashboard-tools-panel></dashboard-tools-panel>
+			</v-col>
+			<v-col cols="auto" class="grow">
+				<div 
+					ref="compare_chart_container" 
+					id="compare_chart_container" 
+					style="width: 100%; height: 100%;"
+				>
+				</div>
+			</v-col>
+		</v-row>
 	</div>
 </template>
 
@@ -86,7 +92,7 @@ export default {
 				//TODO: needs refactored for this chart's data
 				type: 'category', 
 				//data: Array.from(new Set(this.data.map(d => d.raceFilter['name_' + this.locale]))),
-				data: [this.dashboardData.indicator['name_' + this.locale]],
+				data: [this.dashboardData.indicator['name_' + this.locale]], //TODO: this will change if a comparison is selected
 				axisTick: { show: false },
 				axisLabel: textStyle
 			};
