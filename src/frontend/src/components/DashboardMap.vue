@@ -87,7 +87,6 @@ import { LMap, LTileLayer, LGeoJson, LControl } from 'vue2-leaflet'
 import { feature, featureCollection } from '@turf/helpers'
 import colorbrewer from 'colorbrewer'
 import { ckmeans } from 'simple-statistics'
-import { format } from '@/formatter/formatter'
 
 export default {
 	name: 'DashboardMap',
@@ -175,7 +174,7 @@ export default {
 		
 	},
 	methods: {
-		...mapActions(['setDockedTooltipValue']),
+		...mapActions(['setDockedTooltip']),
 		initializeMap() {
 			this.mapInitialized = true;
 			if (this.dashboardData) {
@@ -192,6 +191,8 @@ export default {
 					{
 						locationName: ld.location['name_' + this.locale],
 						value: ld.yearData[this.dashboardData.filters.yearFilter.options[0].id]?.value,
+						moeLow: ld.yearData[this.dashboardData.filters.yearFilter.options[0].id]?.moeLow,
+						moeHigh: ld.yearData[this.dashboardData.filters.yearFilter.options[0].id]?.moeHigh,
 						suppressed: false, //TODO: suppression from DB -> UI
 					}, 
 					{ id: ld.location.id }))
@@ -208,10 +209,17 @@ export default {
 			layer.options.fillColor = this.getLayerShadingColor(feature);
 
 			layer.on('mouseover', (layer) => {
-				this.setDockedTooltipValue(format(this.dashboardData.indicator.typeId, layer.target.feature.properties.value));
+				this.setDockedTooltip({
+					value: layer.target.feature.properties.value,
+					moeLow: layer.target.feature.properties.moeLow,
+					moeHigh: layer.target.feature.properties.moeHigh,
+					location: layer.target.feature.properties.locationName,
+					year: this.dashboardData.filters.yearFilter.options[0].id,
+					indicatorFilters: this.dashboardData.filters.indicatorFilters
+				});
 			});
 			layer.on('mouseout', () => {
-				this.setDockedTooltipValue(null);
+				this.setDockedTooltip(null);
 			})
 		},
 		getLayerShadingColor(feature) {

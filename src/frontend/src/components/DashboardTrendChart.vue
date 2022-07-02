@@ -17,7 +17,6 @@ import { SVGRenderer } from 'echarts/renderers';
 import { AriaComponent, LegendComponent, GridComponent } from 'echarts/components';
 import { LineChart } from 'echarts/charts';
 import colorbrewer from 'colorbrewer'
-import { format } from '@/formatter/formatter'
 
 export default {
 	name: 'DashboardTrendChart',
@@ -50,12 +49,20 @@ export default {
 			this.chart = echarts.init(document.getElementById('trend_chart_container'), null, { renderer: 'svg'});
 			this.chart.on('mouseover', (params) => {
 				if (params.componentType === 'series') {
-					this.setDockedTooltipValue(format(this.dashboardData.indicator.typeId, params.value));
+					console.log(params);
+					this.setDockedTooltip({
+						value: params.data.value,
+						moeLow: params.data.moeLow,
+						moeHigh: params.data.moeHigh,
+						location: this.dashboardData.filters.locationFilter.options[0]['name_' + this.locale],
+						year: params.name,
+						indicatorFilters: this.dashboardData.filters.indicatorFilters
+					});
 				}
 			});
 			this.chart.on('mouseout', (params) => {
 				if (params.componentType === 'series') {
-					this.setDockedTooltipValue(null);
+					this.setDockedTooltip(null);
 				}
 			});
 			window.addEventListener('resize', () => {
@@ -68,7 +75,7 @@ export default {
 		
 	},
 	methods: {
-		...mapActions(['setDockedTooltipValue']),
+		...mapActions(['setDockedTooltip']),
 		drawChart() {
 			let textStyle = {
 				fontFamily: '"Roboto", sans-serif !important',
@@ -92,7 +99,7 @@ export default {
 				data: Object.values(this.dashboardData.locationData.find(ld => 
 						ld.location.id === this.dashboardData.filters.locationFilter.options[0].id && 
 						ld.location.typeId === this.dashboardData.filters.locationTypeFilter.options[0].id).yearData)
-					.map(yd => yd.value),
+					.map(yd => { return { value: yd.value, moeLow: yd.moeLow, moeHigh: yd.moeHigh }; }),
 				type: 'line'
 			};
 			option.aria = { enabled: true };

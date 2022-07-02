@@ -22,7 +22,6 @@ import * as echarts from 'echarts/core';
 import { SVGRenderer } from 'echarts/renderers';
 import { AriaComponent, LegendComponent, GridComponent } from 'echarts/components';
 import { BarChart } from 'echarts/charts';
-import { format } from '@/formatter/formatter'
 import colorbrewer from 'colorbrewer'
 import DashboardToolsPanel from '@/components/DashboardToolsPanel'
 
@@ -55,12 +54,19 @@ export default {
 			this.chart = echarts.init(document.getElementById('compare_chart_container'), null, { renderer: 'svg'});
 			this.chart.on('mouseover', (params) => {
 				if (params.componentType === 'series') {
-					this.setDockedTooltipValue(format(this.dashboardData.indicator.typeId, params.value));
+					this.setDockedTooltip({ 
+						value: params.data.value,
+						moeLow: params.data.moeLow,
+						moeHigh: params.data.moeHigh,
+						location: params.data.location,
+						year: this.dashboardData.filters.yearFilter.options[0].id,
+						indicatorFilters: params.data.indicatorFilters
+					});
 				}
 			});
 			this.chart.on('mouseout', (params) => {
 				if (params.componentType === 'series') {
-					this.setDockedTooltipValue(null);
+					this.setDockedTooltip(null);
 				}
 			});
 			window.addEventListener('resize', () => {
@@ -72,7 +78,7 @@ export default {
 		}, 100);
 	},
 	methods: {
-		...mapActions(['setDockedTooltipValue']),
+		...mapActions(['setDockedTooltip']),
 		drawChart() {
 			let textStyle = {
 				fontFamily: '"Roboto", sans-serif !important',
@@ -107,14 +113,25 @@ export default {
 			let seriesData = [];
 			let filteredLocation = this.dashboardData.locationData.find(ld => 
 						ld.location.id === this.dashboardData.filters.locationFilter.options[0].id && 
-						ld.location.typeId === this.dashboardData.filters.locationTypeFilter.options[0].id)
-					.yearData[this.dashboardData.filters.yearFilter.options[0].id];
-			seriesData.push(filteredLocation?.value || 0) //TODO: null doesn't render, but zero seems like a bad idea since 0 != null...see if there's another way
+						ld.location.typeId === this.dashboardData.filters.locationTypeFilter.options[0].id);
+			seriesData.push({ 
+				value: filteredLocation.yearData[this.dashboardData.filters.yearFilter.options[0].id].value, 
+				moeLow: filteredLocation.yearData[this.dashboardData.filters.yearFilter.options[0].id].moeLow, 
+				moeHigh: filteredLocation.yearData[this.dashboardData.filters.yearFilter.options[0].id].moeHigh,
+				location: filteredLocation.location['name_' + this.locale] ,
+				indicatorFilters: this.dashboardData.filters.indicatorFilters
+			}); //TODO: null doesn't render, but zero seems like a bad idea since 0 != null...see if there's another way
 			if (this.dashboardData.compareData) {
-				seriesData.push(...this.dashboardData.compareData.map((cd) => {
-					return  cd.yearData[this.dashboardData.filters.yearFilter.options[0].id]
-						? cd.yearData[this.dashboardData.filters.yearFilter.options[0].id].value
-						: 0;
+				seriesData.push(...this.dashboardData.compareData.map((cd, index) => {
+					let compareIndicatorFilters = JSON.parse(JSON.stringify(this.dashboardData.filters.indicatorFilters));
+					compareIndicatorFilters.find(f => f.type.id === this.compareSelections.type.id).options[0] = this.compareSelections.filterOptions[index];
+					return  { 
+						value: cd.yearData[this.dashboardData.filters.yearFilter.options[0].id].value,
+						moeLow: cd.yearData[this.dashboardData.filters.yearFilter.options[0].id].moeLow,
+						moeHigh: cd.yearData[this.dashboardData.filters.yearFilter.options[0].id].moeHigh,
+						location: cd.location['name_' + this.locale],
+						indicatorFilters: compareIndicatorFilters
+					};
 			 	}))
 			}
 			option.series = {

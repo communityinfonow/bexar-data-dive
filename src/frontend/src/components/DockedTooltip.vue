@@ -4,16 +4,17 @@
 			<v-card-title>
 				{{ $t('tools.dashboard.docked_tooltip.now_viewing')}}
 			</v-card-title>
-			<v-card-text v-if="!dockedTooltipValue">
+			<v-card-text v-if="!dockedTooltip">
 				<div class="text-subtitle-1">{{ helpMessage }}</div>
 			</v-card-text>
 			<v-card-text v-else>
-				<div class="text-h6">{{ dashboardData.indicator['name_' + locale] }}: {{ dockedTooltipValue }}</div>
+				<div class="text-h6">{{ dashboardData.indicator['name_' + locale] }}: {{ valueFormatted }}</div>
 				<ul class="text-body-1">
+					<li>Range: {{  rangeFormatted }}</li>
 					<li>Source: {{ dashboardData.source['name_' + locale] }}</li>
-					<li>Location: {{ dashboardData.filters.locationFilter.options[0]['name_' + locale] }}</li>
-					<li>Year: {{ dashboardData.filters.yearFilter.options[0].id }}</li>
-					<li v-for="filter in dashboardData.filters.indicatorFilters" :key="filter.type.id">
+					<li>Location: {{ dockedTooltip.location }}</li>
+					<li>Year: {{ dockedTooltip.year }}</li>
+					<li v-for="filter in dockedTooltip.indicatorFilters" :key="filter.type.id">
 						{{ filter.type['name_' + locale] }}: {{ filter.options[0]['name_' + locale] }}
 					</li>
 				</ul>
@@ -24,6 +25,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import { format } from '@/formatter/formatter'
 
 export default {
 	name: 'DockedTooltip',
@@ -32,8 +34,17 @@ export default {
 			type: String
 		},
 	},
+	//TODO: suppression
 	computed: {
-		...mapState(['locale', 'dashboardData', 'dockedTooltipValue'])
+		...mapState(['locale', 'dashboardData', 'dockedTooltip']),
+		valueFormatted() {
+			return format(this.dashboardData.indicator.typeId, this.dockedTooltip.value)
+		},
+		rangeFormatted() {
+			return format(this.dashboardData.indicator.typeId, this.dockedTooltip.value - this.dockedTooltip.moeLow)
+				+ " - "
+				+ format(this.dashboardData.indicator.typeId, this.dockedTooltip.value + this.dockedTooltip.moeHigh);
+		}
 	},
 }
 </script>

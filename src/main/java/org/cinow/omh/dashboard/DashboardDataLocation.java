@@ -11,14 +11,7 @@ public class DashboardDataLocation {
 	private LocationType locationType;
 	private String geojson;
 	private Map<String, DashboardDataPoint> yearData;
-	private Map<String, DashboardDataPoint> compareYearData;
 	
-	public Map<String, DashboardDataPoint> getCompareYearData() {
-		return compareYearData;
-	}
-	public void setCompareYearData(Map<String, DashboardDataPoint> compareYearData) {
-		this.compareYearData = compareYearData;
-	}
 	public Location getLocation() {
 		return location;
 	}
