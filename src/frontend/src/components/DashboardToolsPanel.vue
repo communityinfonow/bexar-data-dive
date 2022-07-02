@@ -16,7 +16,7 @@
 				</v-select>
 			</v-col>
 			<v-col cols="4">
-				<v-select
+				<v-autocomplete
 					label="Compare with"
 					dense
 					flat
@@ -26,8 +26,10 @@
 					v-model="compareWith"
 					:rules="[v => !!v || 'Please make a selection']"
 					multiple
+					:search-input.sync="compareWithQuery"
+					@change="compareWithQuery = ''"
 				>
-				</v-select>
+				</v-autocomplete>
 			</v-col>
 			<v-col cols="2">
 				<v-btn
@@ -80,6 +82,7 @@ export default {
 	data() {
 		return {
 			compareBy: null,
+			compareWithQuery: '',
 			compareWith: null,
 			valid: true
 		}
