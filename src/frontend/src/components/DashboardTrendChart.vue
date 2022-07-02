@@ -52,6 +52,7 @@ export default {
 					this.setDockedTooltip({
 						value: params.data.value,
 						noData: params.data.noData,
+						suppressed: params.data.suppressed,
 						moeLow: params.data.moeLow,
 						moeHigh: params.data.moeHigh,
 						location: this.dashboardData.filters.locationFilter.options[0]['name_' + this.locale],
@@ -106,8 +107,9 @@ export default {
 					.map(ty => {
 						let yd = yearData[ty]; 
 						return { 
-							value: yd ? yd.value : null, 
+							value: yd?.value, 
 							noData: !yd,
+							suppressed: yd?.suppressed,
 							moeLow: yd?.moeLow, 
 							moeHigh: yd?.moeHigh
 						}; 
@@ -119,12 +121,13 @@ export default {
 				data: trendYears
 					.map(ty => {
 						let yd = yearData[ty];
-						if (yd) {
+						if (yd && !yd.suppressed) {
 							return null;
 						}
 						return { 
 							value: 0, 
-							noData: true,
+							noData: !yd,
+							suppressed: yd?.suppressed,
 							moeLow: null, 
 							moeHigh: null
 						}; 
@@ -134,7 +137,7 @@ export default {
 					show: true,
 					position: 'top',
 					formatter: (o) => {
-						return !o.data.value ? 'No Data' : o.data.value
+						return o.data.suppressed ? 'Suppressed' : (!o.data.value ? 'No Data' : o.data.value) //TODO: espanol
 					}
 				}
 			}];

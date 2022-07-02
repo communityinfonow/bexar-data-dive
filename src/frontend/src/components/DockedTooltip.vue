@@ -38,8 +38,10 @@ export default {
 	computed: {
 		...mapState(['locale', 'dashboardData', 'dockedTooltip']),
 		valueFormatted() {
-			if (this.dockedTooltip.noData) {
-				return 'No Data';
+			if (this.dockedTooltip.suppressed) {
+				return 'Suppressed'; //TODO: espanol
+			} else if (this.dockedTooltip.noData) {
+				return 'No Data'; //TODO: espanol
 			}
 
 			return format(this.dashboardData.indicator.typeId, this.dockedTooltip.value);

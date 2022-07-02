@@ -33,7 +33,7 @@ public class CommunityRepositoryPostgresql implements CommunityRepository {
 			+ "   ic.id_ as category_id, ic.name_en as category_name_en, ic.name_es as category_name_es, "
 			+ "   i.id_ as indicator_id, i.name_en as indicator_name_en, i.name_es as indicator_name_es, i.base_filter_type_id, "
 			+ "   it.id_ as indicator_type_id, it.name_ as indicator_type_name, "
-			+ "   iv.year_, iv.indicator_value, iv.moe_low, iv.moe_high, iv.universe_value, "
+			+ "   iv.year_, iv.indicator_value, iv.suppressed, iv.moe_low, iv.moe_high, iv.universe_value, "
 			+ "   s.id_ as source_id, s.name_en as source_name_en, s.name_es as source_name_es, s.url_ as source_url, "
 			+ "   fr.id_ as race_filter_option_id, fr.name_en as race_filter_name_en, fr.name_es as race_filter_name_es, "
 			+ "   fb.id_ as base_filter_option_id, fb.name_en as base_filter_name_en, fb.name_es as base_filter_name_es, "
@@ -108,10 +108,16 @@ public class CommunityRepositoryPostgresql implements CommunityRepository {
 						dataPoint.getRaceFilter().setTypeId(FilterTypes.RACE.getId());
 						dataPoint.getRaceFilter().setName_en(rs.getString("race_filter_name_en"));
 						dataPoint.getRaceFilter().setName_es(rs.getString("race_filter_name_es"));
-						dataPoint.setMoeHigh(rs.getDouble("moe_high"));
-						dataPoint.setMoeLow(rs.getDouble("moe_low"));
-						dataPoint.setUniverseValue(rs.getDouble("universe_value"));
-						dataPoint.setValue(rs.getDouble("indicator_value"));
+						dataPoint.setSuppressed(rs.getInt("suppressed") == 1);
+						if (!dataPoint.isSuppressed()) {
+							dataPoint.setMoeHigh(rs.getDouble("moe_high"));
+							dataPoint.setMoeLow(rs.getDouble("moe_low"));
+							dataPoint.setUniverseValue(rs.getDouble("universe_value"));
+							dataPoint.setValue(rs.getDouble("indicator_value"));
+							if (rs.wasNull()) {
+								dataPoint.setValue(null);
+							}
+						}
 						indicatorData.getDemographicData().add(dataPoint);
 					}
 				}

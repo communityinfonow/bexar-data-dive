@@ -56,6 +56,7 @@ export default {
 				if (params.componentType === 'series') {
 					this.setDockedTooltip({ 
 						value: params.data.value,
+						suppressed: params.data.suppressed,
 						noData: params.data.noData,
 						moeLow: params.data.moeLow,
 						moeHigh: params.data.moeHigh,
@@ -117,6 +118,7 @@ export default {
 						ld.location.typeId === this.dashboardData.filters.locationTypeFilter.options[0].id);
 			seriesData.push({ 
 				value: filteredLocation.yearData[this.dashboardData.filters.yearFilter.options[0].id]?.value || 0,
+				suppressed: filteredLocation.yearData[this.dashboardData.filters.yearFilter.options[0].id]?.suppressed,
 				noData: filteredLocation.yearData[this.dashboardData.filters.yearFilter.options[0].id],
 				moeLow: filteredLocation.yearData[this.dashboardData.filters.yearFilter.options[0].id]?.moeLow, 
 				moeHigh: filteredLocation.yearData[this.dashboardData.filters.yearFilter.options[0].id]?.moeHigh,
@@ -131,6 +133,7 @@ export default {
 					}
 					return  { 
 						value: cd.yearData[this.dashboardData.filters.yearFilter.options[0].id]?.value || 0,
+						suppressed: cd.yearData[this.dashboardData.filters.yearFilter.options[0].id]?.suppressed,
 						noData: !cd.yearData[this.dashboardData.filters.yearFilter.options[0].id],
 						moeLow: cd.yearData[this.dashboardData.filters.yearFilter.options[0].id]?.moeLow,
 						moeHigh: cd.yearData[this.dashboardData.filters.yearFilter.options[0].id]?.moeHigh,
@@ -146,7 +149,7 @@ export default {
 					show: true,
 					position: 'top',
 					formatter: (o) => {
-						return !o.data.value ? 'No Data' : ''
+						return o.data.suppressed ? 'Suppressed' : (!o.data.value ? 'No Data' : '') //TODO: espanol
 					}
 				}
 			};

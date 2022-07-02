@@ -85,6 +85,11 @@ export default {
 						show: true, 
 						position: 'top',
 						formatter: (o) => {
+							if (o.data.suppressed) {
+								return 'Suppressed'; //TODO: espanol
+							} else if (o.data.noData) {
+								return 'No Data'; //TODO: espanol
+							}
 							let rows = [i18n.t('data.value') +': ' + format(this.indicatorType, o.data.value)];
 							if (o.data.moeLow || o.data.moeHigh) {
 								rows.push(i18n.t('data.moe_range') 
@@ -103,8 +108,14 @@ export default {
 				series.data = this.data
 					.filter(d => (d.baseFilter?.id || 0) === filterId)
 					.map(dataPoint => { 
-						return { value: dataPoint.value, moeLow: dataPoint.moeLow, moeHigh: dataPoint.moeHigh }; 
-					})
+						return { 
+							value: dataPoint.suppressed || dataPoint.value === null ? 0 : dataPoint.value, 
+							moeLow: dataPoint.moeLow, 
+							moeHigh: dataPoint.moeHigh,
+							noData: dataPoint.value === null,
+							suppressed: dataPoint.suppressed 
+						}; 
+					});
 				option.series.push(series)
 			});
 			option.aria = { enabled: true };

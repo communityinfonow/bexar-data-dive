@@ -14,6 +14,8 @@ public class CommunityDataPoint {
 	 * because there is no 'overall' educational attainment.
 	 * Other indicators, such as population total, do not require a 'base' filter,
 	 * because 'overall' population is a legitimate metric.
+	 * 
+	 * TODO: is this still needed?
 	 */
 	private FilterOption baseFilter;
 
@@ -41,6 +43,8 @@ public class CommunityDataPoint {
 	 * The indicator universe value.
 	 */
 	private Double universeValue;
+
+	private boolean suppressed;
 
 	public FilterOption getBaseFilter() {
 		return baseFilter;
@@ -88,5 +92,13 @@ public class CommunityDataPoint {
 
 	public void setUniverseValue(Double universeValue) {
 		this.universeValue = universeValue;
+	}
+
+	public boolean isSuppressed() {
+		return suppressed;
+	}
+
+	public void setSuppressed(boolean suppressed) {
+		this.suppressed = suppressed;
 	}
 }

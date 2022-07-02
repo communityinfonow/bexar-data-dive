@@ -194,7 +194,7 @@ export default {
 						noData: !ld.yearData[this.dashboardData.filters.yearFilter.options[0].id],
 						moeLow: ld.yearData[this.dashboardData.filters.yearFilter.options[0].id]?.moeLow,
 						moeHigh: ld.yearData[this.dashboardData.filters.yearFilter.options[0].id]?.moeHigh,
-						suppressed: false, //TODO: suppression from DB -> UI
+						suppressed: ld.yearData[this.dashboardData.filters.yearFilter.options[0].id]?.suppressed
 					}, 
 					{ id: ld.location.id }))
 			)
@@ -212,6 +212,7 @@ export default {
 			layer.on('mouseover', (layer) => {
 				this.setDockedTooltip({
 					value: layer.target.feature.properties.value,
+					suppressed: layer.target.feature.properties.suppressed,
 					noData: layer.target.feature.properties.noData,
 					moeLow: layer.target.feature.properties.moeLow,
 					moeHigh: layer.target.feature.properties.moeHigh,

@@ -62,6 +62,7 @@ create table tbl_indicator_values (
 	sex_id numeric references tbl_filter_options,
 	education_id numeric references tbl_filter_options,
 	income_id numeric references tbl_filter_options,
+	suppressed smallint default 0 check (suppressed in (0, 1)),
 	foreign key(location_id, location_type_id) references tbl_locations(id_, location_type_id)
 );
 create unique index idx_indicator_values on tbl_indicator_values (indicator_id, year_, location_id, location_type_id, race_id, age_id, sex_id, education_id, income_id);
