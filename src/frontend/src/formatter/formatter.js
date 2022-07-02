@@ -1,11 +1,20 @@
 let formatter = new Intl.NumberFormat();
 export function format(type, value) {
+  if (isNaN(value)) {
+    return 'No Data';
+  }
+
+  let formattedValue = '';
 	switch (type) {
-        case 3: // percent
-          return formatter.format(value) + "%";
-        case 4: //currency
-          return "$" + formatter.format(value);
-        default: // count and rate
-          return formatter.format(value);
-      }
+      case 3: // percent
+        formattedValue = formatter.format(value) + "%";
+        break;
+      case 4: //currency
+        formattedValue = "$" + formatter.format(value);
+        break;
+      default: // count and rate
+        formattedValue = formatter.format(value);
+    }
+
+    return formattedValue;
 }

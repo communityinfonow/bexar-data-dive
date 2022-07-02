@@ -54,7 +54,7 @@ public class FilterRepositoryPostgresql implements FilterRepository {
 			+ " select l.id_, l.location_type_id, l.name_en, l.name_es "
 			+ " from tbl_locations l "
 			+ " 	join tbl_location_types lt on lt.id_ = l.location_type_id "
-			+ " order by lt.sort_order, l.id_ ";
+			+ " order by lt.sort_order, l.id_::numeric ";
 
 		return this.jdbcTemplate.query(sql, new ResultSetExtractor<Filter>() {
 			@Override
