@@ -56,6 +56,7 @@ export default {
 				if (params.componentType === 'series') {
 					this.setDockedTooltip({ 
 						value: params.data.value,
+						noData: params.data.noData,
 						moeLow: params.data.moeLow,
 						moeHigh: params.data.moeHigh,
 						location: params.data.location,
@@ -115,20 +116,24 @@ export default {
 						ld.location.id === this.dashboardData.filters.locationFilter.options[0].id && 
 						ld.location.typeId === this.dashboardData.filters.locationTypeFilter.options[0].id);
 			seriesData.push({ 
-				value: filteredLocation.yearData[this.dashboardData.filters.yearFilter.options[0].id].value, 
-				moeLow: filteredLocation.yearData[this.dashboardData.filters.yearFilter.options[0].id].moeLow, 
-				moeHigh: filteredLocation.yearData[this.dashboardData.filters.yearFilter.options[0].id].moeHigh,
+				value: filteredLocation.yearData[this.dashboardData.filters.yearFilter.options[0].id]?.value || 0,
+				noData: filteredLocation.yearData[this.dashboardData.filters.yearFilter.options[0].id],
+				moeLow: filteredLocation.yearData[this.dashboardData.filters.yearFilter.options[0].id]?.moeLow, 
+				moeHigh: filteredLocation.yearData[this.dashboardData.filters.yearFilter.options[0].id]?.moeHigh,
 				location: filteredLocation.location['name_' + this.locale] ,
 				indicatorFilters: this.dashboardData.filters.indicatorFilters
-			}); //TODO: null doesn't render, but zero seems like a bad idea since 0 != null...see if there's another way
+			});
 			if (this.dashboardData.compareData) {
 				seriesData.push(...this.dashboardData.compareData.map((cd, index) => {
 					let compareIndicatorFilters = JSON.parse(JSON.stringify(this.dashboardData.filters.indicatorFilters));
-					compareIndicatorFilters.find(f => f.type.id === this.compareSelections.type.id).options[0] = this.compareSelections.filterOptions[index];
+					if (this.compareSelections.type.name && this.compareSelections.type.name !== 'Location') {
+						compareIndicatorFilters.find(f => f.type.id === this.compareSelections.type.id).options[0] = this.compareSelections.filterOptions[index];
+					}
 					return  { 
-						value: cd.yearData[this.dashboardData.filters.yearFilter.options[0].id].value,
-						moeLow: cd.yearData[this.dashboardData.filters.yearFilter.options[0].id].moeLow,
-						moeHigh: cd.yearData[this.dashboardData.filters.yearFilter.options[0].id].moeHigh,
+						value: cd.yearData[this.dashboardData.filters.yearFilter.options[0].id]?.value || 0,
+						noData: !cd.yearData[this.dashboardData.filters.yearFilter.options[0].id],
+						moeLow: cd.yearData[this.dashboardData.filters.yearFilter.options[0].id]?.moeLow,
+						moeHigh: cd.yearData[this.dashboardData.filters.yearFilter.options[0].id]?.moeHigh,
 						location: cd.location['name_' + this.locale],
 						indicatorFilters: compareIndicatorFilters
 					};
@@ -136,7 +141,14 @@ export default {
 			}
 			option.series = {
 				data: seriesData,
-				type: 'bar'
+				type: 'bar',
+				label: {
+					show: true,
+					position: 'top',
+					formatter: (o) => {
+						return !o.data.value ? 'No Data' : ''
+					}
+				}
 			};
 			option.aria = { enabled: true };
 

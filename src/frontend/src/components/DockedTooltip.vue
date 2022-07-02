@@ -10,7 +10,7 @@
 			<v-card-text v-else>
 				<div class="text-h6">{{ dashboardData.indicator['name_' + locale] }}: {{ valueFormatted }}</div>
 				<ul class="text-body-1">
-					<li>Range: {{  rangeFormatted }}</li>
+					<li v-if="!dockedTooltip.noData">Range: {{  rangeFormatted }}</li>
 					<li>Source: {{ dashboardData.source['name_' + locale] }}</li>
 					<li>Location: {{ dockedTooltip.location }}</li>
 					<li>Year: {{ dockedTooltip.year }}</li>
@@ -38,7 +38,11 @@ export default {
 	computed: {
 		...mapState(['locale', 'dashboardData', 'dockedTooltip']),
 		valueFormatted() {
-			return format(this.dashboardData.indicator.typeId, this.dockedTooltip.value)
+			if (this.dockedTooltip.noData) {
+				return 'No Data';
+			}
+
+			return format(this.dashboardData.indicator.typeId, this.dockedTooltip.value);
 		},
 		rangeFormatted() {
 			return format(this.dashboardData.indicator.typeId, this.dockedTooltip.value - this.dockedTooltip.moeLow)
