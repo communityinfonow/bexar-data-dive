@@ -175,7 +175,7 @@ export default {
 		
 	},
 	methods: {
-		...mapActions(['setDockedTooltip']),
+		...mapActions(['setDockedTooltipValue']),
 		initializeMap() {
 			this.mapInitialized = true;
 			if (this.dashboardData) {
@@ -208,14 +208,10 @@ export default {
 			layer.options.fillColor = this.getLayerShadingColor(feature);
 
 			layer.on('mouseover', (layer) => {
-				this.setDockedTooltip({
-					primaryName: layer.target.feature.properties.locationName,
-					secondaryName: this.dashboardData.indicator['name_' + this.locale],
-					value: format(this.dashboardData.indicator.typeId, layer.target.feature.properties.value)
-				});
+				this.setDockedTooltipValue(format(this.dashboardData.indicator.typeId, layer.target.feature.properties.value));
 			});
 			layer.on('mouseout', () => {
-				this.setDockedTooltip(null);
+				this.setDockedTooltipValue(null);
 			})
 		},
 		getLayerShadingColor(feature) {

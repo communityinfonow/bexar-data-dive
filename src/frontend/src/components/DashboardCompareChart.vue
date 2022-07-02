@@ -55,16 +55,12 @@ export default {
 			this.chart = echarts.init(document.getElementById('compare_chart_container'), null, { renderer: 'svg'});
 			this.chart.on('mouseover', (params) => {
 				if (params.componentType === 'series') {
-					this.setDockedTooltip({
-						primaryName: params.name,
-						secondaryName: this.dashboardData.indicator['name_' + this.locale],
-						value: format(this.dashboardData.indicator.typeId, params.value)
-					});
+					this.setDockedTooltipValue(format(this.dashboardData.indicator.typeId, params.value));
 				}
 			});
 			this.chart.on('mouseout', (params) => {
 				if (params.componentType === 'series') {
-					this.setDockedTooltip(null);
+					this.setDockedTooltipValue(null);
 				}
 			});
 			window.addEventListener('resize', () => {
@@ -76,7 +72,7 @@ export default {
 		}, 100);
 	},
 	methods: {
-		...mapActions(['setDockedTooltip']),
+		...mapActions(['setDockedTooltipValue']),
 		drawChart() {
 			let textStyle = {
 				fontFamily: '"Roboto", sans-serif !important',

@@ -10,6 +10,7 @@
 					:items="compareByItems"
 					:item-text="'name_' + locale"
 					v-model="compareBy"
+					@change="clearCompareWith"
 					:rules="[v => !!v || 'Please make a selection']"
 				>
 				</v-select>
@@ -85,8 +86,11 @@ export default {
 	},
 	methods: {
 		...mapActions(['setCompareSelections']),
+		clearCompareWith() {
+			this.compareWith = null;
+		},
 		validateComparison() {
-			this.$refs.compareForm.validate()
+			this.$refs.compareForm.validate();
 		},
 		getComparison() {	
 			return {
