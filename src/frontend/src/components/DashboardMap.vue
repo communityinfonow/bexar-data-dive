@@ -202,7 +202,7 @@ export default {
 			this.$refs.dashboardMap?.mapObject.fitBounds(L.geoJSON(this.geojson).getBounds());
 		},
 		onEachFeature(feature, layer) {
-			let filteredFeature = feature.id === this.dashboardData.filters.locationFilter.options[0].id;
+			let filteredFeature = feature.id === this.dashboardData.filters.locationFilter.options[0]?.id;
 			if (filteredFeature) {
 				layer.options.weight = 4;
 				layer.options.color = 'orange'; //TODO: what color for filtered geo?

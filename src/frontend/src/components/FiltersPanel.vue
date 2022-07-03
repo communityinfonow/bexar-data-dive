@@ -97,7 +97,7 @@ export default {
 		initFilters() {
 			this.indicatorFilterSelections = {}
 			this.selectedLocationType = router.currentRoute.query.locationType || this.filters?.locationTypeFilter.options[0].id
-			this.selectedLocation = router.currentRoute.query.location || this.filters?.locationFilter.options[0].id
+			this.selectedLocation = router.currentRoute.query.location || this.filters?.locationFilter.options.find(o => o.typeId == this.selectedLocationType).id
 			this.selectedYear = router.currentRoute.query.year || this.filters?.yearFilter.options[0].name_en
 			this.filters?.indicatorFilters.forEach((filter) => {
 				let option = filter.options[0];

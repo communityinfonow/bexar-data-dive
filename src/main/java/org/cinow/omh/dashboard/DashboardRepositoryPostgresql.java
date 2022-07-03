@@ -25,8 +25,7 @@ public class DashboardRepositoryPostgresql implements DashboardRepository {
 	@Override
 	public List<DashboardDataLocation> getDashboardData(DashboardDataRequest dataRequest, boolean allLocations) {
 		//TODO: testing for the following scenarios:
-		// 1. 5-year trend intervals for ACS 5-year
-		// 2. only trending years that are between the geom years for tracts
+		// 1. only trending years that are between the geom years for tracts
 		String sql = ""
 			+ " with trend_interval as (select trend_interval from tbl_sources where id_ = (select source_id from tbl_indicators where id_ = :indicator::numeric)) "
 			+ " select l.id_ as l_id, l.name_en as l_name_en, l.name_es as l_name_es, "
@@ -37,12 +36,12 @@ public class DashboardRepositoryPostgresql implements DashboardRepository {
 			+ "   join tbl_location_types lt on lt.id_ = l.location_type_id and lt.id_ = :location_type_id::numeric "
 			+ "   left join tbl_location_geometries lg on lg.location_id = l.id_ "
 			+ "     and lg.location_type_id = lt.id_ "
-			+ "     and ((lg.min_year is null and lg.max_year is null) or (:year::numeric between lg.min_year and lg.max_year)) "
+			+ "     and ((lg.vintage_min_year is null and lg.vintage_max_year is null) or (:year::numeric between lg.vintage_min_year and lg.vintage_max_year)) "
 			+ "   left join tbl_indicator_values iv on iv.location_id = l.id_ "
 			+ "     and iv.location_type_id = lt.id_ "
 			+ "     and iv.indicator_id = :indicator::numeric "
 			+ "     and mod(:year::numeric - iv.year_::numeric, coalesce((select trend_interval from trend_interval), 1)) = 0 "
-			+ "     and ((lg.min_year is null and lg.max_year is null) or (iv.year_::numeric between lg.min_year and lg.max_year)) ";
+			+ "     and ((lg.trend_min_year is null and lg.trend_max_year is null) or (iv.year_::numeric between lg.trend_min_year and lg.trend_max_year)) ";
 
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
 		paramMap.addValue("year", dataRequest.getFilters().getYear());
