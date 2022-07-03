@@ -55,7 +55,7 @@ public class DashboardService {
 
 	private Filters getIndicatorFilters(DashboardDataRequest dataRequest) {
 		Filters filters = new Filters();
-		filters.setLocationTypeFilter(this.filterRepository.getLocationTypeFilter());
+		filters.setLocationTypeFilter(this.filterRepository.getLocationTypeFilter(dataRequest.getFilters().getLocationType()));
 		filters.getLocationTypeFilter().setOptions(filters.getLocationTypeFilter().getOptions()
 			.stream()
 			.filter(o -> o.getId().equals(dataRequest.getFilters().getLocationType()))

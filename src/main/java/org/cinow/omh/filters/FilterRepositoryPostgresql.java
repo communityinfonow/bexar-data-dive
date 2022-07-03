@@ -23,13 +23,17 @@ public class FilterRepositoryPostgresql implements FilterRepository {
 	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 	@Override
-	public Filter getLocationTypeFilter() {
+	public Filter getLocationTypeFilter(String indicatorId) {
 		String sql = ""
 			+ " select id_, name_en, name_es "
 			+ " from tbl_location_types "
+			+ " where exists (select 1 from tbl_indicator_values where indicator_id = :indicator_id::numeric and location_type_id = id_) "
 			+ " order by sort_order ";
 
-		return this.jdbcTemplate.query(sql, new ResultSetExtractor<Filter>() {
+		MapSqlParameterSource paramMap = new MapSqlParameterSource();
+		paramMap.addValue("indicator_id", indicatorId);
+
+		return this.namedParameterJdbcTemplate.query(sql, paramMap, new ResultSetExtractor<Filter>() {
 			@Override
 			public Filter extractData(ResultSet rs) throws SQLException, DataAccessException {
 				Filter filter = new Filter();

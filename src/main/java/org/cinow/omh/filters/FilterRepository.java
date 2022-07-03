@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface FilterRepository {
 
-	Filter getLocationTypeFilter();
+	Filter getLocationTypeFilter(String indicatorId);
 
 	Filter getLocationFilter();
 
