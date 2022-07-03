@@ -135,6 +135,9 @@ export default new Vuex.Store({
       if (indicator == null) {
         context.commit('SET_SOURCE', null)
         context.commit('SET_FILTERS', null)
+        context.commit('SET_FILTER_SELECTIONS', null)
+        context.commit('SET_COMPARE_SELECTIONS', null)
+        
       } else {
         context.dispatch('getSource', indicator)
         context.dispatch('getFilters', indicator)
@@ -155,6 +158,9 @@ export default new Vuex.Store({
       })
     },
     getDashboardData(context) {
+      if (!this.state.filterSelections) {
+        return;
+      }
       axios.post('/api/dashboard-data', {
         indicator: context.state.indicator.id, 
         filters: this.state.filterSelections,
@@ -170,12 +176,38 @@ export default new Vuex.Store({
       context.commit('SET_DASHBOARD_TAB', tab)
     },
     setFilterSelections(context, selections) {
-      context.commit('SET_FILTER_SELECTIONS', selections)
-      context.dispatch('getDashboardData')
+      context.commit('SET_FILTER_SELECTIONS', selections);
+      let filterQuery = {
+        ...router.currentRoute.query,
+        locationType: selections.locationType,
+        location: selections.location,
+        year: selections.year
+
+      };
+      Object.entries(selections.indicatorFilters).forEach(e => {
+        filterQuery['filter_' + e[0]] = e[1].id;
+      });
+      if (JSON.stringify(filterQuery) !== JSON.stringify(router.currentRoute.query)) {
+        router.replace({
+          query: filterQuery
+        });
+      }
+      context.dispatch('getDashboardData');
     },
     setCompareSelections(context, selections) {
-      context.commit('SET_COMPARE_SELECTIONS', selections)
-      context.dispatch('getDashboardData')
+      context.commit('SET_COMPARE_SELECTIONS', selections);
+      let compareQuery = {
+        ...router.currentRoute.query,
+        compareBy: selections.type.id || 'l',
+        compareWith: selections.filterOptions.map(o => (o.typeId ? o.typeId + "_" : "") + o.id)
+
+      };
+      if (JSON.stringify(compareQuery) !== JSON.stringify(router.currentRoute.query)) {
+        router.replace({
+          query: compareQuery
+        });
+      }
+      context.dispatch('getDashboardData');
     }
   },
   modules: {},

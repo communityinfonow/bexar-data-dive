@@ -66,6 +66,8 @@
 <script>
 //TODO: need to persist filters in route
 import { mapActions, mapState } from 'vuex'
+import router from '@/router/index'
+
 export default {
 	name: 'FiltersPanel',
 	data() {
@@ -94,11 +96,15 @@ export default {
 		...mapActions(['setFilterSelections']),
 		initFilters() {
 			this.indicatorFilterSelections = {}
-			this.selectedLocationType = this.filters?.locationTypeFilter.options[0].id
-			this.selectedLocation = this.filters?.locationFilter.options[0].id
-			this.selectedYear = this.filters?.yearFilter.options[0].name_en
+			this.selectedLocationType = router.currentRoute.query.locationType || this.filters?.locationTypeFilter.options[0].id
+			this.selectedLocation = router.currentRoute.query.location || this.filters?.locationFilter.options[0].id
+			this.selectedYear = router.currentRoute.query.year || this.filters?.yearFilter.options[0].name_en
 			this.filters?.indicatorFilters.forEach((filter) => {
-				this.indicatorFilterSelections[filter.type.id] = filter.options[0]
+				let option = filter.options[0];
+				if (router.currentRoute.query['filter_' + filter.type.id]) {
+					option = filter.options.find(o => o.id == router.currentRoute.query['filter_' + filter.type.id]);
+				} 
+				this.indicatorFilterSelections[filter.type.id] = option 
 			});
 		},
 		selectLocationType() {

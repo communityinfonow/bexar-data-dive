@@ -137,11 +137,11 @@ export default {
         this.setIndicator(item)
         router.replace({
           query: {
-            ...router.currentRoute.query,
+            lang: router.currentRoute.query.lang,
             indicator: item.id,
+            tab: router.currentRoute.query.tab
           },
-        });
-        this.selectTab('map');
+        }).then(() => this.selectTab('map'));
       }
     },
     selectTab(selectedTab) {

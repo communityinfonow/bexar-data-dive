@@ -10,7 +10,7 @@
 					:items="compareByItems"
 					:item-text="'name_' + locale"
 					v-model="compareBy"
-					@change="clearCompareWith"
+					@change="selectCompareBy"
 					:rules="[v => !!v || 'Please make a selection']"
 				>
 				</v-select>
@@ -50,6 +50,7 @@
 <script>
 
 import { mapActions, mapState } from 'vuex'
+import router from '@/router/index'
 
 export default {
 	name: 'DashboardToolsPanel',
@@ -58,39 +59,50 @@ export default {
 	// first validate that a by and with are selected
 	// then fetch data - will need API updates for by and multiple withs
 	computed: {
-		...mapState(['filters', 'locale']),
-		compareByItems() {
-			let items = [];
-			items.push(this.filters?.locationFilter.type);
-			this.filters?.indicatorFilters.forEach(filter => {
-				items.push(filter.type)
-			});
-			
-			return items;
-		},
-		compareWithItems() {
-			let items = [];
-			if (this.compareBy?.name_en === 'Location') {
-				items = this.filters?.locationFilter.options;
-			} else {
-				items = this.filters?.indicatorFilters.find(filter => filter.type.name_en === this.compareBy?.name_en)?.options;
-			}
-			
-			return items;
-		}
+		...mapState(['filters', 'locale'])
 	},
 	data() {
 		return {
+			compareByItems: [],
 			compareBy: null,
 			compareWithQuery: '',
-			compareWith: null,
+			compareWithItems: [],
+			compareWith: [],
 			valid: true
+		}
+	},
+	mounted () {
+		this.compareByItems.push(this.filters?.locationFilter.type);
+		this.filters?.indicatorFilters.forEach(filter => {
+			this.compareByItems.push(filter.type)
+		});
+		if (router.currentRoute.query.compareBy) {
+			if (router.currentRoute.query.compareBy === 'l') {
+				this.compareBy = this.compareByItems[0];
+				this.selectCompareBy();
+				router.currentRoute.query.compareWith.forEach(p => {
+					this.compareWith.push(this.compareWithItems.find(i => i.typeId == p.split("_")[0] && i.id == p.split("_")[1]));
+				});
+			} else {
+				this.compareBy = this.compareByItems.find(i => i.id);
+				this.selectCompareBy();
+				router.currentRoute.query.compareWith.forEach(p => {
+					this.compareWith.push(this.compareWithItems.find(i => i.id == p));
+				});
+			}
+			this.applyComparison();
 		}
 	},
 	methods: {
 		...mapActions(['setCompareSelections']),
-		clearCompareWith() {
-			this.compareWith = null;
+		selectCompareBy() {
+			this.compareWith = [];
+			this.compareWithItems = [];
+			if (this.compareBy?.name_en === 'Location') {
+				this.compareWithItems = this.filters?.locationFilter.options;
+			} else {
+				this.compareWithItems = this.filters?.indicatorFilters.find(filter => filter.type.name_en === this.compareBy?.name_en)?.options;
+			}
 		},
 		validateComparison() {
 			this.$refs.compareForm.validate();

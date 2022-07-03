@@ -2,7 +2,7 @@
 	<div class="fill-height">
 		<v-row class="no-gutters flex-wrap flex-column fill-height">
 			<v-col cols="auto">
-				<dashboard-tools-panel></dashboard-tools-panel>
+				<dashboard-tools-panel v-if="filters"></dashboard-tools-panel>
 			</v-col>
 			<v-col cols="auto" class="grow">
 				<div 
@@ -36,7 +36,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['locale', 'dashboardData', 'compareSelections']),
+		...mapState(['locale', 'filters', 'dashboardData', 'compareSelections']),
 	},
 	watch: {
 		locale() {
