@@ -19,7 +19,8 @@ export default new Vuex.Store({
     dashboardData: null,
     dashboardTab: null,
     filterSelections: null,
-    compareSelections: null
+    compareSelections: null,
+    exploreData: null
   },
   getters: {
     tools: () => {
@@ -84,6 +85,9 @@ export default new Vuex.Store({
     },
     SET_COMPARE_SELECTIONS(state, selections) {
       state.compareSelections = selections
+    },
+    SET_EXPLORE_DATA(state, exploreData) {
+      state.exploreData = exploreData
     }
   },
   actions: {
@@ -208,6 +212,14 @@ export default new Vuex.Store({
         });
       }
       context.dispatch('getDashboardData');
+    },
+    getExploreData(context, indicator) {
+      axios.get('/api/explore-data', { params: { 
+        indicator: indicator
+      }
+    }).then(response => {
+      context.commit('SET_EXPLORE_DATA', response.data)
+    })
     }
   },
   modules: {},

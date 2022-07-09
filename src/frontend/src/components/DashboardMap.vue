@@ -154,7 +154,7 @@ export default {
 
 			return ckmeans(values, Math.min(uniqueValueCount, 5))
 				.map(cluster => [cluster[0], cluster[cluster.length - 1]])
-				.reverse(); //FIXME: do we always want to reverse to shade high values dark?
+				.reverse();
 		}
 	},
 	watch: {
