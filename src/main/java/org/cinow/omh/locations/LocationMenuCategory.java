@@ -55,4 +55,15 @@ public class LocationMenuCategory implements Category<LocationMenuItem> {
 	public void setItems(List<LocationMenuItem> items) {
 		this.locations = items;
 	}
+
+	@Override
+	public List<Category<LocationMenuItem>> getSubcategories() {
+		// not supported for locations
+		return null;
+	}
+
+	@Override
+	public void setSubcategories(List<Category<LocationMenuItem>> subcategories) {
+		// not supported for locations
+	}
 }

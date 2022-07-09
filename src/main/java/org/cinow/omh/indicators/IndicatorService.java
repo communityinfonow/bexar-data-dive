@@ -28,7 +28,15 @@ public class IndicatorService {
 				item.setName_es(indicator.getName_es());
 				menuCategory.getItems().add(item);
 			});
-			indicatorMenu.getCategories().add(menuCategory);
+			if (indicatorCategory.getParentCategoryId() == null) {
+				indicatorMenu.getCategories().add(menuCategory);
+			} else {
+				indicatorMenu.getCategories()
+					.stream()
+					.filter(c -> c.getId().equals(indicatorCategory.getParentCategoryId()))
+					.findFirst()
+					.get().getSubcategories().add(menuCategory);
+			}
 		});
 
 		return indicatorMenu;

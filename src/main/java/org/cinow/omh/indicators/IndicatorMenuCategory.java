@@ -10,10 +10,12 @@ public class IndicatorMenuCategory implements Category<IndicatorMenuItem> {
 	private String id;
 	private String name_en;
 	private String name_es;
-	private List<IndicatorMenuItem> indicators;
+	private List<Category<IndicatorMenuItem>> subcategories;
+	private List<IndicatorMenuItem> items;
 
 	public IndicatorMenuCategory() {
-		this.indicators = new ArrayList<>();
+		this.subcategories = new ArrayList<>();
+		this.items = new ArrayList<>();
 	}
 
 	@Override
@@ -47,12 +49,22 @@ public class IndicatorMenuCategory implements Category<IndicatorMenuItem> {
 	}
 
 	@Override
+	public List<Category<IndicatorMenuItem>> getSubcategories() {
+		return subcategories;
+	}
+
+	@Override
+	public void setSubcategories(List<Category<IndicatorMenuItem>> subcategories) {
+		this.subcategories = subcategories;
+	}
+
+	@Override
 	public List<IndicatorMenuItem> getItems() {
-		return this.indicators;
+		return this.items;
 	}
 
 	@Override
 	public void setItems(List<IndicatorMenuItem> items) {
-		this.indicators = items;
+		this.items = items;
 	}
 }

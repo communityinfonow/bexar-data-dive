@@ -23,7 +23,7 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 	@Override
 	public List<IndicatorCategory> findIndicatorCategories() {
 		String sql = ""
-			+ " select id_, name_en, name_es "
+			+ " select id_, name_en, name_es, parent_category_id "
 			+ " from tbl_indicator_categories "
 			+ " order by sort_order ";
 
@@ -34,6 +34,7 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 				indicatorCategory.setId(rs.getString("id_"));
 				indicatorCategory.setName_en(rs.getString("name_en"));
 				indicatorCategory.setName_es(rs.getString("name_es"));
+				indicatorCategory.setParentCategoryId(rs.getString("parent_category_id"));
 				
 				return indicatorCategory;
 			}

@@ -205,7 +205,7 @@ export default {
 			let filteredFeature = feature.id === this.dashboardData.filters.locationFilter.options[0]?.id;
 			if (filteredFeature) {
 				layer.options.weight = 4;
-				layer.options.color = 'orange'; //TODO: what color for filtered geo?
+				layer.options.color = 'orange';
 			}
 			layer.options.fillColor = this.getLayerShadingColor(feature);
 

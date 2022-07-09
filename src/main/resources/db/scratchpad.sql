@@ -116,3 +116,15 @@ values (1,'2016','5',4,482,4,4,482,1,null,null,null,null),
 	(3,'2016','5',4,18.3,3,7,482,2,null,null,11,null);
 
 update tbl_indicator_values set indicator_value = indicator_value + location_id::numeric;
+
+insert into tbl_indicator_values (indicator_id,year_,location_id,location_type_id,indicator_value,moe_low,moe_high,universe_value,race_id,age_id,sex_id,education_id,income_id)
+values (21, '2020', '48029182106', 5, 88, 2, 2, 20000, null, 4, null, null, null),
+(21, '2015', '48029182106', 5, 86, 2, 2, 20000, null, 4, null, null, null),
+(21, '2010', '48029182106', 5, 90, 2, 2, 20000, null, 4, null, null, null),
+(21, '2020', '48029161304', 5, 88, 2, 2, 20000, null, 4, null, null, null),
+(21, '2015', '48029161304', 5, 86, 2, 2, 20000, null, 4, null, null, null),
+(21, '2010', '48029161304', 5, 90, 2, 2, 20000, null, 4, null, null, null),
+(21, '2020', '48029121118', 5, 88, 2, 2, 20000, null, 4, null, null, null),
+(21, '2015', '48029121118', 5, 86, 2, 2, 20000, null, 4, null, null, null),
+(21, '2010', '48029121118', 5, 90, 2, 2, 20000, null, 4, null, null, null)
+;

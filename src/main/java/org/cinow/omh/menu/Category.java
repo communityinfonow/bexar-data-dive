@@ -10,6 +10,8 @@ public interface Category<T extends Item> {
 	void setName_en(String name_en);
 	String getName_es();
 	void setName_es(String name_es);
+	List<Category<T>> getSubcategories();
+	void setSubcategories(List<Category<T>> subcategories);
 	List<T> getItems();
 	void setItems(List<T> items);
 }

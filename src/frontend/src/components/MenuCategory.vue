@@ -1,21 +1,44 @@
 <template>
-	<v-menu offset-y :internal-activator="true" :key="'category_' + category.id" max-height="400px" eager>
+	<v-menu offset-y :internal-activator="true" :key="'category_' + category.id" max-height="400px" eager v-model="menuOpen">
 		<template v-slot:activator="{ on }">
 			<v-btn text tile v-on="on" style="height: 100%;">
 				{{ categoryName }}
 				<v-icon right>mdi-chevron-down</v-icon>
 			</v-btn>
 		</template>
-		<v-list >
-		<template v-for="item in category.items">
-			<MenuItem
-			:item="item"
-			:key="'item_' + item.id"
-			:selectItem="selectItem"
-      :singleItem="false"
-			></MenuItem>
-		</template>
-		</v-list>
+		<v-list>
+      <template v-for="subcategory in category.subcategories">
+        <v-menu offset-x open-on-hover :key="'subcategory_' + subcategory.id">
+          <template v-slot:activator="{ on }">
+            <v-list-item v-on="on">
+              <v-list-item-title>{{ subcategory['name_' + locale]}}</v-list-item-title>
+              <v-list-item-icon>
+                <v-icon right>mdi-chevron-right</v-icon>
+              </v-list-item-icon>
+            </v-list-item>
+          </template>
+          <v-list>
+            <template v-for="item in subcategory.items">
+            <MenuItem
+              :item="item"
+              :key="'item_' + item.id"
+              :selectItem="selectSubcategoryItem"
+              :singleItem="false"
+            ></MenuItem>
+            </template>
+          </v-list>
+        </v-menu>
+        
+      </template>
+      <template v-for="item in category.items">
+        <MenuItem
+          :item="item"
+          :key="'item_' + item.id"
+          :selectItem="selectItem"
+          :singleItem="false"
+        ></MenuItem>
+      </template>
+    </v-list>
 	</v-menu>
 </template>
 
@@ -24,7 +47,7 @@ import MenuItem from '@/components/MenuItem'
 import { mapState } from 'vuex'
 
 export default {
-  name: 'MenuToolbar',
+  name: 'MenuCategory',
   components: {
     MenuItem,
   },
@@ -41,6 +64,7 @@ export default {
       items: [],
       search: null,
       select: null,
+      menuOpen: false
     }
   },
   computed: {
@@ -58,7 +82,12 @@ export default {
       }
     },
   },
-  methods: {},
+  methods: {
+    selectSubcategoryItem(item) {
+      this.selectItem(item);
+      this.menuOpen = false;
+    }
+  },
 }
 </script>
 
