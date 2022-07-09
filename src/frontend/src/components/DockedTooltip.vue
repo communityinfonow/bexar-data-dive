@@ -34,7 +34,6 @@ export default {
 			type: String
 		},
 	},
-	//TODO: suppression
 	computed: {
 		...mapState(['locale', 'dashboardData', 'dockedTooltip']),
 		valueFormatted() {

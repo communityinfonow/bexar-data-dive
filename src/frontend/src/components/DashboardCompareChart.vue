@@ -104,7 +104,7 @@ export default {
 			}
 			option.xAxis = { 
 				type: 'category', 
-				data: xAxisData, //TODO: this will change if a comparison is selected
+				data: xAxisData,
 				axisTick: { show: false },
 				axisLabel: textStyle,
 				name: this.compareSelections ? '' : this.dashboardData.indicator['name_' + this.locale],

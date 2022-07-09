@@ -64,7 +64,6 @@
 </template>
 
 <script>
-//TODO: need to persist filters in route
 import { mapActions, mapState } from 'vuex'
 import router from '@/router/index'
 

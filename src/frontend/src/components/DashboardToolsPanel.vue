@@ -54,10 +54,6 @@ import router from '@/router/index'
 
 export default {
 	name: 'DashboardToolsPanel',
-	//TODO: 
-	// then handle compare click event
-	// first validate that a by and with are selected
-	// then fetch data - will need API updates for by and multiple withs
 	computed: {
 		...mapState(['filters', 'locale'])
 	},

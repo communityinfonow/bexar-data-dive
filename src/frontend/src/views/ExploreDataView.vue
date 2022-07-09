@@ -31,6 +31,7 @@
 </template>
 
 <script>
+//TODO: need to persist indicator in route
 import { mapActions, mapState } from 'vuex'
 import router from '@/router/index'
 import MenuToolbar from '@/components/MenuToolbar'
@@ -53,7 +54,7 @@ export default {
         },
         {
           text: "Race/Ethnicity",
-          value: "race"
+          value: "race" //TODO: hide filter columns if not applicable to indicator
         },
         {
           text: "Age",
@@ -73,7 +74,7 @@ export default {
         },
         {
           text: "Value",
-          value: "value"
+          value: "value" //TODO: suppression/no data
         },
         {
           text: "MOE (low)",
