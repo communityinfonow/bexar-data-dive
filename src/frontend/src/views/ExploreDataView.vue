@@ -19,7 +19,7 @@
           <h2 class="text-subtitle-1 mb-2">{{ exploreData.source['name_' + locale] }}</h2>
           <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" hide-details></v-text-field>
           <v-data-table
-            :headers="headers"
+            :headers="filteredHeaders"
             :items="exploreData.items"
             :search="search"
             multi-sort
@@ -33,6 +33,7 @@
 <script>
 //TODO: need to persist indicator in route
 import { mapActions, mapState } from 'vuex'
+import i18n from '@/i18n'
 import router from '@/router/index'
 import MenuToolbar from '@/components/MenuToolbar'
 export default {
@@ -42,59 +43,80 @@ export default {
   },
   data() {
     return {
-      search: "",
-      headers: [
-        {
-          text: "Location",
-          value: "location"
-        }, 
-        {
-          text: "Year",
-          value: "year"
-        },
-        {
-          text: "Race/Ethnicity",
-          value: "race" //TODO: hide filter columns if not applicable to indicator
-        },
-        {
-          text: "Age",
-          value: "age"
-        },
-        {
-          text: "Sex",
-          value: "sex"
-        },
-        {
-          text: "Education Level",
-          value: "education"
-        },
-        {
-          text: "Income Level",
-          value: "income"
-        },
-        {
-          text: "Value",
-          value: "value" //TODO: suppression/no data
-        },
-        {
-          text: "MOE (low)",
-          value: "moeLow"
-        },
-        {
-          text: "MOE (high)",
-          value: "moeHigh"
-        },
-        {
-          text: "Universe",
-          value: "universeValue"
-        }
-      ]
+      search: ""
     }
   },
   computed: {
     ...mapState(['indicatorMenu', 'exploreData', 'locale']),
     showIntro() {
       return !this.exploreData && !router.currentRoute.query.indicator;
+    },
+    headers() {
+      return [
+        {
+          text: i18n.t('tools.explore_data.headers.location'),
+          value: "location"
+        }, 
+        {
+          text: i18n.t('tools.explore_data.headers.year'),
+          value: "year"
+        },
+        {
+          text: i18n.t('tools.explore_data.headers.race'),
+          value: "race"
+        },
+        {
+          text: i18n.t('tools.explore_data.headers.age'),
+          value: "age"
+        },
+        {
+          text: i18n.t('tools.explore_data.headers.sex'),
+          value: "sex"
+        },
+        {
+          text: i18n.t('tools.explore_data.headers.education'),
+          value: "education"
+        },
+        {
+          text: i18n.t('tools.explore_data.headers.income'),
+          value: "income"
+        },
+        {
+          text: i18n.t('tools.explore_data.headers.value'),
+          value: "value" //TODO: suppression/no data
+        },
+        {
+          text: i18n.t('tools.explore_data.headers.moe_low'),
+          value: "moeLow"
+        },
+        {
+          text: i18n.t('tools.explore_data.headers.moe_high'),
+          value: "moeHigh"
+        },
+        {
+          text: i18n.t('tools.explore_data.headers.universe'),
+          value: "universeValue"
+        }
+      ];
+    },
+    filteredHeaders() {
+      let filtered = JSON.parse(JSON.stringify(this.headers));
+      if (!this.exploreData.items.find(i => i.race !== null)) {
+        filtered = filtered.filter(h => h.value !== 'race');
+      }
+      if (!this.exploreData.items.find(i => i.age !== null)) {
+        filtered = filtered.filter(h => h.value !== 'age');
+      }
+      if (!this.exploreData.items.find(i => i.sex !== null)) {
+        filtered = filtered.filter(h => h.value !== 'sex');
+      }
+      if (!this.exploreData.items.find(i => i.education !== null)) {
+        filtered = filtered.filter(h => h.value !== 'education');
+      }
+      if (!this.exploreData.items.find(i => i.income !== null)) {
+        filtered = filtered.filter(h => h.value !== 'income');
+      }
+      return filtered;
     }
   },
   methods: {

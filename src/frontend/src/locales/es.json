@@ -39,7 +39,20 @@
       "name": "Explorar Datos",
       "short_description": "Explorar Datos es...",
       "long_description": "Explorar Datos es una herramienta...",
-      "get_started": "Para comenzar, navegue o busque un indicador usando el menú de arriba, o haga clic en uno de los Indicadores destacados a continuación."
+      "get_started": "Para comenzar, navegue o busque un indicador usando el menú de arriba, o haga clic en uno de los Indicadores destacados a continuación.",
+      "headers": {
+        "location": "Location (es)",
+        "year": "Year (es)",
+        "race": "Race/Ethnicity (es)",
+        "age": "Age (es)",
+        "sex": "Sex (es)",
+        "edcation": "Education Level (es)",
+        "income": "Income Level (es)",
+        "value": "Value (es)",
+        "moe_low": " MOE (low) (es)",
+        "moe_high": "MOE (high) (es)",
+        "universe": "Universe (es)"
+      }
     },
     "common": {
       "featured_indicators": "Indicadores destacados",

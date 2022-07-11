@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "CI:Now Web Mapping and Reporting",
+    "name": "Bexar Data Dive/Hub",
     "tagline": "[tagline]",
     "copyright": "Copyright",
     "cinow": "Community Information Now",
@@ -10,14 +10,14 @@
     "tools": "Tools",
     "my_community": {
       "name": "My Community",
-      "short_description": "My Community is...",
-      "long_description": "My Community is a tool...",
+      "short_description": "My Community is a tool that allows you to explore information about demographics, housing, education and much more across communities in Bexar County.",
+      "long_description": "My Community is a tool that allows you to explore information about demographics, housing, education and much more across communities in Bexar County. Communities include Council Districts, Zipcodes, Census Tracts and SSA's, or Statistical Small Areas. SSAs are combinations of Census Tracts grouped on meaningful indicators like Race/Ethnicity, housing, age, education, and income. CI:Now created SSAs to help users analyze data in areas small enough to see meaningful differences across the county, yet large enough to yield better estimates. Try it out in the menu above.",
       "get_started": "To get started, browse or search for an indicator using the menu above."
     },
     "dashboard": {
       "name": "Dashboard",
-      "short_description": "Dashboard is...",
-      "long_description": "Dashboard is a tool...",
+      "short_description": "The Dashboard is where you can take a deeper dive into the indicators about your community through interactive maps and charts.",
+      "long_description": "The Dashboard is where you can take a deeper dive into the indicators about your community through interactive maps and charts. Indicators can be mapped across geographic areas, trended in charts to view that data over time, or compared to other local communities in a bar chart. You will also have the ability to filter results by location, year, race/ethnicity, sex, education level or poverty status depending on what's available from the data source. Additionally, you can download and save the visuals you create.",
       "get_started": "To get started, browse or search for an indicator using the menu above.",
       "tabs": {
         "map": "Map",
@@ -37,9 +37,22 @@
     },
     "explore_data": {
       "name": "Explore Data",
-      "short_description": "Explore Data is...",
-      "long_description": "Explore data is a tool...",
-      "get_started": "To get started, browse or search for an indicator using the menu above."
+      "short_description": "Explore Data is where you can access data in a machine-readable spreadsheet format to use in your own data processing and visualization tools.",
+      "long_description": "Explore Data is where you can access data in a machine-readable spreadsheet format to use in your own data processing and visualization tools. You can filter the data by location, year, race/ethnicity, education level or poverty status, depending on what is available from the data source, download and save the data tables you create.",
+      "get_started": "To get started, browse or search for an indicator using the menu above.",
+      "headers": {
+        "location": "Location",
+        "year": "Year",
+        "race": "Race/Ethnicity",
+        "age": "Age",
+        "sex": "Sex",
+        "edcation": "Education Level",
+        "income": "Income Level",
+        "value": "Value",
+        "moe_low": " MOE (low)",
+        "moe_high": "MOE (high)",
+        "universe": "Universe"
+      }
     },
     "common": {
       "featured_indicators": "Featured Indicators",
@@ -47,7 +60,7 @@
     }
   },
   "home_view": {
-    "welcome_message": "Welcome to...",
+    "welcome_message": "Welcome to the Bexar Data Dive/Hub, hosted by CI:Now. We have three tools to help you explore, visualize, and interact with data. They are My Community, the easiest way to quickly get information about demographics, housing, education and much more across communities in Bexar County; the Dashboard, for a deeper dive into local data through interactive mapping, trend and comparison visualization tools; and the Explore Data tool, for access to downloadable data in a machine-readable spreadsheet format. For more information about how each tool works, click on the links below or in the side menu.",
     "available_tools": "Available Tools",
     "learn_more": "Learn More",
     "view": "View"

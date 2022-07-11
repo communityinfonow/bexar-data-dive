@@ -96,6 +96,7 @@ export default new Vuex.Store({
         context.commit('SET_LOCALE', locale)
         localStorage.setItem('cinow-locale', locale)
         i18n.locale = locale
+        document.title = i18n.t('app.name')
         if (router.currentRoute.query.lang !== locale) {
           router.replace({
             query: {
