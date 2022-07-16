@@ -1,6 +1,6 @@
-package org.cinow.omh.explore;
+package org.cinow.omh.tables;
 
-public class ExploreDataItem {
+public class TablesDataItem {
 	
 	private String location;
 	private String year;

@@ -1,6 +1,6 @@
-package org.cinow.omh.dashboard;
+package org.cinow.omh.explore;
 
-public class DashboardDataPoint {
+public class ExploreDataPoint {
 
 	/**
 	 * The indicator value.

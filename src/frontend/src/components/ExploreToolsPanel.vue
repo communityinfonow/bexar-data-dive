@@ -53,7 +53,7 @@ import { mapActions, mapState } from 'vuex'
 import router from '@/router/index'
 
 export default {
-	name: 'DashboardToolsPanel',
+	name: 'ExploreToolsPanel',
 	computed: {
 		...mapState(['filters', 'locale'])
 	},

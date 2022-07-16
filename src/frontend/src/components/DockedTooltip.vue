@@ -2,16 +2,16 @@
 	<div class="my-2">
 		<v-card outlined tile class="fill-height">
 			<v-card-title>
-				{{ $t('tools.dashboard.docked_tooltip.now_viewing')}}
+				{{ $t('tools.explore.docked_tooltip.now_viewing')}}
 			</v-card-title>
 			<v-card-text v-if="!dockedTooltip">
 				<div class="text-subtitle-1">{{ helpMessage }}</div>
 			</v-card-text>
 			<v-card-text v-else>
-				<div class="text-h6">{{ dashboardData.indicator['name_' + locale] }}: {{ valueFormatted }}</div>
+				<div class="text-h6">{{ exploreData.indicator['name_' + locale] }}: {{ valueFormatted }}</div>
 				<ul class="text-body-1">
 					<li v-if="!dockedTooltip.noData">Range: {{  rangeFormatted }}</li>
-					<li>Source: {{ dashboardData.source['name_' + locale] }}</li>
+					<li>Source: {{ exploreData.source['name_' + locale] }}</li>
 					<li>Location: {{ dockedTooltip.location }}</li>
 					<li>Year: {{ dockedTooltip.year }}</li>
 					<li v-for="filter in dockedTooltip.indicatorFilters" :key="filter.type.id">
@@ -35,7 +35,7 @@ export default {
 		},
 	},
 	computed: {
-		...mapState(['locale', 'dashboardData', 'dockedTooltip']),
+		...mapState(['locale', 'exploreData', 'dockedTooltip']),
 		valueFormatted() {
 			if (this.dockedTooltip.suppressed) {
 				return 'Suppressed'; //TODO: espanol
@@ -43,12 +43,12 @@ export default {
 				return 'No Data'; //TODO: espanol
 			}
 
-			return format(this.dashboardData.indicator.typeId, this.dockedTooltip.value);
+			return format(this.exploreData.indicator.typeId, this.dockedTooltip.value);
 		},
 		rangeFormatted() {
-			return format(this.dashboardData.indicator.typeId, this.dockedTooltip.value - this.dockedTooltip.moeLow)
+			return format(this.exploreData.indicator.typeId, this.dockedTooltip.value - this.dockedTooltip.moeLow)
 				+ " - "
-				+ format(this.dashboardData.indicator.typeId, this.dockedTooltip.value + this.dockedTooltip.moeHigh);
+				+ format(this.exploreData.indicator.typeId, this.dockedTooltip.value + this.dockedTooltip.moeHigh);
 		}
 	},
 }

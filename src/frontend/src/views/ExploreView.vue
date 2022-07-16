@@ -10,9 +10,9 @@
         ></MenuToolbar>
       </v-col>
       <v-col v-if="showIntro" cols="auto" class="pa-4">
-          <h1 class="text-h3 mb-2">{{ $t('tools.dashboard.name') }}</h1>
-          <p>{{ $t('tools.dashboard.long_description') }}</p>
-          <p>{{ $t('tools.dashboard.get_started') }}</p>
+          <h1 class="text-h3 mb-2">{{ $t('tools.explore.name') }}</h1>
+          <p>{{ $t('tools.explore.long_description') }}</p>
+          <p>{{ $t('tools.explore.get_started') }}</p>
       </v-col>
       <v-col v-if="indicator" cols="auto" class="pt-4 px-4">
           <h1 class="text-h3 mb-1">{{ indicator['name_' + locale] }}</h1>
@@ -25,16 +25,16 @@
               <v-col cols="auto" class="shrink">
                 <v-tabs v-model="tab" grow>
                   <v-tab v-for="tab in tabs" :key="tab" @click="selectTab(tab)">
-                    {{ $t('tools.dashboard.tabs.' + tab) }}
+                    {{ $t('tools.explore.tabs.' + tab) }}
                   </v-tab>
                 </v-tabs>
               </v-col>
               <v-col cols="auto" class="grow">
                 <v-tabs-items v-model="tab" class="fill-height">
                   <v-tab-item v-for="tab in tabs" :key="tab" transition="none" reverse-transition="none" class="fill-height">
-                    <dashboard-map v-if="tab === 'map'"></dashboard-map>
-                    <dashboard-trend-chart v-if="tab === 'trend'"></dashboard-trend-chart>
-                    <dashboard-compare-chart v-if="tab === 'compare'"></dashboard-compare-chart>
+                    <explore-map v-if="tab === 'map'"></explore-map>
+                    <explore-trend-chart v-if="tab === 'trend'"></explore-trend-chart>
+                    <explore-compare-chart v-if="tab === 'compare'"></explore-compare-chart>
                   </v-tab-item>
                 </v-tabs-items>
               </v-col>
@@ -59,18 +59,18 @@ import i18n from '@/i18n'
 import MenuToolbar from '@/components/MenuToolbar'
 import FiltersPanel from '@/components/FiltersPanel'
 import DockedTooltip from '@/components/DockedTooltip'
-import DashboardMap from '@/components/DashboardMap'
-import DashboardTrendChart from '@/components/DashboardTrendChart'
-import DashboardCompareChart from '@/components/DashboardCompareChart'
+import ExploreMap from '@/components/ExploreMap'
+import ExploreTrendChart from '@/components/ExploreTrendChart'
+import ExploreCompareChart from '@/components/ExploreCompareChart'
 export default {
-  name: 'DashboardView',
+  name: 'ExploreView',
   components: {
     MenuToolbar, 
     FiltersPanel,
     DockedTooltip,
-    DashboardMap,
-    DashboardTrendChart,
-    DashboardCompareChart
+    ExploreMap,
+    ExploreTrendChart,
+    ExploreCompareChart
   },
   data() {
     return {
@@ -86,11 +86,11 @@ export default {
     dockedTooltipHelpMessage() {
       switch (this.tab) {
         case 0:
-          return i18n.t('tools.dashboard.docked_tooltip.help_messages.map');
+          return i18n.t('tools.explore.docked_tooltip.help_messages.map');
         case 1:
-          return i18n.t('tools.dashboard.docked_tooltip.help_messages.trend');
+          return i18n.t('tools.explore.docked_tooltip.help_messages.trend');
         case 2:
-          return i18n.t('tools.dashboard.docked_tooltip.help_messages.compare');
+          return i18n.t('tools.explore.docked_tooltip.help_messages.compare');
       }
       return null
     }
@@ -109,7 +109,7 @@ export default {
   mounted () {
     if (router.currentRoute.query.indicator && this.indicatorMenu) {
       this.setIndicator(this.indicatorMenu.categories
-        .flatMap(category => category.items)
+        .flatMap(category => category.subcategories.flatMap(sc => sc.items).concat(category.items))
         .find(item => item.id == router.currentRoute.query.indicator))
     } else {
       this.setIndicator(null)
@@ -121,7 +121,7 @@ export default {
   updated () {
     if (router.currentRoute.query.indicator && this.indicatorMenu) {
       let matchedIndicator = this.indicatorMenu.categories
-        .flatMap(category => category.items)
+        .flatMap(category => category.subcategories.flatMap(sc => sc.items).concat(category.items))
         .find(item => item.id == router.currentRoute.query.indicator)
       if (matchedIndicator?.id !== this.indicator?.id) {
         this.setIndicator(matchedIndicator)
@@ -131,7 +131,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setIndicator', 'setDashboardTab']),
+    ...mapActions(['setIndicator', 'setExploreTab']),
     selectItem(item) {
       if (item.id !== this.indicator?.id) {
         this.setIndicator(item)
@@ -156,7 +156,7 @@ export default {
       let tabIndex = this.tabs.indexOf(selectedTab)
       if (tabIndex !== this.tab) {
         this.tab = tabIndex;
-        this.setDashboardTab(selectedTab);
+        this.setExploreTab(selectedTab);
       }
     },
   },

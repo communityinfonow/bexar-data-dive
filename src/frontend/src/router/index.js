@@ -2,8 +2,8 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
 import CommunityView from '@/views/CommunityView.vue'
-import DashboardView from '@/views/DashboardView.vue'
-import ExploreDataView from '@/views/ExploreDataView.vue'
+import ExploreView from '@/views/ExploreView.vue'
+import TablesView from '@/views/TablesView.vue'
 import AboutTheToolsView from '@/views/AboutTheToolsView.vue'
 import AboutTheDataView from '@/views/AboutTheDataView.vue'
 
@@ -16,19 +16,19 @@ const routes = [
     component: HomeView,
   },
   {
-    path: '/my-community',
+    path: '/community',
     name: 'community',
     component: CommunityView,
   },
   {
-    path: '/dashboard',
-    name: 'dashboard',
-    component: DashboardView,
+    path: '/explore',
+    name: 'explore',
+    component: ExploreView,
   },
   {
-    path: '/explore-data',
-    name: 'explore-data',
-    component: ExploreDataView,
+    path: '/tables',
+    name: 'tables',
+    component: TablesView,
   },
   {
     path: '/about-the-tools',

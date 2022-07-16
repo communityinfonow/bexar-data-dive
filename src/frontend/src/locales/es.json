@@ -14,7 +14,7 @@
       "long_description": "Mi Comunidad es una herramienta...",
       "get_started": "Para comenzar, navegue o busque un indicador usando el menú de arriba, o haga clic en una ubicación en el mapa a continuación."
     },
-    "dashboard": {
+    "explore": {
       "name": "Panel",
       "short_description": "Panel es...",
       "long_description": "Panel es una herramienta...",
@@ -35,9 +35,9 @@
       "filters": "Filters (es)",
       "apply_filters": "Apply Filters (es)"
     },
-    "explore_data": {
-      "name": "Explorar Datos",
-      "short_description": "Explorar Datos es...",
+    "tables": {
+      "name": "Tables & Downloads (es)",
+      "short_description": "Tables & Downloads (es) es...",
       "long_description": "Explorar Datos es una herramienta...",
       "get_started": "Para comenzar, navegue o busque un indicador usando el menú de arriba, o haga clic en uno de los Indicadores destacados a continuación.",
       "headers": {

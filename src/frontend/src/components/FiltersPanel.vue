@@ -2,7 +2,7 @@
 	<v-form v-if="filters" ref="filtersForm" v-model="valid">
 		<v-card outlined tile>
 			<v-card-title >
-				<span class="text-h6 font-weight-light">{{ $t('tools.dashboard.filters') }}</span>
+				<span class="text-h6 font-weight-light">{{ $t('tools.explore.filters') }}</span>
 			</v-card-title>
 			<v-card-text>
 				<v-autocomplete
@@ -56,7 +56,7 @@
 			</v-card-text>
 			<v-card-actions>
 				<v-btn text color="primary" @click="applyFilters">
-					{{ $t('tools.dashboard.apply_filters') }}
+					{{ $t('tools.explore.apply_filters') }}
 				</v-btn>
 			</v-card-actions>
 		</v-card>

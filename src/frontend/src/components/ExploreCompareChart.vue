@@ -2,7 +2,7 @@
 	<div class="fill-height">
 		<v-row class="no-gutters flex-wrap flex-column fill-height">
 			<v-col cols="auto">
-				<dashboard-tools-panel v-if="filters"></dashboard-tools-panel>
+				<explore-tools-panel v-if="filters"></explore-tools-panel>
 			</v-col>
 			<v-col cols="auto" class="grow">
 				<div 
@@ -23,12 +23,12 @@ import { SVGRenderer } from 'echarts/renderers';
 import { AriaComponent, LegendComponent, GridComponent } from 'echarts/components';
 import { BarChart } from 'echarts/charts';
 import colorbrewer from 'colorbrewer'
-import DashboardToolsPanel from '@/components/DashboardToolsPanel'
+import ExploreToolsPanel from '@/components/ExploreToolsPanel'
 
 export default {
-	name: 'DashboardCompareChart',
+	name: 'ExploreCompareChart',
 	components: {
-		DashboardToolsPanel
+		ExploreToolsPanel
 	},
 	data() {
 		return {
@@ -36,13 +36,13 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['locale', 'filters', 'dashboardData', 'compareSelections']),
+		...mapState(['locale', 'filters', 'exploreData', 'compareSelections']),
 	},
 	watch: {
 		locale() {
 			this.drawChart()
 		},
-		dashboardData(newValue) {
+		exploreData(newValue) {
 			if (newValue) {
 				this.drawChart();
 			}
@@ -61,7 +61,7 @@ export default {
 						moeLow: params.data.moeLow,
 						moeHigh: params.data.moeHigh,
 						location: params.data.location,
-						year: this.dashboardData.filters.yearFilter.options[0].id,
+						year: this.exploreData.filters.yearFilter.options[0].id,
 						indicatorFilters: params.data.indicatorFilters
 					});
 				}
@@ -74,7 +74,7 @@ export default {
 			window.addEventListener('resize', () => {
 				this.chart.resize();
 			});
-			if (this.dashboardData) {
+			if (this.exploreData) {
 				this.drawChart();
 			}
 		}, 100);
@@ -94,10 +94,10 @@ export default {
 				axisLabel: textStyle
 			};
 			let xAxisData = [];
-			if (this.dashboardData.compareData) {
+			if (this.exploreData.compareData) {
 				xAxisData.push(this.compareSelections.type.name_en === 'Location' 
-					? this.dashboardData.filters.locationFilter.options[0]['name_' + this.locale]
-					: this.dashboardData.filters.indicatorFilters.find(f => f.type.id === this.compareSelections.type.id).options[0]['name_' + this.locale])
+					? this.exploreData.filters.locationFilter.options[0]['name_' + this.locale]
+					: this.exploreData.filters.indicatorFilters.find(f => f.type.id === this.compareSelections.type.id).options[0]['name_' + this.locale])
 				xAxisData.push(...this.compareSelections.filterOptions.map(o => o['name_' + this.locale]))
 			} else {
 				xAxisData.push('')
@@ -107,36 +107,36 @@ export default {
 				data: xAxisData,
 				axisTick: { show: false },
 				axisLabel: textStyle,
-				name: this.compareSelections ? '' : this.dashboardData.indicator['name_' + this.locale],
+				name: this.compareSelections ? '' : this.exploreData.indicator['name_' + this.locale],
 				nameLocation: 'center',
 				nameTextStyle: textStyle
 			};
 			option.color = colorbrewer.Blues[3][2];
 			let seriesData = [];
-			let filteredLocation = this.dashboardData.locationData.find(ld => 
-						ld.location.id === this.dashboardData.filters.locationFilter.options[0].id && 
-						ld.location.typeId === this.dashboardData.filters.locationTypeFilter.options[0].id);
+			let filteredLocation = this.exploreData.locationData.find(ld => 
+						ld.location.id === this.exploreData.filters.locationFilter.options[0].id && 
+						ld.location.typeId === this.exploreData.filters.locationTypeFilter.options[0].id);
 			seriesData.push({ 
-				value: filteredLocation.yearData[this.dashboardData.filters.yearFilter.options[0].id]?.value || 0,
-				suppressed: filteredLocation.yearData[this.dashboardData.filters.yearFilter.options[0].id]?.suppressed,
-				noData: filteredLocation.yearData[this.dashboardData.filters.yearFilter.options[0].id],
-				moeLow: filteredLocation.yearData[this.dashboardData.filters.yearFilter.options[0].id]?.moeLow, 
-				moeHigh: filteredLocation.yearData[this.dashboardData.filters.yearFilter.options[0].id]?.moeHigh,
+				value: filteredLocation.yearData[this.exploreData.filters.yearFilter.options[0].id]?.value || 0,
+				suppressed: filteredLocation.yearData[this.exploreData.filters.yearFilter.options[0].id]?.suppressed,
+				noData: !filteredLocation.yearData[this.exploreData.filters.yearFilter.options[0].id]?.value,
+				moeLow: filteredLocation.yearData[this.exploreData.filters.yearFilter.options[0].id]?.moeLow, 
+				moeHigh: filteredLocation.yearData[this.exploreData.filters.yearFilter.options[0].id]?.moeHigh,
 				location: filteredLocation.location['name_' + this.locale] ,
-				indicatorFilters: this.dashboardData.filters.indicatorFilters
+				indicatorFilters: this.exploreData.filters.indicatorFilters
 			});
-			if (this.dashboardData.compareData) {
-				seriesData.push(...this.dashboardData.compareData.map((cd, index) => {
-					let compareIndicatorFilters = JSON.parse(JSON.stringify(this.dashboardData.filters.indicatorFilters));
+			if (this.exploreData.compareData) {
+				seriesData.push(...this.exploreData.compareData.map((cd, index) => {
+					let compareIndicatorFilters = JSON.parse(JSON.stringify(this.exploreData.filters.indicatorFilters));
 					if (this.compareSelections.type.name && this.compareSelections.type.name !== 'Location') {
 						compareIndicatorFilters.find(f => f.type.id === this.compareSelections.type.id).options[0] = this.compareSelections.filterOptions[index];
 					}
 					return  { 
-						value: cd.yearData[this.dashboardData.filters.yearFilter.options[0].id]?.value || 0,
-						suppressed: cd.yearData[this.dashboardData.filters.yearFilter.options[0].id]?.suppressed,
-						noData: !cd.yearData[this.dashboardData.filters.yearFilter.options[0].id],
-						moeLow: cd.yearData[this.dashboardData.filters.yearFilter.options[0].id]?.moeLow,
-						moeHigh: cd.yearData[this.dashboardData.filters.yearFilter.options[0].id]?.moeHigh,
+						value: cd.yearData[this.exploreData.filters.yearFilter.options[0].id]?.value || 0,
+						suppressed: cd.yearData[this.exploreData.filters.yearFilter.options[0].id]?.suppressed,
+						noData: !cd.yearData[this.exploreData.filters.yearFilter.options[0].id]?.value,
+						moeLow: cd.yearData[this.exploreData.filters.yearFilter.options[0].id]?.moeLow,
+						moeHigh: cd.yearData[this.exploreData.filters.yearFilter.options[0].id]?.moeHigh,
 						location: cd.location['name_' + this.locale],
 						indicatorFilters: compareIndicatorFilters
 					};

@@ -16,35 +16,35 @@ export default new Vuex.Store({
     source: null,
     filters: null,
     dockedTooltip: null,
-    dashboardData: null,
-    dashboardTab: null,
+    exploreData: null,
+    exploreTab: null,
     filterSelections: null,
     compareSelections: null,
-    exploreData: null
+    tablesData: null
   },
   getters: {
     tools: () => {
       return [
         {
           name: i18n.t('tools.my_community.name'),
-          route: 'my-community',
+          route: 'community',
           icon: 'mdi-map',
           shortDescription: i18n.t('tools.my_community.short_description'),
           fulldescription: i18n.t('tools.my_community.long_description'),
         },
         {
-          name: i18n.t('tools.dashboard.name'),
-          route: 'dashboard',
+          name: i18n.t('tools.explore.name'),
+          route: 'explore',
           icon: 'mdi-view-dashboard',
-          shortDescription: i18n.t('tools.dashboard.short_description'),
-          fulldescription: i18n.t('tools.dashboard.long_description'),
+          shortDescription: i18n.t('tools.explore.short_description'),
+          fulldescription: i18n.t('tools.explore.long_description'),
         },
         {
-          name: i18n.t('tools.explore_data.name'),
-          route: 'explore-data',
+          name: i18n.t('tools.tables.name'),
+          route: 'tables',
           icon: 'mdi-grid',
-          shortDescription: i18n.t('tools.explore_data.short_description'),
-          fulldescription: i18n.t('tools.explore_data.long_description'),
+          shortDescription: i18n.t('tools.tables.short_description'),
+          fulldescription: i18n.t('tools.tables.long_description'),
         },
       ]
     },
@@ -71,14 +71,14 @@ export default new Vuex.Store({
     SET_FILTERS(state, filters) {
       state.filters = filters
     },
-    SET_DASHBOARD_DATA(state, dashboardData) {
-      state.dashboardData = dashboardData
+    SET_EXPLORE_DATA(state, exploreData) {
+      state.exploreData = exploreData
     },
     SET_DOCKED_TOOLTIP(state, value) {
       state.dockedTooltip = value
     },
-    SET_DASHBOARD_TAB(state, dashboardTab) {
-      state.dashboardTab = dashboardTab
+    SET_EXPLORE_TAB(state, exploreTab) {
+      state.exploreTab = exploreTab
     },
     SET_FILTER_SELECTIONS(state, selections) { 
       state.filterSelections = selections
@@ -86,8 +86,8 @@ export default new Vuex.Store({
     SET_COMPARE_SELECTIONS(state, selections) {
       state.compareSelections = selections
     },
-    SET_EXPLORE_DATA(state, exploreData) {
-      state.exploreData = exploreData
+    SET_TABLES_DATA(state, tablesData) {
+      state.tablesData = tablesData
     }
   },
   actions: {
@@ -162,23 +162,23 @@ export default new Vuex.Store({
         context.commit('SET_FILTERS', response.data)
       })
     },
-    getDashboardData(context) {
+    getExploreData(context) {
       if (!this.state.filterSelections) {
         return;
       }
-      axios.post('/api/dashboard-data', {
+      axios.post('/api/explore-data', {
         indicator: context.state.indicator.id, 
         filters: this.state.filterSelections,
         comparisons: this.state.compareSelections
       }).then(response => {
-        context.commit('SET_DASHBOARD_DATA', response.data)
+        context.commit('SET_EXPLORE_DATA', response.data)
       })
     },
     setDockedTooltip(context, data) {
       context.commit('SET_DOCKED_TOOLTIP', data)
     },
-    setDashboardTab(context, tab) {
-      context.commit('SET_DASHBOARD_TAB', tab)
+    setExploreTab(context, tab) {
+      context.commit('SET_EXPLORE_TAB', tab)
     },
     setFilterSelections(context, selections) {
       context.commit('SET_FILTER_SELECTIONS', selections);
@@ -197,7 +197,7 @@ export default new Vuex.Store({
           query: filterQuery
         });
       }
-      context.dispatch('getDashboardData');
+      context.dispatch('getExploreData');
     },
     setCompareSelections(context, selections) {
       context.commit('SET_COMPARE_SELECTIONS', selections);
@@ -212,14 +212,30 @@ export default new Vuex.Store({
           query: compareQuery
         });
       }
-      context.dispatch('getDashboardData');
+      context.dispatch('getExploreData');
     },
-    getExploreData(context, indicator) {
-      axios.get('/api/explore-data', { params: { 
+    setTablesData(context, indicator) {
+      if (indicator !== null) {
+        context.dispatch('getCommunityData', indicator)
+      } else {
+        context.commit('SET_TABLES_DATA', indicator)
+      }
+    },
+    getTablesData(context, indicator) {
+      axios.get('/api/tables-data', { params: { 
         indicator: indicator
       }
     }).then(response => {
-      context.commit('SET_EXPLORE_DATA', response.data)
+      response.data.items.forEach(i => {
+        if (i.suppressed) {
+          i.valueLabel = 'Suppressed'; //TODO: espanol
+        } else if (i.value === null) { 
+          i.valueLabel = 'No Data'; //TODO: espanol
+        } else  {
+          i.valueLabel = i.value
+        }
+      })
+      context.commit('SET_TABLES_DATA', response.data);
     })
     }
   },

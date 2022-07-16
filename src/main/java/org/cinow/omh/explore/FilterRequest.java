@@ -1,4 +1,4 @@
-package org.cinow.omh.dashboard;
+package org.cinow.omh.explore;
 
 import java.util.Map;
 

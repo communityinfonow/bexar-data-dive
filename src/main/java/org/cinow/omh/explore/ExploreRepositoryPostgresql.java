@@ -2,56 +2,139 @@ package org.cinow.omh.explore;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.cinow.omh.filters.FilterTypes;
+import org.cinow.omh.locations.Location;
+import org.cinow.omh.locations.LocationType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.RowMapper;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class ExploreRepositoryPostgresql implements ExploreRepository{
+public class ExploreRepositoryPostgresql implements ExploreRepository {
 
 	@Autowired
 	NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-	
+
 	@Override
-	public List<ExploreDataItem> getExploreData(String indicator) {
+	public List<ExploreDataLocation> getExploreData(ExploreDataRequest dataRequest, boolean allLocations) {
+		//TODO: testing for the following scenarios:
+		// 1. only trending years that are between the geom years for tracts
 		String sql = ""
-			+ " select l.name_en as location, "
-			+ " 	iv.year_, iv.indicator_value, iv.moe_low, iv.moe_high, iv.universe_value, "
-			+ " 	race.name_en as race, age.name_en as age, sex.name_en as sex, edu.name_en as edu, inc.name_en as inc "
-			+ " from tbl_indicator_values iv "
-			+ " 	join tbl_locations l on iv.location_id = l.id_"
-			+ " 	left join tbl_filter_options race on race.id_ = iv.race_id "
-			+ " 	left join tbl_filter_options age on age.id_ = iv.age_id "
-			+ " 	left join tbl_filter_options sex on sex.id_ = iv.sex_id "
-			+ " 	left join tbl_filter_options edu on edu.id_ = iv.education_id "
-			+ " 	left join tbl_filter_options inc on inc.id_ = iv.income_id "
-			+ " where iv.indicator_id = :indicator_id::numeric "
-			+ " order by l.name_en, iv.year_ desc, race.id_, age.id_, sex.id_, edu.id_, inc.id_ ";
+			+ " with trend_interval as (select trend_interval from tbl_sources where id_ = (select source_id from tbl_indicators where id_ = :indicator::numeric)) "
+			+ " select l.id_ as l_id, l.name_en as l_name_en, l.name_es as l_name_es, "
+			+ "   lt.id_ as lt_id, lt.name_en as lt_name_en, lt.name_es as lt_name_es, "
+			+ "   lg.geojson as lg_geojson, "
+			+ "   iv.year_ as iv_year, iv.indicator_value as iv_indicator_value, iv.suppressed as iv_suppressed, iv.moe_low as iv_moe_low, iv.moe_high as iv_moe_high, iv.universe_value as iv_universe_value "
+			+ " from tbl_locations l "
+			+ "   join tbl_location_types lt on lt.id_ = l.location_type_id and lt.id_ = :location_type_id::numeric "
+			+ "   left join tbl_location_geometries lg on lg.location_id = l.id_ "
+			+ "     and lg.location_type_id = lt.id_ "
+			+ "     and ((lg.vintage_min_year is null and lg.vintage_max_year is null) or (:year::numeric between lg.vintage_min_year and lg.vintage_max_year)) "
+			+ "   left join tbl_indicator_values iv on iv.location_id = l.id_ "
+			+ "     and iv.location_type_id = lt.id_ "
+			+ "     and iv.indicator_id = :indicator::numeric "
+			+ "     and mod(:year::numeric - iv.year_::numeric, coalesce((select trend_interval from trend_interval), 1)) = 0 "
+			+ "     and ((lg.trend_min_year is null and lg.trend_max_year is null) or (iv.year_::numeric between lg.trend_min_year and lg.trend_max_year)) ";
 
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
-		paramMap.addValue("indicator_id", indicator);
-
-		return this.namedParameterJdbcTemplate.query(sql, paramMap, new RowMapper<ExploreDataItem>() {
+		paramMap.addValue("year", dataRequest.getFilters().getYear());
+		paramMap.addValue("indicator", dataRequest.getIndicator());
+		paramMap.addValue("location_type_id", dataRequest.getFilters().getLocationType());
+		if (dataRequest.getFilters().getIndicatorFilters().get(FilterTypes.RACE.getId()) != null) {
+			sql += "     and iv.race_id = :race::numeric ";
+			paramMap.addValue("race", dataRequest.getFilters().getIndicatorFilters()
+				.get(FilterTypes.RACE.getId()).getId());
+		}
+		if (dataRequest.getFilters().getIndicatorFilters().get(FilterTypes.AGE.getId()) != null) {
+			sql += "     and iv.age_id = :age::numeric ";
+			paramMap.addValue("age", dataRequest.getFilters().getIndicatorFilters()
+				.get(FilterTypes.AGE.getId()).getId());
+		}
+		if (dataRequest.getFilters().getIndicatorFilters().get(FilterTypes.SEX.getId()) != null) {
+			sql += "     and iv.sex_id = :sex::numeric ";
+			paramMap.addValue("sex", dataRequest.getFilters().getIndicatorFilters()
+				.get(FilterTypes.SEX.getId()).getId());
+		}
+		if (dataRequest.getFilters().getIndicatorFilters().get(FilterTypes.EDUCATION.getId()) != null) {
+			sql += "     and iv.education_id = :education::numeric ";
+			paramMap.addValue("education", dataRequest.getFilters().getIndicatorFilters()
+				.get(FilterTypes.EDUCATION.getId()).getId());
+		}
+		if (dataRequest.getFilters().getIndicatorFilters().get(FilterTypes.INCOME.getId()) != null) {
+			sql += "     and iv.income_id = :income::numeric ";
+			paramMap.addValue("income", dataRequest.getFilters().getIndicatorFilters()
+				.get(FilterTypes.INCOME.getId()).getId());
+		}
+		if (!allLocations) {
+			sql += " where l.id_ = :location_id ";
+			paramMap.addValue("location_id", dataRequest.getFilters().getLocation());
+		}
+		sql += " order by lt.id_, l.id_, iv.year_ ";
+			
+		return this.namedParameterJdbcTemplate.query(sql, paramMap, new ResultSetExtractor<List<ExploreDataLocation>>() {
 			@Override
-			public ExploreDataItem mapRow(ResultSet rs, int rowNum) throws SQLException {
-				ExploreDataItem item = new ExploreDataItem();
-				item.setLocation(rs.getString("location"));
-				item.setYear(rs.getString("year_"));
-				item.setRace(rs.getString("race"));
-				item.setAge(rs.getString("age"));
-				item.setSex(rs.getString("sex"));
-				item.setEducation(rs.getString("edu"));
-				item.setIncome(rs.getString("inc"));
-				item.setValue(rs.getDouble("indicator_value"));
-				item.setMoeLow(rs.getDouble("moe_low"));
-				item.setMoeHigh(rs.getDouble("moe_high"));
-				item.setUniverseValue(rs.getDouble("universe_value"));
+			public List<ExploreDataLocation> extractData(ResultSet rs) throws SQLException, DataAccessException {
+				String currentLocationId = "-1";
+				String currentLocationTypeId = "-1";
+				List<ExploreDataLocation> locationDataList = new ArrayList<>();
+				ExploreDataLocation locationData = new ExploreDataLocation();
+				while (rs.next()) {
+					if (!rs.getString("l_id").equals(currentLocationId) || !rs.getString("lt_id").equals(currentLocationTypeId)) {
+						currentLocationId = rs.getString("l_id");
+						currentLocationTypeId = rs.getString("lt_id");
+						
+						locationData = new ExploreDataLocation();
+						locationDataList.add(locationData);
 
-				return item;
+						Location location = new Location();
+						location.setId(rs.getString("l_id"));
+						location.setTypeId(rs.getString("lt_id"));
+						location.setName_en(rs.getString("l_name_en"));
+						location.setName_es(rs.getString("l_name_es"));
+						locationData.setLocation(location);
+
+						LocationType locationType = new LocationType();
+						locationType.setId(rs.getString("lt_id"));
+						locationType.setName_en(rs.getString("lt_name_en"));
+						locationType.setName_es(rs.getString("lt_name_es"));
+						locationData.setLocationType(locationType);
+						locationData.setGeojson(rs.getString("lg_geojson"));
+						locationData.setYearData(new LinkedHashMap<>());
+					}
+					if (rs.getString("iv_year") != null) {
+						ExploreDataPoint dataPoint = new ExploreDataPoint();
+						dataPoint.setSuppressed(rs.getInt("iv_suppressed") == 1);
+						if (!dataPoint.isSuppressed()) {
+							dataPoint.setValue(rs.getDouble("iv_indicator_value"));
+							if (rs.wasNull()) {
+								dataPoint.setValue(null);
+							}
+							dataPoint.setMoeLow(rs.getDouble("iv_moe_low"));
+							if (rs.wasNull()) {
+								dataPoint.setMoeLow(null);
+							}
+							dataPoint.setMoeHigh(rs.getDouble("iv_moe_high"));
+							if (rs.wasNull()) {
+								dataPoint.setMoeHigh(null);
+							}
+							dataPoint.setUniverseValue(rs.getDouble("iv_universe_value"));
+							if (rs.wasNull()) {
+								dataPoint.setUniverseValue(null);
+							}
+						}
+
+						locationData.getYearData().put(rs.getString("iv_year"), dataPoint);
+					}
+				}
+				
+				return locationDataList;
 			}
 		});
 	}

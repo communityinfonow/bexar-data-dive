@@ -19,7 +19,7 @@ import { LineChart, BarChart } from 'echarts/charts';
 import colorbrewer from 'colorbrewer'
 
 export default {
-	name: 'DashboardTrendChart',
+	name: 'ExploreTrendChart',
 	props: {
 		tab: {
 			type: String,
@@ -31,13 +31,13 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['locale', 'dashboardData', 'filters']),
+		...mapState(['locale', 'exploreData', 'filters']),
 	},
 	watch: {
 		locale() {
 			this.drawChart()
 		},
-		dashboardData(newValue) {
+		exploreData(newValue) {
 			if (newValue) {
 				this.drawChart();
 			}
@@ -55,9 +55,9 @@ export default {
 						suppressed: params.data.suppressed,
 						moeLow: params.data.moeLow,
 						moeHigh: params.data.moeHigh,
-						location: this.dashboardData.filters.locationFilter.options[0]['name_' + this.locale],
+						location: this.exploreData.filters.locationFilter.options[0]['name_' + this.locale],
 						year: params.name,
-						indicatorFilters: this.dashboardData.filters.indicatorFilters
+						indicatorFilters: this.exploreData.filters.indicatorFilters
 					});
 				}
 			});
@@ -69,7 +69,7 @@ export default {
 			window.addEventListener('resize', () => {
 				this.chart.resize();
 			});
-			if (this.dashboardData) {
+			if (this.exploreData) {
 				this.drawChart();
 			}
 		}, 100);
@@ -89,7 +89,7 @@ export default {
 				splitNumber: 1,
 				axisLabel: textStyle
 			};
-			let trendYears = Array.from(new Set([...this.dashboardData.locationData.flatMap(ld => Object.keys(ld.yearData))]));
+			let trendYears = Array.from(new Set([...this.exploreData.locationData.flatMap(ld => Object.keys(ld.yearData))]));
 			trendYears.sort();
 			option.xAxis = { 
 				type: 'category', 
@@ -98,9 +98,9 @@ export default {
 				axisLabel: textStyle
 			};
 			option.color = colorbrewer.Blues[3][2];
-			let yearData = this.dashboardData.locationData.find(ld => 
-						ld.location.id === this.dashboardData.filters.locationFilter.options[0].id && 
-						ld.location.typeId === this.dashboardData.filters.locationTypeFilter.options[0].id).yearData;
+			let yearData = this.exploreData.locationData.find(ld => 
+						ld.location.id === this.exploreData.filters.locationFilter.options[0].id && 
+						ld.location.typeId === this.exploreData.filters.locationTypeFilter.options[0].id).yearData;
 			option.series = [{
 				// first series for valid values
 				data: trendYears
@@ -108,7 +108,7 @@ export default {
 						let yd = yearData[ty]; 
 						return { 
 							value: yd?.value, 
-							noData: !yd,
+							noData: !yd?.value,
 							suppressed: yd?.suppressed,
 							moeLow: yd?.moeLow, 
 							moeHigh: yd?.moeHigh
@@ -121,12 +121,12 @@ export default {
 				data: trendYears
 					.map(ty => {
 						let yd = yearData[ty];
-						if (yd && !yd.suppressed) {
+						if (yd?.value && !yd.suppressed) {
 							return null;
 						}
 						return { 
 							value: 0, 
-							noData: !yd,
+							noData: !yd?.value,
 							suppressed: yd?.suppressed,
 							moeLow: null, 
 							moeHigh: null

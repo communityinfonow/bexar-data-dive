@@ -1,6 +1,6 @@
-package org.cinow.omh.dashboard;
+package org.cinow.omh.explore;
 
-public class DashboardDataRequest {
+public class ExploreDataRequest {
 	
 	private String indicator;
 	private FilterRequest filters;

@@ -111,8 +111,17 @@ public class CommunityRepositoryPostgresql implements CommunityRepository {
 						dataPoint.setSuppressed(rs.getInt("suppressed") == 1);
 						if (!dataPoint.isSuppressed()) {
 							dataPoint.setMoeHigh(rs.getDouble("moe_high"));
+							if (rs.wasNull()) {
+								dataPoint.setMoeHigh(null);
+							}
 							dataPoint.setMoeLow(rs.getDouble("moe_low"));
+							if (rs.wasNull()) {
+								dataPoint.setMoeLow(null);
+							}
 							dataPoint.setUniverseValue(rs.getDouble("universe_value"));
+							if (rs.wasNull()) {
+								dataPoint.setUniverseValue(null);
+							}
 							dataPoint.setValue(rs.getDouble("indicator_value"));
 							if (rs.wasNull()) {
 								dataPoint.setValue(null);

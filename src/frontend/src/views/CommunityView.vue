@@ -96,6 +96,7 @@ export default {
       center: latLng(29.43445, -98.473562383)
     }
   },
+  //FIXME: the indicator subcategories are all at the bottom instead of within their categories
   computed: {
     ...mapState(['locale', 'locationMenu', 'community' ]),
     showIntro() {

@@ -2,7 +2,7 @@
 	<div class="fill-height">
 		<l-map
 			v-if="componentInitialized"
-			ref="dashboardMap"
+			ref="exploreMap"
 			:zoom="zoom"
 			:center="center"
 			:options="{ zoomDelta: 0.5, zoomSnap: 0.5, preferCanvas: true }"
@@ -35,11 +35,11 @@
 			<l-control
 				position="bottomleft"
 				class="legend-control"
-				v-if="dashboardData && shadingRanges.length"
+				v-if="exploreData && shadingRanges.length"
 			>
 				<v-card tile outlined :style="{ boxShadow: 'none !important' }">
 					<v-card-title class="pb-0 text--primary">
-						{{ dashboardData.indicator['name_' + locale] }}
+						{{ exploreData.indicator['name_' + locale] }}
 					</v-card-title>
 					<v-card-text>
 						<v-list
@@ -70,7 +70,7 @@
 							</v-list-item>
 						</v-list>
 						<div class="text--primary text-caption">
-							Source: {{ dashboardData.source['name_' + locale] }}
+							Source: {{ exploreData.source['name_' + locale] }}
 						</div>
 					</v-card-text>
 				</v-card>
@@ -89,7 +89,7 @@ import colorbrewer from 'colorbrewer'
 import { ckmeans } from 'simple-statistics'
 
 export default {
-	name: 'DashboardMap',
+	name: 'ExploreMap',
 	components: {
 		LMap, 
 		LTileLayer,
@@ -107,7 +107,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['dashboardData', 'locale']),
+		...mapState(['exploreData', 'locale']),
 		options() {
 			this.refreshOptions
 			return {
@@ -143,7 +143,9 @@ export default {
 			return shadingColors
 		},
 		shadingRanges() {
-			if (!this.geojson?.features?.length) {
+			console.log(this.geojson?.features)
+			if (!this.geojson?.features?.length 
+					|| !this.geojson?.features?.find(f => f.properties.value && !f.properties.suppressed)) {
 				return []
 			}
 
@@ -158,7 +160,7 @@ export default {
 		}
 	},
 	watch: {
-		dashboardData(newValue) {
+		exploreData(newValue) {
 			if (this.mapInitialized && newValue) {
 				this.drawMap();
 			}
@@ -167,7 +169,7 @@ export default {
 	mounted () {
 		setTimeout(() => { 
 			this.componentInitialized = true;
-			if (this.mapInitialized && this.dashboardData) {
+			if (this.mapInitialized && this.exploreData) {
 				this.drawMap();
 			}
 		}, 100);
@@ -177,7 +179,7 @@ export default {
 		...mapActions(['setDockedTooltip']),
 		initializeMap() {
 			this.mapInitialized = true;
-			if (this.dashboardData) {
+			if (this.exploreData) {
 				this.drawMap();
 			}
 		},
@@ -185,24 +187,24 @@ export default {
 			this.$refs.indicatorMap?.mapObject?.invalidateSize();
 		},
 		drawMap() {
-			this.geojson = featureCollection(this.dashboardData.locationData
+			this.geojson = featureCollection(this.exploreData.locationData
 				.filter(ld => !!ld.geojson)
 				.map(ld => feature(JSON.parse(ld.geojson), 
 					{
 						locationName: ld.location['name_' + this.locale],
-						value: ld.yearData[this.dashboardData.filters.yearFilter.options[0].id]?.value,
-						noData: !ld.yearData[this.dashboardData.filters.yearFilter.options[0].id],
-						moeLow: ld.yearData[this.dashboardData.filters.yearFilter.options[0].id]?.moeLow,
-						moeHigh: ld.yearData[this.dashboardData.filters.yearFilter.options[0].id]?.moeHigh,
-						suppressed: ld.yearData[this.dashboardData.filters.yearFilter.options[0].id]?.suppressed
+						value: ld.yearData[this.exploreData.filters.yearFilter.options[0].id]?.value,
+						noData: !ld.yearData[this.exploreData.filters.yearFilter.options[0].id]?.value,
+						moeLow: ld.yearData[this.exploreData.filters.yearFilter.options[0].id]?.moeLow,
+						moeHigh: ld.yearData[this.exploreData.filters.yearFilter.options[0].id]?.moeHigh,
+						suppressed: ld.yearData[this.exploreData.filters.yearFilter.options[0].id]?.suppressed
 					}, 
 					{ id: ld.location.id }))
 			)
 			this.refreshOptions = Math.random(); // force a refresh
-			this.$refs.dashboardMap?.mapObject.fitBounds(L.geoJSON(this.geojson).getBounds());
+			this.$refs.exploreMap?.mapObject.fitBounds(L.geoJSON(this.geojson).getBounds());
 		},
 		onEachFeature(feature, layer) {
-			let filteredFeature = feature.id === this.dashboardData.filters.locationFilter.options[0]?.id;
+			let filteredFeature = feature.id === this.exploreData.filters.locationFilter.options[0]?.id;
 			if (filteredFeature) {
 				layer.options.weight = 4;
 				layer.options.color = 'orange';
@@ -217,8 +219,8 @@ export default {
 					moeLow: layer.target.feature.properties.moeLow,
 					moeHigh: layer.target.feature.properties.moeHigh,
 					location: layer.target.feature.properties.locationName,
-					year: this.dashboardData.filters.yearFilter.options[0].id,
-					indicatorFilters: this.dashboardData.filters.indicatorFilters
+					year: this.exploreData.filters.yearFilter.options[0].id,
+					indicatorFilters: this.exploreData.filters.indicatorFilters
 				});
 			});
 			layer.on('mouseout', () => {

@@ -24,4 +24,8 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.v-app-bar.v-app-bar--fixed {
+  z-index: 1001;
+}
+</style>

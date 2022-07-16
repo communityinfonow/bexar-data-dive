@@ -1,16 +1,16 @@
-package org.cinow.omh.dashboard;
+package org.cinow.omh.explore;
 
 import java.util.Map;
 
 import org.cinow.omh.locations.Location;
 import org.cinow.omh.locations.LocationType;
 
-public class DashboardDataLocation {
+public class ExploreDataLocation {
 	
 	private Location location;
 	private LocationType locationType;
 	private String geojson;
-	private Map<String, DashboardDataPoint> yearData;
+	private Map<String, ExploreDataPoint> yearData;
 	
 	public Location getLocation() {
 		return location;
@@ -18,10 +18,10 @@ public class DashboardDataLocation {
 	public void setLocation(Location location) {
 		this.location = location;
 	}
-	public Map<String, DashboardDataPoint> getYearData() {
+	public Map<String, ExploreDataPoint> getYearData() {
 		return yearData;
 	}
-	public void setYearData(Map<String, DashboardDataPoint> yearData) {
+	public void setYearData(Map<String, ExploreDataPoint> yearData) {
 		this.yearData = yearData;
 	}
 	public LocationType getLocationType() {
