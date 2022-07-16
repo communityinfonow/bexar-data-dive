@@ -7,31 +7,29 @@
 			</v-btn>
 		</template>
 		<v-list>
-      <template v-for="subcategory in category.subcategories">
-        <v-menu offset-x open-on-hover :key="'subcategory_' + subcategory.id">
+      <template v-for="item in category.items">
+        <v-menu v-if="item.items" offset-x open-on-hover :key="'subcategory_' + item.id">
           <template v-slot:activator="{ on }">
             <v-list-item v-on="on">
-              <v-list-item-title>{{ subcategory['name_' + locale]}}</v-list-item-title>
+              <v-list-item-title>{{ item['name_' + locale]}}</v-list-item-title>
               <v-list-item-icon>
                 <v-icon right>mdi-chevron-right</v-icon>
               </v-list-item-icon>
             </v-list-item>
           </template>
           <v-list>
-            <template v-for="item in subcategory.items">
+            <template v-for="subItem in item.items">
             <MenuItem
-              :item="item"
-              :key="'item_' + item.id"
+              :item="subItem"
+              :key="'item_' + subItem.id"
               :selectItem="selectSubcategoryItem"
               :singleItem="false"
             ></MenuItem>
             </template>
           </v-list>
         </v-menu>
-        
-      </template>
-      <template v-for="item in category.items">
         <MenuItem
+          v-else
           :item="item"
           :key="'item_' + item.id"
           :selectItem="selectItem"

@@ -4,7 +4,7 @@
       <v-row style="max-width: 100%;">
         <v-col cols="10">
           <v-slide-group show-arrows style="height: 100%;">
-            <template v-for="category in menu.categories">
+            <template v-for="category in sortedMenu.categories">
               <v-slide-item :key="'category_' + category.id">
               <MenuButton text v-if="category.items.length === 1 && flattenSingleItems" :item="category.items[0]" :selectItem="selectItem" :singleItem="true"></MenuButton>
               <MenuCategory v-else :category="category" :selectItem="selectItem"></MenuCategory>
@@ -65,6 +65,23 @@ export default {
   },
   computed: {
     ...mapState(['locale']),
+    sortedMenu() {
+      let sortedMenu = JSON.parse(JSON.stringify(this.menu));
+      sortedMenu.categories.forEach(c => {
+        c.items = c.items.concat(c.subcategories);
+        c.items.sort((a, b) => {
+          if (a['name_' + this.locale] < b['name_' + this.locale]) {
+            return -1;
+          } else if (a['name_' + this.locale] > b['name_' + this.locale]) {
+            return 1;
+          } else {
+            return 0;
+          }
+        })
+      });
+      console.log(sortedMenu);
+      return sortedMenu;
+    },
     searchItems() {
       return this.menu.categories.flatMap(category => {
         return category.items;
