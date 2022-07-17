@@ -26,6 +26,8 @@ public class IndicatorService {
 				item.setCategoryId(menuCategory.getId());
 				item.setName_en(indicator.getName_en());
 				item.setName_es(indicator.getName_es());
+				item.setDescription_en(indicator.getDescription_en());
+				item.setDescription_es(indicator.getDescription_es());
 				menuCategory.getItems().add(item);
 			});
 			if (indicatorCategory.getParentCategoryId() == null) {

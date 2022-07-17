@@ -8,6 +8,8 @@ public class LocationMenuItem implements Item {
 	private String categoryId;
 	private String name_en;
 	private String name_es;
+	private String description_en;
+	private String description_es;
 
 	@Override
 	public String getId() {
@@ -45,5 +47,25 @@ public class LocationMenuItem implements Item {
 	@Override
 	public void setName_es(String name_es) {
 		this.name_es = name_es;
+	}
+
+	@Override
+	public String getDescription_en() {
+		return description_en;
+	}
+
+	@Override
+	public void setDescription_en(String description_en) {
+		this.description_en = description_en;
+	}
+
+	@Override
+	public String getDescription_es() {
+		return description_es;
+	}
+
+	@Override
+	public void setDescription_es(String description_es) {
+		this.description_es = description_es;
 	}
 }

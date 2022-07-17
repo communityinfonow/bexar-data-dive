@@ -59,6 +59,8 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 				indicator.setId(rs.getString("id_"));
 				indicator.setName_en(rs.getString("name_en"));
 				indicator.setName_es(rs.getString("name_es"));
+				indicator.setDescription_en(rs.getString("description_en"));
+				indicator.setDescription_es(rs.getString("description_es"));
 
 				return indicator;
 			}
