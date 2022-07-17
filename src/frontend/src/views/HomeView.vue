@@ -17,7 +17,7 @@
         <v-card-text>{{ tool.shortDescription }}</v-card-text>
         <v-spacer></v-spacer>
         <v-card-actions>
-          <v-btn plain text link color="primary" to="about-the-tools">{{
+          <v-btn plain text link color="primary" to="about-tools">{{
             $t('home_view.learn_more')
           }}</v-btn>
           <v-spacer></v-spacer>

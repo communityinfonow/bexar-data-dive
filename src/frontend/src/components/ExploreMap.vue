@@ -143,7 +143,6 @@ export default {
 			return shadingColors
 		},
 		shadingRanges() {
-			console.log(this.geojson?.features)
 			if (!this.geojson?.features?.length 
 					|| !this.geojson?.features?.find(f => f.properties.value && !f.properties.suppressed)) {
 				return []

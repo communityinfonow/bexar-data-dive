@@ -68,18 +68,19 @@ export default {
     sortedMenu() {
       let sortedMenu = JSON.parse(JSON.stringify(this.menu));
       sortedMenu.categories.forEach(c => {
-        c.items = c.items.concat(c.subcategories);
-        c.items.sort((a, b) => {
-          if (a['name_' + this.locale] < b['name_' + this.locale]) {
-            return -1;
-          } else if (a['name_' + this.locale] > b['name_' + this.locale]) {
-            return 1;
-          } else {
-            return 0;
-          }
-        })
+        if (c.subcategories) {
+          c.items = c.items.concat(c.subcategories);
+          c.items.sort((a, b) => {
+            if (a['name_' + this.locale] < b['name_' + this.locale]) {
+              return -1;
+            } else if (a['name_' + this.locale] > b['name_' + this.locale]) {
+              return 1;
+            } else {
+              return 0;
+            }
+          })
+        }
       });
-      console.log(sortedMenu);
       return sortedMenu;
     },
     searchItems() {

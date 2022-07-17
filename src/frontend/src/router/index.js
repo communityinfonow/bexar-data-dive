@@ -4,8 +4,8 @@ import HomeView from '@/views/HomeView.vue'
 import CommunityView from '@/views/CommunityView.vue'
 import ExploreView from '@/views/ExploreView.vue'
 import TablesView from '@/views/TablesView.vue'
-import AboutTheToolsView from '@/views/AboutTheToolsView.vue'
-import AboutTheDataView from '@/views/AboutTheDataView.vue'
+import AboutToolsView from '@/views/AboutToolsView.vue'
+import AboutDataView from '@/views/AboutDataView.vue'
 
 Vue.use(VueRouter)
 
@@ -31,14 +31,14 @@ const routes = [
     component: TablesView,
   },
   {
-    path: '/about-the-tools',
-    name: 'about-the-tools',
-    component: AboutTheToolsView,
+    path: '/about-tools',
+    name: 'about-tools',
+    component: AboutToolsView,
   },
   {
-    path: '/about-the-data',
-    name: 'about-the-data',
-    component: AboutTheDataView,
+    path: '/about-data',
+    name: 'about-data',
+    component: AboutDataView,
   },
 ]
 

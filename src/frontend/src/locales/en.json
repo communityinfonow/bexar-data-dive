@@ -46,7 +46,7 @@
         "race": "Race/Ethnicity",
         "age": "Age",
         "sex": "Sex",
-        "edcation": "Education Level",
+        "education": "Education Level",
         "income": "Income Level",
         "value": "Value",
         "moe_low": " MOE (low)",
@@ -60,10 +60,17 @@
     }
   },
   "home_view": {
+    "name": "Home",
     "welcome_message": "Welcome to the Bexar Data Dive/Hub, hosted by CI:Now. We have three tools to help you explore, visualize, and interact with data. They are My Community, the easiest way to quickly get information about demographics, housing, education and much more across communities in Bexar County; Explore Data, for a deeper dive into local data through interactive mapping, trend and comparison visualization tools; and the Tables & Downloads tool, for access to downloadable data in a machine-readable spreadsheet format. For more information about how each tool works, click on the links below or in the side menu.",
     "available_tools": "Available Tools",
     "learn_more": "Learn More",
     "view": "View"
+  },
+  "about_data_view": {
+    "name": "About the Data"
+  },
+  "about_tools_view": {
+    "name": "About the Tools"
   },
   "data": {
     "value": "Value",

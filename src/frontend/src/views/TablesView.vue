@@ -17,11 +17,22 @@
       <v-col v-if="tablesData" cols="auto" class="pt-4 px-4">
           <h1 class="text-h3 mb-1">{{ tablesData.indicator['name_' + locale] }}</h1>
           <h2 class="text-subtitle-1 mb-2">{{ tablesData.source['name_' + locale] }}</h2>
+          <vue-excel-xlsx
+            :data="tablesData.items"
+            :columns="xlsxColumns"
+            :file-name="tablesData.indicator['name_' + locale]"
+            :file-type="'xlsx'"
+            :sheet-name="tablesData.indicator['name_' + locale]"
+          >
+            Download
+          </vue-excel-xlsx>
           <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" hide-details></v-text-field>
           <v-data-table
             :headers="filteredHeaders"
             :items="tablesData.items"
             :search="search"
+            :options="tableOptions"
+            :footer-props="footerOptions"
             multi-sort
           >
           </v-data-table>
@@ -31,7 +42,7 @@
 </template>
 
 <script>
-//TODO: need to persist indicator in route
+//TODO: may need to fetch items per page if performance starts to degrade when legit data is loaded
 import { mapActions, mapState } from 'vuex'
 import i18n from '@/i18n'
 import router from '@/router/index'
@@ -43,6 +54,12 @@ export default {
   },
   data() {
     return {
+      tableOptions: {
+        itemsPerPage: 50
+      },
+      footerOptions: {
+        itemsPerPageOptions: [10, 50, 100, -1]
+      },
       search: ""
     }
   },
@@ -51,6 +68,21 @@ export default {
     showIntro() {
       return !this.tablesData && !router.currentRoute.query.indicator;
     },
+    xlsxColumns() {
+      return this.headers.map(h => {
+        return {
+          label: h.text,
+          field: h.value
+        };
+      });
+    },
+    /*xlsxData() {
+      return this.tablesData.items.map(i => {
+        return {
+
+        };
+      });
+    },*/
     headers() {
       return [
         {

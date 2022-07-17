@@ -46,7 +46,7 @@
         "race": "Race/Ethnicity (es)",
         "age": "Age (es)",
         "sex": "Sex (es)",
-        "edcation": "Education Level (es)",
+        "education": "Education Level (es)",
         "income": "Income Level (es)",
         "value": "Value (es)",
         "moe_low": " MOE (low) (es)",
@@ -54,16 +54,27 @@
         "universe": "Universe (es)"
       }
     },
+    "about_data": {
+      "name": "About the Data"
+    },
     "common": {
       "featured_indicators": "Indicadores destacados",
       "search": "Search (es)"
     }
   },
   "home_view": {
+    "name": "Home (es)",
     "welcome_message": "Bienvenido a...",
     "available_tools": "Herramientas Disponibles",
     "learn_more": "Aprende Más",
     "view": "Vista"
+  },
+
+  "about_data_view": {
+    "name": "About the Data (es)"
+  },
+  "about_tools_view": {
+    "name": "About the Tools (es)"
   },
   "data": {
     "value": "Value (es)",

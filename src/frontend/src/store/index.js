@@ -30,24 +30,52 @@ export default new Vuex.Store({
           route: 'community',
           icon: 'mdi-map',
           shortDescription: i18n.t('tools.my_community.short_description'),
-          fulldescription: i18n.t('tools.my_community.long_description'),
+          fullDescription: i18n.t('tools.my_community.long_description'),
         },
         {
           name: i18n.t('tools.explore.name'),
           route: 'explore',
           icon: 'mdi-view-dashboard',
           shortDescription: i18n.t('tools.explore.short_description'),
-          fulldescription: i18n.t('tools.explore.long_description'),
+          fullDescription: i18n.t('tools.explore.long_description'),
+          subTools: [
+            {
+              name: i18n.t('tools.explore.tabs.map'),
+              fullDescription: "TODO"
+            },
+            {
+              name: i18n.t('tools.explore.tabs.trend'),
+              fullDescription: "TODO"
+            },
+            {
+              name: i18n.t('tools.explore.tabs.compare'),
+              fullDescription: "TODO"
+            }
+          ]
         },
         {
           name: i18n.t('tools.tables.name'),
           route: 'tables',
           icon: 'mdi-grid',
           shortDescription: i18n.t('tools.tables.short_description'),
-          fulldescription: i18n.t('tools.tables.long_description'),
+          fullDescription: i18n.t('tools.tables.long_description'),
         },
       ]
     },
+    about_views: () => {
+      return [
+        {
+          name: i18n.t('about_tools_view.name'),
+          route: 'about-tools',
+          icon: 'mdi-hammer-wrench'
+        },
+        {
+          name: i18n.t('about_data_view.name'),
+          route: 'about-data',
+          icon: 'mdi-database'
+        }
+      ]
+    }
   },
   mutations: {
     SET_LOCALE(state, locale) {

@@ -59,6 +59,8 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import i18n from '@/i18n'
+
 export default {
   name: 'NavigationDrawer',
   data: () => ({
@@ -66,22 +68,11 @@ export default {
     activeView: null,
   }),
   computed: {
-    ...mapGetters(['tools']),
+    ...mapGetters(['tools', 'about_views']),
     navItems() {
-      return [{ route: '/', icon: 'mdi-home', name: 'Home' }]
+      return [{ route: '/', icon: 'mdi-home', name: i18n.t('home_view.name') }]
         .concat(this.tools)
-        .concat([
-          {
-            route: 'about-the-tools',
-            icon: 'mdi-hammer-wrench',
-            name: 'About the Tools',
-          },
-          {
-            route: 'about-the-data',
-            icon: 'mdi-database',
-            name: 'About the Data',
-          },
-        ])
+        .concat(this.about_views)
     },
   },
   watch: {
