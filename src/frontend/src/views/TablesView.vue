@@ -15,17 +15,21 @@
         <p>{{ $t('tools.tables.get_started') }}</p>
       </v-col>
       <v-col v-if="tablesData" cols="auto" class="pt-4 px-4">
-          <h1 class="text-h3 mb-1">{{ tablesData.indicator['name_' + locale] }}</h1>
+          <h1 class="text-h3 mb-1 d-flex justify-space-between">
+            <span>{{ tablesData.indicator['name_' + locale] }}</span>
+            <div>
+              <vue-excel-xlsx
+                :data="tablesData.items"
+                :columns="xlsxColumns"
+                :file-name="tablesData.indicator['name_' + locale]"
+                :file-type="'xlsx'"
+                :sheet-name="tablesData.indicator['name_' + locale]"
+              >
+                <v-btn icon color="primary" aria-label="Download"><v-icon>mdi-download</v-icon></v-btn>
+              </vue-excel-xlsx>
+            </div>
+          </h1>
           <h2 class="text-subtitle-1 mb-2">{{ tablesData.source['name_' + locale] }}</h2>
-          <vue-excel-xlsx
-            :data="tablesData.items"
-            :columns="xlsxColumns"
-            :file-name="tablesData.indicator['name_' + locale]"
-            :file-type="'xlsx'"
-            :sheet-name="tablesData.indicator['name_' + locale]"
-          >
-            Download
-          </vue-excel-xlsx>
           <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" hide-details></v-text-field>
           <v-data-table
             :headers="filteredHeaders"
@@ -42,7 +46,7 @@
 </template>
 
 <script>
-//TODO: may need to fetch items per page if performance starts to degrade when legit data is loaded
+//TODO: may need to fetch items per page if performance starts to degrade when legit data is loaded. will impact download too.
 import { mapActions, mapState } from 'vuex'
 import i18n from '@/i18n'
 import router from '@/router/index'
