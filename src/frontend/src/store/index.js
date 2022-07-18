@@ -20,7 +20,8 @@ export default new Vuex.Store({
     exploreTab: null,
     filterSelections: null,
     compareSelections: null,
-    tablesData: null
+    tablesData: null,
+    aboutData: null
   },
   getters: {
     tools: () => {
@@ -116,6 +117,9 @@ export default new Vuex.Store({
     },
     SET_TABLES_DATA(state, tablesData) {
       state.tablesData = tablesData
+    },
+    SET_ABOUT_DATA(state, data) {
+      state.aboutData = data;
     }
   },
   actions: {
@@ -250,21 +254,26 @@ export default new Vuex.Store({
       }
     },
     getTablesData(context, indicator) {
-      axios.get('/api/tables-data', { params: { 
-        indicator: indicator
-      }
-    }).then(response => {
-      response.data.items.forEach(i => {
-        if (i.suppressed) {
-          i.valueLabel = 'Suppressed'; //TODO: espanol
-        } else if (i.value === null) { 
-          i.valueLabel = 'No Data'; //TODO: espanol
-        } else  {
-          i.valueLabel = i.value
+        axios.get('/api/tables-data', { params: { 
+          indicator: indicator
         }
+      }).then(response => {
+        response.data.items.forEach(i => {
+          if (i.suppressed) {
+            i.valueLabel = 'Suppressed'; //TODO: espanol
+          } else if (i.value === null) { 
+            i.valueLabel = 'No Data'; //TODO: espanol
+          } else  {
+            i.valueLabel = i.value
+          }
+        })
+        context.commit('SET_TABLES_DATA', response.data);
       })
-      context.commit('SET_TABLES_DATA', response.data);
-    })
+    },
+    getAboutData(context) {
+      axios.get('/api/about-data').then(response => {
+        context.commit('SET_ABOUT_DATA', response.data);
+      });
     }
   },
   modules: {},

@@ -67,7 +67,8 @@
     "view": "View"
   },
   "about_data_view": {
-    "name": "About the Data"
+    "name": "About the Data",
+    "indicators": "Indicators"
   },
   "about_tools_view": {
     "name": "About the Tools"

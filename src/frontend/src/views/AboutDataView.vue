@@ -1,36 +1,81 @@
 <template>
-  <v-container v-if="indicatorMenu" fluid class="pa-0">
-    <v-row class="no-gutters flex-column">
-      <v-col cols="auto" class="pa-4 col col-auto">
+  <v-container v-if="aboutData" fluid class="pa-0">
+    <v-row class="no-gutters">
+      <v-col cols="8" class="pa-4 col col-auto">
         <h1 class="text-h3 mb-4">{{ $t('about_data_view.name') }}</h1>
-        <section v-for="category in sortedMenu.categories" :key="category.id">
-          <h2 class="mb-3">{{ category['name_' + locale]}}</h2>
+        <section v-for="category in sortedAboutData.categories" :key="category.category.id">
+          <h2 class="mb-3">{{ category.category['name_' + locale]}}</h2>
           <section v-for="item in category.items" :key="item.id">
-            <h3 v-if="item.items" class="mb-2">{{ item['name_' + locale] }}</h3>
-            <h4 v-else class="mb-1">{{ item['name_' + locale] }}</h4>
-            <p v-if="!item.items">{{ item['description_' + locale]}}</p> 
+            <template v-if="item.items">
+              <h3  class="mb-2">{{ item.category['name_' + locale] }}</h3>
+              <section v-for="subItem in item.items" :key="subItem.id">
+                <h4 class="mb-1" :id="'indicator_' + subItem.indicator.id">{{ subItem.indicator['name_' + locale] }}</h4>
+                <p :id="'indicator_' + subItem.indicator.id">{{ subItem.indicator['description_' + locale]}}</p>
+                <p><a target="_blank" :href="subItem.source.url">{{ subItem.source['name_' + locale] }}</a></p>
+              </section>
+            </template>
+            <template v-else>
+              <h4 class="mb-1" :id="'indicator_' + item.indicator.id">{{ item.indicator['name_' + locale] }}</h4>
+              <p v-if="!item.items" :id="'indicator_' + item.indicator.id">{{ item.indicator['description_' + locale]}}</p>
+              <p><a target="_blank" :href="item.source.url">{{ item.source['name_' + locale] }}</a></p>
+            </template>
           </section>
         </section>
+      </v-col>
+      <v-col cols="4">
+        <side-menu :title="$t('about_data_view.indicators')" :menu="sortedMenu" :selectItem="scrollToItem"></side-menu>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import goTo from 'vuetify/lib/services/goto'
+import { mapActions, mapState } from 'vuex'
+import SideMenu from '@/components/SideMenu'
 
 export default {
   name: 'AboutDataView',
+  components: {
+    SideMenu
+  },
+  created() {
+    if (!this.aboutData) {
+      this.getAboutData();
+    }
+  },
   data() {
     return {}
   },
   computed: {
-    ...mapState(['indicatorMenu', 'locale']),
-    sortedMenu() {
-        let sortedMenu = JSON.parse(JSON.stringify(this.indicatorMenu));
-        sortedMenu.categories.forEach(c => {
-          if (c.subcategories) {
+    ...mapState(['indicatorMenu', 'aboutData', 'locale']),
+    sortedMenu() { //FIXME: DRY
+      let sortedMenu = JSON.parse(JSON.stringify(this.indicatorMenu));
+      sortedMenu.categories.forEach(c => {
+        if (c.subcategories) {
+          c.items = c.items.concat(c.subcategories);
+          c.items.sort((a, b) => {
+            if (a['name_' + this.locale] < b['name_' + this.locale]) {
+              return -1;
+            } else if (a['name_' + this.locale] > b['name_' + this.locale]) {
+              return 1;
+            } else {
+              return 0;
+            }
+          })
+        }
+      });
+      return sortedMenu;
+    },
+    sortedAboutData() {
+        let sortedAboutData = JSON.parse(JSON.stringify(this.aboutData));
+        sortedAboutData.categories.forEach(c => {
+          if (c.subcategories.length) {
             c.items = c.items.concat(c.subcategories);
+            c.items.forEach(item => {
+              item.name_en = item.category ? item.category.name_en : item.indicator.name_en;
+              item.name_es = item.category ? item.category.name_en : item.indicator.name_es;
+            });
             c.items.sort((a, b) => {
               if (a['name_' + this.locale] < b['name_' + this.locale]) {
                 return -1;
@@ -42,9 +87,16 @@ export default {
             })
           }
         });
-        return sortedMenu;
+
+        return sortedAboutData;
     }
-  }
+  },
+  methods: {
+    ...mapActions(['getAboutData']),
+    scrollToItem(item) {
+      goTo("#indicator_" + item.id)
+    }
+  },
 }
 </script>
 

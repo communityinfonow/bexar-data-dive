@@ -71,7 +71,8 @@
   },
 
   "about_data_view": {
-    "name": "About the Data (es)"
+    "name": "About the Data (es)",
+    "indicators": "Indicators (es)"
   },
   "about_tools_view": {
     "name": "About the Tools (es)"

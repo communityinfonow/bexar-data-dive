@@ -85,8 +85,12 @@ export default {
     },
     searchItems() {
       return this.menu.categories.flatMap(category => {
-        return category.items;
-      });
+          return category.items;
+        }).concat(this.menu.categories.flatMap(category => {
+          return category.subcategories?.flatMap(subcategory => {
+            return subcategory.items;
+          });
+        }));
     },
   },
   methods: {
