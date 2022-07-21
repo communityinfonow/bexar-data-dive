@@ -80,13 +80,6 @@ export default {
         };
       });
     },
-    /*xlsxData() {
-      return this.tablesData.items.map(i => {
-        return {
-
-        };
-      });
-    },*/
     headers() {
       return [
         {
@@ -155,6 +148,13 @@ export default {
       return filtered;
     }
   },
+  watch: {
+		locale(newValue, oldValue) {
+      if (oldValue) {
+			  this.getTablesData(router.currentRoute.query.indicator);
+      }
+		}
+	},
   beforeRouteEnter(to, from, next) {
     next(vm => {
       vm.$store.dispatch('setTablesData', null)

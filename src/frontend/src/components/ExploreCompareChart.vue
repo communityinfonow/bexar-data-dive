@@ -18,6 +18,7 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
+import i18n from '@/i18n'
 import * as echarts from 'echarts/core';
 import { SVGRenderer } from 'echarts/renderers';
 import { AriaComponent, LegendComponent, GridComponent } from 'echarts/components';
@@ -149,7 +150,9 @@ export default {
 					show: true,
 					position: 'top',
 					formatter: (o) => {
-						return o.data.suppressed ? 'Suppressed' : (!o.data.value ? 'No Data' : '') //TODO: espanol
+						return o.data.suppressed 
+							? i18n.t('data.suppressed') 
+							: (!o.data.value ? i18n.t('data.no_data') : '')
 					}
 				}
 			};

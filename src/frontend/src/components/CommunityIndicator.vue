@@ -6,8 +6,8 @@
 		<p class="text-subtitle-1 mb-4">{{ item.source['name_' + locale] }} ({{ item.year }})</p>
 		<v-row>
 		<v-col cols="3">
-			<p v-if="item.demographicData[0].suppressed" class="text-h4 mb-0">Suppressed</p> <!--TODO: espanol -->
-			<p v-else-if="item.demographicData[0].value === null" class="text-h4 mb-0">No Data</p> <!--TODO: espanol -->
+			<p v-if="item.demographicData[0].suppressed" class="text-h4 mb-0">{{ $t('data.suppressed') }}</p>
+			<p v-else-if="item.demographicData[0].value === null" class="text-h4 mb-0">{{ $t('data.no_data') }}</p>
 			<p v-else class="text-h4 mb-0">{{ formatValue(item.indicatorType.id, item.demographicData[0].value) }}</p>
 			<p class="text-subtitle-1" v-if="item.indicator.baseFilterTypeId">{{ item.demographicData[0].baseFilter['name_' + locale] }}</p>
 		</v-col>

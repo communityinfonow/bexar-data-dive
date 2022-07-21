@@ -25,6 +25,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import i18n from '@/i18n'
 import { format } from '@/formatter/formatter'
 
 export default {
@@ -38,9 +39,9 @@ export default {
 		...mapState(['locale', 'exploreData', 'dockedTooltip']),
 		valueFormatted() {
 			if (this.dockedTooltip.suppressed) {
-				return 'Suppressed'; //TODO: espanol
+				return i18n.t('data.suppressed');
 			} else if (this.dockedTooltip.noData) {
-				return 'No Data'; //TODO: espanol
+				return i18n.t('data.no_data');
 			}
 
 			return format(this.exploreData.indicator.typeId, this.dockedTooltip.value);

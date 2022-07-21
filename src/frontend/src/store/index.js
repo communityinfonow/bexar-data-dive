@@ -260,9 +260,9 @@ export default new Vuex.Store({
       }).then(response => {
         response.data.items.forEach(i => {
           if (i.suppressed) {
-            i.valueLabel = 'Suppressed'; //TODO: espanol
+            i.valueLabel = i18n.t('data.suppressed');
           } else if (i.value === null) { 
-            i.valueLabel = 'No Data'; //TODO: espanol
+            i.valueLabel = i18n.t('data.no_data');
           } else  {
             i.valueLabel = i.value
           }

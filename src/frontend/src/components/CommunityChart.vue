@@ -86,9 +86,9 @@ export default {
 						position: 'top',
 						formatter: (o) => {
 							if (o.data.suppressed) {
-								return 'Suppressed'; //TODO: espanol
+								return i18n.t('data.suppressed');
 							} else if (o.data.noData) {
-								return 'No Data'; //TODO: espanol
+								return i18n.t('data.no_data');
 							}
 							let rows = [i18n.t('data.value') +': ' + format(this.indicatorType, o.data.value)];
 							if (o.data.moeLow || o.data.moeHigh) {

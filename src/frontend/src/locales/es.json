@@ -82,6 +82,8 @@
     "moe": "MOE (es)",
     "moe_range": "Range (es)",
     "low": "low (es)",
-    "high": "high (es)"
+    "high": "high (es)",
+    "suppressed": "Suppressed (es)",
+    "no_data": "No Data (es)"
   }
 }
