@@ -9,9 +9,11 @@ public class CommunityDataCategory {
 	
 	private IndicatorCategory category;
 	private List<CommunityDataIndicator> indicators;
+	private List<CommunityDataCategory> subcategories;
 
 	public CommunityDataCategory() {
 		this.indicators = new ArrayList<>();
+		this.subcategories = new ArrayList<>();
 	}
 	
 	public IndicatorCategory getCategory() {
@@ -28,5 +30,13 @@ public class CommunityDataCategory {
 	
 	public void setIndicators(List<CommunityDataIndicator> indicators) {
 		this.indicators = indicators;
+	}
+
+	public List<CommunityDataCategory> getSubcategories() {
+		return subcategories;
+	}
+
+	public void setSubcategories(List<CommunityDataCategory> subcategories) {
+		this.subcategories = subcategories;
 	}
 }

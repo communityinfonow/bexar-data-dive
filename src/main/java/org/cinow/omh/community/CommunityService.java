@@ -18,6 +18,20 @@ public class CommunityService {
 		communityData.setLocation(this.locationRepository.findLocation(location, locationType));
 		communityData.setIndicatorData(this.communityRepository.getCommunityData(location, locationType));
 
+		communityData.getIndicatorData().stream().forEach(data -> {
+			if (data.getCategory().getParentCategoryId() != null) {
+				communityData.getIndicatorData()
+					.stream()
+					.filter(c -> c.getCategory().getId().equals(data.getCategory().getParentCategoryId()))
+					.findFirst()
+					.get().getSubcategories().add(data);
+			}
+		});
+		communityData.setIndicatorData(communityData.getIndicatorData()
+			.stream()
+			.filter(data -> data.getCategory().getParentCategoryId() == null)
+			.collect(java.util.stream.Collectors.toList()));
+
 		return communityData;
 	}
 }

@@ -44,30 +44,23 @@
       </v-col>
       <v-col v-if="community" cols="auto" class="pa-4 grow">
         <h1 class="text-h3 mb-4">{{ community.location['name_' + locale] }}</h1>
-        <section v-for="data in community.indicatorData" :key="'category_' + data.category.id">
+        <section v-for="data in sortedData" :key="'category_' + data.category.id">
           <h2 class="text-h4 mb-2">{{ data.category['name_' + locale]}}</h2>
-          <section v-for="item in data.indicators" :key="'indicator_' + item.indicator.id" class="ml-8">
-            <h3 class="text-h5">{{ item.indicator['name_' + locale]}}</h3>
-            <section class="mb-8">
-            <template v-if="item.year">
-              <p class="text-subtitle-1 mb-4">{{ item.source['name_' + locale] }} ({{ item.year }})</p>
-              <v-row>
-                <v-col cols="3">
-                  <p v-if="item.demographicData[0].suppressed" class="text-h4 mb-0">Suppressed</p> <!--TODO: espanol -->
-                  <p v-else-if="item.demographicData[0].value === null" class="text-h4 mb-0">No Data</p> <!--TODO: espanol -->
-                  <p v-else class="text-h4 mb-0">{{ formatValue(item.indicatorType.id, item.demographicData[0].value) }}</p>
-                  <p class="text-subtitle-1" v-if="item.indicator.baseFilterTypeId">{{ item.demographicData[0].baseFilter['name_' + locale] }}</p>
-                </v-col>
-                <v-col cols="9">
-                    <community-chart :indicatorId="item.indicator.id" :indicatorType=item.indicatorType.id :data="item.demographicData"></community-chart>
-                </v-col>
-              </v-row>
+          <template v-for="item in data.indicators">
+            <template v-if="item.indicators">
+              <template v-if="item.indicators">
+                <div :key="'category_' + item.category.id">
+                  <h3 class="text-h5 mb-2">{{ item.category['name_' + locale]}}</h3>
+                  <template v-for="subItem in item.indicators">
+                    <community-indicator :item="subItem" :key="'sub_indicator_' + subItem.indicator.id"></community-indicator>
+                  </template>
+                </div>
+              </template>
             </template>
             <template v-else>
-              <p>Sorry, no data is available for this indicator</p>
+              <community-indicator :item="item" :key="'indicator_' + item.indicator.id"></community-indicator>
             </template>
-            </section>
-          </section>
+          </template>
         </section>
       </v-col>
     </v-row>
@@ -80,15 +73,15 @@ import router from '@/router/index'
 import { latLng } from 'leaflet'
 //import { LMap, LTileLayer } from 'vue2-leaflet'
 import MenuToolbar from '@/components/MenuToolbar'
-import CommunityChart from '@/components/CommunityChart'
-import { format } from '@/formatter/formatter'
+import CommunityIndicator from '@/components/CommunityIndicator'
+
 export default {
   name: 'CommunityView',
   components: {
     //LMap,
     //LTileLayer,
     MenuToolbar,
-    CommunityChart
+    CommunityIndicator
   },
   data() {
     return {
@@ -101,6 +94,27 @@ export default {
     ...mapState(['locale', 'locationMenu', 'community' ]),
     showIntro() {
       return !this.community && !router.currentRoute.query.location;
+    },
+    sortedData() {
+      let sortedData = JSON.parse(JSON.stringify(this.community?.indicatorData));
+      sortedData.forEach(c => {
+        if (c.subcategories.length) {
+          c.indicators = c.indicators.concat(c.subcategories);
+          c.indicators.sort((a, b) => {
+            let aName = a.indicator ? a.indicator['name_' + this.locale] : a.category['name_' + this.locale];
+            let bName = b.indicator ? b.indicator['name_' + this.locale] : b.category['name_' + this.locale];
+            if (aName < bName) {
+              return -1;
+            } else if (aName > bName) {
+              return 1;
+            } else {
+              return 0;
+            }
+          });
+        }
+      });
+      
+      return sortedData;
     }
   },
   beforeRouteEnter(to, from, next) {
@@ -152,9 +166,6 @@ export default {
     initializeMap() {},
     resizeHandler() {
       this.$refs.indicatorMap?.mapObject?.invalidateSize()
-    },
-    formatValue(type, value) {
-      return format(type, value)
     }
   },
 }

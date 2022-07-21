@@ -30,7 +30,7 @@ public class CommunityRepositoryPostgresql implements CommunityRepository {
 			+ " select * "
 			+ " from ( "
 			+ " select "
-			+ "   ic.id_ as category_id, ic.name_en as category_name_en, ic.name_es as category_name_es, "
+			+ "   ic.id_ as category_id, ic.parent_category_id, ic.name_en as category_name_en, ic.name_es as category_name_es, "
 			+ "   i.id_ as indicator_id, i.name_en as indicator_name_en, i.name_es as indicator_name_es, i.base_filter_type_id, "
 			+ "   it.id_ as indicator_type_id, it.name_ as indicator_type_name, "
 			+ "   iv.year_, iv.indicator_value, iv.suppressed, iv.moe_low, iv.moe_high, iv.universe_value, "
@@ -70,6 +70,7 @@ public class CommunityRepositoryPostgresql implements CommunityRepository {
 						categoryData = new CommunityDataCategory();
 						categoryData.setCategory(new IndicatorCategory());
 						categoryData.getCategory().setId(rs.getString("category_id"));
+						categoryData.getCategory().setParentCategoryId(rs.getString("parent_category_id"));
 						categoryData.getCategory().setName_en(rs.getString("category_name_en"));
 						categoryData.getCategory().setName_es(rs.getString("category_name_es"));
 						communityData.add(categoryData);
