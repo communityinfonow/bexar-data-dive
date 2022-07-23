@@ -28,4 +28,11 @@ public class CommunityController {
 		
 		return ResponseEntity.ok(this.communityService.getCommunityLocations(locationType));
 	}
+
+	@GetMapping(path = "/api/community-location", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<CommunityLocation> getCommunityLocation(
+			@RequestParam String location, @RequestParam String locationType) {
+		
+		return ResponseEntity.ok(this.communityService.getCommunityLocation(location, locationType));
+	}
 }

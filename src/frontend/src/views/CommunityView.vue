@@ -17,13 +17,13 @@
       <v-col v-if="showIntro" cols="auto" class="pa-4 grow">
         <l-map
           v-if="componentInitialized"
-          ref="communityMap"
+          ref="selectionMap"
           :zoom="zoom"
           :center="center"
           :options="{ zoomDelta: 0.5, zoomSnap: 0.5, preferCanvas: true }"
           :style="{ height: '100%' }"
           v-resize:debounce.100="resizeHandler"
-          @ready="initializeMap"
+          @ready="initializeSelectionMap"
         >
           <l-tile-layer
             url="https://stamen-tiles.a.ssl.fastly.net/toner-background/{z}/{x}/{y}.png"
@@ -42,8 +42,8 @@
             under <a href='http://www.openstreetmap.org/copyright'>ODbL</a>."
           />
           <l-geo-json
-            v-if="geojson"
-            :geojson="geojson"
+            v-if="selectionGeojson"
+            :geojson="selectionGeojson"
             :options="options"
           ></l-geo-json>
           <l-control
@@ -59,7 +59,7 @@
               <v-card-text>
                 <v-radio-group
                   v-model="selectedLayer"
-                  @change="drawMap"
+                  @change="drawSelectionMap"
                 >
                   <v-radio 
                     v-for="layer in layers" 
@@ -74,19 +74,55 @@
         </l-map>
       </v-col>
       <v-col v-if="community" cols="auto" class="pa-4 grow">
-        <h1 class="text-h3 mb-4">{{ community.location['name_' + locale] }}</h1>
+        <v-row class="mb-8">
+          <v-col cols="2">
+            <l-map
+              v-if="componentInitialized"
+              ref="communityMap"
+              :zoom="zoom"
+              :center="center"
+              :options="{ zoomControl: false, preferCanvas: true }"
+              :style="{ height: '200px' }"
+              v-resize:debounce.100="resizeHandler"
+              @ready="initializeCommunityMap"
+            >
+              <l-tile-layer
+                url="https://stamen-tiles.a.ssl.fastly.net/toner-background/{z}/{x}/{y}.png"
+                :options="{ crossOrigin: 'anonymous' }"
+                attribution="Map tiles by <a href='http://stamen.com'>Stamen Design</a>, 
+                under <a href='http://creativecommons.org/licenses/by/3.0'>CC BY 3.0</a>. 
+                Data by <a href='http://openstreetmap.org'>OpenStreetMap</a>, 
+                under <a href='http://www.openstreetmap.org/copyright'>ODbL</a>."
+              />
+              <l-tile-layer
+                url="https://stamen-tiles.a.ssl.fastly.net/toner-hybrid/{z}/{x}/{y}.png"
+                :options="{ crossOrigin: 'anonymous' }"
+                attribution="Map tiles by <a href='http://stamen.com'>Stamen Design</a>, 
+                under <a href='http://creativecommons.org/licenses/by/3.0'>CC BY 3.0</a>. 
+                Data by <a href='http://openstreetmap.org'>OpenStreetMap</a>, 
+                under <a href='http://www.openstreetmap.org/copyright'>ODbL</a>."
+              />
+              <l-geo-json
+                v-if="communityGeojson"
+                :geojson="communityGeojson"
+                :options="options"
+              ></l-geo-json>
+            </l-map>
+          </v-col>
+          <v-col cols="10">
+            <h1 class="text-h3 mt-2 mb-4">{{ community.location['name_' + locale] }}</h1>
+          </v-col>
+        </v-row>
         <section v-for="data in sortedData" :key="'category_' + data.category.id">
-          <h2 class="text-h4 mb-2">{{ data.category['name_' + locale]}}</h2>
+          <h2 class="text-h4 mb-4">{{ data.category['name_' + locale]}}</h2>
           <template v-for="item in data.indicators">
             <template v-if="item.indicators">
-              <template v-if="item.indicators">
-                <div :key="'category_' + item.category.id">
-                  <h3 class="text-h5 mb-2">{{ item.category['name_' + locale]}}</h3>
-                  <template v-for="subItem in item.indicators">
-                    <community-indicator :item="subItem" :key="'sub_indicator_' + subItem.indicator.id"></community-indicator>
-                  </template>
-                </div>
-              </template>
+              <div :key="'category_' + item.category.id" class="ml-4">
+                <h3 class="text-h5 mb-2">{{ item.category['name_' + locale]}}</h3>
+                <template v-for="subItem in item.indicators">
+                  <community-indicator :item="subItem" :key="'sub_indicator_' + subItem.indicator.id"></community-indicator>
+                </template>
+              </div>
             </template>
             <template v-else>
               <community-indicator :item="item" :key="'indicator_' + item.indicator.id"></community-indicator>
@@ -102,6 +138,7 @@
 import { mapActions, mapState } from 'vuex'
 import router from '@/router/index'
 import axios from 'axios'
+import L from 'leaflet'
 import { latLng } from 'leaflet'
 import { LMap, LTileLayer, LControl, LGeoJson } from 'vue2-leaflet'
 import { feature, featureCollection } from '@turf/helpers'
@@ -121,11 +158,13 @@ export default {
   data() {
     return {
       componentInitialized: false,
-			mapInitialized: false,
+			selectionMapInitialized: false,
+      communityMapInitialized: false,
       zoom: 9,
 			center: latLng(29.43445, -98.473562383),
       selectedLayer: null,
-      geojson: null,
+      selectionGeojson: null,
+      communityGeojson: null,
       refreshOptions: false,
     }
   },
@@ -173,8 +212,11 @@ export default {
   },
   watch: {
     locale() {
-			this.drawMap()
-		}
+			this.drawSelectionMap()
+		},
+    community() {
+      this.drawCommunityMap();
+    }
   },
   beforeRouteEnter(to, from, next) {
     next(vm => {
@@ -197,8 +239,8 @@ export default {
     }
     setTimeout(() => { 
 			this.componentInitialized = true;
-			if (this.mapInitialized) {
-				this.drawMap();
+			if (this.selectionMapInitialized) {
+				this.drawSelectionMap();
 			}
 		}, 100);
   },
@@ -228,20 +270,25 @@ export default {
         });
       }
     },
-    initializeMap() {
-			this.mapInitialized = true;
-      this.drawMap();
+    initializeSelectionMap() {
+			this.selectionMapInitialized = true;
+      this.drawSelectionMap();
+		},
+    initializeCommunityMap() {
+			this.communityMapInitialized = true;
+      this.drawCommunityMap();
 		},
 		resizeHandler() {
-			this.$refs.indicatorMap?.mapObject?.invalidateSize();
+			this.$refs.selectionMap?.mapObject?.invalidateSize();
+      this.$refs.communityMap?.mapObject?.invalidateSize();
 		},
-    drawMap() {
+    drawSelectionMap() {
       if (this.selectedLayer) {
         axios.get('/api/community-locations', { params: { 
             locationType: this.selectedLayer.id
           }
         }).then(response => {
-          this.geojson = featureCollection(response.data.map(location => 
+          this.selectionGeojson = featureCollection(response.data.map(location => 
             feature(JSON.parse(location.geojson), 
               {
                 name: location['name_' + this.locale],
@@ -254,6 +301,28 @@ export default {
             )
           ));
           this.refreshOptions = Math.random(); // force a refresh
+        });
+      };
+    },
+    drawCommunityMap() {
+      if (this.community) {
+        axios.get('/api/community-location', { params: { 
+            location: this.community.location.id,
+            locationType: this.community.location.typeId
+          }
+        }).then(response => {
+          this.communityGeojson = feature(JSON.parse(response.data.geojson), 
+            {
+              name: response.data['name_' + this.locale],
+              id: response.data.id,
+              typeId: response.data.typeId
+            }, 
+            { 
+              id: response.data.id
+            }
+          );
+          this.refreshOptions = Math.random(); // force a refresh
+          this.$refs.communityMap?.mapObject.fitBounds(L.geoJSON(this.communityGeojson).getBounds());
         });
       };
     },

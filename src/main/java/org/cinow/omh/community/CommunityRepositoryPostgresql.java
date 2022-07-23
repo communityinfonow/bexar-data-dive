@@ -168,4 +168,36 @@ public class CommunityRepositoryPostgresql implements CommunityRepository {
 			}
 		});
 	}
+
+	@Override
+	public CommunityLocation getCommunityLocation(String location, String locationType) {
+		String sql = ""
+			+ " select id_, location_type_id, name_en, name_es, geojson "
+			+ " from ( "
+			+ " 	select l.id_, l.location_type_id, l.name_en, l.name_es, "
+			+ " 		g.geojson, rank() over(order by g.vintage_min_year desc) as year_rank "
+			+ " 	from tbl_locations l "
+			+ " 		join tbl_location_geometries g on g.location_id = l.id_ and g.location_type_id = l.location_type_id "
+			+ " 	where l.id_ = :location and l.location_type_id = :location_type::numeric "
+			+ " ) ranked_geos "
+			+ " where year_rank = 1 ";
+		
+
+		MapSqlParameterSource paramMap = new MapSqlParameterSource();
+		paramMap.addValue("location", location);
+		paramMap.addValue("location_type", locationType);
+
+		return this.namedParameterJdbcTemplate.queryForObject(sql, paramMap, new RowMapper<CommunityLocation>() {
+			@Override
+			public CommunityLocation mapRow(ResultSet rs, int rowNum) throws SQLException {
+				CommunityLocation location = new CommunityLocation();
+				location.setId(rs.getString("id_"));
+				location.setTypeId(rs.getString("location_type_id"));
+				location.setName_en(rs.getString("name_en"));
+				location.setName_es(rs.getString("name_es"));
+				location.setGeojson(rs.getString("geojson"));
+				return location;
+			}
+		});
+	}
 }
