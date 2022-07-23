@@ -1,6 +1,9 @@
 package org.cinow.omh.community;
 
+import java.util.List;
+
 import org.cinow.omh.locations.LocationRepository;
+import org.geojson.FeatureCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,5 +36,9 @@ public class CommunityService {
 			.collect(java.util.stream.Collectors.toList()));
 
 		return communityData;
+	}
+
+	public List<CommunityLocation> getCommunityLocations(String locationType) {
+		return this.communityRepository.getCommunityLocations(locationType);
 	}
 }

@@ -1,5 +1,7 @@
 package org.cinow.omh.community;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,5 +20,12 @@ public class CommunityController {
 			@RequestParam String location, @RequestParam String locationType) {
 		
 		return ResponseEntity.ok(this.communityService.getCommunityData(location, locationType));
+	}
+
+	@GetMapping(path = "/api/community-locations", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<CommunityLocation>> getCommunityLocations(
+			@RequestParam String locationType) {
+		
+		return ResponseEntity.ok(this.communityService.getCommunityLocations(locationType));
 	}
 }

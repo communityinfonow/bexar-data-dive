@@ -163,6 +163,9 @@ export default {
 			if (this.mapInitialized && newValue) {
 				this.drawMap();
 			}
+		},
+    	locale() {
+			this.drawMap()
 		}
 	},
 	mounted () {

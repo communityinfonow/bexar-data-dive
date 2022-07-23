@@ -15,7 +15,8 @@
         <p>{{ $t('tools.my_community.get_started') }}</p>
       </v-col>
       <v-col v-if="showIntro" cols="auto" class="pa-4 grow">
-        <!--<l-map
+        <l-map
+          v-if="componentInitialized"
           ref="communityMap"
           :zoom="zoom"
           :center="center"
@@ -40,7 +41,37 @@
             Data by <a href='http://openstreetmap.org'>OpenStreetMap</a>, 
             under <a href='http://www.openstreetmap.org/copyright'>ODbL</a>."
           />
-        </l-map>-->
+          <l-geo-json
+            v-if="geojson"
+            :geojson="geojson"
+            :options="options"
+          ></l-geo-json>
+          <l-control
+            position="bottomright"
+            class="layer-control"
+            v-if="layers.length"
+          >
+            <v-card tile outlined :style="{ boxShadow: 'none !important' }">
+              <v-card-title class="pb-0 text--primary">
+                <v-icon>mdi-layers</v-icon>
+                {{ $t('tools.my_community.community_types') }}
+              </v-card-title>
+              <v-card-text>
+                <v-radio-group
+                  v-model="selectedLayer"
+                  @change="drawMap"
+                >
+                  <v-radio 
+                    v-for="layer in layers" 
+                    :key="layer.id" 
+                    :value="layer" 
+                    :label="layer['name_' + locale]">
+                  </v-radio>
+                </v-radio-group>
+              </v-card-text>
+            </v-card>
+          </l-control>
+        </l-map>
       </v-col>
       <v-col v-if="community" cols="auto" class="pa-4 grow">
         <h1 class="text-h3 mb-4">{{ community.location['name_' + locale] }}</h1>
@@ -70,26 +101,34 @@
 <script>
 import { mapActions, mapState } from 'vuex'
 import router from '@/router/index'
+import axios from 'axios'
 import { latLng } from 'leaflet'
-//import { LMap, LTileLayer } from 'vue2-leaflet'
+import { LMap, LTileLayer, LControl, LGeoJson } from 'vue2-leaflet'
+import { feature, featureCollection } from '@turf/helpers'
 import MenuToolbar from '@/components/MenuToolbar'
 import CommunityIndicator from '@/components/CommunityIndicator'
 
 export default {
   name: 'CommunityView',
   components: {
-    //LMap,
-    //LTileLayer,
+    LMap,
+    LTileLayer,
+    LControl,
+    LGeoJson,
     MenuToolbar,
     CommunityIndicator
   },
   data() {
     return {
+      componentInitialized: false,
+			mapInitialized: false,
       zoom: 9,
-      center: latLng(29.43445, -98.473562383)
+			center: latLng(29.43445, -98.473562383),
+      selectedLayer: null,
+      geojson: null,
+      refreshOptions: false,
     }
   },
-  //FIXME: the indicator subcategories are all at the bottom instead of within their categories
   computed: {
     ...mapState(['locale', 'locationMenu', 'community' ]),
     showIntro() {
@@ -115,7 +154,27 @@ export default {
       });
       
       return sortedData;
-    }
+    },
+    layers() {
+      return this.locationMenu.categories.map(locationType => {
+        return {
+          id: locationType.id,
+          name_en: locationType.name_en,
+          name_es: locationType.name_es
+        };
+      });
+    },
+    options() {
+			this.refreshOptions;
+			return {
+				onEachFeature: this.onEachFeature
+			}
+		}
+  },
+  watch: {
+    locale() {
+			this.drawMap()
+		}
   },
   beforeRouteEnter(to, from, next) {
     next(vm => {
@@ -136,6 +195,12 @@ export default {
     } else {
       this.setCommunity(null)
     }
+    setTimeout(() => { 
+			this.componentInitialized = true;
+			if (this.mapInitialized) {
+				this.drawMap();
+			}
+		}, 100);
   },
   updated () {
     if (router.currentRoute.query.location && this.locationMenu) {
@@ -163,10 +228,44 @@ export default {
         });
       }
     },
-    initializeMap() {},
-    resizeHandler() {
-      this.$refs.indicatorMap?.mapObject?.invalidateSize()
-    }
+    initializeMap() {
+			this.mapInitialized = true;
+      this.drawMap();
+		},
+		resizeHandler() {
+			this.$refs.indicatorMap?.mapObject?.invalidateSize();
+		},
+    drawMap() {
+      if (this.selectedLayer) {
+        axios.get('/api/community-locations', { params: { 
+            locationType: this.selectedLayer.id
+          }
+        }).then(response => {
+          this.geojson = featureCollection(response.data.map(location => 
+            feature(JSON.parse(location.geojson), 
+              {
+                name: location['name_' + this.locale],
+                id: location.id,
+                typeId: location.typeId
+              }, 
+              { 
+                id: location.id
+              }
+            )
+          ));
+          this.refreshOptions = Math.random(); // force a refresh
+        });
+      };
+    },
+    onEachFeature(feature, layer) {
+			layer.bindTooltip(feature.properties.name);
+      layer.on('click', () => {
+        this.selectItem({
+          id: feature.properties.id,
+          categoryId: feature.properties.typeId
+        })
+      });
+		},
   },
 }
 </script>

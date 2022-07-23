@@ -12,7 +12,8 @@
       "name": "Mi Comunidad",
       "short_description": "Mi Comunidad es...",
       "long_description": "Mi Comunidad es una herramienta...",
-      "get_started": "Para comenzar, navegue o busque un indicador usando el menú de arriba, o haga clic en una ubicación en el mapa a continuación."
+      "get_started": "Para comenzar, navegue o busque un indicador usando el menú de arriba, o haga clic en una ubicación en el mapa a continuación.",
+      "community_types": "Community Types (es)"
     },
     "explore": {
       "name": "Panel",
