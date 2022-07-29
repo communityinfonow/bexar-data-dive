@@ -195,7 +195,7 @@ export default {
       return sortedData;
     },
     layers() {
-      return this.locationMenu.categories.map(locationType => {
+      return this.locationMenu?.categories?.map(locationType => {
         return {
           id: locationType.id,
           name_en: locationType.name_en,
@@ -239,6 +239,7 @@ export default {
     }
     setTimeout(() => { 
 			this.componentInitialized = true;
+      this.selectedLayer = this.layers.find(l => l.id === '4')
 			if (this.selectionMapInitialized) {
 				this.drawSelectionMap();
 			}

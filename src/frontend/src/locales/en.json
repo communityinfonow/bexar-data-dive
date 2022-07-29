@@ -11,8 +11,8 @@
     "my_community": {
       "name": "My Community",
       "short_description": "My Community is a tool that allows you to explore information about demographics, housing, education and much more across communities in Bexar County.",
-      "long_description": "My Community is a tool that allows you to explore information about demographics, housing, education and much more across communities in Bexar County. Communities include Council Districts, Zipcodes, Census Tracts and SSA's, or Statistical Small Areas. SSAs are combinations of Census Tracts grouped on meaningful indicators like Race/Ethnicity, housing, age, education, and income. CI:Now created SSAs to help users analyze data in areas small enough to see meaningful differences across the county, yet large enough to yield better estimates. Try it out in the menu above.",
-      "get_started": "To get started, browse or search for an indicator using the menu above.",
+      "long_description": "My Community is a tool that allows you to explore information about demographics, housing, education and much more across communities in Bexar County. Communities include Council Districts, Zipcodes, Census Tracts and SSA's, or Statistical Small Areas. SSAs are combinations of Census Tracts grouped on meaningful indicators like Race/Ethnicity, housing, age, education, and income. CI:Now created SSAs to help users analyze data in areas small enough to see meaningful differences across the county, yet large enough to yield better estimates.",
+      "get_started": "To get started, browse or search for an indicator using the menu above or select a location on the map below.",
       "community_types": "Community Types"
     },
     "explore": {
