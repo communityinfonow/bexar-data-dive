@@ -6,7 +6,7 @@
     <v-spacer></v-spacer>
     <v-btn-toggle :value="locale" mandatory group dark>
       <v-btn text tile plain value="en" @click="setLocale('en')">English</v-btn>
-      <v-btn text tile plain value="es" @click="setLocale('es')">Español</v-btn>
+      <div style="margin-top: 4px;" title="Coming soon"><v-btn text tile plain value="es" @click="setLocale('es')" disabled>Español</v-btn></div>
     </v-btn-toggle>
   </v-app-bar>
 </template>
