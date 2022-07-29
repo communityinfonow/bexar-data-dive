@@ -24,8 +24,6 @@ public class ExploreRepositoryPostgresql implements ExploreRepository {
 
 	@Override
 	public List<ExploreDataLocation> getExploreData(ExploreDataRequest dataRequest, boolean allLocations) {
-		//TODO: testing for the following scenarios:
-		// 1. only trending years that are between the geom years for tracts
 		String sql = ""
 			+ " with trend_interval as (select trend_interval from tbl_sources where id_ = (select source_id from tbl_indicators where id_ = :indicator::numeric)) "
 			+ " select l.id_ as l_id, l.name_en as l_name_en, l.name_es as l_name_es, "
@@ -40,8 +38,7 @@ public class ExploreRepositoryPostgresql implements ExploreRepository {
 			+ "   left join tbl_indicator_values iv on iv.location_id = l.id_ "
 			+ "     and iv.location_type_id = lt.id_ "
 			+ "     and iv.indicator_id = :indicator::numeric "
-			+ "     and mod(:year::numeric - iv.year_::numeric, coalesce((select trend_interval from trend_interval), 1)) = 0 "
-			+ "     and ((lg.trend_min_year is null and lg.trend_max_year is null) or (iv.year_::numeric between lg.trend_min_year and lg.trend_max_year)) ";
+			+ "     and mod(:year::numeric - iv.year_::numeric, coalesce((select trend_interval from trend_interval), 1)) = 0 ";
 
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
 		paramMap.addValue("year", dataRequest.getFilters().getYear());

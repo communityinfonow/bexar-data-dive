@@ -134,7 +134,6 @@ export default {
 						}; 
 					}),
 				type: 'bar',
-				//TODO: what should we show when there is no data because we cannot trend because of tract changes?
 				label: {
 					show: true,
 					position: 'top',
