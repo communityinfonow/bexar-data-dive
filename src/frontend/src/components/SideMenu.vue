@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card style="position: fixed; top: 0; bottom: 0; right: 0; margin: 64px 0 34px 0; overflow-y: scroll;">
 	<v-card-title>{{ title }}</v-card-title>
 	<v-card-actions>
 		<v-autocomplete
