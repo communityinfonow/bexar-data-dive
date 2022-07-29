@@ -9,4 +9,6 @@ public interface IndicatorRepository {
 	List<Indicator> findIndicatorsByCategory(String categoryId);
 
 	Indicator getIndicator(String id);
+
+	List<Indicator> getFeaturedIndicators();
 }

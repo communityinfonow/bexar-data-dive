@@ -32,6 +32,7 @@
 <script>
 import goTo from 'vuetify/lib/services/goto'
 import { mapActions, mapState } from 'vuex'
+import router from '@/router/index'
 import SideMenu from '@/components/SideMenu'
 
 export default {
@@ -91,10 +92,34 @@ export default {
         return sortedAboutData;
     }
   },
+  watch: {
+    aboutData(newValue) {
+      if (newValue) {
+        if (router.currentRoute.query.indicator) {
+          this.$nextTick(() => {
+            this.scrollToItem({ id: router.currentRoute.query.indicator })
+          });
+        };
+      }
+    }
+  },
+  mounted () {
+    if (this.aboutData && router.currentRoute.query.indicator) {
+      this.scrollToItem({ id: router.currentRoute.query.indicator })
+    };
+  },
   methods: {
     ...mapActions(['getAboutData']),
     scrollToItem(item) {
       goTo("#indicator_" + item.id)
+      if (!router.currentRoute.query.indicator == item.id) {
+        router.replace({
+            query: {
+              ...router.currentRoute.query,
+              indicator: item.id
+            },
+          })
+      }
     }
   },
 }

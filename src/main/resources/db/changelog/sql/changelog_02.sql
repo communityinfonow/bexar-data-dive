@@ -46,7 +46,8 @@ create table tbl_indicators (
 	description_en text not null,
 	description_es text not null,
 	base_filter_type_id numeric references tbl_filter_types,
-	source_id numeric references tbl_sources
+	source_id numeric references tbl_sources,
+	featured boolean default false
 );
 
 create table tbl_indicator_values (

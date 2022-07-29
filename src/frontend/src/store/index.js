@@ -11,6 +11,7 @@ export default new Vuex.Store({
     locale: '',
     locationMenu: null,
     indicatorMenu: null,
+    featuredIndicators: null,
     community: null,
     indicator: null,
     source: null,
@@ -88,6 +89,9 @@ export default new Vuex.Store({
     SET_LOCATION_MENU(state, locationMenu) {
       state.locationMenu = locationMenu
     },
+    SET_FEATURED_INDICATORS(state, indicators) {
+      state.featuredIndicators = indicators
+    },
     SET_COMMUNITY(state, community) {
       state.community = community
     },
@@ -149,6 +153,11 @@ export default new Vuex.Store({
     getLocationMenu(context) {
       axios.get('/api/location-menu').then(response => {
         context.commit('SET_LOCATION_MENU', response.data)
+      })
+    },
+    getFeaturedIndicators(context) {
+      axios.get('/api/featured-indicators').then(response => {
+        context.commit('SET_FEATURED_INDICATORS', response.data)
       })
     },
     setCommunity(context, community) {

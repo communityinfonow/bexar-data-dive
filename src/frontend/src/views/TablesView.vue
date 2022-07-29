@@ -13,6 +13,21 @@
         <h1 class="text-h3 mb-2">{{ $t('tools.tables.name') }}</h1>
         <p>{{ $t('tools.tables.long_description') }}</p>
         <p>{{ $t('tools.tables.get_started') }}</p>
+        <h2 v-if="featuredIndicators" class="text-h5 mt-8 mb-2">{{ $t('tools.common.featured_indicators') }}</h2>
+          <section v-if="featuredIndicators" class="d-flex flex-row">
+            <template v-for="indicator in featuredIndicators">
+              <featured-card 
+                :key="indicator.id" 
+                :item="indicator"
+                :name="indicator['name_' + locale]" 
+                :description="indicator['description_' + locale]" 
+                :about_route="'about-data?indicator=' + indicator.id" 
+                :view_route="indicator.route"
+                :click_route="selectItem"
+              >
+              </featured-card>
+            </template>
+          </section>
       </v-col>
       <v-col v-if="tablesData" cols="auto" class="pt-4 px-4">
           <h1 class="text-h3 mb-1 d-flex justify-space-between">
@@ -51,10 +66,12 @@ import { mapActions, mapState } from 'vuex'
 import i18n from '@/i18n'
 import router from '@/router/index'
 import MenuToolbar from '@/components/MenuToolbar'
+import FeaturedCard from '@/components/FeaturedCard'
 export default {
   name: 'TablesView',
   components: {
     MenuToolbar,
+    FeaturedCard
   },
   data() {
     return {
@@ -68,7 +85,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['indicatorMenu', 'tablesData', 'locale']),
+    ...mapState(['indicatorMenu', 'tablesData', 'locale', 'featuredIndicators']),
     showIntro() {
       return !this.tablesData && !router.currentRoute.query.indicator;
     },
@@ -174,6 +191,9 @@ export default {
     } else {
       this.setTablesData(null)
     }
+    if (!this.featuredIndicators) {
+      this.getFeaturedIndicators()
+    }
   },
   updated () {
     if (router.currentRoute.query.indicator && this.indicatorMenu) {
@@ -188,7 +208,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setTablesData', 'getTablesData']),
+    ...mapActions(['setTablesData', 'getTablesData', 'getFeaturedIndicators']),
     selectItem(item) {
       this.getTablesData(item.id);
       router.replace({

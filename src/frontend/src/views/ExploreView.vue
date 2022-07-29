@@ -13,6 +13,21 @@
           <h1 class="text-h3 mb-2">{{ $t('tools.explore.name') }}</h1>
           <p>{{ $t('tools.explore.long_description') }}</p>
           <p>{{ $t('tools.explore.get_started') }}</p>
+          <h2 v-if="featuredIndicators" class="text-h5 mt-8 mb-2">{{ $t('tools.common.featured_indicators') }}</h2>
+          <section v-if="featuredIndicators" class="d-flex flex-row">
+            <template v-for="indicator in featuredIndicators">
+              <featured-card 
+                :key="indicator.id" 
+                :item="indicator"
+                :name="indicator['name_' + locale]" 
+                :description="indicator['description_' + locale]" 
+                :about_route="'about-data?indicator=' + indicator.id" 
+                :view_route="indicator.route"
+                :click_route="selectItem"
+              >
+              </featured-card>
+            </template>
+          </section>
       </v-col>
       <v-col v-if="indicator" cols="auto" class="pt-4 px-4">
           <h1 class="text-h3 mb-1">{{ indicator['name_' + locale] }}</h1>
@@ -57,6 +72,7 @@ import { mapActions, mapState } from 'vuex'
 import router from '@/router/index'
 import i18n from '@/i18n'
 import MenuToolbar from '@/components/MenuToolbar'
+import FeaturedCard from '@/components/FeaturedCard'
 import FiltersPanel from '@/components/FiltersPanel'
 import DockedTooltip from '@/components/DockedTooltip'
 import ExploreMap from '@/components/ExploreMap'
@@ -66,6 +82,7 @@ export default {
   name: 'ExploreView',
   components: {
     MenuToolbar, 
+    FeaturedCard,
     FiltersPanel,
     DockedTooltip,
     ExploreMap,
@@ -79,7 +96,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['indicatorMenu', 'indicator', 'source', 'locale']),
+    ...mapState(['indicatorMenu', 'indicator', 'source', 'locale', 'featuredIndicators']),
     showIntro() {
       return !this.indicator && !router.currentRoute.query.indicator;
     },
@@ -117,6 +134,9 @@ export default {
     if (router.currentRoute.query.tab) {
       this.selectTab(router.currentRoute.query.tab)
     }
+    if (!this.featuredIndicators) {
+      this.getFeaturedIndicators()
+    }
   },
   updated () {
     if (router.currentRoute.query.indicator && this.indicatorMenu) {
@@ -131,7 +151,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setIndicator', 'setExploreTab']),
+    ...mapActions(['setIndicator', 'setExploreTab', 'getFeaturedIndicators']),
     selectItem(item) {
       if (item.id !== this.indicator?.id) {
         this.setIndicator(item)

@@ -43,4 +43,8 @@ public class IndicatorService {
 
 		return indicatorMenu;
 	}
+
+	public List<Indicator> getFeaturedIndicators() {
+		return this.indicatorRepository.getFeaturedIndicators();
+	}
 }

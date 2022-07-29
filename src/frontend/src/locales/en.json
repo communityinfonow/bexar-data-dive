@@ -19,7 +19,7 @@
       "name": "Explore Data",
       "short_description": "Explore Data is where you can take a deeper dive into the indicators about your community through interactive maps and charts.",
       "long_description": "Explore Data is where you can take a deeper dive into the indicators about your community through interactive maps and charts. Indicators can be mapped across geographic areas, trended in charts to view that data over time, or compared to other local communities in a bar chart. You will also have the ability to filter results by location, year, race/ethnicity, sex, education level or poverty status depending on what's available from the data source. Additionally, you can download and save the visuals you create.",
-      "get_started": "To get started, browse or search for an indicator using the menu above.",
+      "get_started": "To get started, browse or search for an indicator using the menu above or explore one of the featured indicators below.",
       "tabs": {
         "map": "Map",
         "trend": "Trend Chart",
@@ -40,7 +40,7 @@
       "name": "Tables & Downloads",
       "short_description": "Tables & Downloads is where you can access data in a machine-readable spreadsheet format to use in your own data processing and visualization tools.",
       "long_description": "Tables & Downloads is where you can access data in a machine-readable spreadsheet format to use in your own data processing and visualization tools. You can filter the data by location, year, race/ethnicity, education level or poverty status, depending on what is available from the data source, download and save the data tables you create.",
-      "get_started": "To get started, browse or search for an indicator using the menu above.",
+      "get_started": "To get started, browse or search for an indicator using the menu above or select one of the featured indicators below.",
       "headers": {
         "location": "Location",
         "year": "Year",
@@ -63,9 +63,7 @@
   "home_view": {
     "name": "Home",
     "welcome_message": "Welcome to the Bexar Data Dive, hosted by CI:Now. We have three tools to help you explore, visualize, and interact with data. They are My Community, the easiest way to quickly get information about demographics, housing, education and much more across communities in Bexar County; Explore Data, for a deeper dive into local data through interactive mapping, trend and comparison visualization tools; and the Tables & Downloads tool, for access to downloadable data in a machine-readable spreadsheet format. For more information about how each tool works, click on the links below or in the side menu.",
-    "available_tools": "Available Tools",
-    "learn_more": "Learn More",
-    "view": "View"
+    "available_tools": "Available Tools"
   },
   "about_data_view": {
     "name": "About the Data",
@@ -82,5 +80,9 @@
     "high": "high",
     "suppressed": "Suppressed",
     "no_data": "No Data"
+  },
+  "featured_card": {
+    "learn_more": "Learn More",
+    "view": "View"
   }
 }

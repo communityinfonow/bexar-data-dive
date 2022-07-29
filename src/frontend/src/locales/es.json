@@ -66,9 +66,7 @@
   "home_view": {
     "name": "Home (es)",
     "welcome_message": "Bienvenido a...",
-    "available_tools": "Herramientas Disponibles",
-    "learn_more": "Aprende Más",
-    "view": "Vista"
+    "available_tools": "Herramientas Disponibles"
   },
 
   "about_data_view": {
@@ -86,5 +84,9 @@
     "high": "high (es)",
     "suppressed": "Suppressed (es)",
     "no_data": "No Data (es)"
+  },
+  "featured_card": {
+    "learn_more": "Learn More",
+    "view": "View"
   }
 }
