@@ -13,15 +13,27 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+/**
+ * {@inheritDoc}
+ */
 @Repository
 public class FilterRepositoryPostgresql implements FilterRepository {
 
+	/**
+	 * The jdbc template.
+	 */
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
+	/**
+	 * The named parameter jdbc template.
+	 */
 	@Autowired
 	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Filter getLocationTypeFilter(String indicatorId) {
 		String sql = ""
@@ -52,6 +64,9 @@ public class FilterRepositoryPostgresql implements FilterRepository {
 		});
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Filter getLocationFilter() {
 		String sql = ""
@@ -80,6 +95,9 @@ public class FilterRepositoryPostgresql implements FilterRepository {
 		});
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Filter getYearFilter(String indicatorId) {
 		String sql = ""
@@ -110,6 +128,9 @@ public class FilterRepositoryPostgresql implements FilterRepository {
 		});
 	}
 
+	/**
+	 * {@inheritDoc}}
+	 */
 	@Override
 	public List<Filter> getIndicatorFilters(String indicatorId) {
 		String sql = ""
