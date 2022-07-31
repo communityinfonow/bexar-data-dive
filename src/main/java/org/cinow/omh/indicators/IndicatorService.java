@@ -5,12 +5,25 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service class for indicators.
+ * 
+ * @author brian
+ */
 @Service
 public class IndicatorService {
 	
+	/**
+	 * The indicator repository.
+	 */
 	@Autowired
 	private IndicatorRepository indicatorRepository;
 	
+	/**
+	 * Builds the indicator menu.
+	 * 
+	 * @return the indicator menu
+	 */
 	public IndicatorMenu buildIndicatorMenu() {
 		IndicatorMenu indicatorMenu = new IndicatorMenu();
 		List<IndicatorCategory> indicatorCategories = this.indicatorRepository.findIndicatorCategories();
@@ -44,6 +57,11 @@ public class IndicatorService {
 		return indicatorMenu;
 	}
 
+	/**
+	 * Gets the featured indicators.
+	 * 
+	 * @return the featured indicators
+	 */
 	public List<Indicator> getFeaturedIndicators() {
 		return this.indicatorRepository.getFeaturedIndicators();
 	}

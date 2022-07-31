@@ -11,15 +11,27 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+/**
+ * {@inheritDoc}
+ */
 @Repository
 public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 
+	/**
+	 * The JDBC template.
+	 */
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
+	/**
+	 * The named parameter JDBC template.
+	 */
 	@Autowired
 	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public List<IndicatorCategory> findIndicatorCategories() {
 		String sql = ""
@@ -41,6 +53,9 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 		});
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public List<Indicator> findIndicatorsByCategory(String categoryId) {
 		String sql = ""
@@ -67,6 +82,9 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 		});
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Indicator getIndicator(String id) {
 		String sql = ""
@@ -95,6 +113,9 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 		});
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public List<Indicator> getFeaturedIndicators() {
 		String sql = ""
