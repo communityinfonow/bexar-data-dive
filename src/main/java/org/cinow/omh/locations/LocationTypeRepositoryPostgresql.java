@@ -9,12 +9,21 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+/**
+ * {@inheritDoc}
+ */
 @Repository
 public class LocationTypeRepositoryPostgresql implements LocationTypeRepository {
 
+	/**
+	 * The JDBC template.
+	 */
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public List<LocationType> findLocationTypes() {
 		String sql = ""

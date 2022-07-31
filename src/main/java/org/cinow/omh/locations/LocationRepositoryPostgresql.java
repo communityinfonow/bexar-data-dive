@@ -10,12 +10,21 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+/**
+ * {@inheritDoc}
+ */
 @Repository
 public class LocationRepositoryPostgresql implements LocationRepository {
 
+	/**
+	 * The named parameter JDBC template.
+	 */
 	@Autowired
 	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public List<Location> findLocationByType(String typeId) {
 		String sql = ""
@@ -28,6 +37,9 @@ public class LocationRepositoryPostgresql implements LocationRepository {
 		return this.namedParameterJdbcTemplate.query(sql, paramMap, this.locationRowMapper());
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Location findLocation(String id, String typeId) {
 		String sql = ""
@@ -41,6 +53,9 @@ public class LocationRepositoryPostgresql implements LocationRepository {
 		return this.namedParameterJdbcTemplate.queryForObject(sql, paramMap, this.locationRowMapper());
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	private RowMapper<Location> locationRowMapper() {
 		return new RowMapper<Location>() {
 			@Override

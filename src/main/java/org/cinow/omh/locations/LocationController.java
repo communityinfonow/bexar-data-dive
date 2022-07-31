@@ -6,12 +6,25 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * REST API controller for locations.
+ * 
+ * @author brian
+ */
 @RestController
 public class LocationController {
 	
+	/**
+	 * The location service.
+	 */
 	@Autowired
 	private LocationService locationService;
 
+	/**
+	 * Get the location menu.
+	 * 
+	 * @return the location menu
+	 */
 	@GetMapping(path = "/api/location-menu", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<LocationMenu> getLocationMenu() {
 		return ResponseEntity.ok(this.locationService.buildLocationMenu());
