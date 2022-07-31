@@ -9,12 +9,21 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+/**
+ * {@inheritDoc}
+ */
 @Repository
 public class SourceRepositoryPostgresql implements SourceRepository {
 
+	/**
+	 * The named parameter JDBC template.
+	 */
 	@Autowired
 	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Source getSourceByIndicator(String indicatorId) {
 		String sql = ""
