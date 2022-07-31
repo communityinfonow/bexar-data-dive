@@ -100,23 +100,113 @@
             </template>
             <template v-if="filteredHeaders.find(f => f.value === 'race')" v-slot:header.race="{ header }">
               {{ header.text }}
-              
+              <v-menu offset-y>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn icon v-bind="attrs" v-on="on">
+                    <v-icon>mdi-filter-variant</v-icon>
+                  </v-btn>
+                </template>
+                <v-list>
+                  <v-list-item v-for="race in races" :key="race.name" @click.stop>
+                    <v-list-item-action>
+                      <v-checkbox
+                        v-model="race.selected"
+                        color="primary"
+                        hide-details
+                      ></v-checkbox>
+                    </v-list-item-action>
+                    <v-list-item-title>{{ race.name }}</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
             </template>
             <template v-if="filteredHeaders.find(f => f.value === 'age')" v-slot:header.age="{ header }">
               {{ header.text }}
-              
+              <v-menu offset-y>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn icon v-bind="attrs" v-on="on">
+                    <v-icon>mdi-filter-variant</v-icon>
+                  </v-btn>
+                </template>
+                <v-list>
+                  <v-list-item v-for="age in ages" :key="age.name" @click.stop>
+                    <v-list-item-action>
+                      <v-checkbox
+                        v-model="age.selected"
+                        color="primary"
+                        hide-details
+                      ></v-checkbox>
+                    </v-list-item-action>
+                    <v-list-item-title>{{ age.name }}</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
             </template>
             <template v-if="filteredHeaders.find(f => f.value === 'sex')" v-slot:header.sex="{ header }">
               {{ header.text }}
-              
+              <v-menu offset-y>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn icon v-bind="attrs" v-on="on">
+                    <v-icon>mdi-filter-variant</v-icon>
+                  </v-btn>
+                </template>
+                <v-list>
+                  <v-list-item v-for="sex in sexes" :key="sex.name" @click.stop>
+                    <v-list-item-action>
+                      <v-checkbox
+                        v-model="sex.selected"
+                        color="primary"
+                        hide-details
+                      ></v-checkbox>
+                    </v-list-item-action>
+                    <v-list-item-title>{{ sex.name }}</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
             </template>
             <template v-if="filteredHeaders.find(f => f.value === 'education')" v-slot:header.education="{ header }">
               {{ header.text }}
-              
+              <v-menu offset-y>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn icon v-bind="attrs" v-on="on">
+                    <v-icon>mdi-filter-variant</v-icon>
+                  </v-btn>
+                </template>
+                <v-list>
+                  <v-list-item v-for="education in educations" :key="education.name" @click.stop>
+                    <v-list-item-action>
+                      <v-checkbox
+                        v-model="education.selected"
+                        color="primary"
+                        hide-details
+                      ></v-checkbox>
+                    </v-list-item-action>
+                    <v-list-item-title>{{ education.name }}</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
             </template>
             <template v-if="filteredHeaders.find(f => f.value === 'income')" v-slot:header.income="{ header }">
               {{ header.text }}
-              
+              <v-menu offset-y>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn icon v-bind="attrs" v-on="on">
+                    <v-icon>mdi-filter-variant</v-icon>
+                  </v-btn>
+                </template>
+                <v-list>
+                  <v-list-item v-for="income in incomes" :key="income.name" @click.stop>
+                    <v-list-item-action>
+                      <v-checkbox
+                        v-model="income.selected"
+                        color="primary"
+                        hide-details
+                      ></v-checkbox>
+                    </v-list-item-action>
+                    <v-list-item-title>{{ income.name }}</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
             </template>
           </v-data-table>
       </v-col>
@@ -147,7 +237,12 @@ export default {
       },
       search: "",
       locations: [],
-      years: []
+      years: [],
+      races: [],
+      ages: [],
+      sexes: [],
+      educations: [],
+      incomes: []
     }
   },
   computed: {
@@ -167,51 +262,72 @@ export default {
       return [
         {
           text: i18n.t('tools.tables.headers.location'),
-          value: "location"
+          value: "location",
+          filter: (value, search, item) => {
+            return this.filteredLocations.find(i => i.name === item.name);
+          }
         }, 
         {
           text: i18n.t('tools.tables.headers.year'),
           value: "year",
           filter: (value, search, item) => {
-            console.log(value)
-            return this.filteredYears.find(y => y.name === item.name);
+            return this.filteredYears.find(i => i.name === item.name);
           }
         },
         {
           text: i18n.t('tools.tables.headers.race'),
-          value: "race"
+          value: "race",
+          filter: (value, search, item) => {
+            return this.filteredRaces.find(i => i.name === item.name);
+          }
         },
         {
           text: i18n.t('tools.tables.headers.age'),
-          value: "age"
+          value: "age",
+          filter: (value, search, item) => {
+            return this.filteredAges.find(i => i.name === item.name);
+          }
         },
         {
           text: i18n.t('tools.tables.headers.sex'),
-          value: "sex"
+          value: "sex",
+          filter: (value, search, item) => {
+            return this.filteredSexes.find(i => i.name === item.name);
+          }
         },
         {
           text: i18n.t('tools.tables.headers.education'),
-          value: "education"
+          value: "education",
+          filter: (value, search, item) => {
+            return this.filteredEducations.find(i => i.name === item.name);
+          }
         },
         {
           text: i18n.t('tools.tables.headers.income'),
-          value: "income"
+          value: "income",
+          filter: (value, search, item) => {
+            return this.filteredIncomes.find(i => i.name === item.name);
+          }
         },
         {
           text: i18n.t('tools.tables.headers.value'),
-          value: "valueLabel"
+          value: "valueLabel",
+          filterable: false
         },
         {
           text: i18n.t('tools.tables.headers.moe_low'),
-          value: "moeLow"
+          value: "moeLow",
+          filterable: false
         },
         {
           text: i18n.t('tools.tables.headers.moe_high'),
-          value: "moeHigh"
+          value: "moeHigh",
+          filterable: false
         },
         {
           text: i18n.t('tools.tables.headers.universe'),
-          value: "universeValue"
+          value: "universeValue",
+          filterable: false
         }
       ];
     },
@@ -235,15 +351,35 @@ export default {
       return filtered;
     },
     filteredLocations() {
-      return this.locations.filter(l => l.selected);
+      return this.locations.filter(i => i.selected);
     },
     filteredYears() {
-      return this.years.filter(y => y.selected);
+      return this.years.filter(i => i.selected);
+    },
+    filteredRaces() {
+      return this.races.filter(i => i.selected);
+    },
+    filteredAges() {
+      return this.ages.filter(i => i.selected);
+    },
+    filteredSexes() {
+      return this.sexes.filter(i => i.selected);
+    },
+    filteredEducations() {
+      return this.educations.filter(i => i.selected);
+    },
+    filteredIncomes() {
+      return this.incomes.filter(i => i.selected);
     },
     filteredItems() {
-      return this.tablesData.items.filter(i => {
-        return this.filteredLocations.find(l => l.name === i.location)
-          && this.filteredYears.find(y => y.name === i.year)
+      return this.tablesData.items.filter(item => {
+        return this.filteredLocations.find(i => i.name === item.location)
+          && this.filteredYears.find(i => i.name === item.year)
+          && (!this.races.length || this.filteredRaces.find(i => i.name === item.race))
+          && (!this.ages.length || this.filteredAges.find(i => i.name === item.age))
+          && (!this.sexes.length || this.filteredSexes.find(i => i.name === item.sex))
+          && (!this.educations.length || this.filteredEducation.find(i => i.name === item.education))
+          && (!this.incomes.length || this.filteredIncomes.find(i => i.name === item.income))
       });
     }
   },
@@ -255,8 +391,27 @@ export default {
 		},
     tablesData(newValue) {
       if (newValue) {
-        this.locations = new Array(...new Set(newValue.items.map(i => i.location))).map(i => { return { name: i, selected: true }});
-        this.years = new Array(...new Set(newValue.items.map(i => i.year))).map(i => { return { name: i, selected: true}});
+        this.locations = new Array(...new Set(newValue.items.map(i => i.location)))
+          .map(i => { return { name: i, selected: true }})
+          .filter(i => i.name !== null);
+        this.years = new Array(...new Set(newValue.items.map(i => i.year)))
+          .map(i => { return { name: i, selected: true}})
+          .filter(i => i.name !== null);
+        this.races = new Array(...new Set(newValue.items.map(i => i.race)))
+          .map(i => { return { name: i, selected: true}})
+          .filter(i => i.name !== null);
+        this.ages = new Array(...new Set(newValue.items.map(i => i.age)))
+          .map(i => { return { name: i, selected: true}})
+          .filter(i => i.name !== null);
+        this.sexes = new Array(...new Set(newValue.items.map(i => i.sex)))
+          .map(i => { return { name: i, selected: true}})
+          .filter(i => i.name !== null);
+        this.educations = new Array(...new Set(newValue.items.map(i => i.education)))
+          .map(i => { return { name: i, selected: true}})
+          .filter(i => i.name !== null);
+        this.incomes = new Array(...new Set(newValue.items.map(i => i.income)))
+          .map(i => { return { name: i, selected: true}})
+          .filter(i => i.name !== null);
       }
     }
 	},
