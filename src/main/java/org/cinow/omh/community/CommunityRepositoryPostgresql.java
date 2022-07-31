@@ -19,12 +19,21 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+/**
+ * {@inheritDoc}
+ */
 @Repository
 public class CommunityRepositoryPostgresql implements CommunityRepository {
 
+	/**
+	 * The named parameter JDBC template.
+	 */
 	@Autowired
 	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public List<CommunityDataCategory> getCommunityData(String location, String locationType) {
 		String sql = ""
@@ -138,6 +147,9 @@ public class CommunityRepositoryPostgresql implements CommunityRepository {
 		});
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public List<CommunityLocation> getCommunityLocations(String locationType) {
 		String sql = ""
@@ -169,6 +181,9 @@ public class CommunityRepositoryPostgresql implements CommunityRepository {
 		});
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public CommunityLocation getCommunityLocation(String location, String locationType) {
 		String sql = ""

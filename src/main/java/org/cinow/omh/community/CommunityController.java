@@ -9,12 +9,23 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * REST API controller for the Community view.
+ * 
+ * @author brian
+ */
 @RestController
 public class CommunityController {
 
+	/**
+	 * The community service.
+	 */
 	@Autowired
 	private CommunityService communityService;
 
+	/**
+	 * @return the community data
+	 */
 	@GetMapping(path = "/api/community-data", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<CommunityData> getCommunityData(
 			@RequestParam String location, @RequestParam String locationType) {
@@ -22,6 +33,9 @@ public class CommunityController {
 		return ResponseEntity.ok(this.communityService.getCommunityData(location, locationType));
 	}
 
+	/**
+	 * @return the community locations
+	 */
 	@GetMapping(path = "/api/community-locations", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<CommunityLocation>> getCommunityLocations(
 			@RequestParam String locationType) {
@@ -29,6 +43,9 @@ public class CommunityController {
 		return ResponseEntity.ok(this.communityService.getCommunityLocations(locationType));
 	}
 
+	/**
+	 * @return the community location
+	 */
 	@GetMapping(path = "/api/community-location", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<CommunityLocation> getCommunityLocation(
 			@RequestParam String location, @RequestParam String locationType) {

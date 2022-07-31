@@ -8,7 +8,9 @@ import org.cinow.omh.indicators.IndicatorType;
 import org.cinow.omh.sources.Source;
 
 /**
- * Represents all of the data for an indicator in the Community feature.
+ * This object represents all of the data for an indicator in the Community view.
+ * 
+ * @author brian
  */
 public class CommunityDataIndicator {
 
@@ -37,47 +39,79 @@ public class CommunityDataIndicator {
 	 */
 	private List<CommunityDataPoint> demographicData;
 
+	/**
+	 * Constructor initializes fields.
+	 */
 	public CommunityDataIndicator() {
 		this.demographicData = new ArrayList<>();
 	}
 
+	/**
+	 * @return the indicator
+	 */
 	public Indicator getIndicator() {
 		return indicator;
 	}
 
+	/**
+	 * @param indicator the indicator to set
+	 */
 	public void setIndicator(Indicator indicator) {
 		this.indicator = indicator;
 	}
 
+	/**
+	 * @return the indicatorType
+	 */
 	public Source getSource() {
 		return source;
 	}
 	
+	/**
+	 * @param source the source to set
+	 */
 	public IndicatorType getIndicatorType() {
 		return indicatorType;
 	}
 
+	/**
+	 * @param indicatorType the indicatorType to set
+	 */
 	public void setIndicatorType(IndicatorType indicatorType) {
 		this.indicatorType = indicatorType;
 	}
 
-	
+	/**
+	 * @param source the source to set
+	 */
 	public void setSource(Source source) {
 		this.source = source;
 	}
 
+	/**
+	 * @return the year
+	 */
 	public String getYear() {
 		return year;
 	}
 
+	/**
+	 * @param year the year to set
+	 */
 	public void setYear(String year) {
 		this.year = year;
 	}
 
+	/**
+	 * @return the demographicData
+	 */
 	public List<CommunityDataPoint> getDemographicData() {
 		return demographicData;
 	}
 
+	/**
+	 * @param demographicData the demographicData to set
+	 */
 	public void setDemographicData(List<CommunityDataPoint> demographicData) {
 		this.demographicData = demographicData;
 	}
