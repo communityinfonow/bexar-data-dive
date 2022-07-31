@@ -48,12 +48,76 @@
           <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" hide-details></v-text-field>
           <v-data-table
             :headers="filteredHeaders"
-            :items="tablesData.items"
+            :items="filteredItems"
             :search="search"
             :options="tableOptions"
             :footer-props="footerOptions"
             multi-sort
           >
+            <template v-slot:header.location="{ header }">
+              {{ header.text }}
+              <v-menu offset-y>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn icon v-bind="attrs" v-on="on">
+                    <v-icon>mdi-filter-variant</v-icon>
+                  </v-btn>
+                </template>
+                <v-list>
+                  <v-list-item v-for="location in locations" :key="location.name" @click.stop>
+                    <v-list-item-action>
+                      <v-checkbox
+                        v-model="location.selected"
+                        color="primary"
+                        hide-details
+                      ></v-checkbox>
+                    </v-list-item-action>
+                    <v-list-item-title>{{ location.name }}</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+            </template>
+            <template v-slot:header.year="{ header }">
+              {{ header.text }}
+              <v-menu offset-y>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn icon v-bind="attrs" v-on="on">
+                    <v-icon>mdi-filter-variant</v-icon>
+                  </v-btn>
+                </template>
+                <v-list>
+                  <v-list-item v-for="year in years" :key="year.name" @click.stop>
+                    <v-list-item-action>
+                      <v-checkbox
+                        v-model="year.selected"
+                        color="primary"
+                        hide-details
+                      ></v-checkbox>
+                    </v-list-item-action>
+                    <v-list-item-title>{{ year.name }}</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+            </template>
+            <template v-if="filteredHeaders.find(f => f.value === 'race')" v-slot:header.race="{ header }">
+              {{ header.text }}
+              
+            </template>
+            <template v-if="filteredHeaders.find(f => f.value === 'age')" v-slot:header.age="{ header }">
+              {{ header.text }}
+              
+            </template>
+            <template v-if="filteredHeaders.find(f => f.value === 'sex')" v-slot:header.sex="{ header }">
+              {{ header.text }}
+              
+            </template>
+            <template v-if="filteredHeaders.find(f => f.value === 'education')" v-slot:header.education="{ header }">
+              {{ header.text }}
+              
+            </template>
+            <template v-if="filteredHeaders.find(f => f.value === 'income')" v-slot:header.income="{ header }">
+              {{ header.text }}
+              
+            </template>
           </v-data-table>
       </v-col>
     </v-row>
@@ -81,7 +145,9 @@ export default {
       footerOptions: {
         itemsPerPageOptions: [10, 50, 100, -1]
       },
-      search: ""
+      search: "",
+      locations: [],
+      years: []
     }
   },
   computed: {
@@ -105,7 +171,11 @@ export default {
         }, 
         {
           text: i18n.t('tools.tables.headers.year'),
-          value: "year"
+          value: "year",
+          filter: (value, search, item) => {
+            console.log(value)
+            return this.filteredYears.find(y => y.name === item.name);
+          }
         },
         {
           text: i18n.t('tools.tables.headers.race'),
@@ -163,6 +233,18 @@ export default {
         filtered = filtered.filter(h => h.value !== 'income');
       }
       return filtered;
+    },
+    filteredLocations() {
+      return this.locations.filter(l => l.selected);
+    },
+    filteredYears() {
+      return this.years.filter(y => y.selected);
+    },
+    filteredItems() {
+      return this.tablesData.items.filter(i => {
+        return this.filteredLocations.find(l => l.name === i.location)
+          && this.filteredYears.find(y => y.name === i.year)
+      });
     }
   },
   watch: {
@@ -170,7 +252,13 @@ export default {
       if (oldValue) {
 			  this.getTablesData(router.currentRoute.query.indicator);
       }
-		}
+		},
+    tablesData(newValue) {
+      if (newValue) {
+        this.locations = new Array(...new Set(newValue.items.map(i => i.location))).map(i => { return { name: i, selected: true }});
+        this.years = new Array(...new Set(newValue.items.map(i => i.year))).map(i => { return { name: i, selected: true}});
+      }
+    }
 	},
   beforeRouteEnter(to, from, next) {
     next(vm => {
@@ -217,8 +305,8 @@ export default {
             indicator: item.id
           },
         });
-    },
-  },
+    }
+  }
 }
 </script>
 

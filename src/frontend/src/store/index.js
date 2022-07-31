@@ -257,7 +257,7 @@ export default new Vuex.Store({
     },
     setTablesData(context, indicator) {
       if (indicator !== null) {
-        context.dispatch('getCommunityData', indicator)
+        context.dispatch('getTablesData', indicator.id)
       } else {
         context.commit('SET_TABLES_DATA', indicator)
       }
