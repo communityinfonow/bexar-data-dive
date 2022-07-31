@@ -111,10 +111,20 @@
           </v-col>
           <v-col cols="10">
             <h1 class="text-h3 mt-2 mb-4">{{ community.location['name_' + locale] }}</h1>
+            <v-select 
+              style="width: 200px;"
+              label="Skip ahead to"
+              :items="categories"
+              :item-text="'name_' + locale"
+              item-value="id"
+              v-model="selectedCategory"
+              @change="skipToCategory"
+            >
+            </v-select>
           </v-col>
         </v-row>
         <section v-for="data in sortedData" :key="'category_' + data.category.id">
-          <h2 class="text-h4 mb-4">{{ data.category['name_' + locale]}}</h2>
+          <h2 :id="'category_' + data.category.id" class="text-h4 mb-4">{{ data.category['name_' + locale]}}</h2>
           <template v-for="item in data.indicators">
             <template v-if="item.indicators">
               <div :key="'category_' + item.category.id" class="ml-4">
@@ -135,6 +145,7 @@
 </template>
 
 <script>
+import goTo from 'vuetify/lib/services/goto'
 import { mapActions, mapState } from 'vuex'
 import router from '@/router/index'
 import axios from 'axios'
@@ -166,6 +177,7 @@ export default {
       selectionGeojson: null,
       communityGeojson: null,
       refreshOptions: false,
+      selectedCategory: null
     }
   },
   computed: {
@@ -193,6 +205,9 @@ export default {
       });
       
       return sortedData;
+    },
+    categories() {
+      return this.sortedData.map(i => i.category);
     },
     layers() {
       return this.locationMenu?.categories?.map(locationType => {
@@ -336,6 +351,9 @@ export default {
         })
       });
 		},
+    skipToCategory(category) {
+      goTo("#category_" + category)
+    }
   },
 }
 </script>
