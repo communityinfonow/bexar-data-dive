@@ -24,6 +24,8 @@ public class CommunityController {
 	private CommunityService communityService;
 
 	/**
+	 * @param location the location
+	 * @param locationType the locationType
 	 * @return the community data
 	 */
 	@GetMapping(path = "/api/community-data", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -34,6 +36,7 @@ public class CommunityController {
 	}
 
 	/**
+	 * @param locationType the locationType
 	 * @return the community locations
 	 */
 	@GetMapping(path = "/api/community-locations", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -44,6 +47,8 @@ public class CommunityController {
 	}
 
 	/**
+	 * @param location the location
+	 * @param locationType the locationType
 	 * @return the community location
 	 */
 	@GetMapping(path = "/api/community-location", produces = MediaType.APPLICATION_JSON_VALUE)

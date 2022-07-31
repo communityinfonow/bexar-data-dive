@@ -16,12 +16,21 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+/**
+ * {@inheritDoc}
+ */
 @Repository
 public class ExploreRepositoryPostgresql implements ExploreRepository {
 
+	/**
+	 * The named parameter jdbc template.
+	 */
 	@Autowired
 	NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public List<ExploreDataLocation> getExploreData(ExploreDataRequest dataRequest, boolean allLocations) {
 		String sql = ""

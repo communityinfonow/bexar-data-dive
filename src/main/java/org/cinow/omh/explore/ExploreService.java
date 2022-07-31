@@ -12,21 +12,42 @@ import org.cinow.omh.sources.SourceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service class for the Explore Data view.
+ */
 @Service
 public class ExploreService {
 
+	/**
+	 * The explore repository.
+	 */
 	@Autowired
 	private ExploreRepository exploreRepository;
 
+	/**
+	 * The indicator repository.
+	 */
 	@Autowired
 	private IndicatorRepository indicatorRepository;
 
+	/**
+	 * The source repository.
+	 */
 	@Autowired
 	private SourceRepository sourceRepository;
 
+	/**
+	 * The filter repository.
+	 */
 	@Autowired
 	private FilterRepository filterRepository;
 	
+	/**
+	 * Get the data for the Explore Data view.
+	 * 
+	 * @param dataRequest the dataDequest
+	 * @return the data
+	 */
 	public ExploreData getExploreData(ExploreDataRequest dataRequest) {
 		ExploreData exploreData = new ExploreData();
 		exploreData.setIndicator(this.indicatorRepository.getIndicator(dataRequest.getIndicator()));
@@ -53,6 +74,12 @@ public class ExploreService {
 		return exploreData;
 	}
 
+	/**
+	 * Get the filters for a data request.
+	 * 
+	 * @param dataRequest the dataDequest
+	 * @return the filters
+	 */
 	private Filters getIndicatorFilters(ExploreDataRequest dataRequest) {
 		Filters filters = new Filters();
 		filters.setLocationTypeFilter(this.filterRepository.getLocationTypeFilter(dataRequest.getIndicator()));
