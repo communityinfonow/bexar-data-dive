@@ -32,17 +32,21 @@
       <v-col v-if="tablesData" cols="auto" class="pt-4 px-4">
           <h1 class="text-h3 mb-1 d-flex justify-space-between">
             <span>{{ tablesData.indicator['name_' + locale] }}</span>
-            <div>
+              <!-- FIXME: espanol aria-label (and potentially other places too) -->
               <vue-excel-xlsx
+                type="button"
+                class="v-btn v-btn--icon v-btn--round theme--light v-size--default primary--text"
+                aria-label="Download"
                 :data="tablesData.items"
                 :columns="xlsxColumns"
                 :file-name="tablesData.indicator['name_' + locale]"
                 :file-type="'xlsx'"
                 :sheet-name="tablesData.indicator['name_' + locale]"
               >
-                <v-btn icon color="primary" aria-label="Download"><v-icon>mdi-download</v-icon></v-btn>
-              </vue-excel-xlsx>
-            </div>
+              <span class="v-btn__content">
+                <v-icon>mdi-download</v-icon>
+              </span>
+            </vue-excel-xlsx>
           </h1>
           <h2 class="text-subtitle-1 mb-2">{{ tablesData.source['name_' + locale] }}</h2>
           <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" hide-details></v-text-field>
@@ -58,7 +62,7 @@
               {{ header.text }}
               <v-menu offset-y>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon v-bind="attrs" v-on="on">
+                  <v-btn icon v-bind="attrs" v-on="on" aria-label="Location filter">
                     <v-icon>mdi-filter-variant</v-icon>
                   </v-btn>
                 </template>
@@ -80,7 +84,7 @@
               {{ header.text }}
               <v-menu offset-y>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon v-bind="attrs" v-on="on">
+                  <v-btn icon v-bind="attrs" v-on="on" aria-label="Year filter">
                     <v-icon>mdi-filter-variant</v-icon>
                   </v-btn>
                 </template>
@@ -102,7 +106,7 @@
               {{ header.text }}
               <v-menu offset-y>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon v-bind="attrs" v-on="on">
+                  <v-btn icon v-bind="attrs" v-on="on" aria-label="Race filter">
                     <v-icon>mdi-filter-variant</v-icon>
                   </v-btn>
                 </template>
@@ -124,7 +128,7 @@
               {{ header.text }}
               <v-menu offset-y>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon v-bind="attrs" v-on="on">
+                  <v-btn icon v-bind="attrs" v-on="on" aria-label="Age filter">
                     <v-icon>mdi-filter-variant</v-icon>
                   </v-btn>
                 </template>
@@ -146,7 +150,7 @@
               {{ header.text }}
               <v-menu offset-y>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon v-bind="attrs" v-on="on">
+                  <v-btn icon v-bind="attrs" v-on="on" aria-label="Sex filter">
                     <v-icon>mdi-filter-variant</v-icon>
                   </v-btn>
                 </template>
@@ -168,7 +172,7 @@
               {{ header.text }}
               <v-menu offset-y>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon v-bind="attrs" v-on="on">
+                  <v-btn icon v-bind="attrs" v-on="on" aria-label="Education filter">
                     <v-icon>mdi-filter-variant</v-icon>
                   </v-btn>
                 </template>
@@ -190,7 +194,7 @@
               {{ header.text }}
               <v-menu offset-y>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon v-bind="attrs" v-on="on">
+                  <v-btn icon v-bind="attrs" v-on="on" aria-label="Income filter">
                     <v-icon>mdi-filter-variant</v-icon>
                   </v-btn>
                 </template>

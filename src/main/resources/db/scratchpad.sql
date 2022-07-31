@@ -38,6 +38,25 @@ drop table tbl_filter_types;
 drop table tbl_locations;
 drop table tbl_location_types;
 
+insert into tbl_indicator_values (indicator_id,year_,location_id,location_type_id,indicator_value,moe_low,moe_high,universe_value,race_id,age_id,sex_id,education_id,income_id)
+values (1,'2020','48029',1,487,4,4,487,1,null,null,null,null),
+	(1,'2020','48029',1,18,12,12,487,2,null,null,null,null),
+	(1,'2020','48029',1,71,9,9,487,3,null,null,null,null),
+	(2,'2020','48029',1,52430,2300,1700,null,1,null,null,null,null),
+	(2,'2020','48029',1,51430,1300,700,null,2,null,null,null,null),
+	(2,'2020','48029',1,53430,1300,700,null,3,null,null,null,null),
+	(3,'2020','48029',1,28.5,2,6,487,1,null,null,10,null),
+	(3,'2020','48029',1,31.4,3,7,487,1,null,null,11,null),
+	(3,'2020','48029',1,17.6,2,6,43,2,null,null,10,null),
+	(3,'2020','48029',1,22.8,3,7,43,2,null,null,11,null);
+
+insert into tbl_indicator_values (indicator_id,year_,location_id,location_type_id,indicator_value,moe_low,moe_high,universe_value,race_id,age_id,sex_id,education_id,income_id)
+values (1,'2016','48029',1,482,4,4,482,1,null,null,null,null),
+	(1,'2016','48029',1,16,12,12,482,2,null,null,null,null),
+	(1,'2016','48029',1,70,9,9,482,3,null,null,null,null),
+	(3,'2016','48029',1,25.1,2,6,482,1,null,null,10,null),
+	(3,'2016','48029',1,18.3,3,7,482,2,null,null,11,null);
+
 
 insert into tbl_indicator_values (indicator_id,year_,location_id,location_type_id,indicator_value,moe_low,moe_high,universe_value,race_id,age_id,sex_id,education_id,income_id)
 values (1,'2020','2',4,487,4,4,487,1,null,null,null,null),
@@ -128,3 +147,5 @@ values (21, '2020', '48029182106', 5, 88, 2, 2, 20000, null, 4, null, null, null
 (21, '2015', '48029121118', 5, 86, 2, 2, 20000, null, 4, null, null, null),
 (21, '2010', '48029121118', 5, 90, 2, 2, 20000, null, 4, null, null, null)
 ;
+
+update tbl_indicators set featured = true where id_ in (1, 7, 12);

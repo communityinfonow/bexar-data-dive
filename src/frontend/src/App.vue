@@ -24,4 +24,7 @@ export default {
 ::v-deep .v-menu__content {
   z-index: 1000 !important;
 }
+::v-deep .v-btn--plain:not(.v-btn--active):not(.v-btn--loading):not(:focus):not(:hover) .v-btn__content {
+  opacity: 1 !important;
+}
 </style>

@@ -4,19 +4,19 @@
       <v-col cols="8" class="pa-4 col col-auto">
         <h1 class="text-h3 mb-4">{{ $t('about_data_view.name') }}</h1>
         <section v-for="category in sortedAboutData.categories" :key="category.category.id">
-          <h2 class="mb-3">{{ category.category['name_' + locale]}}</h2>
+          <h2 class="mb-3 text-h4">{{ category.category['name_' + locale]}}</h2>
           <section v-for="item in category.items" :key="item.id">
             <template v-if="item.items">
-              <h3  class="mb-2">{{ item.category['name_' + locale] }}</h3>
+              <h3  class="mb-2 text-h5">{{ item.category['name_' + locale] }}</h3>
               <section v-for="subItem in item.items" :key="subItem.id">
-                <h4 class="mb-1" :id="'indicator_' + subItem.indicator.id">{{ subItem.indicator['name_' + locale] }}</h4>
-                <p :id="'indicator_' + subItem.indicator.id">{{ subItem.indicator['description_' + locale]}}</p>
+                <h4 class="mb-1 text-h6" :id="'indicator_' + subItem.indicator.id">{{ subItem.indicator['name_' + locale] }}</h4>
+                <p>{{ subItem.indicator['description_' + locale]}}</p>
                 <p><a target="_blank" :href="subItem.source.url">{{ subItem.source['name_' + locale] }}</a></p>
               </section>
             </template>
             <template v-else>
-              <h4 class="mb-1" :id="'indicator_' + item.indicator.id">{{ item.indicator['name_' + locale] }}</h4>
-              <p v-if="!item.items" :id="'indicator_' + item.indicator.id">{{ item.indicator['description_' + locale]}}</p>
+              <h3 class="mb-1 text-h6" :id="'indicator_' + item.indicator.id">{{ item.indicator['name_' + locale] }}</h3>
+              <p v-if="!item.items">{{ item.indicator['description_' + locale]}}</p>
               <p><a target="_blank" :href="item.source.url">{{ item.source['name_' + locale] }}</a></p>
             </template>
           </section>
