@@ -288,7 +288,7 @@ export default {
     headers() {
       return [
         {
-          text: i18n.t('tools.tables.headers.locationType'),
+          text: i18n.t('tools.tables.headers.location_type'),
           value: "locationType",
           filter: (value, search, item) => {
             return this.filteredLocationTypes.find(i => i.name === item.name);

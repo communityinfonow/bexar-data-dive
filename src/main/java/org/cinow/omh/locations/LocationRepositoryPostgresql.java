@@ -30,7 +30,8 @@ public class LocationRepositoryPostgresql implements LocationRepository {
 		String sql = ""
 			+ " select id_, location_type_id, name_en, name_es "
 			+ " from tbl_locations "
-			+ " where location_type_id = :location_type_id::numeric ";
+			+ " where location_type_id = :location_type_id::numeric "
+			+ " order by id_::numeric ";
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
 		paramMap.addValue("location_type_id", typeId);
 

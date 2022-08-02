@@ -30,6 +30,7 @@ export default new Vuex.Store({
       return [
         {
           name: i18n.t('tools.my_community.name'),
+          imagePath: "/img/tools_community.png",
           route: 'community',
           icon: 'mdi-map',
           shortDescription: i18n.t('tools.my_community.short_description'),
@@ -37,6 +38,7 @@ export default new Vuex.Store({
         },
         {
           name: i18n.t('tools.explore.name'),
+          imagePath: "/img/tools_explore.png",
           route: 'explore',
           icon: 'mdi-view-dashboard',
           shortDescription: i18n.t('tools.explore.short_description'),
@@ -58,6 +60,7 @@ export default new Vuex.Store({
         },
         {
           name: i18n.t('tools.tables.name'),
+          imagePath: "/img/tools_tables.png",
           route: 'tables',
           icon: 'mdi-grid',
           shortDescription: i18n.t('tools.tables.short_description'),

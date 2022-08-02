@@ -1,6 +1,12 @@
 <template>
   <v-container fluid>
-    <h1 class="text-h3 mb-2">{{ $t('app.name') }}</h1>
+    <section class="d-flex">
+      [BDD logo]
+      <h1 class="text-h3 mb-2 ml-2 logo-header">
+        {{ $t('app.name_line_1') }}<br>
+        {{ $t('app.name_line_2') }}
+      </h1>
+    </section>
     <p class="text-subtitle-1 mb-4">{{ $t('app.tagline') }}</p>
     <p>{{ $t('home_view.welcome_message') }}</p>
     <h2 class="text-h5 mt-8 mb-2">{{ $t('home_view.available_tools') }}</h2>
@@ -9,6 +15,7 @@
         <featured-card 
           :key="tool.route" 
           :item="tool"
+          :imagePath="tool.imagePath"
           :name="tool.name" 
           :description="tool.shortDescription" 
           about_route="about-tools" 
@@ -35,4 +42,8 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+  .logo-header {
+    color: $color-primary;
+  }
+</style>
