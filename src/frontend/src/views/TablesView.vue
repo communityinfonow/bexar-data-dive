@@ -31,7 +31,7 @@
       </v-col>
       <v-col v-if="tablesData" cols="auto" class="pt-4 px-4">
           <h1 class="text-h3 mb-1 d-flex justify-space-between">
-            <span>{{ tablesData.indicator['name_' + locale] }}</span>
+            <span><span v-if="tablesData.category.parentCategoryId">{{ tablesData.category['name_' + locale] }} - </span>{{ tablesData.indicator['name_' + locale] }}</span>
               <!-- FIXME: espanol aria-label (and potentially other places too) -->
               <vue-excel-xlsx
                 type="button"
@@ -58,9 +58,31 @@
             :footer-props="footerOptions"
             multi-sort
           >
+            <template v-slot:header.locationType="{ header }">
+              {{ header.text }}
+              <v-menu offset-y max-height="400px" allow-overflow eager>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn icon v-bind="attrs" v-on="on" aria-label="Location type filter">
+                    <v-icon>mdi-filter-variant</v-icon>
+                  </v-btn>
+                </template>
+                <v-list>
+                  <v-list-item v-for="locationType in locationTypes" :key="locationType.name" @click.stop>
+                    <v-list-item-action>
+                      <v-checkbox
+                        v-model="locationType.selected"
+                        color="primary"
+                        hide-details
+                      ></v-checkbox>
+                    </v-list-item-action>
+                    <v-list-item-title>{{ locationType.name }}</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+            </template>
             <template v-slot:header.location="{ header }">
               {{ header.text }}
-              <v-menu offset-y>
+              <v-menu offset-y max-height="400px" allow-overflow eager>
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn icon v-bind="attrs" v-on="on" aria-label="Location filter">
                     <v-icon>mdi-filter-variant</v-icon>
@@ -240,6 +262,7 @@ export default {
         itemsPerPageOptions: [10, 50, 100, -1]
       },
       search: "",
+      locationTypes: [],
       locations: [],
       years: [],
       races: [],
@@ -264,6 +287,13 @@ export default {
     },
     headers() {
       return [
+        {
+          text: i18n.t('tools.tables.headers.locationType'),
+          value: "locationType",
+          filter: (value, search, item) => {
+            return this.filteredLocationTypes.find(i => i.name === item.name);
+          }
+        },
         {
           text: i18n.t('tools.tables.headers.location'),
           value: "location",
@@ -320,17 +350,17 @@ export default {
         },
         {
           text: i18n.t('tools.tables.headers.moe_low'),
-          value: "moeLow",
+          value: "moeLowLabel",
           filterable: false
         },
         {
           text: i18n.t('tools.tables.headers.moe_high'),
-          value: "moeHigh",
+          value: "moeHighLabel",
           filterable: false
         },
         {
           text: i18n.t('tools.tables.headers.universe'),
-          value: "universeValue",
+          value: "universeValueLabel",
           filterable: false
         }
       ];
@@ -353,6 +383,9 @@ export default {
         filtered = filtered.filter(h => h.value !== 'income');
       }
       return filtered;
+    },
+    filteredLocationTypes() {
+      return this.locationTypes.filter(i => i.selected);
     },
     filteredLocations() {
       return this.locations.filter(i => i.selected);
@@ -377,7 +410,8 @@ export default {
     },
     filteredItems() {
       return this.tablesData.items.filter(item => {
-        return this.filteredLocations.find(i => i.name === item.location)
+        return this.filteredLocationTypes.find(i => i.name === item.locationType)
+          && this.filteredLocations.find(i => i.name === item.location)
           && this.filteredYears.find(i => i.name === item.year)
           && (!this.races.length || this.filteredRaces.find(i => i.name === item.race))
           && (!this.ages.length || this.filteredAges.find(i => i.name === item.age))
@@ -395,6 +429,9 @@ export default {
 		},
     tablesData(newValue) {
       if (newValue) {
+        this.locationTypes = new Array(...new Set(newValue.items.map(i => i.locationType)))
+          .map(i => { return { name: i, selected: true }})
+          .filter(i => i.name !== null);
         this.locations = new Array(...new Set(newValue.items.map(i => i.location)))
           .map(i => { return { name: i, selected: true }})
           .filter(i => i.name !== null);

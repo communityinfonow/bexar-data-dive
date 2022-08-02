@@ -51,6 +51,7 @@ public class ExploreService {
 	public ExploreData getExploreData(ExploreDataRequest dataRequest) {
 		ExploreData exploreData = new ExploreData();
 		exploreData.setIndicator(this.indicatorRepository.getIndicator(dataRequest.getIndicator()));
+		exploreData.setCategory(this.indicatorRepository.getIndicatorCategory(dataRequest.getIndicator()));
 		exploreData.setSource(this.sourceRepository.getSourceByIndicator(dataRequest.getIndicator()));
 		exploreData.setFilters(this.getIndicatorFilters(dataRequest));
 		exploreData.setLocationData(this.exploreRepository.getExploreData(dataRequest, true));

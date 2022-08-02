@@ -108,7 +108,9 @@ export default {
 				data: xAxisData,
 				axisTick: { show: false },
 				axisLabel: textStyle,
-				name: this.compareSelections ? '' : this.exploreData.indicator['name_' + this.locale],
+				name: this.compareSelections 
+					? '' 
+					: (this.exploreData.category.parentCategoryId ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.exploreData.indicator['name_' + this.locale],
 				nameLocation: 'center',
 				nameTextStyle: textStyle
 			};

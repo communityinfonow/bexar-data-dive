@@ -42,6 +42,7 @@
       "long_description": "Explorar Datos es una herramienta...",
       "get_started": "Para comenzar, navegue o busque un indicador usando el menú de arriba, o haga clic en uno de los Indicadores destacados a continuación.",
       "headers": {
+        "locationType": "Location Type (es)",
         "location": "Location (es)",
         "year": "Year (es)",
         "race": "Race/Ethnicity (es)",
@@ -83,7 +84,8 @@
     "low": "low (es)",
     "high": "high (es)",
     "suppressed": "Suppressed (es)",
-    "no_data": "No Data (es)"
+    "no_data": "No Data (es)",
+    "all": "Todos"
   },
   "featured_card": {
     "learn_more": "Learn More",

@@ -69,7 +69,7 @@ export default {
 			};
 			option.xAxis = { 
 				type: 'category', 
-				data: Array.from(new Set(this.data.map(d => d.raceFilter['name_' + this.locale]))),
+				data: Array.from(new Set(this.data.map(d => d.raceFilter['name_' + this.locale] || i18n.t('data.all')))),
 				axisTick: { show: false },
 				axisLabel: textStyle
 			};

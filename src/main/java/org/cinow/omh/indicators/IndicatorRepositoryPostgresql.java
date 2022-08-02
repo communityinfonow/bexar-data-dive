@@ -141,4 +141,32 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 			}
 		});
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public IndicatorCategory getIndicatorCategory(String id) {
+		String sql = ""
+			+ " select ic.id_, ic.name_en, ic.name_es, ic.parent_category_id "
+			+ " from tbl_indicator_categories ic "
+			+ "   join tbl_indicators i on i.indicator_category_id = ic.id_ "
+			+ " where i.id_ = :indicator_id::numeric ";
+
+		MapSqlParameterSource paramMap = new MapSqlParameterSource();
+		paramMap.addValue("indicator_id", id);
+
+		return this.namedParameterJdbcTemplate.queryForObject(sql, paramMap, new RowMapper<IndicatorCategory>() {
+			@Override
+			public IndicatorCategory mapRow(ResultSet rs, int rowNum) throws SQLException {
+				IndicatorCategory category = new IndicatorCategory();
+				category.setId(rs.getString("id_"));
+				category.setName_en(rs.getString("name_en"));
+				category.setName_es(rs.getString("name_es"));
+				category.setParentCategoryId(rs.getString("parent_category_id"));
+
+				return category;
+			}
+		});
+	}
 }

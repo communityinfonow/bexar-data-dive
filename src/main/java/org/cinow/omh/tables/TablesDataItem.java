@@ -6,6 +6,11 @@ package org.cinow.omh.tables;
  * @author brian
  */
 public class TablesDataItem {
+
+	/**
+	 * The location type.
+	 */
+	private String locationType;
 	
 	/**
 	 * The location.
@@ -66,6 +71,20 @@ public class TablesDataItem {
 	 * Whether the value is suppressed.
 	 */
 	private boolean suppressed;
+
+	/**
+	 * @return the locationType
+	 */
+	public String getLocationType() {
+		return locationType;
+	}
+
+	/**
+	 * @param locationType the locationType to set
+	 */
+	public void setLocationType(String locationType) {
+		this.locationType = locationType;
+	}
 
 	/**
 	 * @return the location

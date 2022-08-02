@@ -40,6 +40,7 @@ public class TablesService {
 	public TablesData getTablesData(String indicator) {
 		TablesData tablesData = new TablesData();
 		tablesData.setIndicator(this.indicatorRepository.getIndicator(indicator));
+		tablesData.setCategory(this.indicatorRepository.getIndicatorCategory(indicator));
 		tablesData.setSource(this.sourceRepository.getSourceByIndicator(indicator));
 		tablesData.setItems(this.tablesRepository.getTablesData(indicator));
 

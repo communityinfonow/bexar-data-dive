@@ -3,6 +3,7 @@ package org.cinow.omh.tables;
 import java.util.List;
 
 import org.cinow.omh.indicators.Indicator;
+import org.cinow.omh.indicators.IndicatorCategory;
 import org.cinow.omh.sources.Source;
 
 /**
@@ -16,6 +17,11 @@ public class TablesData {
 	 * The indicator.
 	 */
 	private Indicator indicator;
+
+	/**
+	 * The category.
+	 */
+	private IndicatorCategory category;
 
 	/**
 	 * The source.
@@ -39,6 +45,20 @@ public class TablesData {
 	 */
 	public void setIndicator(Indicator indicator) {
 		this.indicator = indicator;
+	}
+
+	/**
+	 * @return the category
+	 */
+	public IndicatorCategory getCategory() {
+		return category;
+	}
+
+	/**
+	 * @param category the category to set
+	 */
+	public void setCategory(IndicatorCategory category) {
+		this.category = category;
 	}
 
 	/**

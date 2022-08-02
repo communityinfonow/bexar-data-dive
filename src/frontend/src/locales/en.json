@@ -42,6 +42,7 @@
       "long_description": "Tables & Downloads is where you can access data in a machine-readable spreadsheet format to use in your own data processing and visualization tools. You can filter the data by location, year, race/ethnicity, education level or poverty status, depending on what is available from the data source, download and save the data tables you create.",
       "get_started": "To get started, browse or search for an indicator using the menu above or select one of the featured indicators below.",
       "headers": {
+        "locationType": "Location Type",
         "location": "Location",
         "year": "Year",
         "race": "Race/Ethnicity",
@@ -79,7 +80,8 @@
     "low": "low",
     "high": "high",
     "suppressed": "Suppressed",
-    "no_data": "No Data"
+    "no_data": "No Data",
+    "all": "All"
   },
   "featured_card": {
     "learn_more": "Learn More",

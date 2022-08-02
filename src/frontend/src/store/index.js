@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import router from '@/router/index'
 import i18n from '@/i18n'
 import axios from 'axios'
+import { format } from '@/formatter/formatter'
 
 Vue.use(Vuex)
 
@@ -273,8 +274,11 @@ export default new Vuex.Store({
           } else if (i.value === null) { 
             i.valueLabel = i18n.t('data.no_data');
           } else  {
-            i.valueLabel = i.value
+            i.valueLabel = format(response.data.indicator.typeId, i.value);
           }
+          i.moeLowLabel = format(response.data.indicator.typeId, i.moeLow);
+          i.moeHighLabel = format(response.data.indicator.typeId, i.moeHigh);
+          i.universeValueLabel = format('1', i.universeValue);
         })
         context.commit('SET_TABLES_DATA', response.data);
       })

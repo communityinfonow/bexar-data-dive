@@ -27,12 +27,14 @@ public class TablesRepositoryPostgresql implements TablesRepository{
 	 */
 	@Override
 	public List<TablesDataItem> getTablesData(String indicator) {
-		String sql = ""
+		String sql = "" //TODO: espanol
 			+ " select l.name_en as location, "
+			+ " 	lt.name_en as location_type, "
 			+ " 	iv.year_, iv.indicator_value, iv.moe_low, iv.moe_high, iv.universe_value, iv.suppressed, "
 			+ " 	race.name_en as race, age.name_en as age, sex.name_en as sex, edu.name_en as edu, inc.name_en as inc "
 			+ " from tbl_indicator_values iv "
 			+ " 	join tbl_locations l on iv.location_id = l.id_"
+			+ " 	join tbl_location_types lt on l.location_type_id = lt.id_ "
 			+ " 	left join tbl_filter_options race on race.id_ = iv.race_id "
 			+ " 	left join tbl_filter_options age on age.id_ = iv.age_id "
 			+ " 	left join tbl_filter_options sex on sex.id_ = iv.sex_id "
@@ -48,6 +50,7 @@ public class TablesRepositoryPostgresql implements TablesRepository{
 			@Override
 			public TablesDataItem mapRow(ResultSet rs, int rowNum) throws SQLException {
 				TablesDataItem item = new TablesDataItem();
+				item.setLocationType(rs.getString("location_type"));
 				item.setLocation(rs.getString("location"));
 				item.setYear(rs.getString("year_"));
 				item.setRace(rs.getString("race"));

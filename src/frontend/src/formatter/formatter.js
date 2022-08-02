@@ -6,10 +6,10 @@ export function format(type, value) {
 
   let formattedValue = '';
 	switch (type) {
-      case 3: // percent
+      case '3': // percent
         formattedValue = formatter.format(value) + "%";
         break;
-      case 4: //currency
+      case '4': //currency
         formattedValue = "$" + formatter.format(value);
         break;
       default: // count and rate

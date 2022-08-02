@@ -39,6 +39,7 @@
 			>
 				<v-card tile outlined :style="{ boxShadow: 'none !important' }">
 					<v-card-title class="pb-0 text--primary">
+						<span v-if="exploreData.category.parentCategoryId">{{ exploreData.category['name_' + locale] }} -&nbsp;</span>
 						{{ exploreData.indicator['name_' + locale] }}
 					</v-card-title>
 					<v-card-text>
@@ -61,10 +62,10 @@
 								>
 								</v-list-item-avatar>
 								<span>
-									{{ Number(range[0]).toLocaleString() }}
-									<span v-if="range[0] !== range[1]">
+									{{ range[0].label }}
+									<span v-if="range[0].value !== range[1].value">
 										&nbsp;-&nbsp;
-										{{ Number(range[1]).toLocaleString() }}
+										{{ range[1].label }}
 									</span>
 								</span>
 							</v-list-item>
@@ -87,6 +88,7 @@ import { LMap, LTileLayer, LGeoJson, LControl } from 'vue2-leaflet'
 import { feature, featureCollection } from '@turf/helpers'
 import colorbrewer from 'colorbrewer'
 import { ckmeans } from 'simple-statistics'
+import { format } from '@/formatter/formatter'
 
 export default {
 	name: 'ExploreMap',
@@ -155,7 +157,11 @@ export default {
 
 			return ckmeans(values, Math.min(uniqueValueCount, 5))
 				.map(cluster => [cluster[0], cluster[cluster.length - 1]])
-				.reverse();
+				.reverse()
+				.map(range => {
+					return [{ value: range[0], label: format(this.exploreData.indicator.typeId, range[0]) },
+					 { value: range[1], label: format(this.exploreData.indicator.typeId, range[1]) }];
+				});
 		}
 	},
 	watch: {
@@ -236,7 +242,7 @@ export default {
 			
 			return this.shadingColors[
 				this.shadingRanges.findIndex(
-					range => feature.properties.value >= range[0] && feature.properties.value <= range[1])
+					range => feature.properties.value >= range[0].value && feature.properties.value <= range[1].value)
 			];
 		}
 	},

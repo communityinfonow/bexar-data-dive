@@ -8,7 +8,10 @@
 				<div class="text-subtitle-1">{{ helpMessage }}</div>
 			</v-card-text>
 			<v-card-text v-else>
-				<div class="text-h6">{{ exploreData.indicator['name_' + locale] }}: {{ valueFormatted }}</div>
+				<div class="text-h6">
+					<span v-if="exploreData.category.parentCategoryId">{{ exploreData.category['name_' + locale] }} - </span>
+					{{ exploreData.indicator['name_' + locale] }}: {{ valueFormatted }}
+				</div>
 				<ul class="text-body-1">
 					<li v-if="!dockedTooltip.noData">Range: {{  rangeFormatted }}</li>
 					<li>Source: {{ exploreData.source['name_' + locale] }}</li>

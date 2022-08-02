@@ -38,4 +38,12 @@ public interface IndicatorRepository {
 	 * @return the featured indicators
 	 */
 	List<Indicator> getFeaturedIndicators();
+
+	/**
+	 * Gets the indicator category.
+	 * 
+	 * @param id the id
+	 * @return the indicator category
+	 */
+	IndicatorCategory getIndicatorCategory(String id);
 }
