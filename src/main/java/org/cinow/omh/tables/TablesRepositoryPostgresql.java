@@ -30,7 +30,7 @@ public class TablesRepositoryPostgresql implements TablesRepository{
 		String sql = "" //TODO: espanol
 			+ " select l.name_en as location, "
 			+ " 	lt.name_en as location_type, "
-			+ " 	iv.year_, iv.indicator_value, iv.moe_low, iv.moe_high, iv.universe_value, iv.suppressed, "
+			+ " 	iv.year_, iv.indicator_value, iv.moe_low, iv.moe_high, iv.universe_value, iv.suppress, "
 			+ " 	race.name_en as race, age.name_en as age, sex.name_en as sex, edu.name_en as edu, inc.name_en as inc "
 			+ " from tbl_indicator_values iv "
 			+ " 	join tbl_locations l on iv.location_id = l.id_"
@@ -74,7 +74,7 @@ public class TablesRepositoryPostgresql implements TablesRepository{
 				if (rs.wasNull()) {
 					item.setUniverseValue(null);
 				}
-				item.setSuppressed(rs.getInt("suppressed") == 1);
+				item.setSuppressed(rs.getBoolean("suppressed"));
 
 				return item;
 			}

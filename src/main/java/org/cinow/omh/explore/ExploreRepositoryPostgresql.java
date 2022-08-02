@@ -38,7 +38,7 @@ public class ExploreRepositoryPostgresql implements ExploreRepository {
 			+ " select l.id_ as l_id, l.name_en as l_name_en, l.name_es as l_name_es, "
 			+ "   lt.id_ as lt_id, lt.name_en as lt_name_en, lt.name_es as lt_name_es, "
 			+ "   lg.geojson as lg_geojson, "
-			+ "   iv.year_ as iv_year, iv.indicator_value as iv_indicator_value, iv.suppressed as iv_suppressed, iv.moe_low as iv_moe_low, iv.moe_high as iv_moe_high, iv.universe_value as iv_universe_value "
+			+ "   iv.year_ as iv_year, iv.indicator_value as iv_indicator_value, iv.suppress as iv_suppressed, iv.moe_low as iv_moe_low, iv.moe_high as iv_moe_high, iv.universe_value as iv_universe_value "
 			+ " from tbl_locations l "
 			+ "   join tbl_location_types lt on lt.id_ = l.location_type_id and lt.id_ = :location_type_id::numeric "
 			+ "   left join tbl_location_geometries lg on lg.location_id = l.id_ "
@@ -116,7 +116,7 @@ public class ExploreRepositoryPostgresql implements ExploreRepository {
 					}
 					if (rs.getString("iv_year") != null) {
 						ExploreDataPoint dataPoint = new ExploreDataPoint();
-						dataPoint.setSuppressed(rs.getInt("iv_suppressed") == 1);
+						dataPoint.setSuppressed(rs.getBoolean("iv_suppressed"));
 						if (!dataPoint.isSuppressed()) {
 							dataPoint.setValue(rs.getDouble("iv_indicator_value"));
 							if (rs.wasNull()) {
