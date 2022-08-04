@@ -6,17 +6,29 @@
         <v-img :src="imagePath" class="align-end featured-image-gradient">
 			<v-card-title class="featured-card-title">{{ name }}</v-card-title>
         </v-img>
-		  <v-card-text class="featured-card-text">{{ description }}</v-card-text>
+		  <v-card-text class="featured-card-text white--text">{{ description }}</v-card-text>
 			<v-spacer class="featured-card-actions"></v-spacer>
 			<v-card-actions class="featured-card-actions">
-				<v-btn plain text link color="primary" :to="about_route">
+				<v-btn text dark link :to="about_route">
 					{{ $t('featured_card.learn_more') }}
 				</v-btn>
 				<v-spacer></v-spacer>
-				<v-btn v-if="view_route" color="primary" :to="view_route" :aria-label="$t('featured_card.view') + ' ' + name">
+				<v-btn 
+					v-if="view_route" 
+					color="yellow"
+					class="white--text" 
+					:to="view_route" 
+					:aria-label="$t('featured_card.view') + ' ' + name"
+				>
 					{{ $t('featured_card.view') }}
 				</v-btn>
-				<v-btn v-if="click_route" color="primary" @click="click_route(item)" :aria-label="$t('featured_card.view') + ' ' + name">
+				<v-btn 
+					v-if="click_route" 
+					color="yellow" 
+					class="white--text"
+					@click="click_route(item)" 
+					:aria-label="$t('featured_card.view') + ' ' + name"
+				>
 					{{ $t('featured_card.view') }}
 				</v-btn>
 			</v-card-actions>
@@ -54,15 +66,20 @@
 
 <style lang="scss" scoped>
 	.featured-card-title {
-		padding-top: 2em;
-		color: var(--v-primary-base);
-		background: linear-gradient(transparent, rgba($color-accent, 0.8))
+		/*padding-top: 2em;
+		background: linear-gradient(transparent, rgba($color-accent, 0.8))*/
+		font-size: 1.5rem;
+		color: var(--v-yellow-base);
+		background: rgba($color-secondary, 1);
 	}
 	.featured-card-text {
+		/*background: linear-gradient(rgba($color-accent, 0.8), rgba($color-accent, 1.0))*/
 		min-height: 100px;
-		background: linear-gradient(rgba($color-accent, 0.8), rgba($color-accent, 1.0))
+		/*color: rgba(0, 0, 0, 0.87) !important;*/
+		background: rgba($color-secondary, 1);
 	}
 	.featured-card-actions {
-		background: $color-accent;
+		/*background: $color-accent;*/
+		background: rgba($color-secondary, 1);
 	}
 </style>

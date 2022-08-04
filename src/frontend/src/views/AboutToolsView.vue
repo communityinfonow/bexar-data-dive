@@ -5,10 +5,10 @@
         <h1 class="text-h3 mb-2">{{ $t('about_tools_view.name') }}</h1>
         <section v-for="(tool, index) in tools" :key="'tool_' + index">
           <h2 class="my-4">{{ tool.name }}</h2>
-          <tool-item :text="tool.fullDescription" :img="tool.img"></tool-item>
-          <section v-for="(subTool, index) in tool.subTools" :key="'subtool_' + index">
+          <tool-item :text="tool.fullDescription" :imagePath="tool.imagePath" :viewRoute="tool.route"></tool-item>
+          <section v-for="(subTool, index) in tool.subTools" :key="'subtool_' + index" class="ml-12">
             <h3 class="my-2">{{ subTool.name }}</h3>
-            <tool-item :text="subTool.fullDescription" :img="subTool.img"></tool-item>
+            <tool-item :text="subTool.fullDescription" :imagePath="subTool.imagePath"></tool-item>
           </section>
         </section>
       </v-col>

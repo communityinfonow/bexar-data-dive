@@ -31,12 +31,14 @@
       </v-col>
       <v-col v-if="tablesData" cols="auto" class="pt-4 px-4">
           <h1 class="text-h3 mb-1 d-flex justify-space-between">
-            <span><span v-if="tablesData.category.parentCategoryId">{{ tablesData.category['name_' + locale] }} - </span>{{ tablesData.indicator['name_' + locale] }}</span>
-              <!-- FIXME: espanol aria-label (and potentially other places too) -->
+            <span>
+              <span v-if="tablesData.category.parentCategoryId">{{ tablesData.category['name_' + locale] }} - </span>
+              {{ tablesData.indicator['name_' + locale] }}
+            </span>
               <vue-excel-xlsx
                 type="button"
-                class="v-btn v-btn--icon v-btn--round theme--light v-size--default primary--text"
-                aria-label="Download"
+                class="v-btn v-btn--icon v-btn--round theme--light v-size--default accent--text"
+                :aria-label="$t('tools.common.download')"
                 :data="tablesData.items"
                 :columns="xlsxColumns"
                 :file-name="tablesData.indicator['name_' + locale]"
@@ -49,7 +51,9 @@
             </vue-excel-xlsx>
           </h1>
           <h2 class="text-subtitle-1 mb-2">{{ tablesData.source['name_' + locale] }}</h2>
-          <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" hide-details></v-text-field>
+          <v-text-field v-model="search" :label="$t('tools.common.search')" hide-details>
+            <template v-slot:append><v-icon color="accent">mdi-magnify</v-icon></template>
+          </v-text-field>
           <v-data-table
             :headers="filteredHeaders"
             :items="filteredItems"
@@ -62,7 +66,7 @@
               {{ header.text }}
               <v-menu offset-y max-height="400px" allow-overflow eager>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon v-bind="attrs" v-on="on" aria-label="Location type filter">
+                  <v-btn icon color="accent" v-bind="attrs" v-on="on" :aria-label="$t('tools.tables.filter')">
                     <v-icon>mdi-filter-variant</v-icon>
                   </v-btn>
                 </template>
@@ -84,7 +88,7 @@
               {{ header.text }}
               <v-menu offset-y max-height="400px" allow-overflow eager>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon v-bind="attrs" v-on="on" aria-label="Location filter">
+                  <v-btn icon color="accent" v-bind="attrs" v-on="on" :aria-label="$t('tools.tables.filter')">
                     <v-icon>mdi-filter-variant</v-icon>
                   </v-btn>
                 </template>
@@ -106,7 +110,7 @@
               {{ header.text }}
               <v-menu offset-y>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon v-bind="attrs" v-on="on" aria-label="Year filter">
+                  <v-btn icon color="accent" v-bind="attrs" v-on="on" :aria-label="$t('tools.tables.filter')">
                     <v-icon>mdi-filter-variant</v-icon>
                   </v-btn>
                 </template>
@@ -128,7 +132,7 @@
               {{ header.text }}
               <v-menu offset-y>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon v-bind="attrs" v-on="on" aria-label="Race filter">
+                  <v-btn icon color="accent" v-bind="attrs" v-on="on" :aria-label="$t('tools.tables.filter')">
                     <v-icon>mdi-filter-variant</v-icon>
                   </v-btn>
                 </template>
@@ -150,7 +154,7 @@
               {{ header.text }}
               <v-menu offset-y>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon v-bind="attrs" v-on="on" aria-label="Age filter">
+                  <v-btn icon color="accent" v-bind="attrs" v-on="on" :aria-label="$t('tools.tables.filter')">
                     <v-icon>mdi-filter-variant</v-icon>
                   </v-btn>
                 </template>
@@ -172,7 +176,7 @@
               {{ header.text }}
               <v-menu offset-y>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon v-bind="attrs" v-on="on" aria-label="Sex filter">
+                  <v-btn icon color="accent" v-bind="attrs" v-on="on" :aria-label="$t('tools.tables.filter')">
                     <v-icon>mdi-filter-variant</v-icon>
                   </v-btn>
                 </template>
@@ -194,7 +198,7 @@
               {{ header.text }}
               <v-menu offset-y>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon v-bind="attrs" v-on="on" aria-label="Education filter">
+                  <v-btn icon color="accent" v-bind="attrs" v-on="on" :aria-label="$t('tools.tables.filter')">
                     <v-icon>mdi-filter-variant</v-icon>
                   </v-btn>
                 </template>
@@ -216,7 +220,7 @@
               {{ header.text }}
               <v-menu offset-y>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon v-bind="attrs" v-on="on" aria-label="Income filter">
+                  <v-btn icon color="accent" v-bind="attrs" v-on="on" :aria-label="$t('tools.tables.filter')">
                     <v-icon>mdi-filter-variant</v-icon>
                   </v-btn>
                 </template>
@@ -241,7 +245,7 @@
 </template>
 
 <script>
-//TODO: may need to fetch items per page if performance starts to degrade when legit data is loaded. will impact download too.
+//FIXME: server-side paging for performance
 import { mapActions, mapState } from 'vuex'
 import i18n from '@/i18n'
 import router from '@/router/index'
@@ -367,19 +371,19 @@ export default {
     },
     filteredHeaders() {
       let filtered = JSON.parse(JSON.stringify(this.headers));
-      if (!this.tablesData.items.find(i => i.race !== null)) {
+      if (!this.races.length) {
         filtered = filtered.filter(h => h.value !== 'race');
       }
-      if (!this.tablesData.items.find(i => i.age !== null)) {
+      if (!this.ages.length) {
         filtered = filtered.filter(h => h.value !== 'age');
       }
-      if (!this.tablesData.items.find(i => i.sex !== null)) {
+      if (!this.sexes.length) {
         filtered = filtered.filter(h => h.value !== 'sex');
       }
-      if (!this.tablesData.items.find(i => i.education !== null)) {
+      if (!this.educations.length) {
         filtered = filtered.filter(h => h.value !== 'education');
       }
-      if (!this.tablesData.items.find(i => i.income !== null)) {
+      if (!this.incomes.length) {
         filtered = filtered.filter(h => h.value !== 'income');
       }
       return filtered;
@@ -408,8 +412,22 @@ export default {
     filteredIncomes() {
       return this.incomes.filter(i => i.selected);
     },
+    items() {
+      return this.tablesData?.items.map(i => {
+        return {
+          ...i,
+          locationType: i['locationType_' + this.locale],
+          location: i['location_' + this.locale],
+          race: i['race_' + this.locale],
+          sex: i['sex_' + this.locale],
+          age: i['age_' + this.locale],
+          education: i['education_' + this.locale],
+          income: i['income_' + this.locale]
+        };
+      });
+    },
     filteredItems() {
-      return this.tablesData.items.filter(item => {
+      return this.items.filter(item => {
         return this.filteredLocationTypes.find(i => i.name === item.locationType)
           && this.filteredLocations.find(i => i.name === item.location)
           && this.filteredYears.find(i => i.name === item.year)
@@ -427,32 +445,32 @@ export default {
 			  this.getTablesData(router.currentRoute.query.indicator);
       }
 		},
-    tablesData(newValue) {
+    items(newValue) {
       if (newValue) {
-        this.locationTypes = new Array(...new Set(newValue.items.map(i => i.locationType)))
+        this.locationTypes = new Array(...new Set(newValue.map(i => i.locationType)))
           .map(i => { return { name: i, selected: true }})
-          .filter(i => i.name !== null);
-        this.locations = new Array(...new Set(newValue.items.map(i => i.location)))
+          .filter(i => !!i.name);
+        this.locations = new Array(...new Set(newValue.map(i => i.location)))
           .map(i => { return { name: i, selected: true }})
-          .filter(i => i.name !== null);
-        this.years = new Array(...new Set(newValue.items.map(i => i.year)))
+          .filter(i => !!i.name);
+        this.years = new Array(...new Set(newValue.map(i => i.year)))
           .map(i => { return { name: i, selected: true}})
-          .filter(i => i.name !== null);
-        this.races = new Array(...new Set(newValue.items.map(i => i.race)))
+          .filter(i => !!i.name);
+        this.races = new Array(...new Set(newValue.map(i => i.race)))
           .map(i => { return { name: i, selected: true}})
-          .filter(i => i.name !== null);
-        this.ages = new Array(...new Set(newValue.items.map(i => i.age)))
+          .filter(i => !!i.name);
+        this.ages = new Array(...new Set(newValue.map(i => i.age)))
           .map(i => { return { name: i, selected: true}})
-          .filter(i => i.name !== null);
-        this.sexes = new Array(...new Set(newValue.items.map(i => i.sex)))
+          .filter(i => !!i.name);
+        this.sexes = new Array(...new Set(newValue.map(i => i.sex)))
           .map(i => { return { name: i, selected: true}})
-          .filter(i => i.name !== null);
-        this.educations = new Array(...new Set(newValue.items.map(i => i.education)))
+          .filter(i => !!i.name);
+        this.educations = new Array(...new Set(newValue.map(i => i.education)))
           .map(i => { return { name: i, selected: true}})
-          .filter(i => i.name !== null);
-        this.incomes = new Array(...new Set(newValue.items.map(i => i.income)))
+          .filter(i => !!i.name);
+        this.incomes = new Array(...new Set(newValue.map(i => i.income)))
           .map(i => { return { name: i, selected: true}})
-          .filter(i => i.name !== null);
+          .filter(i => !!i.name);
       }
     }
 	},
@@ -506,4 +524,11 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+::v-deep .v-data-table-header .v-icon,
+::v-deep .v-data-table-header .v-icon:before,
+::v-deep .v-data-table-header .v-icon:after,
+::v-deep .v-data-table-header .v-data-table-header__sort-badge {
+  color: var(--v-accent-base) !important;
+}
+</style>

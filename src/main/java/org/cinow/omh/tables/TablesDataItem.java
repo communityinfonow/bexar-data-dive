@@ -8,14 +8,25 @@ package org.cinow.omh.tables;
 public class TablesDataItem {
 
 	/**
-	 * The location type.
+	 * The location type (English).
 	 */
-	private String locationType;
+	private String locationType_en;
+
+	/**
+	 * The location type (Spanish).
+	 */
+	private String locationType_es;
+	
 	
 	/**
-	 * The location.
+	 * The location (English).
 	 */
-	private String location;
+	private String location_en;
+
+	/**
+	 * The location (Spanish).
+	 */
+	private String location_es;
 
 	/**
 	 * The year.
@@ -23,29 +34,54 @@ public class TablesDataItem {
 	private String year;
 
 	/**
-	 * The race.
+	 * The race (English).
 	 */
-	private String race;
+	private String race_en;
 
 	/**
-	 * The age.
+	 * The race (Spanish).
 	 */
-	private String age;
+	private String race_es;
 
 	/**
-	 * The sex.
+	 * The age (English).
 	 */
-	private String sex;
+	private String age_en;
 
 	/**
-	 * The education.
+	 * The age (Spanish).
 	 */
-	private String education;
+	private String age_es;
 
 	/**
-	 * The income.
+	 * The sex (English).
 	 */
-	private String income;
+	private String sex_en;
+
+	/**
+	 * The sex (Spanish).
+	 */
+	private String sex_es;
+
+	/**
+	 * The education (English).
+	 */
+	private String education_en;
+
+	/**
+	 * The education (Spanish).
+	 */
+	private String education_es;
+
+	/**
+	 * The income (English).
+	 */
+	private String income_en;
+
+	/**
+	 * The income (Spanish).
+	 */
+	private String income_es;
 
 	/**
 	 * The value.
@@ -72,184 +108,162 @@ public class TablesDataItem {
 	 */
 	private boolean suppressed;
 
-	/**
-	 * @return the locationType
-	 */
-	public String getLocationType() {
-		return locationType;
+	public String getLocationType_en() {
+		return locationType_en;
 	}
 
-	/**
-	 * @param locationType the locationType to set
-	 */
-	public void setLocationType(String locationType) {
-		this.locationType = locationType;
+	public void setLocationType_en(String locationType_en) {
+		this.locationType_en = locationType_en;
 	}
 
-	/**
-	 * @return the location
-	 */
-	public String getLocation() {
-		return location;
+	public String getLocationType_es() {
+		return locationType_es;
 	}
 
-	/**
-	 * @param location the location to set
-	 */
-	public void setLocation(String location) {
-		this.location = location;
+	public void setLocationType_es(String locationType_es) {
+		this.locationType_es = locationType_es;
 	}
 
-	/**
-	 * @return the year
-	 */
+	public String getLocation_en() {
+		return location_en;
+	}
+
+	public void setLocation_en(String location_en) {
+		this.location_en = location_en;
+	}
+
+	public String getLocation_es() {
+		return location_es;
+	}
+
+	public void setLocation_es(String location_es) {
+		this.location_es = location_es;
+	}
+
 	public String getYear() {
 		return year;
 	}
 
-	/**
-	 * @param year the year to set
-	 */
 	public void setYear(String year) {
 		this.year = year;
 	}
 
-	/**
-	 * @return the race
-	 */
-	public String getRace() {
-		return race;
+	public String getRace_en() {
+		return race_en;
 	}
 
-	/**
-	 * @param race the race to set
-	 */
-	public void setRace(String race) {
-		this.race = race;
+	public void setRace_en(String race_en) {
+		this.race_en = race_en;
 	}
 
-	/**
-	 * @return the age
-	 */
-	public String getAge() {
-		return age;
+	public String getRace_es() {
+		return race_es;
 	}
 
-	/**
-	 * @param age the age to set
-	 */
-	public void setAge(String age) {
-		this.age = age;
+	public void setRace_es(String race_es) {
+		this.race_es = race_es;
 	}
 
-	/**
-	 * @return the sex
-	 */
-	public String getSex() {
-		return sex;
+	public String getAge_en() {
+		return age_en;
 	}
 
-	/**
-	 * @param sex the sex to set
-	 */
-	public void setSex(String sex) {
-		this.sex = sex;
+	public void setAge_en(String age_en) {
+		this.age_en = age_en;
 	}
 
-	/**
-	 * @return the education
-	 */
-	public String getEducation() {
-		return education;
+	public String getAge_es() {
+		return age_es;
 	}
 
-	/**
-	 * @param education the education to set
-	 */
-	public void setEducation(String education) {
-		this.education = education;
+	public void setAge_es(String age_es) {
+		this.age_es = age_es;
 	}
 
-	/**
-	 * @return the income
-	 */
-	public String getIncome() {
-		return income;
+	public String getSex_en() {
+		return sex_en;
 	}
 
-	/**
-	 * @param income the income to set
-	 */
-	public void setIncome(String income) {
-		this.income = income;
+	public void setSex_en(String sex_en) {
+		this.sex_en = sex_en;
 	}
 
-	/**
-	 * @return the value
-	 */
+	public String getSex_es() {
+		return sex_es;
+	}
+
+	public void setSex_es(String sex_es) {
+		this.sex_es = sex_es;
+	}
+
+	public String getEducation_en() {
+		return education_en;
+	}
+
+	public void setEducation_en(String education_en) {
+		this.education_en = education_en;
+	}
+
+	public String getEducation_es() {
+		return education_es;
+	}
+
+	public void setEducation_es(String education_es) {
+		this.education_es = education_es;
+	}
+
+	public String getIncome_en() {
+		return income_en;
+	}
+
+	public void setIncome_en(String income_en) {
+		this.income_en = income_en;
+	}
+
+	public String getIncome_es() {
+		return income_es;
+	}
+
+	public void setIncome_es(String income_es) {
+		this.income_es = income_es;
+	}
+
 	public Double getValue() {
 		return value;
 	}
 
-	/**
-	 * @param value the value to set
-	 */
 	public void setValue(Double value) {
 		this.value = value;
 	}
 
-	/**
-	 * @return the moeLow
-	 */
 	public Double getMoeLow() {
 		return moeLow;
 	}
 
-	/**
-	 * @param moeLow the moeLow to set
-	 */
 	public void setMoeLow(Double moeLow) {
 		this.moeLow = moeLow;
 	}
 
-	/**
-	 * @return the moeHigh
-	 */
 	public Double getMoeHigh() {
 		return moeHigh;
 	}
 
-	/**
-	 * @param moeHigh the moeHigh to set
-	 */
 	public void setMoeHigh(Double moeHigh) {
 		this.moeHigh = moeHigh;
 	}
 
-	/**
-	 * @return the universeValue
-	 */
 	public Double getUniverseValue() {
 		return universeValue;
 	}
 
-	/**
-	 * @param universeValue the universeValue to set
-	 */
 	public void setUniverseValue(Double universeValue) {
 		this.universeValue = universeValue;
 	}
 
-	/**
-	 * @return the suppressed
-	 */
 	public boolean isSuppressed() {
 		return suppressed;
 	}
 
-	/**
-	 * @param suppressed the suppressed to set
-	 */
 	public void setSuppressed(boolean suppressed) {
 		this.suppressed = suppressed;
 	}	

@@ -41,27 +41,21 @@ public class CommunityRepositoryPostgresql implements CommunityRepository {
 			+ " from ( "
 			+ " select "
 			+ "   ic.id_ as category_id, ic.parent_category_id, ic.name_en as category_name_en, ic.name_es as category_name_es, "
-			+ "   i.id_ as indicator_id, i.name_en as indicator_name_en, i.name_es as indicator_name_es, i.base_filter_type_id, "
+			+ "   i.id_ as indicator_id, i.name_en as indicator_name_en, i.name_es as indicator_name_es, "
 			+ "   it.id_ as indicator_type_id, it.name_ as indicator_type_name, "
-			+ "   iv.year_, iv.indicator_value, iv.suppress, iv.moe_low, iv.moe_high, iv.universe_value, "
+			+ "   iv.year_, round(iv.indicator_value, 2) as indicator_value, iv.suppress, round(iv.moe_low, 2) as moe_low, round(iv.moe_high, 2) as moe_high, round(iv.universe_value, 2) as universe_value, "
 			+ "   s.id_ as source_id, s.name_en as source_name_en, s.name_es as source_name_es, s.url_ as source_url, "
-			+ "   fr.id_ as race_filter_option_id, fr.name_en as race_filter_name_en, fr.name_es as race_filter_name_es, "
-			+ "   fb.id_ as base_filter_option_id, fb.name_en as base_filter_name_en, fb.name_es as base_filter_name_es, "
+			+ "   fo.id_ as race_filter_option_id, fo.name_en as race_filter_name_en, fo.name_es as race_filter_name_es, "
 			+ "   rank() over(partition by iv.indicator_id order by iv.year_ desc) "
 			+ " from tbl_indicator_categories ic "
 			+ "   join tbl_indicators i on i.indicator_category_id = ic.id_ "
 			+ "   join tbl_indicator_types it on it.id_ = i.indicator_type_id "
 			+ "   left join tbl_indicator_values iv on iv.indicator_id = i.id_ "
 			+ "     and iv.location_id = :location_id and iv.location_type_id = :location_type_id::numeric "
+			+ "     and iv.age_id is null and iv.sex_id is null and iv.education_id is null and iv.income_id is null "
 			+ "   left join tbl_sources s on s.id_ = i.source_id "
-			+ "   left join tbl_filter_options fr on fr.id_ = iv.race_id "
-			+ "   left join tbl_filter_options fb on fb.id_ = case "
-			+ "     when i.base_filter_type_id = 2 then iv.age_id "
-			+ "     when i.base_filter_type_id = 3 then iv.sex_id "
-			+ "     when i.base_filter_type_id = 4 then iv.education_id "
-			+ "     when i.base_filter_type_id = 5 then iv.income_id "
-			+ "   end "
-			+ " order by ic.sort_order, i.id_, fb.sort_order, fr.sort_order "
+			+ "   left join tbl_filter_options fo on fo.id_ = iv.race_id "
+			+ " order by ic.sort_order, i.id_, fo.sort_order nulls first "
 			+ " ) ranked_data "
 			+ " where rank = 1 ";
 
@@ -94,7 +88,6 @@ public class CommunityRepositoryPostgresql implements CommunityRepository {
 						indicatorData.getIndicator().setCategoryId(categoryData.getCategory().getId());
 						indicatorData.getIndicator().setName_en(rs.getString("indicator_name_en"));
 						indicatorData.getIndicator().setName_es(rs.getString("indicator_name_es"));
-						indicatorData.getIndicator().setBaseFilterTypeId(rs.getString("base_filter_type_id"));
 						indicatorData.setIndicatorType(new IndicatorType());
 						indicatorData.getIndicatorType().setId(rs.getString("indicator_type_id"));
 						indicatorData.getIndicatorType().setName(rs.getString("indicator_type_name"));
@@ -107,13 +100,6 @@ public class CommunityRepositoryPostgresql implements CommunityRepository {
 					}
 					if (rs.getString("year_") != null) {
 						CommunityDataPoint dataPoint = new CommunityDataPoint();
-						if (rs.getLong("base_filter_type_id") != 0) {
-							dataPoint.setBaseFilter(new FilterOption());
-							dataPoint.getBaseFilter().setId(rs.getString("base_filter_option_id"));
-							dataPoint.getBaseFilter().setTypeId(rs.getString("base_filter_type_id"));
-							dataPoint.getBaseFilter().setName_en(rs.getString("base_filter_name_en"));
-							dataPoint.getBaseFilter().setName_es(rs.getString("base_filter_name_es"));
-						}
 						dataPoint.setRaceFilter(new FilterOption());
 						dataPoint.getRaceFilter().setId(rs.getString("race_filter_option_id"));
 						dataPoint.getRaceFilter().setTypeId(FilterTypes.RACE.getId());

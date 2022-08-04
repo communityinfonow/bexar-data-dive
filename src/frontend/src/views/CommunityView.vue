@@ -10,9 +10,9 @@
         ></MenuToolbar>
       </v-col>
       <v-col v-if="showIntro" cols="auto" class="pa-4 shrink">
-        <h1 class="text-h3 mb-2">{{ $t('tools.my_community.name') }}</h1>
-        <p>{{ $t('tools.my_community.long_description') }}</p>
-        <p>{{ $t('tools.my_community.get_started') }}</p>
+        <h1 class="text-h3 mb-2">{{ $t('tools.community.name') }}</h1>
+        <p>{{ $t('tools.community.long_description') }}</p>
+        <p>{{ $t('tools.community.get_started') }}</p>
       </v-col>
       <v-col v-if="showIntro" cols="auto" class="pa-4 grow">
         <l-map
@@ -53,8 +53,8 @@
           >
             <v-card tile outlined :style="{ boxShadow: 'none !important' }">
               <v-card-title class="pb-0 text--primary">
-                <v-icon>mdi-layers</v-icon>
-                {{ $t('tools.my_community.community_types') }}
+                <v-icon color="accent">mdi-layers</v-icon>
+                {{ $t('tools.community.community_types') }}
               </v-card-title>
               <v-card-text>
                 <v-radio-group
@@ -62,6 +62,7 @@
                   @change="drawSelectionMap"
                 >
                   <v-radio 
+                    color="accent"
                     v-for="layer in layers" 
                     :key="layer.id" 
                     :value="layer" 
@@ -113,7 +114,8 @@
             <h1 class="text-h3 mt-2 mb-4">{{ community.location['name_' + locale] }}</h1>
             <v-select 
               style="width: 200px;"
-              label="Skip ahead to"
+              color="accent"
+              :label="$t('tools.community.skip')"
               :items="categories"
               :item-text="'name_' + locale"
               item-value="id"
@@ -254,7 +256,7 @@ export default {
     }
     setTimeout(() => { 
 			this.componentInitialized = true;
-      this.selectedLayer = this.layers.find(l => l.id === '4')
+      this.selectedLayer = this.layers?.find(l => l.id === '4')
 			if (this.selectionMapInitialized) {
 				this.drawSelectionMap();
 			}

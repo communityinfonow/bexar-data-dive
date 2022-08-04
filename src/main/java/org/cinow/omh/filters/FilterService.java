@@ -30,6 +30,18 @@ public class FilterService {
 		filters.setYearFilter(this.filterRepository.getYearFilter(indicatorId));
 		filters.setIndicatorFilters(this.filterRepository.getIndicatorFilters(indicatorId));
 
+		filters.getIndicatorFilters().stream().forEach(filter -> {
+			filter.getOptions().add(0, allFilterOption());
+		});
+
 		return filters;
+	}
+
+	private FilterOption allFilterOption() {
+		FilterOption option = new FilterOption();
+		option.setId(null);
+		option.setName_en("All");
+		option.setName_es("Todos");
+		return option;
 	}
 }

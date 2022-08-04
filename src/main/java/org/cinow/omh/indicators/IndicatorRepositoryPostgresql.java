@@ -61,7 +61,8 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 		String sql = ""
 			+ " select id_, indicator_type_id, indicator_category_id, name_en, name_es, description_en, description_es "
 			+ " from tbl_indicators "
-			+ " where indicator_category_id = :indicator_category_id::numeric ";
+			+ " where indicator_category_id = :indicator_category_id::numeric "
+			+ " order by id_::numeric ";
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
 		paramMap.addValue("indicator_category_id", categoryId);
 
@@ -88,7 +89,7 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 	@Override
 	public Indicator getIndicator(String id) {
 		String sql = ""
-			+ " select indicator_category_id, indicator_type_id, base_filter_type_id, "
+			+ " select indicator_category_id, indicator_type_id, "
 			+ "   name_en, name_es, description_en, description_es "
 			+ " from tbl_indicators "
 			+ " where id_ = :id::numeric ";
@@ -102,7 +103,6 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 				indicator.setId(id);
 				indicator.setCategoryId(rs.getString("indicator_category_id"));
 				indicator.setTypeId(rs.getString("indicator_type_id"));
-				indicator.setBaseFilterTypeId(rs.getString("base_filter_type_id"));
 				indicator.setName_en(rs.getString("name_en"));
 				indicator.setName_es(rs.getString("name_es"));
 				indicator.setDescription_en(rs.getString("description_en"));
@@ -119,7 +119,7 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 	@Override
 	public List<Indicator> getFeaturedIndicators() {
 		String sql = ""
-			+ " select id_, indicator_category_id, indicator_type_id, base_filter_type_id, "
+			+ " select id_, indicator_category_id, indicator_type_id, "
 			+ "   name_en, name_es, description_en, description_es "
 			+ " from tbl_indicators "
 			+ " where featured = true ";
@@ -131,7 +131,6 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 				indicator.setId(rs.getString("id_"));
 				indicator.setCategoryId(rs.getString("indicator_category_id"));
 				indicator.setTypeId(rs.getString("indicator_type_id"));
-				indicator.setBaseFilterTypeId(rs.getString("base_filter_type_id"));
 				indicator.setName_en(rs.getString("name_en"));
 				indicator.setName_es(rs.getString("name_es"));
 				indicator.setDescription_en(rs.getString("description_en"));

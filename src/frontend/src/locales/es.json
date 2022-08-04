@@ -10,12 +10,13 @@
   },
   "tools": {
     "tools": "Tools (es)",
-    "my_community": {
+    "community": {
       "name": "Mi Comunidad",
       "short_description": "Mi Comunidad es...",
       "long_description": "Mi Comunidad es una herramienta...",
       "get_started": "To get started, browse or search for an indicator using the menu above or select a location on the map below (es).",
-      "community_types": "Community Types (es)"
+      "community_types": "Community Types (es)",
+      "skip": "Skip ahead to (es)"
     },
     "explore": {
       "name": "Panel",
@@ -43,6 +44,7 @@
       "short_description": "Tables & Downloads (es) es...",
       "long_description": "Explorar Datos es una herramienta...",
       "get_started": "Para comenzar, navegue o busque un indicador usando el menú de arriba, o haga clic en uno de los Indicadores destacados a continuación.",
+      "filter": "Filter (es)",
       "headers": {
         "location_type": "Location Type (es)",
         "location": "Location (es)",
@@ -63,7 +65,8 @@
     },
     "common": {
       "featured_indicators": "Indicadores destacados",
-      "search": "Search (es)"
+      "search": "Search (es)",
+      "download": "Download (es)"
     }
   },
   "home_view": {

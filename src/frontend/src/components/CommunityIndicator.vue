@@ -5,13 +5,12 @@
 		<template v-if="item.year">
 			<p class="text-subtitle-1 mb-4">{{ item.source['name_' + locale] }} ({{ item.year }})</p>
 				<v-row>
-				<v-col cols="3">
+				<v-col cols="1">
 					<p v-if="item.demographicData[0].suppressed" class="text-h4 mb-0">{{ $t('data.suppressed') }}</p>
 					<p v-else-if="item.demographicData[0].value === null" class="text-h4 mb-0">{{ $t('data.no_data') }}</p>
 					<p v-else class="text-h4 mb-0">{{ formatValue(item.indicatorType.id, item.demographicData[0].value) }}</p>
-					<p class="text-subtitle-1" v-if="item.indicator.baseFilterTypeId">{{ item.demographicData[0].baseFilter['name_' + locale] }}</p>
 				</v-col>
-				<v-col cols="9">
+				<v-col cols="11">
 					<community-chart :indicatorId="item.indicator.id" :indicatorType=item.indicatorType.id :data="item.demographicData"></community-chart>
 				</v-col>
 			</v-row>

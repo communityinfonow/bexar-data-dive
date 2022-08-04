@@ -149,3 +149,5 @@ values (21, '2020', '48029182106', 5, 88, 2, 2, 20000, null, 4, null, null, null
 ;
 
 update tbl_indicators set featured = true where id_ in (1, 7, 12);
+
+\copy public.tbl_indicator_values (indicator_id, year_, location_id, location_type_id, indicator_value, moe_low, moe_high, universe_value, race_id, age_id, sex_id, education_id, income_id, suppress) FROM '/home/brian/Downloads/ACS5year_PopByAge_test.csv' DELIMITER ',' CSV HEADER QUOTE '"' ESCAPE '''';

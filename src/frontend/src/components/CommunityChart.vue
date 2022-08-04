@@ -2,7 +2,7 @@
 	<div 
 		:ref="'chart_container_' + this.indicatorId" 
 		:id="'chart_container_' + this.indicatorId" 
-		style="width: 100%; height: 200px;"
+		style="width: 100%; height: 400px;"
 	>
 	</div>
 </template>
@@ -58,9 +58,7 @@ export default {
 				fontSize: '16px'
 			};
 			let option = {};
-			if (this.data[0].baseFilter) {
-				option.legend = { data: this.data.map(d => d.baseFilter['name_' + this.locale])};
-			}
+			option.grid = { left: 40, right: 40, containLabel: true };
 			option.yAxis = { 
 				type: 'value', 
 				splitLine: { show: false },
@@ -69,55 +67,52 @@ export default {
 			};
 			option.xAxis = { 
 				type: 'category', 
-				data: Array.from(new Set(this.data.map(d => d.raceFilter['name_' + this.locale] || i18n.t('data.all')))),
+				data: Array.from(new Set(this.data.map(d => '' + (d.raceFilter['name_' + this.locale] || i18n.t('data.all'))))),
 				axisTick: { show: false },
-				axisLabel: textStyle
+				axisLabel: { ...textStyle, interval: 0, width: '80', overflow: 'break', lineHeight: 20 }
 			};
 			option.textStyle = textStyle;
-			let filters = new Set(this.data.map(d => d.baseFilter?.id || 0))
-			option.color = colorbrewer.Blues[Math.max(3, filters.size)].slice(0).reverse()
+			option.color = colorbrewer.Blues[3].slice(0).reverse()
 			option.series = [];
-			filters.forEach(filterId => {
-				let series = { 
-					type: 'bar', 
-					cursor: 'default',
-					label: { 
-						show: true, 
-						position: 'top',
-						formatter: (o) => {
-							if (o.data.suppressed) {
-								return i18n.t('data.suppressed');
-							} else if (o.data.noData) {
-								return i18n.t('data.no_data');
-							}
-							let rows = [i18n.t('data.value') +': ' + format(this.indicatorType, o.data.value)];
-							if (o.data.moeLow || o.data.moeHigh) {
-								rows.push(i18n.t('data.moe_range') 
-									+ ': ' 
-									+ format(this.indicatorType, o.data.value - o.data.moeLow)
-									+ " - "
-									+ format(this.indicatorType, o.data.value + o.data.moeHigh))
-							}
-							return rows.join('\n\n');
+			
+			let series = { 
+				type: 'bar', 
+				cursor: 'default',
+				label: { 
+					show: true, 
+					position: 'top',
+					fontSize: '14px',
+					lineHeight: 18,
+					formatter: (o) => {
+						if (o.data.suppressed) {
+							return i18n.t('data.suppressed');
+						} else if (o.data.noData) {
+							return i18n.t('data.no_data');
 						}
+						let rows = [i18n.t('data.value') +': ' + format(this.indicatorType, o.data.value)];
+						if (o.data.moeLow || o.data.moeHigh) {
+							rows.push(i18n.t('data.moe_range') 
+								+ ': ' 
+								+ format(this.indicatorType, o.data.value - o.data.moeLow)
+								+ " - "
+								+ format(this.indicatorType, o.data.value + o.data.moeHigh))
+						}
+						return rows.join('\n');
 					}
-				};
-				if (filterId !== 0) {
-					series.name = this.data.find(d => d.baseFilter.id === filterId).baseFilter['name_' + this.locale]
 				}
-				series.data = this.data
-					.filter(d => (d.baseFilter?.id || 0) === filterId)
-					.map(dataPoint => { 
-						return { 
-							value: dataPoint.suppressed || dataPoint.value === null ? 0 : dataPoint.value, 
-							moeLow: dataPoint.moeLow, 
-							moeHigh: dataPoint.moeHigh,
-							noData: dataPoint.value === null,
-							suppressed: dataPoint.suppressed 
-						}; 
-					});
-				option.series.push(series)
-			});
+			};
+			
+			series.data = this.data
+				.map(dataPoint => { 
+					return { 
+						value: dataPoint.suppressed || dataPoint.value === null ? 0 : dataPoint.value, 
+						moeLow: dataPoint.moeLow, 
+						moeHigh: dataPoint.moeHigh,
+						noData: dataPoint.value === null,
+						suppressed: dataPoint.suppressed 
+					}; 
+				});
+			option.series.push(series)
 			option.aria = { enabled: true };
 			let maxValue = Math.max(...option.series.flatMap(s => s.data).map(d => d.value));
 			let rounder = 1;

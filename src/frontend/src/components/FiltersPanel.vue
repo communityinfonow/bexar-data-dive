@@ -2,7 +2,10 @@
 	<v-form v-if="filters" ref="filtersForm" v-model="valid">
 		<v-card outlined tile>
 			<v-card-title >
-				<span class="text-h6 font-weight-light">{{ $t('tools.explore.filters') }}</span>
+				<span class="text-h6 font-weight-light">
+					<v-icon color="accent">mdi-filter-variant</v-icon>
+					{{ $t('tools.explore.filters') }}
+				</span>
 			</v-card-title>
 			<v-card-text>
 				<v-autocomplete
@@ -55,7 +58,7 @@
 				</template>
 			</v-card-text>
 			<v-card-actions>
-				<v-btn text color="primary" @click="applyFilters">
+				<v-btn color="accent" @click="applyFilters">
 					{{ $t('tools.explore.apply_filters') }}
 				</v-btn>
 			</v-card-actions>

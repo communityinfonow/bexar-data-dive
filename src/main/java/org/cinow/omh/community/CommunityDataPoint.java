@@ -8,18 +8,6 @@ import org.cinow.omh.filters.FilterOption;
  * @author brian
  */
 public class CommunityDataPoint {
-	
-	/**
-	 * The 'base' filter is one that is required for an indicator. 
-	 * It will not apply to all indicators.
-	 * For example, Educationl Attainment requires an 'attainment level' filter, 
-	 * because there is no 'overall' educational attainment.
-	 * Other indicators, such as population total, do not require a 'base' filter,
-	 * because 'overall' population is a legitimate metric.
-	 * 
-	 * TODO: is this still needed?
-	 */
-	private FilterOption baseFilter;
 
 	/**
 	 * The race filter.
@@ -50,20 +38,6 @@ public class CommunityDataPoint {
 	 * Whether the data value is suppressed.
 	 */
 	private boolean suppressed;
-
-	/**
-	 * @return the baseFilter
-	 */
-	public FilterOption getBaseFilter() {
-		return baseFilter;
-	}
-
-	/**
-	 * @param baseFilter the baseFilter to set
-	 */
-	public void setBaseFilter(FilterOption baseFilter) {
-		this.baseFilter = baseFilter;
-	}
 
 	/**
 	 * @return the raceFilter

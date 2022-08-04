@@ -45,13 +45,6 @@ public class Indicator implements Item {
 	private String description_es;
 
 	/**
-	 * The base filter type id.
-	 * 
-	 * TODO: remove this?
-	 */
-	private String baseFilterTypeId;
-
-	/**
 	 * @return the id
 	 */
 	public String getId() {
@@ -148,18 +141,4 @@ public class Indicator implements Item {
 	public void setDescription_es(String description_es) {
 		this.description_es = description_es;
 	}
-
-	/**
-	 * @return the baseFilterTypeId
-	 */
-	public String getBaseFilterTypeId() {
-		return baseFilterTypeId;
-	}
-
-	/**
-	 * @param baseFilterTypeId the baseFilterTypeId to set
-	 */
-	public void setBaseFilterTypeId(String baseFilterTypeId) {
-		this.baseFilterTypeId = baseFilterTypeId;
-	}	
 }

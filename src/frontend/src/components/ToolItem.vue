@@ -1,10 +1,19 @@
 <template>
 	<v-row class="no-gutters">
-		<v-col v-if="img" cols="2">
-			<v-img src="@/assets/todo.jpg" class="mr-4"></v-img>
+		<v-col v-if="imagePath" cols="2">
+			<v-img :src="imagePath" class="mr-4"></v-img>
 		</v-col>
-		<v-col :cols="img ? 10 : 12">
-			{{ text }}
+		<v-col :cols="imagePath ? 10 : 12">
+			<p>{{ text }}</p>
+			<v-btn 
+				v-if="viewRoute" 
+				color="primary" 
+				:to="viewRoute" 
+				:aria-label="$t('featured_card.view') + ' ' + name"
+				class="mt-6"
+			>
+				{{ $t('featured_card.view') }}
+			</v-btn>
 		</v-col>
 	</v-row>
 </template>
@@ -17,7 +26,10 @@ export default {
     text: {
       type: String,
     },
-	img: {
+	imagePath: {
+		type: String
+	},
+	viewRoute: {
 		type: String
 	}
   },

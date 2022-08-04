@@ -27,11 +27,15 @@ public class TablesRepositoryPostgresql implements TablesRepository{
 	 */
 	@Override
 	public List<TablesDataItem> getTablesData(String indicator) {
-		String sql = "" //TODO: espanol
-			+ " select l.name_en as location, "
-			+ " 	lt.name_en as location_type, "
-			+ " 	iv.year_, iv.indicator_value, iv.moe_low, iv.moe_high, iv.universe_value, iv.suppress, "
-			+ " 	race.name_en as race, age.name_en as age, sex.name_en as sex, edu.name_en as edu, inc.name_en as inc "
+		String sql = ""
+			+ " select l.name_en as location_en, l.name_es as location_es, "
+			+ " 	lt.name_en as location_type_en, lt.name_es as location_type_es, "
+			+ " 	iv.year_, round(iv.indicator_value, 2) as indicator_value, round(iv.moe_low, 2) as moe_low, round(iv.moe_high, 2) as moe_high, round(iv.universe_value, 2) as universe_value, iv.suppress, "
+			+ " 	race.name_en as race_en, race.name_es as race_es, "
+			+ " 	age.name_en as age_en, age.name_es as age_es, "
+			+ " 	sex.name_en as sex_en, sex.name_es as sex_es, "
+			+ " 	edu.name_en as edu_en, edu.name_es as edu_es, "
+			+ " 	inc.name_en as inc_en, inc.name_es as inc_es "
 			+ " from tbl_indicator_values iv "
 			+ " 	join tbl_locations l on iv.location_id = l.id_"
 			+ " 	join tbl_location_types lt on l.location_type_id = lt.id_ "
@@ -50,14 +54,21 @@ public class TablesRepositoryPostgresql implements TablesRepository{
 			@Override
 			public TablesDataItem mapRow(ResultSet rs, int rowNum) throws SQLException {
 				TablesDataItem item = new TablesDataItem();
-				item.setLocationType(rs.getString("location_type"));
-				item.setLocation(rs.getString("location"));
+				item.setLocationType_en(rs.getString("location_type_en"));
+				item.setLocationType_es(rs.getString("location_type_es"));
+				item.setLocation_en(rs.getString("location_en"));
+				item.setLocation_es(rs.getString("location_es"));
 				item.setYear(rs.getString("year_"));
-				item.setRace(rs.getString("race"));
-				item.setAge(rs.getString("age"));
-				item.setSex(rs.getString("sex"));
-				item.setEducation(rs.getString("edu"));
-				item.setIncome(rs.getString("inc"));
+				item.setRace_en(rs.getString("race_en"));
+				item.setRace_es(rs.getString("race_es"));
+				item.setAge_en(rs.getString("age_en"));
+				item.setAge_es(rs.getString("age_es"));
+				item.setSex_en(rs.getString("sex_en"));
+				item.setSex_es(rs.getString("sex_es"));
+				item.setEducation_en(rs.getString("edu_en"));
+				item.setEducation_es(rs.getString("edu_es"));
+				item.setIncome_en(rs.getString("inc_en"));
+				item.setIncome_es(rs.getString("inc_es"));
 				item.setValue(rs.getDouble("indicator_value"));
 				if (rs.wasNull()) {
 					item.setValue(null);
@@ -74,7 +85,7 @@ public class TablesRepositoryPostgresql implements TablesRepository{
 				if (rs.wasNull()) {
 					item.setUniverseValue(null);
 				}
-				item.setSuppressed(rs.getBoolean("suppressed"));
+				item.setSuppressed(rs.getBoolean("suppress"));
 
 				return item;
 			}

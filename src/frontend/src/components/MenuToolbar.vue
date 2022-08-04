@@ -14,7 +14,7 @@
         </v-col>
         <v-col cols="2">
           <v-autocomplete
-            prepend-icon="mdi-magnify"
+            color="accent"
             :label="$t('tools.common.search')"
             :placeholder="$t('tools.common.search')"
             v-model="selectedItem"
@@ -27,7 +27,9 @@
             hide-details
             solo
             flat
-          ></v-autocomplete>
+          >
+            <template v-slot:prepend-inner><v-icon color="accent">mdi-magnify</v-icon></template>
+          </v-autocomplete>
         </v-col>
       </v-row>
     </v-toolbar-items>

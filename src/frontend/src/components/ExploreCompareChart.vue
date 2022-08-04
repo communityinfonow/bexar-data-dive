@@ -88,6 +88,7 @@ export default {
 				fontSize: '16px'
 			};
 			let option = {};
+			option.grid = { containLabel: true };
 			option.yAxis = { 
 				type: 'value', 
 				splitLine: { show: false },
@@ -107,7 +108,7 @@ export default {
 				type: 'category', 
 				data: xAxisData,
 				axisTick: { show: false },
-				axisLabel: textStyle,
+				axisLabel: { ...textStyle, interval: 0, width: '80', overflow: 'break', lineHeight: 16 },
 				name: this.compareSelections 
 					? '' 
 					: (this.exploreData.category.parentCategoryId ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.exploreData.indicator['name_' + this.locale],

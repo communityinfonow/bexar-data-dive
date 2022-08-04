@@ -29,12 +29,12 @@ export default new Vuex.Store({
     tools: () => {
       return [
         {
-          name: i18n.t('tools.my_community.name'),
+          name: i18n.t('tools.community.name'),
           imagePath: "/img/tools_community.png",
           route: 'community',
           icon: 'mdi-map',
-          shortDescription: i18n.t('tools.my_community.short_description'),
-          fullDescription: i18n.t('tools.my_community.long_description'),
+          shortDescription: i18n.t('tools.community.short_description'),
+          fullDescription: i18n.t('tools.community.long_description'),
         },
         {
           name: i18n.t('tools.explore.name'),

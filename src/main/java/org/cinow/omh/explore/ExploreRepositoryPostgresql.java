@@ -38,7 +38,7 @@ public class ExploreRepositoryPostgresql implements ExploreRepository {
 			+ " select l.id_ as l_id, l.name_en as l_name_en, l.name_es as l_name_es, "
 			+ "   lt.id_ as lt_id, lt.name_en as lt_name_en, lt.name_es as lt_name_es, "
 			+ "   lg.geojson as lg_geojson, "
-			+ "   iv.year_ as iv_year, iv.indicator_value as iv_indicator_value, iv.suppress as iv_suppressed, iv.moe_low as iv_moe_low, iv.moe_high as iv_moe_high, iv.universe_value as iv_universe_value "
+			+ "   iv.year_ as iv_year, round(iv.indicator_value, 2) as iv_indicator_value, iv.suppress as iv_suppressed, round(iv.moe_low, 2) as iv_moe_low, round(iv.moe_high, 2) as iv_moe_high, round(iv.universe_value, 2) as iv_universe_value "
 			+ " from tbl_locations l "
 			+ "   join tbl_location_types lt on lt.id_ = l.location_type_id and lt.id_ = :location_type_id::numeric "
 			+ "   left join tbl_location_geometries lg on lg.location_id = l.id_ "
@@ -54,27 +54,27 @@ public class ExploreRepositoryPostgresql implements ExploreRepository {
 		paramMap.addValue("indicator", dataRequest.getIndicator());
 		paramMap.addValue("location_type_id", dataRequest.getFilters().getLocationType());
 		if (dataRequest.getFilters().getIndicatorFilters().get(FilterTypes.RACE.getId()) != null) {
-			sql += "     and iv.race_id = :race::numeric ";
+			sql += "     and (iv.race_id = :race::numeric or iv.race_id is null and :race::numeric is null) ";
 			paramMap.addValue("race", dataRequest.getFilters().getIndicatorFilters()
 				.get(FilterTypes.RACE.getId()).getId());
 		}
 		if (dataRequest.getFilters().getIndicatorFilters().get(FilterTypes.AGE.getId()) != null) {
-			sql += "     and iv.age_id = :age::numeric ";
+			sql += "     and (iv.age_id = :age::numeric or iv.age_id is null and :age::numeric is null) ";
 			paramMap.addValue("age", dataRequest.getFilters().getIndicatorFilters()
 				.get(FilterTypes.AGE.getId()).getId());
 		}
 		if (dataRequest.getFilters().getIndicatorFilters().get(FilterTypes.SEX.getId()) != null) {
-			sql += "     and iv.sex_id = :sex::numeric ";
+			sql += "     and (iv.sex_id = :sex::numeric or iv.sex_id is null and :sex::numeric is null) ";
 			paramMap.addValue("sex", dataRequest.getFilters().getIndicatorFilters()
 				.get(FilterTypes.SEX.getId()).getId());
 		}
 		if (dataRequest.getFilters().getIndicatorFilters().get(FilterTypes.EDUCATION.getId()) != null) {
-			sql += "     and iv.education_id = :education::numeric ";
+			sql += "     and (iv.education_id = :education::numeric or iv.education_id is null and :education::numeric is null) ";
 			paramMap.addValue("education", dataRequest.getFilters().getIndicatorFilters()
 				.get(FilterTypes.EDUCATION.getId()).getId());
 		}
 		if (dataRequest.getFilters().getIndicatorFilters().get(FilterTypes.INCOME.getId()) != null) {
-			sql += "     and iv.income_id = :income::numeric ";
+			sql += "     and (iv.income_id = :income::numeric or iv.income_id is null and :income::numeric is null) ";
 			paramMap.addValue("income", dataRequest.getFilters().getIndicatorFilters()
 				.get(FilterTypes.INCOME.getId()).getId());
 		}

@@ -8,9 +8,10 @@ export default new Vuetify({
 		options: { customProperties: true },
 		themes: {
 			light: {
-				primary: '#3b5a98',
-				secondary: '#3aa38f',
-				accent: '#f6921e'
+				primary: '#b8237e',
+				secondary: '#3b5a98',
+				accent: '#3aa38f',
+				yellow: '#f6921e'
 			}
 		}
 	}
