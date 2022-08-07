@@ -7,6 +7,8 @@ package org.cinow.omh.tables;
  */
 public class TablesDataItem {
 
+	private String locationTypeId;
+
 	/**
 	 * The location type (English).
 	 */
@@ -17,6 +19,7 @@ public class TablesDataItem {
 	 */
 	private String locationType_es;
 	
+	private String locationId;
 	
 	/**
 	 * The location (English).
@@ -34,6 +37,11 @@ public class TablesDataItem {
 	private String year;
 
 	/**
+	 * The race id.
+	 */
+	private String raceId;
+
+	/**
 	 * The race (English).
 	 */
 	private String race_en;
@@ -42,6 +50,8 @@ public class TablesDataItem {
 	 * The race (Spanish).
 	 */
 	private String race_es;
+
+	private String ageId;
 
 	/**
 	 * The age (English).
@@ -53,6 +63,8 @@ public class TablesDataItem {
 	 */
 	private String age_es;
 
+	private String sexId;
+
 	/**
 	 * The sex (English).
 	 */
@@ -63,6 +75,8 @@ public class TablesDataItem {
 	 */
 	private String sex_es;
 
+	private String educationId;
+
 	/**
 	 * The education (English).
 	 */
@@ -72,6 +86,8 @@ public class TablesDataItem {
 	 * The education (Spanish).
 	 */
 	private String education_es;
+
+	private String incomeId;
 
 	/**
 	 * The income (English).
@@ -108,6 +124,14 @@ public class TablesDataItem {
 	 */
 	private boolean suppressed;
 
+	public String getLocationTypeId() {
+		return locationTypeId;
+	}
+
+	public void setLocationTypeId(String locationTypeId) {
+		this.locationTypeId = locationTypeId;
+	}
+
 	public String getLocationType_en() {
 		return locationType_en;
 	}
@@ -122,6 +146,14 @@ public class TablesDataItem {
 
 	public void setLocationType_es(String locationType_es) {
 		this.locationType_es = locationType_es;
+	}
+
+	public String getLocationId() {
+		return locationId;
+	}
+
+	public void setLocationId(String locationId) {
+		this.locationId = locationId;
 	}
 
 	public String getLocation_en() {
@@ -148,6 +180,14 @@ public class TablesDataItem {
 		this.year = year;
 	}
 
+	public String getRaceId() {
+		return raceId;
+	}
+
+	public void setRaceId(String raceId) {
+		this.raceId = raceId;
+	}
+
 	public String getRace_en() {
 		return race_en;
 	}
@@ -162,6 +202,14 @@ public class TablesDataItem {
 
 	public void setRace_es(String race_es) {
 		this.race_es = race_es;
+	}
+
+	public String getAgeId() {
+		return ageId;
+	}
+
+	public void setAgeId(String ageId) {
+		this.ageId = ageId;
 	}
 
 	public String getAge_en() {
@@ -180,6 +228,14 @@ public class TablesDataItem {
 		this.age_es = age_es;
 	}
 
+	public String getSexId() {
+		return sexId;
+	}
+
+	public void setSexId(String sexId) {
+		this.sexId = sexId;
+	}
+
 	public String getSex_en() {
 		return sex_en;
 	}
@@ -196,6 +252,14 @@ public class TablesDataItem {
 		this.sex_es = sex_es;
 	}
 
+	public String getEducationId() {
+		return educationId;
+	}
+
+	public void setEducationId(String educationId) {
+		this.educationId = educationId;
+	}
+
 	public String getEducation_en() {
 		return education_en;
 	}
@@ -210,6 +274,14 @@ public class TablesDataItem {
 
 	public void setEducation_es(String education_es) {
 		this.education_es = education_es;
+	}
+
+	public String getIncomeId() {
+		return incomeId;
+	}
+
+	public void setIncomeId(String incomeId) {
+		this.incomeId = incomeId;
 	}
 
 	public String getIncome_en() {

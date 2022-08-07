@@ -34,6 +34,11 @@ public class TablesData {
 	private List<TablesDataItem> items;
 
 	/**
+	 * The total rows.
+	 */
+	private int totalRows;
+
+	/**
 	 * @return the indicator
 	 */
 	public Indicator getIndicator() {
@@ -87,5 +92,19 @@ public class TablesData {
 	 */
 	public void setItems(List<TablesDataItem> items) {
 		this.items = items;
+	}
+
+	/**
+	 * @return the totalRows
+	 */
+	public int getTotalRows() {
+		return totalRows;
+	}
+
+	/**
+	 * @param totalRows the totalRows to set
+	 */
+	public void setTotalRows(int totalRows) {
+		this.totalRows = totalRows;
 	}
 }

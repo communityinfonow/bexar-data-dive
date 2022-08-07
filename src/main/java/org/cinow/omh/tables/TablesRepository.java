@@ -1,17 +1,16 @@
 package org.cinow.omh.tables;
 
-import java.util.List;
-
 /**
  * Repository for the Tables and Downloads view.
  */
 public interface TablesRepository {
 	
 	/**
-	 * Get the tables data.
+	 * Populates the tables data by settinb both the items and total rows.
 	 * 
-	 * @param indicator the indicator
+	 * @param request the request
+	 * @param data the data to populate
 	 * @return the tables data
 	 */
-	List<TablesDataItem> getTablesData(String indicator);
+	void populateTablesData(TablesDataRequest request, TablesData data);
 }

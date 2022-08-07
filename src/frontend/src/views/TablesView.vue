@@ -35,32 +35,24 @@
               <span v-if="tablesData.category.parentCategoryId">{{ tablesData.category['name_' + locale] }} - </span>
               {{ tablesData.indicator['name_' + locale] }}
             </span>
-              <vue-excel-xlsx
-                type="button"
-                class="v-btn v-btn--icon v-btn--round theme--light v-size--default accent--text"
-                :aria-label="$t('tools.common.download')"
-                :data="tablesData.items"
-                :columns="xlsxColumns"
-                :file-name="tablesData.indicator['name_' + locale]"
-                :file-type="'xlsx'"
-                :sheet-name="tablesData.indicator['name_' + locale]"
-              >
-              <span class="v-btn__content">
-                <v-icon>mdi-download</v-icon>
-              </span>
-            </vue-excel-xlsx>
+            <v-btn color="accent" icon @click="downloadTablesData">
+              <v-icon>mdi-download</v-icon>
+            </v-btn>
           </h1>
           <h2 class="text-subtitle-1 mb-2">{{ tablesData.source['name_' + locale] }}</h2>
-          <v-text-field v-model="search" :label="$t('tools.common.search')" hide-details>
+          <v-text-field v-model="search" :label="$t('tools.common.search')" hide-details @input="loadTablesData()">
             <template v-slot:append><v-icon color="accent">mdi-magnify</v-icon></template>
           </v-text-field>
           <v-data-table
             :headers="filteredHeaders"
-            :items="filteredItems"
+            :items="items"
             :search="search"
-            :options="tableOptions"
+            :page.sync="page"
+            :items-per-page.sync="itemsPerPage"
+            :sort-by.sync="sortBy"
+            :sort-desc.sync="sortDesc"
             :footer-props="footerOptions"
-            multi-sort
+            :server-items-length="tablesData.totalRows"
           >
             <template v-slot:header.locationType="{ header }">
               {{ header.text }}
@@ -71,7 +63,10 @@
                   </v-btn>
                 </template>
                 <v-list>
-                  <v-list-item v-for="locationType in locationTypes" :key="locationType.name" @click.stop>
+                  <v-list-item>
+                    <v-btn block color="accent" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
+                  </v-list-item>
+                  <v-list-item v-for="locationType in locationTypes" :key="locationType.name" @click.stop="">
                     <v-list-item-action>
                       <v-checkbox
                         v-model="locationType.selected"
@@ -79,7 +74,7 @@
                         hide-details
                       ></v-checkbox>
                     </v-list-item-action>
-                    <v-list-item-title>{{ locationType.name }}</v-list-item-title>
+                    <v-list-item-title>{{ locationType['name_' + locale] }}</v-list-item-title>
                   </v-list-item>
                 </v-list>
               </v-menu>
@@ -93,7 +88,10 @@
                   </v-btn>
                 </template>
                 <v-list>
-                  <v-list-item v-for="location in locations" :key="location.name" @click.stop>
+                  <v-list-item>
+                    <v-btn block color="accent" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
+                  </v-list-item>
+                  <v-list-item v-for="location in locations" :key="location.name" @click.stop="">
                     <v-list-item-action>
                       <v-checkbox
                         v-model="location.selected"
@@ -101,7 +99,7 @@
                         hide-details
                       ></v-checkbox>
                     </v-list-item-action>
-                    <v-list-item-title>{{ location.name }}</v-list-item-title>
+                    <v-list-item-title>{{ location['name_' + locale] }}</v-list-item-title>
                   </v-list-item>
                 </v-list>
               </v-menu>
@@ -115,7 +113,10 @@
                   </v-btn>
                 </template>
                 <v-list>
-                  <v-list-item v-for="year in years" :key="year.name" @click.stop>
+                  <v-list-item>
+                    <v-btn block color="accent" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
+                  </v-list-item>
+                  <v-list-item v-for="year in years" :key="year.name" @click.stop="">
                     <v-list-item-action>
                       <v-checkbox
                         v-model="year.selected"
@@ -123,7 +124,7 @@
                         hide-details
                       ></v-checkbox>
                     </v-list-item-action>
-                    <v-list-item-title>{{ year.name }}</v-list-item-title>
+                    <v-list-item-title>{{ year['name_' + locale] }}</v-list-item-title>
                   </v-list-item>
                 </v-list>
               </v-menu>
@@ -137,7 +138,10 @@
                   </v-btn>
                 </template>
                 <v-list>
-                  <v-list-item v-for="race in races" :key="race.name" @click.stop>
+                  <v-list-item>
+                    <v-btn block color="accent" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
+                  </v-list-item>
+                  <v-list-item v-for="race in races" :key="race.name" @click.stop="">
                     <v-list-item-action>
                       <v-checkbox
                         v-model="race.selected"
@@ -145,7 +149,7 @@
                         hide-details
                       ></v-checkbox>
                     </v-list-item-action>
-                    <v-list-item-title>{{ race.name }}</v-list-item-title>
+                    <v-list-item-title>{{ race['name_' + locale] }}</v-list-item-title>
                   </v-list-item>
                 </v-list>
               </v-menu>
@@ -159,7 +163,10 @@
                   </v-btn>
                 </template>
                 <v-list>
-                  <v-list-item v-for="age in ages" :key="age.name" @click.stop>
+                  <v-list-item>
+                    <v-btn block color="accent" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
+                  </v-list-item>
+                  <v-list-item v-for="age in ages" :key="age.name" @click.stop="">
                     <v-list-item-action>
                       <v-checkbox
                         v-model="age.selected"
@@ -167,7 +174,7 @@
                         hide-details
                       ></v-checkbox>
                     </v-list-item-action>
-                    <v-list-item-title>{{ age.name }}</v-list-item-title>
+                    <v-list-item-title>{{ age['name_' + locale] }}</v-list-item-title>
                   </v-list-item>
                 </v-list>
               </v-menu>
@@ -181,7 +188,10 @@
                   </v-btn>
                 </template>
                 <v-list>
-                  <v-list-item v-for="sex in sexes" :key="sex.name" @click.stop>
+                  <v-list-item>
+                    <v-btn block color="accent" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
+                  </v-list-item>
+                  <v-list-item v-for="sex in sexes" :key="sex.name" @click.stop="">
                     <v-list-item-action>
                       <v-checkbox
                         v-model="sex.selected"
@@ -189,7 +199,7 @@
                         hide-details
                       ></v-checkbox>
                     </v-list-item-action>
-                    <v-list-item-title>{{ sex.name }}</v-list-item-title>
+                    <v-list-item-title>{{ sex['name_' + locale] }}</v-list-item-title>
                   </v-list-item>
                 </v-list>
               </v-menu>
@@ -203,7 +213,10 @@
                   </v-btn>
                 </template>
                 <v-list>
-                  <v-list-item v-for="education in educations" :key="education.name" @click.stop>
+                  <v-list-item>
+                    <v-btn block color="accent" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
+                  </v-list-item>
+                  <v-list-item v-for="education in educations" :key="education.name" @click.stop="">
                     <v-list-item-action>
                       <v-checkbox
                         v-model="education.selected"
@@ -211,7 +224,7 @@
                         hide-details
                       ></v-checkbox>
                     </v-list-item-action>
-                    <v-list-item-title>{{ education.name }}</v-list-item-title>
+                    <v-list-item-title>{{ education['name_' + locale] }}</v-list-item-title>
                   </v-list-item>
                 </v-list>
               </v-menu>
@@ -225,7 +238,10 @@
                   </v-btn>
                 </template>
                 <v-list>
-                  <v-list-item v-for="income in incomes" :key="income.name" @click.stop>
+                  <v-list-item>
+                    <v-btn block color="accent" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
+                  </v-list-item>
+                  <v-list-item v-for="income in incomes" :key="income.name" @click.stop="">
                     <v-list-item-action>
                       <v-checkbox
                         v-model="income.selected"
@@ -233,7 +249,7 @@
                         hide-details
                       ></v-checkbox>
                     </v-list-item-action>
-                    <v-list-item-title>{{ income.name }}</v-list-item-title>
+                    <v-list-item-title>{{ income['name_' + locale] }}</v-list-item-title>
                   </v-list-item>
                 </v-list>
               </v-menu>
@@ -245,12 +261,13 @@
 </template>
 
 <script>
-//FIXME: server-side paging for performance
 import { mapActions, mapState } from 'vuex'
 import i18n from '@/i18n'
 import router from '@/router/index'
 import MenuToolbar from '@/components/MenuToolbar'
 import FeaturedCard from '@/components/FeaturedCard'
+import debounce from 'debounce'
+
 export default {
   name: 'TablesView',
   components: {
@@ -259,11 +276,12 @@ export default {
   },
   data() {
     return {
-      tableOptions: {
-        itemsPerPage: 50
-      },
+      page: 1,
+      itemsPerPage: 50,
+      sortBy: '',
+      sortDesc: false,
       footerOptions: {
-        itemsPerPageOptions: [10, 50, 100, -1]
+        itemsPerPageOptions: [10, 50, 100]
       },
       search: "",
       locationTypes: [],
@@ -277,9 +295,44 @@ export default {
     }
   },
   computed: {
-    ...mapState(['indicatorMenu', 'tablesData', 'locale', 'featuredIndicators']),
+    ...mapState(['indicatorMenu', 'indicator', 'filters', 'tablesData', 'locale', 'featuredIndicators']),
     showIntro() {
       return !this.tablesData && !router.currentRoute.query.indicator;
+    },
+    selections() {
+      return {
+        indicator: this.indicator?.id,
+        search: this.search,
+        page: this.page,
+        perPage: this.itemsPerPage,
+        sortBy: this.sortBy,
+        sortDesc: this.sortDesc,
+        lang: this.locale,
+        locationTypes: this.locationTypes.length === this.filteredLocationTypes.length 
+          ? undefined 
+          : this.filteredLocationTypes.map(i => i.id),
+        locations: this.locations.length === this.filteredLocations.length
+          ? undefined
+          : this.filteredLocations.map(i => i.id),
+        years: this.years.length === this.filteredYears.length
+          ? undefined
+          : this.filteredYears.map(i => i.id),  
+        races: this.races?.length === this.filteredRaces?.length
+          ? undefined
+          : this.filteredRaces?.map(i => i.id),
+        ages: this.ages?.length === this.filteredAges?.length
+          ? undefined
+          : this.filteredAges?.map(i => i.id),
+        sexes: this.sexes?.length === this.filteredSexes?.length
+          ? undefined
+          : this.filteredSexes?.map(i => i.id),
+        educations: this.educations?.length === this.filteredEducations?.length
+          ? undefined
+          : this.filteredEducations?.map(i => i.id),
+        incomes: this.incomes?.length === this.filteredIncomes?.length
+          ? undefined
+          : this.filteredIncomes?.map(i => i.id)
+      };
     },
     xlsxColumns() {
       return this.headers.map(h => {
@@ -293,59 +346,35 @@ export default {
       return [
         {
           text: i18n.t('tools.tables.headers.location_type'),
-          value: "locationType",
-          filter: (value, search, item) => {
-            return this.filteredLocationTypes.find(i => i.name === item.name);
-          }
+          value: "locationType"
         },
         {
           text: i18n.t('tools.tables.headers.location'),
-          value: "location",
-          filter: (value, search, item) => {
-            return this.filteredLocations.find(i => i.name === item.name);
-          }
+          value: "location"
         }, 
         {
           text: i18n.t('tools.tables.headers.year'),
-          value: "year",
-          filter: (value, search, item) => {
-            return this.filteredYears.find(i => i.name === item.name);
-          }
+          value: "year"
         },
         {
           text: i18n.t('tools.tables.headers.race'),
-          value: "race",
-          filter: (value, search, item) => {
-            return this.filteredRaces.find(i => i.name === item.name);
-          }
+          value: "race"
         },
         {
           text: i18n.t('tools.tables.headers.age'),
-          value: "age",
-          filter: (value, search, item) => {
-            return this.filteredAges.find(i => i.name === item.name);
-          }
+          value: "age"
         },
         {
           text: i18n.t('tools.tables.headers.sex'),
-          value: "sex",
-          filter: (value, search, item) => {
-            return this.filteredSexes.find(i => i.name === item.name);
-          }
+          value: "sex"
         },
         {
           text: i18n.t('tools.tables.headers.education'),
-          value: "education",
-          filter: (value, search, item) => {
-            return this.filteredEducations.find(i => i.name === item.name);
-          }
+          value: "education"
         },
         {
           text: i18n.t('tools.tables.headers.income'),
-          value: "income",
-          filter: (value, search, item) => {
-            return this.filteredIncomes.find(i => i.name === item.name);
-          }
+          value: "income"
         },
         {
           text: i18n.t('tools.tables.headers.value'),
@@ -371,19 +400,19 @@ export default {
     },
     filteredHeaders() {
       let filtered = JSON.parse(JSON.stringify(this.headers));
-      if (!this.races.length) {
+      if (!this.filters?.indicatorFilters?.find(f => f.type.id === '1')) {
         filtered = filtered.filter(h => h.value !== 'race');
       }
-      if (!this.ages.length) {
+      if (!this.filters?.indicatorFilters?.find(f => f.type.id === '2')) {
         filtered = filtered.filter(h => h.value !== 'age');
       }
-      if (!this.sexes.length) {
+      if (!this.filters?.indicatorFilters?.find(f => f.type.id === '3')) {
         filtered = filtered.filter(h => h.value !== 'sex');
       }
-      if (!this.educations.length) {
+      if (!this.filters?.indicatorFilters?.find(f => f.type.id === '4')) {
         filtered = filtered.filter(h => h.value !== 'education');
       }
-      if (!this.incomes.length) {
+      if (!this.filters?.indicatorFilters?.find(f => f.type.id === '5')) {
         filtered = filtered.filter(h => h.value !== 'income');
       }
       return filtered;
@@ -398,19 +427,19 @@ export default {
       return this.years.filter(i => i.selected);
     },
     filteredRaces() {
-      return this.races.filter(i => i.selected);
+      return this.races?.filter(i => i.selected);
     },
     filteredAges() {
-      return this.ages.filter(i => i.selected);
+      return this.ages?.filter(i => i.selected);
     },
     filteredSexes() {
-      return this.sexes.filter(i => i.selected);
+      return this.sexes?.filter(i => i.selected);
     },
     filteredEducations() {
-      return this.educations.filter(i => i.selected);
+      return this.educations?.filter(i => i.selected);
     },
     filteredIncomes() {
-      return this.incomes.filter(i => i.selected);
+      return this.incomes?.filter(i => i.selected);
     },
     items() {
       return this.tablesData?.items.map(i => {
@@ -418,6 +447,7 @@ export default {
           ...i,
           locationType: i['locationType_' + this.locale],
           location: i['location_' + this.locale],
+          raceId: i.raceId,
           race: i['race_' + this.locale],
           sex: i['sex_' + this.locale],
           age: i['age_' + this.locale],
@@ -425,73 +455,70 @@ export default {
           income: i['income_' + this.locale]
         };
       });
-    },
-    filteredItems() {
-      return this.items.filter(item => {
-        return this.filteredLocationTypes.find(i => i.name === item.locationType)
-          && this.filteredLocations.find(i => i.name === item.location)
-          && this.filteredYears.find(i => i.name === item.year)
-          && (!this.races.length || this.filteredRaces.find(i => i.name === item.race))
-          && (!this.ages.length || this.filteredAges.find(i => i.name === item.age))
-          && (!this.sexes.length || this.filteredSexes.find(i => i.name === item.sex))
-          && (!this.educations.length || this.filteredEducation.find(i => i.name === item.education))
-          && (!this.incomes.length || this.filteredIncomes.find(i => i.name === item.income))
-      });
     }
   },
   watch: {
 		locale(newValue, oldValue) {
       if (oldValue) {
-			  this.getTablesData(router.currentRoute.query.indicator);
+        this.loadTablesData();
       }
 		},
-    items(newValue) {
+    page() {
+      this.loadTablesData();
+    },
+    itemsPerPage() {
+      this.loadTablesData();
+    },
+    sortBy() {
+      this.loadTablesData();
+    },
+    sortDesc() {
+      this.loadTablesData();
+    },
+    filters(newValue) {
       if (newValue) {
-        this.locationTypes = new Array(...new Set(newValue.map(i => i.locationType)))
-          .map(i => { return { name: i, selected: true }})
-          .filter(i => !!i.name);
-        this.locations = new Array(...new Set(newValue.map(i => i.location)))
-          .map(i => { return { name: i, selected: true }})
-          .filter(i => !!i.name);
-        this.years = new Array(...new Set(newValue.map(i => i.year)))
-          .map(i => { return { name: i, selected: true}})
-          .filter(i => !!i.name);
-        this.races = new Array(...new Set(newValue.map(i => i.race)))
-          .map(i => { return { name: i, selected: true}})
-          .filter(i => !!i.name);
-        this.ages = new Array(...new Set(newValue.map(i => i.age)))
-          .map(i => { return { name: i, selected: true}})
-          .filter(i => !!i.name);
-        this.sexes = new Array(...new Set(newValue.map(i => i.sex)))
-          .map(i => { return { name: i, selected: true}})
-          .filter(i => !!i.name);
-        this.educations = new Array(...new Set(newValue.map(i => i.education)))
-          .map(i => { return { name: i, selected: true}})
-          .filter(i => !!i.name);
-        this.incomes = new Array(...new Set(newValue.map(i => i.income)))
-          .map(i => { return { name: i, selected: true}})
-          .filter(i => !!i.name);
+        this.locationTypes = newValue.locationTypeFilter.options
+          .map(o => Object.assign({ selected: true }, o));
+        this.locations = newValue.locationFilter.options
+          .map(o => Object.assign({ selected: true }, o));
+        this.years = newValue.yearFilter.options
+          .map(o => Object.assign({ selected: true }, o));
+        this.races = newValue.indicatorFilters?.find(f => f.type.id === '1')?.options
+          .map(o => Object.assign({ selected: true }, o));
+        this.ages = newValue.indicatorFilters?.find(f => f.type.id === '2')?.options
+          .map(o => Object.assign({ selected: true }, o));
+        this.sexes = newValue.indicatorFilters?.find(f => f.type.id === '3')?.options
+          .map(o => Object.assign({ selected: true }, o));
+        this.educations = newValue.indicatorFilters?.find(f => f.type.id === '4')?.options
+          .map(o => Object.assign({ selected: true }, o));
+        this.incomes = newValue.indicatorFilters?.find(f => f.type.id === '5')?.options
+          .map(o => Object.assign({ selected: true }, o));
       }
     }
 	},
   beforeRouteEnter(to, from, next) {
     next(vm => {
-      vm.$store.dispatch('setTablesData', null)
+      vm.$store.dispatch('setIndicator', null)
     });
   },
   beforeRouteUpdate(to, from, next) {
     if (from.query.indicator && !to.query.indicator) {
-      this.setTablesData(null)
+      this.setIndicator(null)
     }
     next();
   },
+  created () {
+    this.loadTablesData = debounce(this.loadTablesData, 250);
+  },
   mounted () {
     if (router.currentRoute.query.indicator && this.indicatorMenu) {
-      this.setTablesData(this.indicatorMenu.categories
+      this.setIndicator(this.indicatorMenu.categories
         .flatMap(category => category.subcategories.flatMap(sc => sc.items).concat(category.items))
-        .find(item => item.id == router.currentRoute.query.indicator))
+        .find(item => item.id == router.currentRoute.query.indicator)).then(() => {
+          this.loadTablesData();
+        })
     } else {
-      this.setTablesData(null)
+      this.setIndicator(null)
     }
     if (!this.featuredIndicators) {
       this.getFeaturedIndicators()
@@ -502,23 +529,36 @@ export default {
       let matchedIndicator = this.indicatorMenu.categories
         .flatMap(category => category.subcategories.flatMap(sc => sc.items).concat(category.items))
         .find(item => item.id == router.currentRoute.query.indicator)
-      if (matchedIndicator?.id !== this.tablesData?.indicator.id) {
-        this.getTablesData(matchedIndicator.id)
+      if (matchedIndicator?.id !== this.indicator?.id) {
+        this.setIndicator(matchedIndicator).then(() => {
+          this.loadTablesData();
+        })
       }
     } else {
-      this.setTablesData(null)
+      this.setIndicator(null)
     }
   },
   methods: {
-    ...mapActions(['setTablesData', 'getTablesData', 'getFeaturedIndicators']),
+    ...mapActions(['setIndicator', 'getTablesData', 'getFeaturedIndicators']),
     selectItem(item) {
-      this.getTablesData(item.id);
-      router.replace({
+      if (item.id !== this.indicator?.id) {
+        this.setIndicator(item).then(() => {
+          this.loadTablesData();
+        })
+        router.replace({
           query: {
-            ...router.currentRoute.query,
-            indicator: item.id
+            lang: router.currentRoute.query.lang,
+            indicator: item.id,
+            tab: router.currentRoute.query.tab
           },
         });
+      }
+    },
+    loadTablesData() {
+      this.getTablesData(this.selections);
+    },
+    downloadTablesData() {
+      window.open('/api/tables-download?indicator=' + this.indicator.id, '_blank');
     }
   }
 }

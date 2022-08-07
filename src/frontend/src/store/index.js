@@ -187,21 +187,22 @@ export default new Vuex.Store({
         context.commit('SET_FILTERS', null)
         context.commit('SET_FILTER_SELECTIONS', null)
         context.commit('SET_COMPARE_SELECTIONS', null)
-        
+        return Promise.resolve();
       } else {
-        context.dispatch('getSource', indicator)
-        context.dispatch('getFilters', indicator)
+        return context.dispatch('getSource', indicator).then(() => {
+          return context.dispatch('getFilters', indicator)
+        });
       }
     },
     getSource(context, indicator) {
-      axios.get('/api/indicator-source', { params: {
+      return axios.get('/api/indicator-source', { params: {
         indicator: indicator.id
       }}).then(response => {
         context.commit('SET_SOURCE', response.data)
       })
     },
     getFilters(context, indicator) {
-      axios.get('/api/filters', { params: {
+      return axios.get('/api/filters', { params: {
         indicator: indicator.id
       }}).then(response => { 
         context.commit('SET_FILTERS', response.data)
@@ -259,32 +260,24 @@ export default new Vuex.Store({
       }
       context.dispatch('getExploreData');
     },
-    setTablesData(context, indicator) {
-      if (indicator !== null) {
-        context.dispatch('getTablesData', indicator.id)
-      } else {
-        context.commit('SET_TABLES_DATA', indicator)
-      }
-    },
-    getTablesData(context, indicator) {
-        axios.get('/api/tables-data', { params: { 
-          indicator: indicator
-        }
-      }).then(response => {
-        response.data.items.forEach(i => {
-          if (i.suppressed) {
-            i.valueLabel = i18n.t('data.suppressed');
-          } else if (i.value === null) { 
-            i.valueLabel = i18n.t('data.no_data');
-          } else  {
-            i.valueLabel = format(response.data.indicator.typeId, i.value);
-          }
-          i.moeLowLabel = format(response.data.indicator.typeId, i.moeLow);
-          i.moeHighLabel = format(response.data.indicator.typeId, i.moeHigh);
-          i.universeValueLabel = format('1', i.universeValue);
-        })
-        context.commit('SET_TABLES_DATA', response.data);
-      })
+    getTablesData(context, request) {
+        axios.post('/api/tables-data', { 
+          ...request 
+        }).then(response => {
+          response.data.items.forEach(i => {
+            if (i.suppressed) {
+              i.valueLabel = i18n.t('data.suppressed');
+            } else if (i.value === null) { 
+              i.valueLabel = i18n.t('data.no_data');
+            } else  {
+              i.valueLabel = format(response.data.indicator.typeId, i.value);
+            }
+            i.moeLowLabel = format(response.data.indicator.typeId, i.moeLow);
+            i.moeHighLabel = format(response.data.indicator.typeId, i.moeHigh);
+            i.universeValueLabel = format('1', i.universeValue);
+          })
+          context.commit('SET_TABLES_DATA', response.data);
+        });
     },
     getAboutData(context) {
       axios.get('/api/about-data').then(response => {
