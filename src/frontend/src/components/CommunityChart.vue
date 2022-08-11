@@ -93,9 +93,9 @@ export default {
 						if (o.data.moeLow || o.data.moeHigh) {
 							rows.push(i18n.t('data.moe_range') 
 								+ ': ' 
-								+ format(this.indicatorType, o.data.value - o.data.moeLow)
+								+ format(this.indicatorType, o.data.moeLow)
 								+ " - "
-								+ format(this.indicatorType, o.data.value + o.data.moeHigh))
+								+ format(this.indicatorType, o.data.moeHigh))
 						}
 						return rows.join('\n');
 					}

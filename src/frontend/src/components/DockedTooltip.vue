@@ -50,9 +50,9 @@ export default {
 			return format(this.exploreData.indicator.typeId, this.dockedTooltip.value);
 		},
 		rangeFormatted() {
-			return format(this.exploreData.indicator.typeId, this.dockedTooltip.value - this.dockedTooltip.moeLow)
+			return format(this.exploreData.indicator.typeId, this.dockedTooltip.moeLow)
 				+ " - "
-				+ format(this.exploreData.indicator.typeId, this.dockedTooltip.value + this.dockedTooltip.moeHigh);
+				+ format(this.exploreData.indicator.typeId, this.dockedTooltip.moeHigh);
 		}
 	},
 }
