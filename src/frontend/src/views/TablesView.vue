@@ -29,7 +29,7 @@
             </template>
           </section>
       </v-col>
-      <v-col v-if="tablesData" cols="auto" class="pt-4 px-4">
+      <v-col v-if="indicator && tablesData" cols="auto" class="pt-4 px-4">
           <h1 class="text-h3 mb-1 d-flex justify-space-between">
             <span>
               <span v-if="tablesData.category.parentCategoryId">{{ tablesData.category['name_' + locale] }} - </span>
@@ -297,7 +297,7 @@ export default {
   computed: {
     ...mapState(['indicatorMenu', 'indicator', 'filters', 'tablesData', 'locale', 'featuredIndicators']),
     showIntro() {
-      return !this.tablesData && !router.currentRoute.query.indicator;
+      return !this.indicator && !router.currentRoute.query.indicator;
     },
     selections() {
       return {
