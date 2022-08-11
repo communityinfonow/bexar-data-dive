@@ -41,6 +41,9 @@ export default {
 	watch: {
 		locale() {
 			this.drawChart()
+		},
+		data() {
+			this.drawChart()
 		}
 	},
 	mounted () {
