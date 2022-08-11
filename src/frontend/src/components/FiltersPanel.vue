@@ -17,6 +17,7 @@
 					item-value="id"
 					hide-no-data
 					flat
+					dense
 					:rules="[v => !!v || 'Please make a selection']"
 					@change="selectLocationType"
 				></v-autocomplete>
@@ -29,6 +30,7 @@
 					item-value="id"
 					hide-no-data
 					flat
+					dense
 					:rules="[v => !!v || 'Please make a selection']"
 				></v-autocomplete>
 				<v-autocomplete
@@ -40,6 +42,7 @@
 					item-value="name_en"
 					hide-no-data
 					flat
+					dense
 					:rules="[v => !!v || 'Please make a selection']"
 				></v-autocomplete>
 				<template v-for="filter in filters.indicatorFilters">
@@ -53,6 +56,7 @@
 						return-object
 						hide-no-data
 						flat
+						dense
 						:rules="[v => !!v || 'Please make a selection']"
 					></v-autocomplete>
 				</template>
