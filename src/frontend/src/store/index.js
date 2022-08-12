@@ -10,6 +10,9 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     locale: '',
+    communityRoute: 'community',
+    exploreRoute: 'explore',
+    tablesRoute: 'tables',
     locationMenu: null,
     indicatorMenu: null,
     featuredIndicators: null,
@@ -26,20 +29,22 @@ export default new Vuex.Store({
     aboutData: null
   },
   getters: {
-    tools: () => {
+    tools: (state) => {
       return [
         {
+          key: 'community',
           name: i18n.t('tools.community.name'),
           imagePath: "/img/tools_community.png",
-          route: 'community',
+          route: state.communityRoute,
           icon: 'mdi-map',
           shortDescription: i18n.t('tools.community.short_description'),
           fullDescription: i18n.t('tools.community.long_description'),
         },
         {
+          key: 'explore',
           name: i18n.t('tools.explore.name'),
           imagePath: "/img/tools_explore.png",
-          route: 'explore',
+          route: state.exploreRoute,
           icon: 'mdi-view-dashboard',
           shortDescription: i18n.t('tools.explore.short_description'),
           fullDescription: i18n.t('tools.explore.long_description'),
@@ -59,9 +64,10 @@ export default new Vuex.Store({
           ]
         },
         {
+          key: 'tables',
           name: i18n.t('tools.tables.name'),
           imagePath: "/img/tools_tables.png",
-          route: 'tables',
+          route: state.tablesRoute,
           icon: 'mdi-grid',
           shortDescription: i18n.t('tools.tables.short_description'),
           fullDescription: i18n.t('tools.tables.long_description'),
@@ -128,6 +134,9 @@ export default new Vuex.Store({
     },
     SET_ABOUT_DATA(state, data) {
       state.aboutData = data;
+    },
+    SET_TOOL_ROUTE(state, params) {
+      state[params.key + 'Route'] = params.route
     }
   },
   actions: {
@@ -220,6 +229,9 @@ export default new Vuex.Store({
         context.commit('SET_EXPLORE_DATA', response.data)
       })
     },
+    setExploreData(context, data) {
+      context.commit('SET_EXPLORE_DATA', data)
+    },
     setDockedTooltip(context, data) {
       context.commit('SET_DOCKED_TOOLTIP', data)
     },
@@ -279,10 +291,16 @@ export default new Vuex.Store({
           context.commit('SET_TABLES_DATA', response.data);
         });
     },
+    setTablesData(context, data) {
+      context.commit('SET_TABLES_DATA', data);
+    },
     getAboutData(context) {
       axios.get('/api/about-data').then(response => {
         context.commit('SET_ABOUT_DATA', response.data);
       });
+    },
+    setToolRoute(context, params) {
+      context.commit('SET_TOOL_ROUTE', params);
     }
   },
   modules: {},

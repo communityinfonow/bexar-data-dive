@@ -498,13 +498,17 @@ export default {
 	},
   beforeRouteEnter(to, from, next) {
     next(vm => {
-      vm.$store.dispatch('setIndicator', null)
+      vm.$store.dispatch('setIndicator', null);
+      vm.$store.dispatch('setTablesData', null);
+      vm.$store.dispatch('setToolRoute', { key: 'tables', route: to.fullPath });
     });
   },
   beforeRouteUpdate(to, from, next) {
     if (from.query.indicator && !to.query.indicator) {
       this.setIndicator(null)
+      this.setTablesData(null)
     }
+    this.setToolRoute({ key: 'tables', route: to.fullPath })
     next();
   },
   created () {
@@ -539,7 +543,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setIndicator', 'getTablesData', 'getFeaturedIndicators']),
+    ...mapActions(['setIndicator', 'setTablesData', 'getTablesData', 'getFeaturedIndicators', 'setToolRoute']),
     selectItem(item) {
       if (item.id !== this.indicator?.id) {
         this.setIndicator(item).then(() => {

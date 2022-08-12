@@ -115,12 +115,16 @@ export default {
   beforeRouteEnter(to, from, next) {
     next(vm => {
       vm.$store.dispatch('setIndicator', null)
+      vm.$store.dispatch('setExploreData', null)
+      vm.$store.dispatch('setToolRoute', { key: 'explore', route: to.fullPath });
     });
   },
   beforeRouteUpdate(to, from, next) {
     if (from.query.indicator && !to.query.indicator) {
       this.setIndicator(null)
+      this.setExploreData(null)
     }
+    this.setToolRoute({ key: 'explore', route: to.fullPath })
     next();
   },
   mounted () {
@@ -151,7 +155,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setIndicator', 'setExploreTab', 'getFeaturedIndicators']),
+    ...mapActions(['setIndicator', 'setExploreData', 'setExploreTab', 'getFeaturedIndicators', 'setToolRoute']),
     selectItem(item) {
       if (item.id !== this.indicator?.id) {
         this.setIndicator(item)

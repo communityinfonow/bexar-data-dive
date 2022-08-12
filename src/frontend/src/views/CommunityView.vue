@@ -238,12 +238,14 @@ export default {
   beforeRouteEnter(to, from, next) {
     next(vm => {
       vm.$store.dispatch('setCommunity', null)
+      vm.$store.dispatch('setToolRoute', { key: 'community', route: to.fullPath })
     });
   },
   beforeRouteUpdate(to, from, next) {
     if (from.query.location && !to.query.location) {
       this.setCommunity(null)
     }
+    this.setToolRoute({ key: 'community', route: to.fullPath })
     next();
   },
   mounted () {
@@ -275,7 +277,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setCommunity', 'getCommunityData']),
+    ...mapActions(['setCommunity', 'getCommunityData', 'setToolRoute']),
     selectItem(item) {
       if (item.id !== this.community?.id || item.categoryId !== this.community?.locationTypeId) {
         this.getCommunityData(item)
