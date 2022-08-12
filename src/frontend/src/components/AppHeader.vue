@@ -1,8 +1,8 @@
 <template>
   <v-app-bar app color="primary" dark>
     <v-toolbar-title>
-      [BDD logo]
-      {{ $t('app.name') }} <sup class="text-caption">BETA</sup>
+      <img class="float-left" src="/img/bdd_logo_white.png" style="height: 40px;" />
+      <span class="float-left ml-4" style="line-height: 40px;">{{ $t('app.name') }} <sup class="text-caption">BETA</sup></span>
     </v-toolbar-title>
     <v-spacer></v-spacer>
     <v-btn-toggle :value="locale" mandatory group dark>
@@ -29,5 +29,8 @@ export default {
 <style lang="scss" scoped>
 .v-app-bar.v-app-bar--fixed {
   z-index: 1001;
+}
+.app-header-text {
+  color: var(--v-yellow-base);
 }
 </style>

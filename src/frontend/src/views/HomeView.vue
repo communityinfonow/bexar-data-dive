@@ -1,8 +1,8 @@
 <template>
   <v-container fluid>
     <section class="d-flex">
-      [BDD logo]
-      <h1 class="text-h3 mb-2 ml-2 logo-header">
+      <img class="ma-4" src="/img/bdd_logo_color.png" style="height: 100px;" />
+      <h1 class="text-h3 my-4 logo-header">
         {{ $t('app.name_line_1') }}<br>
         {{ $t('app.name_line_2') }}
       </h1>
