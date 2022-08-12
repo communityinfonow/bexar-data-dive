@@ -55,6 +55,7 @@ export default {
 			this.chart = echarts.init(document.getElementById('compare_chart_container'), null, { renderer: 'svg'});
 			this.chart.on('mouseover', (params) => {
 				if (params.componentType === 'series') {
+					let comparedIndicatorFilters = JSON.parse(JSON.stringify(params.data.indicatorFilters));
 					this.setDockedTooltip({ 
 						value: params.data.value,
 						suppressed: params.data.suppressed,
@@ -63,7 +64,7 @@ export default {
 						moeHigh: params.data.moeHigh,
 						location: params.data.location,
 						year: this.exploreData.filters.yearFilter.options[0].id,
-						indicatorFilters: params.data.indicatorFilters
+						indicatorFilters: comparedIndicatorFilters
 					});
 				}
 			});
@@ -132,7 +133,7 @@ export default {
 			if (this.exploreData.compareData) {
 				seriesData.push(...this.exploreData.compareData.map((cd, index) => {
 					let compareIndicatorFilters = JSON.parse(JSON.stringify(this.exploreData.filters.indicatorFilters));
-					if (this.compareSelections.type.name && this.compareSelections.type.name !== 'Location') {
+					if (this.compareSelections.type.id) {
 						compareIndicatorFilters.find(f => f.type.id === this.compareSelections.type.id).options[0] = this.compareSelections.filterOptions[index];
 					}
 					return  { 
