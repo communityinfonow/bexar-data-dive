@@ -55,7 +55,7 @@ import router from '@/router/index'
 export default {
 	name: 'ExploreToolsPanel',
 	computed: {
-		...mapState(['filters', 'locale'])
+		...mapState(['filters', 'filterSelections', 'locale'])
 	},
 	data() {
 		return {
@@ -67,6 +67,15 @@ export default {
 			valid: true
 		}
 	},
+	watch: {
+		filterSelections() {
+			let prev = this.compareWith.map(w => w.id);
+			this.selectCompareBy();
+			this.compareWith = this.compareWithItems.filter(w => prev.includes(w.id));
+			this.applyComparison();
+		}
+	},
+	//FIXME: refreshing does not re-draw the compared columns
 	mounted () {
 		this.compareByItems.push(this.filters?.locationFilter.type);
 		this.filters?.indicatorFilters.forEach(filter => {
@@ -95,9 +104,12 @@ export default {
 			this.compareWith = [];
 			this.compareWithItems = [];
 			if (this.compareBy?.name_en === 'Location') {
-				this.compareWithItems = this.filters?.locationFilter.options;
+				this.compareWithItems = this.filters?.locationFilter.options
+					.filter(o => o.id !== this.filterSelections?.location);
 			} else {
-				this.compareWithItems = this.filters?.indicatorFilters.find(filter => filter.type.name_en === this.compareBy?.name_en)?.options;
+				this.compareWithItems = this.filters?.indicatorFilters
+					.find(filter => filter.type.name_en === this.compareBy?.name_en)?.options
+					.filter(o => o.id !== this.filterSelections?.indicatorFilters[this.compareBy?.id].id);
 			}
 		},
 		validateComparison() {
