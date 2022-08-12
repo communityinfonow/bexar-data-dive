@@ -94,6 +94,7 @@ export default {
 	},
 	watch: {
 		filters() {
+			//FIXME: getting a console error sometimes here when switching between tools/refreshing the page
 			this.initFilters();
 			this.$nextTick(() => this.applyFilters());
 		}

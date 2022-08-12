@@ -38,7 +38,7 @@ public class ExploreRepositoryPostgresql implements ExploreRepository {
 			+ " select l.id_ as l_id, l.name_en as l_name_en, l.name_es as l_name_es, "
 			+ "   lt.id_ as lt_id, lt.name_en as lt_name_en, lt.name_es as lt_name_es, "
 			+ "   lg.geojson as lg_geojson, "
-			+ "   iv.year_ as iv_year, round(iv.indicator_value, 2) as iv_indicator_value, iv.suppress as iv_suppressed, round(iv.moe_low, 2) as iv_moe_low, round(iv.moe_high, 2) as iv_moe_high, round(iv.universe_value, 2) as iv_universe_value "
+			+ "   iv.year_ as iv_year, round(iv.indicator_value, 1) as iv_indicator_value, iv.suppress as iv_suppressed, round(iv.moe_low, 1) as iv_moe_low, round(iv.moe_high, 1) as iv_moe_high, round(iv.universe_value, 1) as iv_universe_value "
 			+ " from tbl_locations l "
 			+ "   join tbl_location_types lt on lt.id_ = l.location_type_id and lt.id_ = :location_type_id::numeric "
 			+ "   left join tbl_location_geometries lg on lg.location_id = l.id_ "

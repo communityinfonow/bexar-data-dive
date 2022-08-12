@@ -31,7 +31,7 @@ public class TablesRepositoryPostgresql implements TablesRepository{
 			+ " select *, count(*) over () as total_rows from ("
 			+ " select l.id_ as location_id, l.name_en as location_en, l.name_es as location_es, "
 			+ " 	lt.id_ as location_type_id, lt.name_en as location_type_en, lt.name_es as location_type_es, "
-			+ " 	iv.year_, round(iv.indicator_value, 2) as indicator_value, round(iv.moe_low, 2) as moe_low, round(iv.moe_high, 2) as moe_high, round(iv.universe_value, 2) as universe_value, iv.suppress, "
+			+ " 	iv.year_, round(iv.indicator_value, 1) as indicator_value, round(iv.moe_low, 1) as moe_low, round(iv.moe_high, 1) as moe_high, round(iv.universe_value, 1) as universe_value, iv.suppress, "
 			+ " 	race.id_ as race_id, coalesce(race.name_en, 'All') as race_en, coalesce(race.name_es, 'Todos') as race_es, "
 			+ " 	age.id_ as age_id, coalesce(age.name_en, 'All') as age_en, coalesce(age.name_es, 'Todos') as age_es, "
 			+ " 	sex.id_ as sex_id, coalesce(sex.name_en, 'All') as sex_en, coalesce(sex.name_es, 'Todos') as sex_es, "

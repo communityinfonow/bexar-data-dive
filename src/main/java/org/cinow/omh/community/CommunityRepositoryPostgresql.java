@@ -43,7 +43,7 @@ public class CommunityRepositoryPostgresql implements CommunityRepository {
 			+ "   ic.id_ as category_id, ic.parent_category_id, ic.name_en as category_name_en, ic.name_es as category_name_es, "
 			+ "   i.id_ as indicator_id, i.name_en as indicator_name_en, i.name_es as indicator_name_es, "
 			+ "   it.id_ as indicator_type_id, it.name_ as indicator_type_name, "
-			+ "   iv.year_, round(iv.indicator_value, 2) as indicator_value, iv.suppress, round(iv.moe_low, 2) as moe_low, round(iv.moe_high, 2) as moe_high, round(iv.universe_value, 2) as universe_value, "
+			+ "   iv.year_, round(iv.indicator_value, 1) as indicator_value, iv.suppress, round(iv.moe_low, 1) as moe_low, round(iv.moe_high, 1) as moe_high, round(iv.universe_value, 1) as universe_value, "
 			+ "   s.id_ as source_id, s.name_en as source_name_en, s.name_es as source_name_es, s.url_ as source_url, "
 			+ "   fo.id_ as race_filter_option_id, fo.name_en as race_filter_name_en, fo.name_es as race_filter_name_es, "
 			+ "   rank() over(partition by iv.indicator_id order by iv.year_ desc) "
