@@ -9,6 +9,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    loading: false,
     locale: '',
     communityRoute: 'community',
     exploreRoute: 'explore',
@@ -90,6 +91,9 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    SET_LOADING(state, loading) {
+      state.loading = loading
+    },
     SET_LOCALE(state, locale) {
       state.locale = locale
     },
@@ -140,6 +144,9 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    setLoading(context, loading) {
+      context.commit('SET_LOADING', loading)
+    },
     setLocale(context, locale) {
       if (locale !== this.state.locale) {
         context.commit('SET_LOCALE', locale)

@@ -5,11 +5,21 @@
     <v-main>
       <router-view />
     </v-main>
+    <v-progress-linear
+      v-if="loading"
+      indeterminate
+      fixed
+      bottom
+      height="12px"
+      color="accent"
+      style="z-index: 9999"
+    ></v-progress-linear>
     <AppFooter></AppFooter>
   </v-app>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import AppHeader from '@/components/AppHeader'
 import AppFooter from '@/components/AppFooter'
 import NavigationDrawer from '@/components/NavigationDrawer'
@@ -17,6 +27,9 @@ import NavigationDrawer from '@/components/NavigationDrawer'
 export default {
   name: 'App',
   components: { AppHeader, AppFooter, NavigationDrawer },
+  computed: {
+    ...mapState(['loading'])
+  },
 }
 </script>
 

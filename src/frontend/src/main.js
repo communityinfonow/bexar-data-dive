@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
 import i18n from './i18n'
+import axios from 'axios'
 import 'leaflet/dist/leaflet.css'
 
 Vue.config.productionTip = false
@@ -29,6 +30,24 @@ new Vue({
     } else {
       this.$store.dispatch('setLocale', 'en')
     }
+
+    let requestCount = 0
+    axios.interceptors.request.use(function(config) {
+      if (requestCount === 0) {
+        store.dispatch('setLoading', true)
+      }
+      requestCount++
+
+      return config
+    })
+    axios.interceptors.response.use(response => {
+        requestCount--
+        if (requestCount === 0) {
+          store.dispatch('setLoading', false)
+        }
+
+        return response
+      })
   },
   mounted: function () {
     
