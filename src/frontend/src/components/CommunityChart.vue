@@ -72,7 +72,7 @@ export default {
 				type: 'category', 
 				data: Array.from(new Set(this.data.map(d => '' + (d.raceFilter['name_' + this.locale] || i18n.t('data.all'))))),
 				axisTick: { show: false },
-				axisLabel: { ...textStyle, interval: 0, width: '80', overflow: 'break', lineHeight: 20 }
+				axisLabel: { ...textStyle, interval: 0, width: '80', overflow: 'break', lineHeight: 20, color: '#333333' }
 			};
 			option.textStyle = textStyle;
 			option.color = colorbrewer.Blues[3].slice(0).reverse()
@@ -84,23 +84,35 @@ export default {
 				label: { 
 					show: true, 
 					position: 'top',
-					fontSize: '14px',
-					lineHeight: 18,
 					formatter: (o) => {
 						if (o.data.suppressed) {
-							return i18n.t('data.suppressed');
+							return '{a|' + i18n.t('data.suppressed') + '}';
 						} else if (o.data.noData) {
-							return i18n.t('data.no_data');
+							return '{a|' + i18n.t('data.no_data') + '}';
 						}
-						let rows = [i18n.t('data.value') +': ' + format(this.indicatorType, o.data.value)];
+						let rows = ['{a|' + i18n.t('data.value') +': ' + format(this.indicatorType, o.data.value) + '}'];
 						if (o.data.moeLow || o.data.moeHigh) {
-							rows.push(i18n.t('data.moe_range') 
+							rows.push('{b|' + i18n.t('data.moe_range') 
 								+ ': ' 
 								+ format(this.indicatorType, o.data.moeLow)
 								+ " - "
-								+ format(this.indicatorType, o.data.moeHigh))
+								+ format(this.indicatorType, o.data.moeHigh) + '}');
 						}
 						return rows.join('\n');
+					},
+					rich: { 
+						a: {
+							align: 'center',
+							fontSize: '16px',
+							lineHeight: '20',
+							color: '#333333'
+						},
+						b: {
+							align: 'center',
+							fontSize: '14px',
+							lineHeight: '16',
+							color: '#666666'
+						}
 					}
 				}
 			};
