@@ -62,6 +62,7 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 			+ " select id_, indicator_type_id, indicator_category_id, name_en, name_es, description_en, description_es "
 			+ " from tbl_indicators "
 			+ " where indicator_category_id = :indicator_category_id::numeric "
+			+ "   and display = true"
 			+ " order by id_::numeric ";
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
 		paramMap.addValue("indicator_category_id", categoryId);
@@ -92,7 +93,8 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 			+ " select indicator_category_id, indicator_type_id, "
 			+ "   name_en, name_es, description_en, description_es "
 			+ " from tbl_indicators "
-			+ " where id_ = :id::numeric ";
+			+ " where id_ = :id::numeric "
+			+ "   and display = true ";
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
 		paramMap.addValue("id", id);
 		
@@ -122,7 +124,8 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 			+ " select id_, indicator_category_id, indicator_type_id, "
 			+ "   name_en, name_es, description_en, description_es "
 			+ " from tbl_indicators "
-			+ " where featured = true ";
+			+ " where featured = true "
+			+ "   and display = true ";
 		
 		return this.jdbcTemplate.query(sql, new RowMapper<Indicator>() {
 			@Override

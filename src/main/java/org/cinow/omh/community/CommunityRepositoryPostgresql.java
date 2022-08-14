@@ -48,7 +48,7 @@ public class CommunityRepositoryPostgresql implements CommunityRepository {
 			+ "   fo.id_ as race_filter_option_id, fo.name_en as race_filter_name_en, fo.name_es as race_filter_name_es, "
 			+ "   rank() over(partition by iv.indicator_id order by iv.year_ desc) "
 			+ " from tbl_indicator_categories ic "
-			+ "   join tbl_indicators i on i.indicator_category_id = ic.id_ "
+			+ "   join tbl_indicators i on i.indicator_category_id = ic.id_ and i.display = true "
 			+ "   join tbl_indicator_types it on it.id_ = i.indicator_type_id "
 			+ "   left join tbl_indicator_values iv on iv.indicator_id = i.id_ "
 			+ "     and iv.location_id = :location_id and iv.location_type_id = :location_type_id::numeric "
