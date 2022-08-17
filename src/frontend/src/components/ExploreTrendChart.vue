@@ -17,7 +17,6 @@ import * as echarts from 'echarts/core';
 import { SVGRenderer } from 'echarts/renderers';
 import { AriaComponent, LegendComponent, GridComponent } from 'echarts/components';
 import { LineChart, BarChart } from 'echarts/charts';
-import colorbrewer from 'colorbrewer'
 
 export default {
 	name: 'ExploreTrendChart',
@@ -98,7 +97,7 @@ export default {
 				axisTick: { show: false },
 				axisLabel: textStyle
 			};
-			option.color = colorbrewer.Blues[3][2];
+			option.color = '#3b5a98';
 			let yearData = this.exploreData.locationData.find(ld => 
 						ld.location.id === this.exploreData.filters.locationFilter.options[0].id && 
 						ld.location.typeId === this.exploreData.filters.locationTypeFilter.options[0].id).yearData;
@@ -115,7 +114,9 @@ export default {
 							moeHigh: yd?.moeHigh
 						}; 
 					}),
-				type: 'line'
+				type: 'line',
+				symbol: 'circle',
+				symbolSize: 12
 			},
 			{
 				// second series for nulls/no data

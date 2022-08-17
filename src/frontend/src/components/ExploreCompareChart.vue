@@ -23,7 +23,6 @@ import * as echarts from 'echarts/core';
 import { SVGRenderer } from 'echarts/renderers';
 import { AriaComponent, LegendComponent, GridComponent } from 'echarts/components';
 import { BarChart } from 'echarts/charts';
-import colorbrewer from 'colorbrewer'
 import ExploreToolsPanel from '@/components/ExploreToolsPanel'
 
 export default {
@@ -116,7 +115,7 @@ export default {
 				nameLocation: 'center',
 				nameTextStyle: textStyle
 			};
-			option.color = colorbrewer.Blues[3][2];
+			option.color = '#3b5a98';
 			let seriesData = [];
 			let filteredLocation = this.exploreData.locationData.find(ld => 
 						ld.location.id === this.exploreData.filters.locationFilter.options[0].id && 

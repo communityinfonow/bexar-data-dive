@@ -1,21 +1,21 @@
 <template>
 	<div class="my-2">
-		<v-card outlined tile class="fill-height">
-			<v-card-title>
+		<v-card outlined tile class="fill-height docked-tooltip">
+			<v-card-title class="docked-tooltip-title">
 				{{ $t('tools.explore.docked_tooltip.now_viewing')}}
+				<span v-if="dockedTooltip">: {{ dockedTooltip.location }}</span>
 			</v-card-title>
 			<v-card-text v-if="!dockedTooltip">
-				<div class="text-subtitle-1">{{ helpMessage }}</div>
+				<div class="text-subtitle-1 pt-2">{{ helpMessage }}</div>
 			</v-card-text>
 			<v-card-text v-else>
-				<div class="text-h6">
+				<div class="text-h6 pt-2">
 					<span v-if="exploreData.category.parentCategoryId">{{ exploreData.category['name_' + locale] }} - </span>
 					{{ exploreData.indicator['name_' + locale] }}: {{ valueFormatted }}
 				</div>
 				<ul class="text-body-1">
 					<li v-if="!dockedTooltip.noData">Range: {{  rangeFormatted }}</li>
 					<li>Source: {{ exploreData.source['name_' + locale] }}</li>
-					<li>Location: {{ dockedTooltip.location }}</li>
 					<li>Year: {{ dockedTooltip.year }}</li>
 					<li v-for="filter in dockedTooltip.indicatorFilters" :key="filter.type.id">
 						{{ filter.type['name_' + locale] }}: {{ filter.options[0]['name_' + locale] }}
@@ -59,5 +59,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+	.docked-tooltip {
+		border: 1px solid rgba($color-secondary, 1);
+	}
+	.docked-tooltip-title {
+		color: var(--v-yellow-base);
+		background: rgba($color-secondary, 1);
+		
+	}
 </style>

@@ -348,6 +348,7 @@ export default {
     },
     onEachFeature(feature, layer) {
 			layer.bindTooltip(feature.properties.name);
+      layer.options.color = '#3b5a98';
       layer.on('click', () => {
         this.selectItem({
           id: feature.properties.id,

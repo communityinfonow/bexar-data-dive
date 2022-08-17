@@ -86,7 +86,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['filters', 'locale']),
+		...mapState(['filters', 'locale', 'filterSelections']),
 		locationFilterOptions() {
 			return this.filters.locationFilter.options
 				.filter(option => option.typeId === this.selectedLocationType)
@@ -94,9 +94,12 @@ export default {
 	},
 	watch: {
 		filters() {
-			//FIXME: getting a console error sometimes here when switching between tools/refreshing the page
 			this.initFilters();
 			this.$nextTick(() => this.applyFilters());
+		},
+		filterSelections(newValue) {
+			this.selectedLocationType = newValue.locationType;
+			this.selectedLocation = newValue.location;
 		}
 	},
 	methods: {

@@ -6,7 +6,6 @@
 			:zoom="zoom"
 			:center="center"
 			:options="{ zoomDelta: 0.5, zoomSnap: 0.5, preferCanvas: true }"
-			:style="{ height: '100%' }"
 			v-resize:debounce.100="resizeHandler"
 			@ready="initializeMap"
 		>
@@ -76,6 +75,32 @@
 					</v-card-text>
 				</v-card>
 			</l-control>
+			<l-control
+				position="bottomright"
+				class="layer-control"
+				v-if="layers.length"
+			>
+				<v-card tile outlined :style="{ boxShadow: 'none !important' }">
+				<v-card-title class="pb-0 text--primary">
+					<v-icon color="accent">mdi-layers</v-icon>
+					{{ $t('tools.community.community_types') }}
+				</v-card-title>
+				<v-card-text>
+					<v-radio-group
+					v-model="selectedLocationType"
+					@change="selectLocationType"
+					>
+					<v-radio 
+						color="accent"
+						v-for="layer in layers" 
+						:key="layer.id" 
+						:value="layer" 
+						:label="layer['name_' + locale]">
+					</v-radio>
+					</v-radio-group>
+				</v-card-text>
+				</v-card>
+			</l-control>
 		</l-map>
 	</div>
 </template>
@@ -105,11 +130,21 @@ export default {
 			zoom: 9,
 			center: latLng(29.43445, -98.473562383),
 			geojson: null,
-			refreshOptions: false
+			refreshOptions: false,
+			selectedLocationType: null
 		}
 	},
 	computed: {
-		...mapState(['exploreData', 'locale']),
+		...mapState(['exploreData', 'locale', 'locationMenu', 'filters', 'filterSelections']),
+		layers() {
+			return this.locationMenu?.categories?.map(locationType => {
+				return {
+					id: locationType.id,
+					name_en: locationType.name_en,
+					name_es: locationType.name_es
+				};
+			});
+		},
 		options() {
 			this.refreshOptions
 			return {
@@ -132,15 +167,14 @@ export default {
 			let uniqueValueCount = [...new Set(values)].length;
 
 			let shadingColors = []
-			if (uniqueValueCount < 3) {
-				shadingColors = colorbrewer.Blues[3]
-					.slice(3 - uniqueValueCount, 3)
+			if (uniqueValueCount < 5) {
+				shadingColors = colorbrewer.Blues[5]
+					.slice(5 - uniqueValueCount, 5)
 					.reverse()
-				} else if (uniqueValueCount < 5) {
-					shadingColors = colorbrewer.Blues[uniqueValueCount].slice(0).reverse()
-				} else {
-					shadingColors = colorbrewer.Blues[5].slice(0).reverse()
-				}
+			} else {
+				shadingColors = colorbrewer.Blues[5].slice(0).reverse()
+			}
+			//shadingColors[0] = '#3b5a98';
 
 			return shadingColors
 		},
@@ -172,6 +206,12 @@ export default {
 		},
     	locale() {
 			this.drawMap()
+		},
+		layers(newValue) {
+			this.selectedLocationType = newValue[0];
+		},
+		filterSelections(newValue) {
+			this.selectedLocationType = this.layers.find(l => l.id === newValue.locationType);
 		}
 	},
 	mounted () {
@@ -184,7 +224,7 @@ export default {
 		
 	},
 	methods: {
-		...mapActions(['setDockedTooltip']),
+		...mapActions(['setDockedTooltip', 'setFilterSelections']),
 		initializeMap() {
 			this.mapInitialized = true;
 			if (this.exploreData) {
@@ -193,6 +233,18 @@ export default {
 		},
 		resizeHandler() {
 			this.$refs.indicatorMap?.mapObject?.invalidateSize();
+		},
+		selectLocationType() {
+			let newFilterSelections = JSON.parse(JSON.stringify(this.filterSelections));
+			newFilterSelections.locationType = this.selectedLocationType.id;
+			newFilterSelections.location = this.filters.locationFilter.options.filter(o => o.typeId === this.selectedLocationType.id)[0].id;
+			this.setFilterSelections(newFilterSelections);
+		},
+		selectLocation(location) {
+			let newFilterSelections = JSON.parse(JSON.stringify(this.filterSelections));
+			newFilterSelections.locationType = this.selectedLocationType.id;
+			newFilterSelections.location = location;
+			this.setFilterSelections(newFilterSelections);
 		},
 		drawMap() {
 			this.geojson = featureCollection(this.exploreData.locationData
@@ -233,7 +285,11 @@ export default {
 			});
 			layer.on('mouseout', () => {
 				this.setDockedTooltip(null);
-			})
+			});
+			layer.on('click', (e) => {
+				console.log(e);
+				this.selectLocation(e.target.feature.id);
+			});
 		},
 		getLayerShadingColor(feature) {
 			if (!feature.properties.value || feature.properties.suppressed) {

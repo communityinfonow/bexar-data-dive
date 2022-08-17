@@ -14,7 +14,6 @@ import * as echarts from 'echarts/core';
 import { SVGRenderer } from 'echarts/renderers';
 import { AriaComponent, LegendComponent, GridComponent } from 'echarts/components';
 import { BarChart } from 'echarts/charts';
-import colorbrewer from 'colorbrewer'
 import { format } from '@/formatter/formatter'
 
 export default {
@@ -75,7 +74,7 @@ export default {
 				axisLabel: { ...textStyle, interval: 0, width: '80', overflow: 'break', lineHeight: 20, color: '#333333' }
 			};
 			option.textStyle = textStyle;
-			option.color = colorbrewer.Blues[3].slice(0).reverse()
+			option.color = '#3b5a98';
 			option.series = [];
 			
 			let series = { 
