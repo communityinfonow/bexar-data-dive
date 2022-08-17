@@ -33,7 +33,7 @@
           <h1 class="text-h3 mb-1"><span v-if="exploreData.category.parentCategoryId">{{ exploreData.category['name_' + locale] }} - </span>{{ indicator['name_' + locale] }}</h1>
           <h2 v-if="source" class="text-subtitle-1 mb-2">{{ source['name_' + locale] }}</h2>
       </v-col>
-      <v-col v-if="indicator" cols="auto" class="grow">
+      <v-col v-if="indicator" cols="auto" class="explore-content">
         <v-row class="fill-height no-gutters">
           <v-col cols="9" class="px-4">
             <v-row class="fill-height no-gutters flex-column">
@@ -187,4 +187,8 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+  .explore-content {
+    height: 725px;
+  }
+</style>
