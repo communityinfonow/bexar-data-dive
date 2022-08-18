@@ -41,7 +41,7 @@
             </v-list-item>
           </template>
         </v-item-group>
-        <v-list-item href="https://cinow.info/contact/" target="_blank">
+        <v-list-item href="https://cinow.info/contact/#form" target="_blank">
           <v-list-item-icon><v-icon>mdi-email</v-icon></v-list-item-icon>
           <v-list-item-content>
             <v-list-item-title
