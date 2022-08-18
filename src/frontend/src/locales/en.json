@@ -58,7 +58,9 @@
         "moe_low": " MOE (low)",
         "moe_high": "MOE (high)",
         "universe": "Universe"
-      }
+      },
+      "select_all": "Select all",
+      "clear_selections": "Clear selections"
     },
     "common": {
       "featured_indicators": "Featured Indicators",

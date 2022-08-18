@@ -57,7 +57,9 @@
         "value": "Value (es)",
         "moe_low": " MOE (low) (es)",
         "moe_high": "MOE (high) (es)",
-        "universe": "Universe (es)"
+        "universe": "Universe (es)",
+        "select_all": "Select all (es)",
+        "clear_selections": "Clear selections (es)"
       }
     },
     "about_data": {

@@ -54,6 +54,7 @@
             :footer-props="footerOptions"
             :server-items-length="tablesData.totalRows"
           >
+            <!-- FIXME: DRY -->
             <template v-slot:header.locationType="{ header }">
               {{ header.text }}
               <v-menu offset-y max-height="400px" allow-overflow eager>
@@ -65,6 +66,15 @@
                 <v-list>
                   <v-list-item>
                     <v-btn block color="accent" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
+                  </v-list-item>
+                  <v-list-item>
+                    <v-list-item-action>
+                      <v-checkbox v-model="selectAllLocationTypes" @click.stop="" @change="selectAllLocationTypesChange"></v-checkbox>
+                    </v-list-item-action>
+                    <v-list-item-title>
+                      <em v-if="selectAllLocationTypes">{{ $t('tools.tables.clear_selections') }}</em>
+                      <em v-else>{{ $t('tools.tables.select_all') }}</em>
+                    </v-list-item-title>
                   </v-list-item>
                   <v-list-item v-for="locationType in locationTypes" :key="locationType.name" @click.stop="">
                     <v-list-item-action>
@@ -91,6 +101,15 @@
                   <v-list-item>
                     <v-btn block color="accent" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
                   </v-list-item>
+                  <v-list-item>
+                    <v-list-item-action>
+                      <v-checkbox v-model="selectAllLocations" @click.stop="" @change="selectAllLocationsChange"></v-checkbox>
+                    </v-list-item-action>
+                    <v-list-item-title>
+                      <em v-if="selectAllLocations">{{ $t('tools.tables.clear_selections') }}</em>
+                      <em v-else>{{ $t('tools.tables.select_all') }}</em>
+                    </v-list-item-title>
+                  </v-list-item>
                   <v-list-item v-for="location in locations" :key="location.name" @click.stop="">
                     <v-list-item-action>
                       <v-checkbox
@@ -115,6 +134,15 @@
                 <v-list>
                   <v-list-item>
                     <v-btn block color="accent" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
+                  </v-list-item>
+                  <v-list-item>
+                    <v-list-item-action>
+                      <v-checkbox v-model="selectAllYears" @click.stop="" @change="selectAllYearsChange"></v-checkbox>
+                    </v-list-item-action>
+                    <v-list-item-title>
+                      <em v-if="selectAllYears">{{ $t('tools.tables.clear_selections') }}</em>
+                      <em v-else>{{ $t('tools.tables.select_all') }}</em>
+                    </v-list-item-title>
                   </v-list-item>
                   <v-list-item v-for="year in years" :key="year.name" @click.stop="">
                     <v-list-item-action>
@@ -141,6 +169,15 @@
                   <v-list-item>
                     <v-btn block color="accent" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
                   </v-list-item>
+                  <v-list-item>
+                    <v-list-item-action>
+                      <v-checkbox v-model="selectAllRaces" @click.stop="" @change="selectAllRacesChange"></v-checkbox>
+                    </v-list-item-action>
+                    <v-list-item-title>
+                      <em v-if="selectAllRaces">{{ $t('tools.tables.clear_selections') }}</em>
+                      <em v-else>{{ $t('tools.tables.select_all') }}</em>
+                    </v-list-item-title>
+                  </v-list-item>
                   <v-list-item v-for="race in races" :key="race.name" @click.stop="">
                     <v-list-item-action>
                       <v-checkbox
@@ -165,6 +202,15 @@
                 <v-list>
                   <v-list-item>
                     <v-btn block color="accent" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
+                  </v-list-item>
+                  <v-list-item>
+                    <v-list-item-action>
+                      <v-checkbox v-model="selectAllAges" @click.stop="" @change="selectAllAgesChange"></v-checkbox>
+                    </v-list-item-action>
+                    <v-list-item-title>
+                      <em v-if="selectAllAges">{{ $t('tools.tables.clear_selections') }}</em>
+                      <em v-else>{{ $t('tools.tables.select_all') }}</em>
+                    </v-list-item-title>
                   </v-list-item>
                   <v-list-item v-for="age in ages" :key="age.name" @click.stop="">
                     <v-list-item-action>
@@ -191,6 +237,15 @@
                   <v-list-item>
                     <v-btn block color="accent" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
                   </v-list-item>
+                  <v-list-item>
+                    <v-list-item-action>
+                      <v-checkbox v-model="selectAllSexes" @click.stop="" @change="selectAllSexesChange"></v-checkbox>
+                    </v-list-item-action>
+                    <v-list-item-title>
+                      <em v-if="selectAllSexes">{{ $t('tools.tables.clear_selections') }}</em>
+                      <em v-else>{{ $t('tools.tables.select_all') }}</em>
+                    </v-list-item-title>
+                  </v-list-item>
                   <v-list-item v-for="sex in sexes" :key="sex.name" @click.stop="">
                     <v-list-item-action>
                       <v-checkbox
@@ -216,6 +271,15 @@
                   <v-list-item>
                     <v-btn block color="accent" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
                   </v-list-item>
+                  <v-list-item>
+                    <v-list-item-action>
+                      <v-checkbox v-model="selectAllEducations" @click.stop="" @change="selectAllEducationsChange"></v-checkbox>
+                    </v-list-item-action>
+                    <v-list-item-title>
+                      <em v-if="selectAllEducations">{{ $t('tools.tables.clear_selections') }}</em>
+                      <em v-else>{{ $t('tools.tables.select_all') }}</em>
+                    </v-list-item-title>
+                  </v-list-item>
                   <v-list-item v-for="education in educations" :key="education.name" @click.stop="">
                     <v-list-item-action>
                       <v-checkbox
@@ -240,6 +304,15 @@
                 <v-list>
                   <v-list-item>
                     <v-btn block color="accent" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
+                  </v-list-item>
+                  <v-list-item>
+                    <v-list-item-action>
+                      <v-checkbox v-model="selectAllIncomes" @click.stop="" @change="selectAllIncomesChange"></v-checkbox>
+                    </v-list-item-action>
+                    <v-list-item-title>
+                      <em v-if="selectAllIncomes">{{ $t('tools.tables.clear_selections') }}</em>
+                      <em v-else>{{ $t('tools.tables.select_all') }}</em>
+                    </v-list-item-title>
                   </v-list-item>
                   <v-list-item v-for="income in incomes" :key="income.name" @click.stop="">
                     <v-list-item-action>
@@ -291,7 +364,15 @@ export default {
       ages: [],
       sexes: [],
       educations: [],
-      incomes: []
+      incomes: [],
+      selectAllLocationTypes: true,
+      selectAllLocations: true,
+      selectAllYears: true,
+      selectAllRaces: true,
+      selectAllAges: true,
+      selectAllSexes: true,
+      selectAllEducations: true,
+      selectAllIncomes: true
     }
   },
   computed: {
@@ -563,7 +644,31 @@ export default {
     },
     downloadTablesData() {
       window.open('/api/tables-download?indicator=' + this.indicator.id, '_blank');
-    }
+    },
+    selectAllLocationTypesChange() {
+      this.locationTypes.forEach(i => i.selected = this.selectAllLocationTypes);
+    },
+    selectAllLocationsChange() {
+      this.locations.forEach(i => i.selected = this.selectAllLocations);
+    },
+    selectAllYearsChange() {
+      this.years.forEach(i => i.selected = this.selectAllYears);
+    },
+    selectAllRacesChange() {
+      this.races.forEach(i => i.selected = this.selectAllRaces);
+    },
+    selectAllAgesChange() {
+      this.ages.forEach(i => i.selected = this.selectAllAges);
+    },
+    selectAllSexesChange() {
+      this.sexes.forEach(i => i.selected = this.selectAllSexes);
+    },
+    selectAllEducationsChange() {
+      this.educations.forEach(i => i.selected = this.selectAllEducations);
+    },
+    selectAllIncomesChange() {
+      this.incomes.forEach(i => i.selected = this.selectAllIncomes);
+    },
   }
 }
 </script>
