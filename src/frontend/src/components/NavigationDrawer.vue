@@ -70,7 +70,7 @@ export default {
   computed: {
     ...mapGetters(['tools', 'about_views']),
     navItems() {
-      return [{ route: '/', icon: 'mdi-home', name: i18n.t('home_view.name') }]
+      return [{ route: '/home', icon: 'mdi-home', name: i18n.t('home_view.name') }]
         .concat(this.tools)
         .concat(this.about_views)
     },
