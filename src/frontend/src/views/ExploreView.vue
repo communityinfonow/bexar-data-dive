@@ -58,7 +58,7 @@
           <v-col cols="3">
             <v-row class="fill-height no-gutters flex-column">
               <filters-panel></filters-panel>
-              <docked-tooltip class="grow" :helpMessage="dockedTooltipHelpMessage"></docked-tooltip>
+              <docked-tooltip class="grow" :helpMessage="dockedTooltipHelpMessage" :activeTab="tab"></docked-tooltip>
             </v-row>
           </v-col>
         </v-row>

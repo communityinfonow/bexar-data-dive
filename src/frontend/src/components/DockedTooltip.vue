@@ -3,7 +3,8 @@
 		<v-card outlined tile class="fill-height docked-tooltip">
 			<v-card-title class="docked-tooltip-title">
 				{{ $t('tools.explore.docked_tooltip.now_viewing')}}
-				<span v-if="dockedTooltip">: {{ dockedTooltip.location }}</span>
+				<span v-if="activeTab === 0 && dockedTooltip">: {{ dockedTooltip.location }}</span>
+				<span v-else-if="activeTab !== 0">: {{ filteredLocation }}</span>
 			</v-card-title>
 			<v-card-text v-if="!dockedTooltip">
 				<div class="text-subtitle-1 pt-2">{{ helpMessage }}</div>
@@ -37,9 +38,15 @@ export default {
 		helpMessage: {
 			type: String
 		},
+		activeTab: {
+			type: Number
+		}
 	},
 	computed: {
 		...mapState(['locale', 'exploreData', 'dockedTooltip']),
+		filteredLocation() {
+			return this.exploreData?.filters.locationFilter.options[0]['name_' + this.locale]
+		},
 		valueFormatted() {
 			if (this.dockedTooltip.suppressed) {
 				return i18n.t('data.suppressed');

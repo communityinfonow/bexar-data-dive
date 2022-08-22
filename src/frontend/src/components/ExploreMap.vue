@@ -231,6 +231,9 @@ export default {
 	mounted () {
 		setTimeout(() => { 
 			this.componentInitialized = true;
+			if (this.filterSelections) {
+				this.selectedLocationType = this.layers.find(l => l.id === this.filterSelections.locationType);
+			}
 			if (this.mapInitialized && this.exploreData) {
 				this.drawMap(this.showLabels);
 			}
@@ -308,7 +311,6 @@ export default {
 				this.setDockedTooltip(null);
 			});
 			layer.on('click', (e) => {
-				console.log(e);
 				this.selectLocation(e.target.feature.id);
 			});
 		},
