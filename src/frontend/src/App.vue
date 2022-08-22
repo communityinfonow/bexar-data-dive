@@ -12,7 +12,7 @@
       bottom
       height="12px"
       color="accent"
-      style="z-index: 9999"
+      style="z-index: 10001"
     ></v-progress-linear>
     <AppFooter></AppFooter>
   </v-app>

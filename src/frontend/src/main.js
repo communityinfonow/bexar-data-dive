@@ -34,20 +34,20 @@ new Vue({
     let requestCount = 0
     axios.interceptors.request.use(function(config) {
       if (requestCount === 0) {
-        store.dispatch('setLoading', true)
+        store.dispatch('setLoading', true);
       }
-      requestCount++
+      requestCount++;
 
-      return config
-    })
+      return config;
+    });
     axios.interceptors.response.use(response => {
-        requestCount--
-        if (requestCount === 0) {
-          store.dispatch('setLoading', false)
-        }
+      requestCount--;
+      if (requestCount === 0) {
+        store.dispatch('setLoading', false);
+      }
 
-        return response
-      })
+      return response;
+    });
   },
   mounted: function () {
     
