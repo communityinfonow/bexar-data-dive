@@ -2,7 +2,12 @@
 	<div class="fill-height">
 		<v-row class="no-gutters flex-wrap flex-column fill-height">
 			<v-col cols="auto">
-				<explore-tools-panel v-if="filters"></explore-tools-panel>
+				<explore-tools-panel 
+					v-if="filters"
+					:showCompareOptions="true"
+					:draw="drawChart"
+				>
+				</explore-tools-panel>
 			</v-col>
 			<v-col cols="auto" class="grow">
 				<div 
@@ -24,6 +29,7 @@ import { SVGRenderer } from 'echarts/renderers';
 import { AriaComponent, LegendComponent, GridComponent } from 'echarts/components';
 import { BarChart } from 'echarts/charts';
 import ExploreToolsPanel from '@/components/ExploreToolsPanel'
+import { format } from '@/formatter/formatter'
 
 export default {
 	name: 'ExploreCompareChart',
@@ -82,7 +88,7 @@ export default {
 	},
 	methods: {
 		...mapActions(['setDockedTooltip']),
-		drawChart() {
+		drawChart(showLabels) {
 			let textStyle = {
 				fontFamily: '"Roboto", sans-serif !important',
 				fontSize: '16px'
@@ -149,13 +155,41 @@ export default {
 			option.series = {
 				data: seriesData,
 				type: 'bar',
-				label: {
-					show: true,
+				label: { 
+					show: true, 
 					position: 'top',
 					formatter: (o) => {
-						return o.data.suppressed 
-							? i18n.t('data.suppressed') 
-							: (!o.data.value ? i18n.t('data.no_data') : '')
+						if (o.data.suppressed) {
+							return '{a|' + i18n.t('data.suppressed') + '}';
+						} else if (!o.data.value) {
+							return '{a|' + i18n.t('data.no_data') + '}';
+						} else if (showLabels) {
+							let rows = ['{a|' + i18n.t('data.value') +': ' + format(this.exploreData.indicator.typeId, o.data.value) + '}'];
+							if (o.data.moeLow || o.data.moeHigh) {
+								rows.push('{b|' + i18n.t('data.moe_range') 
+									+ ': ' 
+									+ format(this.exploreData.indicator.typeId, o.data.moeLow)
+									+ " - "
+									+ format(this.exploreData.indicator.typeId, o.data.moeHigh) + '}');
+							}
+							return rows.join('\n');
+						} else {
+							return '';
+						}
+					},
+					rich: { 
+						a: {
+							align: 'center',
+							fontSize: '16px',
+							lineHeight: '20',
+							color: '#333333'
+						},
+						b: {
+							align: 'center',
+							fontSize: '14px',
+							lineHeight: '16',
+							color: '#666666'
+						}
 					}
 				}
 			};

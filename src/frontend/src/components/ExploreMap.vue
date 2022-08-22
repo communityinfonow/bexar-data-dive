@@ -1,107 +1,118 @@
 <template>
 	<div class="fill-height">
-		<l-map
-			v-if="componentInitialized"
-			ref="exploreMap"
-			:zoom="zoom"
-			:center="center"
-			:options="{ zoomDelta: 0.5, zoomSnap: 0.5, preferCanvas: true }"
-			v-resize:debounce.100="resizeHandler"
-			@ready="initializeMap"
-		>
-			<l-tile-layer
-				url="https://stamen-tiles.a.ssl.fastly.net/toner-background/{z}/{x}/{y}.png"
-				:options="{ crossOrigin: 'anonymous' }"
-				attribution="Map tiles by <a href='http://stamen.com'>Stamen Design</a>, 
-				under <a href='http://creativecommons.org/licenses/by/3.0'>CC BY 3.0</a>. 
-				Data by <a href='http://openstreetmap.org'>OpenStreetMap</a>, 
-				under <a href='http://www.openstreetmap.org/copyright'>ODbL</a>."
-			></l-tile-layer>
-			<l-tile-layer
-				url="https://stamen-tiles.a.ssl.fastly.net/toner-hybrid/{z}/{x}/{y}.png"
-				:options="{ crossOrigin: 'anonymous' }"
-				attribution="Map tiles by <a href='http://stamen.com'>Stamen Design</a>, 
-				under <a href='http://creativecommons.org/licenses/by/3.0'>CC BY 3.0</a>. 
-				Data by <a href='http://openstreetmap.org'>OpenStreetMap</a>, 
-				under <a href='http://www.openstreetmap.org/copyright'>ODbL</a>."
-			></l-tile-layer>
-			<l-geo-json
-				v-if="geojson"
-				:geojson="geojson"
-				:options="options"
-				:options-style="style"
-			></l-geo-json>
-			<l-control
-				position="bottomleft"
-				class="legend-control"
-				v-if="exploreData && shadingRanges.length"
-			>
-				<v-card tile outlined :style="{ boxShadow: 'none !important' }">
-					<v-card-title class="pb-0 text--primary">
-						<span v-if="exploreData.category.parentCategoryId">{{ exploreData.category['name_' + locale] }} -&nbsp;</span>
-						{{ exploreData.indicator['name_' + locale] }}
-					</v-card-title>
-					<v-card-text>
-						<v-list
-							dense
-							class="py-0"
-							:style="{ boxShadow: 'none !important' }"
-						>
-							<v-list-item
-								v-for="(range, index) in shadingRanges"
-								:key="'range_' + index"
-								dense
-								class="pl-0"
-							>
-								<v-list-item-avatar
-									size="20"
-									:color="shadingColors[index]"
-									:style="{ opacity: 0.8 }"
-									class="my-0"
-								>
-								</v-list-item-avatar>
-								<span>
-									{{ range[0].label }}
-									<span v-if="range[0].value !== range[1].value">
-										&nbsp;-&nbsp;
-										{{ range[1].label }}
-									</span>
-								</span>
-							</v-list-item>
-						</v-list>
-						<div class="text--primary text-caption">
-							Source: {{ exploreData.source['name_' + locale] }}
-						</div>
-					</v-card-text>
-				</v-card>
-			</l-control>
-			<l-control
-				position="bottomright"
-				class="layer-control"
-				v-if="layers.length"
-			>
-				<v-card tile outlined :style="{ boxShadow: 'none !important' }">
-				<v-card-title class="pb-0 text--primary">
-					<v-icon color="accent">mdi-layers</v-icon>
-					{{ $t('tools.community.community_types') }}
-				</v-card-title>
-				<v-card-text>
-					<v-radio-group
-					v-model="selectedLocationType"
-					@change="selectLocationType"
+		<v-row class="no-gutters flex-wrap flex-column fill-height">
+			<v-col cols="auto">
+				<explore-tools-panel 
+					v-if="filters"
+					:draw="drawMap"
+				>
+				</explore-tools-panel>
+			</v-col>
+			<v-col cols="auto" class="grow">
+				<l-map
+					v-if="componentInitialized"
+					ref="exploreMap"
+					:zoom="zoom"
+					:center="center"
+					:options="{ zoomDelta: 0.5, zoomSnap: 0.5, preferCanvas: true }"
+					v-resize:debounce.100="resizeHandler"
+					@ready="initializeMap"
+				>
+					<l-tile-layer
+						url="https://stamen-tiles.a.ssl.fastly.net/toner-background/{z}/{x}/{y}.png"
+						:options="{ crossOrigin: 'anonymous' }"
+						attribution="Map tiles by <a href='http://stamen.com'>Stamen Design</a>, 
+						under <a href='http://creativecommons.org/licenses/by/3.0'>CC BY 3.0</a>. 
+						Data by <a href='http://openstreetmap.org'>OpenStreetMap</a>, 
+						under <a href='http://www.openstreetmap.org/copyright'>ODbL</a>."
+					></l-tile-layer>
+					<l-tile-layer
+						url="https://stamen-tiles.a.ssl.fastly.net/toner-hybrid/{z}/{x}/{y}.png"
+						:options="{ crossOrigin: 'anonymous' }"
+						attribution="Map tiles by <a href='http://stamen.com'>Stamen Design</a>, 
+						under <a href='http://creativecommons.org/licenses/by/3.0'>CC BY 3.0</a>. 
+						Data by <a href='http://openstreetmap.org'>OpenStreetMap</a>, 
+						under <a href='http://www.openstreetmap.org/copyright'>ODbL</a>."
+					></l-tile-layer>
+					<l-geo-json
+						v-if="geojson"
+						:geojson="geojson"
+						:options="options"
+						:options-style="style"
+					></l-geo-json>
+					<l-control
+						position="bottomleft"
+						class="legend-control"
+						v-if="exploreData && shadingRanges.length"
 					>
-					<v-radio 
-						color="accent"
-						v-for="layer in layers" 
-						:key="layer.id" 
-						:value="layer" 
-						:label="layer['name_' + locale]">
-					</v-radio>
-					</v-radio-group>
-				</v-card-text>
-				</v-card>
-			</l-control>
-		</l-map>
+						<v-card tile outlined :style="{ boxShadow: 'none !important' }">
+							<v-card-title class="pb-0 text--primary">
+								<span v-if="exploreData.category.parentCategoryId">{{ exploreData.category['name_' + locale] }} -&nbsp;</span>
+								{{ exploreData.indicator['name_' + locale] }}
+							</v-card-title>
+							<v-card-text>
+								<v-list
+									dense
+									class="py-0"
+									:style="{ boxShadow: 'none !important' }"
+								>
+									<v-list-item
+										v-for="(range, index) in shadingRanges"
+										:key="'range_' + index"
+										dense
+										class="pl-0"
+									>
+										<v-list-item-avatar
+											size="20"
+											:color="shadingColors[index]"
+											:style="{ opacity: 0.8 }"
+											class="my-0"
+										>
+										</v-list-item-avatar>
+										<span>
+											{{ range[0].label }}
+											<span v-if="range[0].value !== range[1].value">
+												&nbsp;-&nbsp;
+												{{ range[1].label }}
+											</span>
+										</span>
+									</v-list-item>
+								</v-list>
+								<div class="text--primary text-caption">
+									Source: {{ exploreData.source['name_' + locale] }}
+								</div>
+							</v-card-text>
+						</v-card>
+					</l-control>
+					<l-control
+						position="bottomright"
+						class="layer-control"
+						v-if="layers.length"
+					>
+						<v-card tile outlined :style="{ boxShadow: 'none !important' }">
+						<v-card-title class="pb-0 text--primary">
+							<v-icon color="accent">mdi-layers</v-icon>
+							{{ $t('tools.community.community_types') }}
+						</v-card-title>
+						<v-card-text>
+							<v-radio-group
+							v-model="selectedLocationType"
+							@change="selectLocationType"
+							>
+							<v-radio 
+								color="accent"
+								v-for="layer in layers" 
+								:key="layer.id" 
+								:value="layer" 
+								:label="layer['name_' + locale]">
+							</v-radio>
+							</v-radio-group>
+						</v-card-text>
+						</v-card>
+					</l-control>
+				</l-map>
+			</v-col>
+		</v-row>
 	</div>
 </template>
 
@@ -113,6 +124,7 @@ import { LMap, LTileLayer, LGeoJson, LControl } from 'vue2-leaflet'
 import { feature, featureCollection } from '@turf/helpers'
 import colorbrewer from 'colorbrewer'
 import { ckmeans } from 'simple-statistics'
+import ExploreToolsPanel from '@/components/ExploreToolsPanel'
 import { format } from '@/formatter/formatter'
 
 export default {
@@ -121,7 +133,8 @@ export default {
 		LMap, 
 		LTileLayer,
 		LGeoJson,
-		LControl
+		LControl,
+		ExploreToolsPanel
 	},
 	data() {
 		return {
@@ -131,7 +144,8 @@ export default {
 			center: latLng(29.43445, -98.473562383),
 			geojson: null,
 			refreshOptions: false,
-			selectedLocationType: null
+			selectedLocationType: null,
+			showLabels: false
 		}
 	},
 	computed: {
@@ -201,11 +215,11 @@ export default {
 	watch: {
 		exploreData(newValue) {
 			if (this.mapInitialized && newValue) {
-				this.drawMap();
+				this.drawMap(this.showLabels);
 			}
 		},
     	locale() {
-			this.drawMap()
+			this.drawMap(this.showLabels)
 		},
 		layers(newValue) {
 			this.selectedLocationType = newValue[0];
@@ -218,7 +232,7 @@ export default {
 		setTimeout(() => { 
 			this.componentInitialized = true;
 			if (this.mapInitialized && this.exploreData) {
-				this.drawMap();
+				this.drawMap(this.showLabels);
 			}
 		}, 100);
 		
@@ -228,7 +242,7 @@ export default {
 		initializeMap() {
 			this.mapInitialized = true;
 			if (this.exploreData) {
-				this.drawMap();
+				this.drawMap(this.showLabels);
 			}
 		},
 		resizeHandler() {
@@ -246,7 +260,8 @@ export default {
 			newFilterSelections.location = location;
 			this.setFilterSelections(newFilterSelections);
 		},
-		drawMap() {
+		drawMap(showLabels) {
+			this.showLabels = showLabels;
 			this.geojson = featureCollection(this.exploreData.locationData
 				.filter(ld => !!ld.geojson)
 				.map(ld => feature(JSON.parse(ld.geojson), 
@@ -270,6 +285,12 @@ export default {
 				layer.options.color = 'orange';
 			}
 			layer.options.fillColor = this.getLayerShadingColor(feature);
+			if (this.showLabels) {
+				layer.bindTooltip(layer.feature.properties.locationName, {
+					permanent: true, 
+					direction: 'center'
+				});
+			}
 
 			layer.on('mouseover', (layer) => {
 				this.setDockedTooltip({

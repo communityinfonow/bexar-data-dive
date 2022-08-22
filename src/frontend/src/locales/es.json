@@ -68,7 +68,8 @@
     "common": {
       "featured_indicators": "Indicadores destacados",
       "search": "Search (es)",
-      "download": "Download (es)"
+      "download": "Download (es)",
+      "labels": "Labels (es)"
     }
   },
   "home_view": {

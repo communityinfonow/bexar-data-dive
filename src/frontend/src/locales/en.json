@@ -65,7 +65,8 @@
     "common": {
       "featured_indicators": "Featured Indicators",
       "search": "Search",
-      "download": "Download"
+      "download": "Download",
+      "labels": "Labels"
     }
   },
   "home_view": {

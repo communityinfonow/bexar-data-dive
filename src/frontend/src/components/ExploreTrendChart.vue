@@ -1,11 +1,22 @@
 <template>
 	<div class="fill-height">
-		<div
-			ref="trend_chart_container" 
-			id="trend_chart_container" 
-			style="width: 100%; height: 100%;"
-		>
-		</div>
+		<v-row class="no-gutters flex-wrap flex-column fill-height">
+			<v-col cols="auto">
+				<explore-tools-panel 
+					v-if="filters"
+					:draw="drawChart"
+				>
+				</explore-tools-panel>
+			</v-col>
+			<v-col cols="auto" class="grow">
+				<div
+					ref="trend_chart_container" 
+					id="trend_chart_container" 
+					style="width: 100%; height: 100%;"
+				>
+				</div>
+			</v-col>
+		</v-row>
 	</div>
 </template>
 
@@ -17,9 +28,14 @@ import * as echarts from 'echarts/core';
 import { SVGRenderer } from 'echarts/renderers';
 import { AriaComponent, LegendComponent, GridComponent } from 'echarts/components';
 import { LineChart, BarChart } from 'echarts/charts';
+import ExploreToolsPanel from '@/components/ExploreToolsPanel'
+import { format } from '@/formatter/formatter'
 
 export default {
 	name: 'ExploreTrendChart',
+	components: {
+		ExploreToolsPanel
+	},
 	props: {
 		tab: {
 			type: String,
@@ -77,7 +93,7 @@ export default {
 	},
 	methods: {
 		...mapActions(['setDockedTooltip']),
-		drawChart() {
+		drawChart(showLabels) {
 			let textStyle = {
 				fontFamily: '"Roboto", sans-serif !important',
 				fontSize: '16px'
@@ -116,7 +132,44 @@ export default {
 					}),
 				type: 'line',
 				symbol: 'circle',
-				symbolSize: 12
+				symbolSize: 12,
+				label: {
+					show: showLabels,
+					position: 'top',
+					formatter: (o) => {
+						if (o.data.suppressed) {
+							return '';
+						} else if (!o.data.value) {
+							return '';
+						} else if (showLabels) {
+							let rows = ['{a|' + i18n.t('data.value') +': ' + format(this.exploreData.indicator.typeId, o.data.value) + '}'];
+							if (o.data.moeLow || o.data.moeHigh) {
+								rows.push('{b|' + i18n.t('data.moe_range') 
+									+ ': ' 
+									+ format(this.exploreData.indicator.typeId, o.data.moeLow)
+									+ " - "
+									+ format(this.exploreData.indicator.typeId, o.data.moeHigh) + '}');
+							}
+							return rows.join('\n');
+						} else {
+							return '';
+						}
+					},
+					rich: { 
+						a: {
+							align: 'center',
+							fontSize: '16px',
+							lineHeight: '20',
+							color: '#333333'
+						},
+						b: {
+							align: 'center',
+							fontSize: '14px',
+							lineHeight: '16',
+							color: '#666666'
+						}
+					}
+				}
 			},
 			{
 				// second series for nulls/no data
@@ -139,7 +192,7 @@ export default {
 					show: true,
 					position: 'top',
 					formatter: (o) => {
-						return o.data.suppressed ? i18n.t('data.suppressed') : (!o.data.value ? i18n.t('data.no_data')  : o.data.value)
+						return o.data.suppressed ? i18n.t('data.suppressed') : (!o.data.value ? i18n.t('data.no_data') : o.data.value)
 					}
 				}
 			}];
