@@ -289,10 +289,13 @@ export default {
 			}
 			layer.options.fillColor = this.getLayerShadingColor(feature);
 			if (this.showLabels) {
-				layer.bindTooltip(layer.feature.properties.locationName, {
-					permanent: true, 
-					direction: 'center'
-				});
+				layer.bindTooltip(layer.feature.properties.locationName.replace('Zip Code', 'Zip').replace('Census Tract', 'Tract'), 
+					{
+						className: 'location-label',
+						permanent: true, 
+						direction: 'center'
+					}
+				);
 			}
 
 			layer.on('mouseover', (layer) => {
@@ -329,5 +332,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+	::v-deep .leaflet-tooltip.location-label {
+		background: none;
+		border: none;
+		box-shadow: none;
+		font-weight: bold;
+		opacity: 1 !important;
+		color: #000;
+		font-size: 14px;
+		text-shadow: -2px -2px 2px #fff, 2px -2px 2px #fff, -2px 2px 2px #fff, 2px 2px 2px #fff;
+	}
 </style>
