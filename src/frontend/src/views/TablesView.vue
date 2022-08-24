@@ -30,6 +30,11 @@
           </section>
       </v-col>
       <v-col v-if="indicator && tablesData" cols="auto" class="pt-4 px-4">
+          <v-breadcrumbs
+            :items="breadcrumbs"
+            class="pt-0 pl-0"
+          >
+          </v-breadcrumbs>
           <h1 class="text-h3 mb-1 d-flex justify-space-between">
             <span>
               <span v-if="tablesData.category.parentCategoryId">{{ tablesData.category['name_' + locale] }} - </span>
@@ -379,6 +384,19 @@ export default {
     ...mapState(['indicatorMenu', 'indicator', 'filters', 'tablesData', 'locale', 'featuredIndicators']),
     showIntro() {
       return !this.indicator && !router.currentRoute.query.indicator;
+    },
+    breadcrumbs() {
+      return [
+        {
+          text: i18n.t('tools.tables.name'),
+          disabled: false,
+          href: '/tables'
+        },
+        {
+          text: (this.tablesData.category.parentCategoryId ? this.tablesData.category['name_' + this.locale] + ' - ' : '') + this.indicator['name_' + this.locale],
+          disabled: true
+        }
+      ]
     },
     selections() {
       return {

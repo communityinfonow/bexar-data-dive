@@ -75,6 +75,11 @@
         </l-map>
       </v-col>
       <v-col v-if="community" cols="auto" class="pa-4 grow">
+        <v-breadcrumbs
+          :items="breadcrumbs"
+          class="pt-0 pl-0"
+        >
+        </v-breadcrumbs>
         <v-row class="mb-8">
           <v-col cols="2">
             <l-map
@@ -149,6 +154,7 @@
 </template>
 
 <script>
+import i18n from '@/i18n'
 import goTo from 'vuetify/lib/services/goto'
 import { mapActions, mapState } from 'vuex'
 import router from '@/router/index'
@@ -188,6 +194,19 @@ export default {
     ...mapState(['locale', 'locationMenu', 'community' ]),
     showIntro() {
       return !this.community && !router.currentRoute.query.location;
+    },
+    breadcrumbs() {
+      return [
+        {
+          text: i18n.t('tools.community.name'),
+          disabled: false,
+          href: '/community'
+        },
+        {
+          text: this.community.location['name_' + this.locale],
+          disabled: true
+        }
+      ]
     },
     sortedData() {
       let sortedData = JSON.parse(JSON.stringify(this.community?.indicatorData));

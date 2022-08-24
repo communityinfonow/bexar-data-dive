@@ -7,6 +7,7 @@
           :menu="indicatorMenu"
           :selectItem="selectItem"
           :flattenSingleItems="false"
+          :goBack="goBack"
         ></MenuToolbar>
       </v-col>
       <v-col v-if="showIntro" cols="auto" class="pa-4">
@@ -30,6 +31,11 @@
           </section>
       </v-col>
       <v-col v-if="indicator && exploreData" cols="auto" class="pt-4 px-4">
+          <v-breadcrumbs
+            :items="breadcrumbs"
+            class="pt-0 pl-0"
+          >
+          </v-breadcrumbs>
           <h1 class="text-h3 mb-1"><span v-if="exploreData.category.parentCategoryId">{{ exploreData.category['name_' + locale] }} - </span>{{ indicator['name_' + locale] }}</h1>
           <h2 v-if="source" class="text-subtitle-1 mb-2">{{ source['name_' + locale] }}</h2>
       </v-col>
@@ -110,6 +116,19 @@ export default {
           return i18n.t('tools.explore.docked_tooltip.help_messages.compare');
       }
       return null
+    },
+    breadcrumbs() {
+      return [
+        {
+          text: i18n.t('tools.explore.name'),
+          disabled: false,
+          href: '/explore'
+        },
+        {
+          text: (this.exploreData.category.parentCategoryId ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.indicator['name_' + this.locale],
+          disabled: true
+        }
+      ]
     }
   },
   beforeRouteEnter(to, from, next) {
@@ -156,6 +175,9 @@ export default {
   },
   methods: {
     ...mapActions(['setIndicator', 'setExploreData', 'setExploreTab', 'getFeaturedIndicators', 'setToolRoute']),
+    goBack() {
+      router.push('/explore')
+    },
     selectItem(item) {
       if (item.id !== this.indicator?.id) {
         this.setIndicator(item)
