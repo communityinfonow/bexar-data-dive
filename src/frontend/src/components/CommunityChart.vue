@@ -2,7 +2,7 @@
 	<div 
 		:ref="'chart_container_' + this.indicatorId" 
 		:id="'chart_container_' + this.indicatorId" 
-		style="width: 100%; height: 400px;"
+		:style="{ width: '100%', height: '400px' }"
 	>
 	</div>
 </template>
@@ -28,6 +28,9 @@ export default {
 		data: {
 			type: Array,
 		},
+		maxDemographics: {
+			type: Number
+		}
 	},
 	data() {
 		return {
@@ -67,12 +70,16 @@ export default {
 				splitNumber: 1,
 				axisLabel: textStyle
 			};
-			option.xAxis = { 
+			let xAxisData = Array.from(new Set(this.data.map(d => '' + (d.raceFilter['name_' + this.locale] || i18n.t('data.all')))));
+			if (xAxisData.length < this.maxDemographics) {
+				xAxisData = xAxisData.concat(...Array.from(Array(this.maxDemographics - xAxisData.length))).map(d => d || '')
+			}
+			option.xAxis = [{ 
 				type: 'category', 
-				data: Array.from(new Set(this.data.map(d => '' + (d.raceFilter['name_' + this.locale] || i18n.t('data.all'))))),
+				data: xAxisData,
 				axisTick: { show: false },
 				axisLabel: { ...textStyle, interval: 0, width: '80', overflow: 'break', lineHeight: 20, color: '#333333' }
-			};
+			}];
 			option.textStyle = textStyle;
 			option.color = '#3b5a98';
 			option.series = [];
@@ -80,6 +87,7 @@ export default {
 			let series = { 
 				type: 'bar', 
 				cursor: 'default',
+				barWidth: '120px',
 				label: { 
 					show: true, 
 					position: 'top',

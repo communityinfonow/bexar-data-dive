@@ -16,7 +16,7 @@
 				<v-btn 
 					v-if="view_route" 
 					color="yellow"
-					class="white--text" 
+					class="white--text font-weight-bold" 
 					:to="view_route" 
 					:aria-label="$t('featured_card.view') + ' ' + name"
 				>
@@ -25,7 +25,7 @@
 				<v-btn 
 					v-if="click_route" 
 					color="yellow" 
-					class="white--text"
+					class="white--text font-weight-bold"
 					@click="click_route(item)" 
 					:aria-label="$t('featured_card.view') + ' ' + name"
 				>

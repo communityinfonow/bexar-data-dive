@@ -16,7 +16,8 @@
       "long_description": "Mi Comunidad es una herramienta...",
       "get_started": "To get started, browse or search for an indicator using the menu above or select a location on the map below (es).",
       "community_types": "Community Types (es)",
-      "skip": "Skip ahead to (es)"
+      "skip": "Skip ahead to (es)",
+      "coming_soon": "Coming Soon"
     },
     "explore": {
       "name": "Panel",
@@ -96,7 +97,7 @@
     "all": "Todos"
   },
   "featured_card": {
-    "learn_more": "Learn More",
-    "view": "View"
+    "learn_more": "Learn More (es)",
+    "view": "Go (es)"
   }
 }

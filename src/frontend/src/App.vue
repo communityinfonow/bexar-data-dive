@@ -34,6 +34,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@media print {
+  @page {
+    orientation: landscape;
+    
+  }
+}
 ::v-deep .v-menu__content {
   z-index: 1000 !important;
 }

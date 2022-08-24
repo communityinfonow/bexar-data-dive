@@ -117,7 +117,7 @@
               color="accent"
               :label="$t('tools.community.skip')"
               :items="categories"
-              :item-text="'name_' + locale"
+              :item-text="(item) => { return item['name_' + locale] + (item.hasData ? '' : ' (' + $t('tools.community.coming_soon') + ')') }"
               item-value="id"
               v-model="selectedCategory"
               @change="skipToCategory"
@@ -126,20 +126,22 @@
           </v-col>
         </v-row>
         <section v-for="data in sortedData" :key="'category_' + data.category.id">
-          <h2 :id="'category_' + data.category.id" class="text-h4 mb-4">{{ data.category['name_' + locale]}}</h2>
-          <template v-for="item in data.indicators">
-            <template v-if="item.indicators">
-              <div :key="'category_' + item.category.id" class="ml-4">
-                <h3 class="text-h5 mb-2">{{ item.category['name_' + locale]}}</h3>
-                <template v-for="subItem in item.indicators">
-                  <community-indicator :item="subItem" :key="'sub_indicator_' + subItem.indicator.id"></community-indicator>
-                </template>
-              </div>
+          <div v-if="data.category.hasData">
+            <h2 :id="'category_' + data.category.id" class="text-h4 mb-4">{{ data.category['name_' + locale]}}</h2>
+            <template v-for="item in data.indicators">
+              <template v-if="item.indicators">
+                <div :key="'category_' + item.category.id" class="ml-4">
+                  <h3 class="text-h5 mb-2">{{ item.category['name_' + locale]}}</h3>
+                  <template v-for="subItem in item.indicators">
+                    <community-indicator :item="subItem" :key="'sub_indicator_' + subItem.indicator.id" :maxDemographics="maxDemographics"></community-indicator>
+                  </template>
+                </div>
+              </template>
+              <template v-else>
+                <community-indicator :item="item" :key="'indicator_' + item.indicator.id" :maxDemographics="maxDemographics"></community-indicator>
+              </template>
             </template>
-            <template v-else>
-              <community-indicator :item="item" :key="'indicator_' + item.indicator.id"></community-indicator>
-            </template>
-          </template>
+          </div>
         </section>
       </v-col>
     </v-row>
@@ -190,6 +192,7 @@ export default {
     sortedData() {
       let sortedData = JSON.parse(JSON.stringify(this.community?.indicatorData));
       sortedData.forEach(c => {
+        c.category.hasData = !!c.indicators.find(i => !!i.year) || c.subcategories.flatMap(sc => sc.indicators).find(i => !!i.year);
         if (c.subcategories.length) {
           c.indicators = c.indicators.concat(c.subcategories);
           c.indicators.sort((a, b) => {
@@ -205,8 +208,11 @@ export default {
           });
         }
       });
-      
+
       return sortedData;
+    },
+    maxDemographics() {
+      return this.community ? Math.max(...this.community.indicatorData.flatMap(id => id.indicators.concat(id.subcategories.flatMap(sc => sc.indicators))).map(i => i.demographicData.length)) : 0;
     },
     categories() {
       return this.sortedData.map(i => i.category);
