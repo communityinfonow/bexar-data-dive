@@ -80,7 +80,7 @@ export default new Vuex.Store({
         {
           name: i18n.t('about_tools_view.name'),
           route: 'about-tools',
-          icon: 'mdi-hammer-wrench'
+          icon: 'mdi-information'
         },
         {
           name: i18n.t('about_data_view.name'),
