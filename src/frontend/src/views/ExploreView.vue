@@ -7,8 +7,17 @@
           :menu="indicatorMenu"
           :selectItem="selectItem"
           :flattenSingleItems="false"
-          :goBack="goBack"
         ></MenuToolbar>
+      </v-col>
+      <v-col cols="auto">
+        <v-breadcrumbs
+          :items="breadcrumbs"
+          class="pb-0"
+        >
+          <template v-slot:divider>
+            <v-icon>mdi-chevron-right</v-icon>
+          </template>
+        </v-breadcrumbs>
       </v-col>
       <v-col v-if="showIntro" cols="auto" class="pa-4">
           <h1 class="text-h3 mb-2">{{ $t('tools.explore.name') }}</h1>
@@ -31,11 +40,6 @@
           </section>
       </v-col>
       <v-col v-if="indicator && exploreData" cols="auto" class="pt-4 px-4">
-          <v-breadcrumbs
-            :items="breadcrumbs"
-            class="pt-0 pl-0"
-          >
-          </v-breadcrumbs>
           <h1 class="text-h3 mb-1"><span v-if="exploreData.category.parentCategoryId">{{ exploreData.category['name_' + locale] }} - </span>{{ indicator['name_' + locale] }}</h1>
           <h2 v-if="source" class="text-subtitle-1 mb-2">{{ source['name_' + locale] }}</h2>
       </v-col>
@@ -118,17 +122,27 @@ export default {
       return null
     },
     breadcrumbs() {
-      return [
+      let crumbs = [
         {
-          text: i18n.t('tools.explore.name'),
+          text: i18n.t('home_view.name'),
           disabled: false,
-          href: '/explore'
+          href: '/home'
         },
         {
+          text: i18n.t('tools.explore.name'),
+          disabled: !this.exploreData,
+          href: '/explore'
+        }
+      ];
+
+      if (this.exploreData) {
+        crumbs.push({
           text: (this.exploreData.category.parentCategoryId ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.indicator['name_' + this.locale],
           disabled: true
-        }
-      ]
+        });
+      }
+
+      return crumbs;
     }
   },
   beforeRouteEnter(to, from, next) {
@@ -175,12 +189,10 @@ export default {
   },
   methods: {
     ...mapActions(['setIndicator', 'setExploreData', 'setExploreTab', 'getFeaturedIndicators', 'setToolRoute']),
-    goBack() {
-      router.push('/explore')
-    },
     selectItem(item) {
       if (item.id !== this.indicator?.id) {
-        this.setIndicator(item)
+        this.setIndicator(item);
+        this.setExploreData(null);
         router.replace({
           query: {
             lang: router.currentRoute.query.lang,

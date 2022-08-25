@@ -102,7 +102,7 @@ public class FilterRepositoryPostgresql implements FilterRepository {
 	public Filter getYearFilter(String indicatorId) {
 		String sql = ""
 			+ " select distinct year_ "
-			+ " from tbl_indicator_values "
+			+ " from mv_indicator_years "
 			+ " where indicator_id = :indicator_id::numeric "
 			+ " order by year_ desc ";
 
@@ -134,14 +134,11 @@ public class FilterRepositoryPostgresql implements FilterRepository {
 	@Override
 	public List<Filter> getIndicatorFilters(String indicatorId) {
 		String sql = ""
-			+ " select distinct ft.id_ as type_id, ft.name_en as type_name_en, ft.name_es as type_name_es, "
-			+ " 	fo.id_ as option_id, fo.name_en as option_name_en, fo.name_es as option_name_es, fo.sort_order "
-			+ " from tbl_indicators i "
-			+ " 	join tbl_indicator_values iv on i.id_ = iv.indicator_id "
-			+ " 	join tbl_filter_options fo on fo.id_ in (iv.race_id, iv.age_id, iv.sex_id, iv.education_id, iv.income_id) "
-			+ " 	join tbl_filter_types ft on fo.type_id = ft.id_ "
-			+ " where i.id_ = :indicator_id::numeric "
-			+ " order by ft.id_, fo.sort_order ";
+			+ " select distinct type_id, type_name_en, type_name_es, "
+			+ " 	option_id, option_name_en, option_name_es, sort_order "
+			+ " from mv_indicator_filters "
+			+ " where indicator_id = :indicator_id::numeric "
+			+ " order by type_id, sort_order ";
 
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
 		paramMap.addValue("indicator_id", indicatorId);

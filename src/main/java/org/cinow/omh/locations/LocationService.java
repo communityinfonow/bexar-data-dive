@@ -45,6 +45,7 @@ public class LocationService {
 				item.setCategoryId(type.getId());
 				item.setName_en(location.getName_en());
 				item.setName_es(location.getName_es());
+				item.setHasData(true);
 				category.getItems().add(item);
 			});
 			locationMenu.getCategories().add(category);

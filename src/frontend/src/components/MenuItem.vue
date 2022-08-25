@@ -1,7 +1,10 @@
 <template>
-  <v-list-item @click="selectItem(item)">
+  <v-list-item @click="selectItem(item)" :disabled="!item.hasData">
     <v-list-item-title>
       {{ itemName }}
+      <span v-if="!item.hasData">
+        (Coming Soon)
+      </span>
     </v-list-item-title>
   </v-list-item>
 </template>

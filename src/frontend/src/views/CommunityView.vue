@@ -9,6 +9,16 @@
           :flattenSingleItems="true"
         ></MenuToolbar>
       </v-col>
+      <v-col cols="auto">
+        <v-breadcrumbs
+          :items="breadcrumbs"
+          class="pb-0"
+        >
+          <template v-slot:divider>
+            <v-icon>mdi-chevron-right</v-icon>
+          </template>
+        </v-breadcrumbs>
+      </v-col>
       <v-col v-if="showIntro" cols="auto" class="pa-4 shrink">
         <h1 class="text-h3 mb-2">{{ $t('tools.community.name') }}</h1>
         <p>{{ $t('tools.community.long_description') }}</p>
@@ -75,11 +85,6 @@
         </l-map>
       </v-col>
       <v-col v-if="community" cols="auto" class="pa-4 grow">
-        <v-breadcrumbs
-          :items="breadcrumbs"
-          class="pt-0 pl-0"
-        >
-        </v-breadcrumbs>
         <v-row class="mb-8">
           <v-col cols="2">
             <l-map
@@ -123,6 +128,7 @@
               :label="$t('tools.community.skip')"
               :items="categories"
               :item-text="(item) => { return item['name_' + locale] + (item.hasData ? '' : ' (' + $t('tools.community.coming_soon') + ')') }"
+              :item-disabled="(item) => !item.hasData"
               item-value="id"
               v-model="selectedCategory"
               @change="skipToCategory"
@@ -196,17 +202,27 @@ export default {
       return !this.community && !router.currentRoute.query.location;
     },
     breadcrumbs() {
-      return [
+      let crumbs = [
         {
-          text: i18n.t('tools.community.name'),
+          text: i18n.t('home_view.name'),
           disabled: false,
-          href: '/community'
+          href: '/home'
         },
         {
+          text: i18n.t('tools.community.name'),
+          disabled: !this.community,
+          href: '/community'
+        }
+      ];
+
+      if (this.community) {
+        crumbs.push({
           text: this.community.location['name_' + this.locale],
           disabled: true
-        }
-      ]
+        });
+      }
+
+      return crumbs;
     },
     sortedData() {
       let sortedData = JSON.parse(JSON.stringify(this.community?.indicatorData));

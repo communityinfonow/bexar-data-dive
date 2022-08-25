@@ -5,7 +5,9 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -59,7 +61,8 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 	@Override
 	public List<Indicator> findIndicatorsByCategory(String categoryId) {
 		String sql = ""
-			+ " select id_, indicator_type_id, indicator_category_id, name_en, name_es, description_en, description_es "
+			+ " select id_, indicator_type_id, indicator_category_id, name_en, name_es, description_en, description_es, "
+			+ "   case when exists (select 1 from mv_indicator_metadata where indicator_id = id_ and has_data = true limit 1) then true else false end as has_data "
 			+ " from tbl_indicators "
 			+ " where indicator_category_id = :indicator_category_id::numeric "
 			+ "   and display = true"
@@ -78,6 +81,7 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 				indicator.setName_es(rs.getString("name_es"));
 				indicator.setDescription_en(rs.getString("description_en"));
 				indicator.setDescription_es(rs.getString("description_es"));
+				indicator.setHasData(rs.getBoolean("has_data"));
 
 				return indicator;
 			}
@@ -168,6 +172,25 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 				category.setParentCategoryId(rs.getString("parent_category_id"));
 
 				return category;
+			}
+		});
+	}
+
+	@Override
+	public boolean hasData(String id) {
+		String sql = ""
+			+ " select 1 "
+			+ " from tbl_indicator_values "
+			+ " where indicator_id = :indicator_id::numeric "
+			+ " limit 1 ";
+
+		MapSqlParameterSource paramMap = new MapSqlParameterSource();
+		paramMap.addValue("indicator_id", id);
+
+		return this.namedParameterJdbcTemplate.query(sql, paramMap, new ResultSetExtractor<Boolean>() {
+			@Override
+			public Boolean extractData(ResultSet rs) throws SQLException, DataAccessException {
+				return rs.next();
 			}
 		});
 	}

@@ -1,13 +1,11 @@
 package org.cinow.omh.indicators;
 
-import org.cinow.omh.menu.Item;
-
 /**
  * This object represents an indicator.
  * 
  * @author brian
  */
-public class Indicator implements Item {
+public class Indicator {
 	
 	/**
 	 * The id.
@@ -43,6 +41,8 @@ public class Indicator implements Item {
 	 * The description (Spanish).
 	 */
 	private String description_es;
+
+	private boolean hasData;
 
 	/**
 	 * @return the id
@@ -141,4 +141,14 @@ public class Indicator implements Item {
 	public void setDescription_es(String description_es) {
 		this.description_es = description_es;
 	}
+
+	public boolean isHasData() {
+		return hasData;
+	}
+
+	public void setHasData(boolean hasData) {
+		this.hasData = hasData;
+	}
+
+	
 }

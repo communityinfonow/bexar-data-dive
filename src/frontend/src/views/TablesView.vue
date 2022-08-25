@@ -9,6 +9,17 @@
           :flattenSingleItems="false"
         ></MenuToolbar>
       </v-col>
+      <v-col cols="auto">
+        <v-breadcrumbs
+          :items="breadcrumbs"
+          class="pb-0"
+          
+        >
+          <template v-slot:divider>
+            <v-icon>mdi-chevron-right</v-icon>
+          </template>
+        </v-breadcrumbs>
+      </v-col>
       <v-col v-if="showIntro" cols="auto" class="pa-4 grow">
         <h1 class="text-h3 mb-2">{{ $t('tools.tables.name') }}</h1>
         <p>{{ $t('tools.tables.long_description') }}</p>
@@ -30,11 +41,6 @@
           </section>
       </v-col>
       <v-col v-if="indicator && tablesData" cols="auto" class="pt-4 px-4">
-          <v-breadcrumbs
-            :items="breadcrumbs"
-            class="pt-0 pl-0"
-          >
-          </v-breadcrumbs>
           <h1 class="text-h3 mb-1 d-flex justify-space-between">
             <span>
               <span v-if="tablesData.category.parentCategoryId">{{ tablesData.category['name_' + locale] }} - </span>
@@ -386,17 +392,27 @@ export default {
       return !this.indicator && !router.currentRoute.query.indicator;
     },
     breadcrumbs() {
-      return [
+      let crumbs = [
         {
-          text: i18n.t('tools.tables.name'),
+          text: i18n.t('home_view.name'),
           disabled: false,
-          href: '/tables'
+          href: '/home'
         },
         {
+          text: i18n.t('tools.tables.name'),
+          disabled: !this.tablesData,
+          href: '/tables'
+        }
+      ];
+
+      if (this.tablesData) {
+        crumbs.push({
           text: (this.tablesData.category.parentCategoryId ? this.tablesData.category['name_' + this.locale] + ' - ' : '') + this.indicator['name_' + this.locale],
           disabled: true
-        }
-      ]
+        });
+      }
+
+      return crumbs;
     },
     selections() {
       return {

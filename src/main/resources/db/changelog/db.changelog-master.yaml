@@ -9,3 +9,9 @@ databaseChangeLog:
       file: /db/changelog/sql/changelog_04.sql
   - include:
       file: /db/changelog/sql/changelog_05.sql
+  - include:
+      file: /db/changelog/sql/changelog_06.sql
+  - include:
+      file: /db/changelog/sql/changelog_07.sql
+  - include:
+      file: /db/changelog/sql/changelog_08.sql

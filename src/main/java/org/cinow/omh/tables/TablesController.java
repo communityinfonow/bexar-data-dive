@@ -1,16 +1,9 @@
 package org.cinow.omh.tables;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -59,9 +52,9 @@ public class TablesController {
 		request.setIndicator(indicator);
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(new MediaType("application", "force-download"));
-		header.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=table-download.xlsx");
+		header.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=table-download.csv");
 		
-		return new ResponseEntity<>(new ByteArrayResource(this.tablesService.getTablesDataDownload(request)), header, HttpStatus.CREATED);
+		return new ResponseEntity<>(new ByteArrayResource(this.tablesService.getTablesDataDownloadCsv(request)), header, HttpStatus.CREATED);
     }
 	
 }

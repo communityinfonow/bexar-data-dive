@@ -39,6 +39,8 @@ public class IndicatorMenuItem implements Item {
 	 */
 	private String description_es;
 
+	private boolean hasData;
+
 	/**
 	 * @return the id
 	 */
@@ -131,5 +133,13 @@ public class IndicatorMenuItem implements Item {
 	@Override
 	public void setDescription_es(String description_es) {
 		this.description_es = description_es;
+	}
+
+	public boolean isHasData() {
+		return hasData;
+	}
+
+	public void setHasData(boolean hasData) {
+		this.hasData = hasData;
 	}
 }

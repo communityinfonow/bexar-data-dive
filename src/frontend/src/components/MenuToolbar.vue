@@ -4,12 +4,6 @@
       <v-row style="max-width: 100%;">
         <v-col cols="10">
           <v-slide-group show-arrows style="height: 100%;">
-            <v-slide-item>
-              <v-btn text tile @click="goBack()" style="height: 100%;">
-                <v-icon>mdi-arrow-left</v-icon>
-                Back
-              </v-btn>
-            </v-slide-item>
             <template v-for="category in sortedMenu.categories">
               <v-slide-item :key="'category_' + category.id">
               <MenuButton text v-if="category.items.length === 1 && flattenSingleItems" :item="category.items[0]" :selectItem="selectItem" :singleItem="true"></MenuButton>
@@ -62,9 +56,6 @@ export default {
     },
     flattenSingleItems: {
       type: Boolean
-    },
-    goBack: {
-      type: Function
     }
   },
   data() {

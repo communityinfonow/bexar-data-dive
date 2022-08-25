@@ -46,4 +46,12 @@ public interface IndicatorRepository {
 	 * @return the indicator category
 	 */
 	IndicatorCategory getIndicatorCategory(String id);
+
+	/**
+	 * Determines whether any data is present for an indicator.
+	 * 
+	 * @param id the id
+	 * @return <code>true</code> if data is present
+	 */
+	boolean hasData(String id);
 }

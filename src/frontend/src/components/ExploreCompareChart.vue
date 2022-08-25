@@ -88,6 +88,7 @@ export default {
 	},
 	methods: {
 		...mapActions(['setDockedTooltip']),
+		//TODO: don't change bar color or cursor on hover
 		drawChart(showLabels) {
 			let textStyle = {
 				fontFamily: '"Roboto", sans-serif !important',

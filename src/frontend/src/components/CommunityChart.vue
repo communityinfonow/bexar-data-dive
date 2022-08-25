@@ -57,6 +57,7 @@ export default {
 		this.drawChart();
 	},
 	methods: {
+		//TODO: don't change bar color on hover
 		drawChart() {
 			let textStyle = {
 				fontFamily: '"Roboto", sans-serif !important',

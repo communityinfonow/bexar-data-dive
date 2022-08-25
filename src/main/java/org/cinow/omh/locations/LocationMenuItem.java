@@ -37,6 +37,8 @@ public class LocationMenuItem implements Item {
 	 */
 	private String description_es;
 
+	private boolean hasData;
+
 	/**
 	 * @return id
 	 */
@@ -129,5 +131,13 @@ public class LocationMenuItem implements Item {
 	@Override
 	public void setDescription_es(String description_es) {
 		this.description_es = description_es;
+	}
+
+	public boolean isHasData() {
+		return hasData;
+	}
+
+	public void setHasData(boolean hasData) {
+		this.hasData = hasData;
 	}
 }

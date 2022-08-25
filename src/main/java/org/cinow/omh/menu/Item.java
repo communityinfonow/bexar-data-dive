@@ -66,4 +66,8 @@ public interface Item {
 	 * @param description_es the description_es to set
 	 */
 	void setDescription_es(String description_es);
+
+	boolean isHasData();
+
+	void setHasData(boolean hasData); 
 }

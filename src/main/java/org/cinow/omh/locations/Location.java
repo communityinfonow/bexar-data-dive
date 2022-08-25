@@ -1,13 +1,11 @@
 package org.cinow.omh.locations;
 
-import org.cinow.omh.menu.Item;
-
 /**
  * This object represents a location.
  * 
  * @author brian
  */
-public class Location implements Item {
+public class Location {
 	
 	/**
 	 * The id.
@@ -42,7 +40,6 @@ public class Location implements Item {
 	/**
 	 * @return the categoryId
 	 */
-	@Override
 	public String getCategoryId() {
 		return typeId;
 	}
@@ -50,7 +47,6 @@ public class Location implements Item {
 	/**
 	 * @param categoryId the categoryId to set
 	 */
-	@Override
 	public void setCategoryId(String id) {
 		this.typeId = id;
 	}
@@ -114,7 +110,6 @@ public class Location implements Item {
 	/**
 	 * @return the description_en
 	 */
-	@Override
 	public String getDescription_en() {
 		return description_en;
 	}
@@ -122,7 +117,6 @@ public class Location implements Item {
 	/**
 	 * @param description_en the description_en to set
 	 */
-	@Override
 	public void setDescription_en(String description_en) {
 		this.description_en = description_en;
 	}
@@ -130,7 +124,6 @@ public class Location implements Item {
 	/**
 	 * @return the description_es
 	 */
-	@Override
 	public String getDescription_es() {
 		return description_es;
 	}
@@ -138,7 +131,6 @@ public class Location implements Item {
 	/**
 	 * @param description_es the description_es to set
 	 */
-	@Override
 	public void setDescription_es(String description_es) {
 		this.description_es = description_es;
 	}
