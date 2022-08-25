@@ -62,7 +62,7 @@
 				</template>
 			</v-card-text>
 			<v-card-actions class="d-flex justify-end">
-				<v-btn color="accent" @click="applyFilters">
+				<v-btn style="font-size: 14pt;" class="font-weight-bold" color="accent" @click="applyFilters">
 					{{ $t('tools.explore.apply_filters') }}
 				</v-btn>
 			</v-card-actions>

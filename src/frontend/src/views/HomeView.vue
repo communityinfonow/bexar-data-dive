@@ -1,15 +1,15 @@
 <template>
   <v-container fluid>
     <section class="d-flex">
-      <img class="ma-4" src="/img/bdd_logo_color.png" style="height: 100px;" />
+      <img class="ma-4" src="/img/bdd_logo_color.png" style="height: 100px;" alt="Bexar Data Dive Logo" />
       <h1 class="text-h3 my-4 logo-header">
         {{ $t('app.name_line_1') }}<br>
         {{ $t('app.name_line_2') }}
       </h1>
     </section>
-    <p class="text-subtitle-1 mb-4">{{ $t('app.tagline') }}</p>
-    <p>{{ $t('home_view.welcome_message') }}</p>
-    <h2 class="text-h5 mt-8 mb-2">{{ $t('home_view.available_tools') }}</h2>
+    <!--<p class="text-subtitle-1 mb-4">{{ $t('app.tagline') }}</p>-->
+    <p class="welcome-message font-weight-light my-8 mx-4">{{ $t('home_view.welcome_message') }}</p>
+    <h2 class="text-h5 mt-8 mb-2 mx-4">{{ $t('home_view.available_tools') }}</h2>
     <section class="d-flex flex-row">
       <template v-for="tool in tools">
         <featured-card 
@@ -45,5 +45,9 @@ export default {
 <style lang="scss" scoped>
   .logo-header {
     color: $color-primary;
+  }
+  .welcome-message {
+    width: 820px;
+    font-size: 1.2em;
   }
 </style>

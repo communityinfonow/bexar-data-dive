@@ -4,9 +4,9 @@
         class="d-flex flex-column flex-grow-1 ma-4"
       >
         <v-img :src="imagePath" class="align-end featured-image-gradient">
-			<v-card-title class="featured-card-title">{{ name }}</v-card-title>
+			<v-card-title class="featured-card-title white--text">{{ name }}</v-card-title>
         </v-img>
-		  <v-card-text class="featured-card-text white--text">{{ description }}</v-card-text>
+		  <v-card-text class="featured-card-text white--text" v-html="description"></v-card-text>
 			<v-spacer class="featured-card-actions"></v-spacer>
 			<v-card-actions class="featured-card-actions">
 				<v-btn text dark link :to="about_route">
@@ -15,8 +15,8 @@
 				<v-spacer></v-spacer>
 				<v-btn 
 					v-if="view_route" 
-					color="yellow"
-					class="white--text font-weight-bold" 
+					color="primary"
+					class="white--text font-weight-bold featured-card-action-button" 
 					:to="view_route" 
 					:aria-label="$t('featured_card.view') + ' ' + name"
 				>
@@ -24,8 +24,8 @@
 				</v-btn>
 				<v-btn 
 					v-if="click_route" 
-					color="yellow" 
-					class="white--text font-weight-bold"
+					color="accent" 
+					class="white--text font-weight-bold featured-card-action-button"
 					@click="click_route(item)" 
 					:aria-label="$t('featured_card.view') + ' ' + name"
 				>
@@ -69,8 +69,9 @@
 		/*padding-top: 2em;
 		background: linear-gradient(transparent, rgba($color-accent, 0.8))*/
 		font-size: 1.5rem;
-		color: var(--v-yellow-base);
+		/*color: var(--v-accent-base);*/
 		background: rgba($color-secondary, 1);
+		font-weight: bold;
 	}
 	.featured-card-text {
 		/*background: linear-gradient(rgba($color-accent, 0.8), rgba($color-accent, 1.0))*/
@@ -81,5 +82,8 @@
 	.featured-card-actions {
 		/*background: $color-accent;*/
 		background: rgba($color-secondary, 1);
+	}
+	.featured-card-action-button {
+		
 	}
 </style>

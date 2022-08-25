@@ -70,6 +70,7 @@ export default {
 		border: 1px solid rgba($color-secondary, 1);
 	}
 	.docked-tooltip-title {
+		color: white;
 		background: rgba($color-secondary, 1);
 		
 	}
