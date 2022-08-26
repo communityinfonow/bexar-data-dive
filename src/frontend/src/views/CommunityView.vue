@@ -10,10 +10,7 @@
         ></MenuToolbar>
       </v-col>
       <v-col cols="auto">
-        <v-breadcrumbs
-          :items="breadcrumbs"
-          class="pb-0"
-        >
+        <v-breadcrumbs :items="breadcrumbs">
           <template v-slot:divider>
             <v-icon>mdi-chevron-right</v-icon>
           </template>
@@ -187,7 +184,7 @@ export default {
       componentInitialized: false,
 			selectionMapInitialized: false,
       communityMapInitialized: false,
-      zoom: 9,
+      zoom: 10,
 			center: latLng(29.43445, -98.473562383),
       selectedLayer: null,
       selectionGeojson: null,

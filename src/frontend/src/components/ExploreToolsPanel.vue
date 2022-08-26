@@ -50,8 +50,7 @@
 					inset
 					:label="$t('tools.common.labels')"
 					style="margin-top: 2px;"
-					v-model="showLabels"
-					@change="draw(showLabels)"
+					v-model="labels"
 				></v-switch>
 			</v-col>
 		</v-row>
@@ -66,14 +65,21 @@ import router from '@/router/index'
 export default {
 	name: 'ExploreToolsPanel',
 	computed: {
-		...mapState(['filters', 'filterSelections', 'locale'])
+		...mapState(['filters', 'filterSelections', 'locale']),
+		labels: {
+			get() { return this.showLabels },
+			set(value) { this.setShowLabels(value) }
+		}
 	},
 	props: {
 		showCompareOptions: {
 			type: Boolean,
 			default: false
 		},
-		draw: {
+		showLabels: {
+			type: Boolean
+		},
+		setShowLabels: {
 			type: Function
 		}
 	},
@@ -84,8 +90,7 @@ export default {
 			compareWithQuery: '',
 			compareWithItems: [],
 			compareWith: [],
-			valid: true,
-			showLabels: false
+			valid: true
 		}
 	},
 	watch: {

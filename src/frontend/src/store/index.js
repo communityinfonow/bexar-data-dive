@@ -22,6 +22,9 @@ export default new Vuex.Store({
     source: null,
     filters: null,
     dockedTooltip: null,
+    showMapLabels: false,
+    showTrendLabels: false,
+    showCompareLabels: false,
     exploreData: null,
     exploreTab: null,
     filterSelections: null,
@@ -141,6 +144,15 @@ export default new Vuex.Store({
     },
     SET_TOOL_ROUTE(state, params) {
       state[params.key + 'Route'] = params.route
+    },
+    SET_SHOW_MAP_LABELS(state, showLabels) {
+      state.showMapLabels = showLabels
+    },
+    SET_SHOW_TREND_LABELS(state, showLabels) {
+      state.showTrendLabels = showLabels
+    },
+    SET_SHOW_COMPARE_LABELS(state, showLabels) {
+      state.showCompareLabels = showLabels
     }
   },
   actions: {
@@ -308,6 +320,15 @@ export default new Vuex.Store({
     },
     setToolRoute(context, params) {
       context.commit('SET_TOOL_ROUTE', params);
+    },
+    setShowMapLabels(context, showLabels) {
+      context.commit('SET_SHOW_MAP_LABELS', showLabels)
+    },
+    setShowTrendLabels(context, showLabels) {
+      context.commit('SET_SHOW_TREND_LABELS', showLabels)
+    },
+    setShowCompareLabels(context, showLabels) {
+      context.commit('SET_SHOW_COMPARE_LABELS', showLabels)
     }
   },
   modules: {},

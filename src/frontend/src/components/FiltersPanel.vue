@@ -1,13 +1,13 @@
 <template>
 	<v-form v-if="filters" ref="filtersForm" v-model="valid">
 		<v-card outlined tile>
-			<v-card-title >
+			<v-card-title>
 				<span class="text-h6 font-weight-light">
 					<v-icon color="accent">mdi-filter-variant</v-icon>
 					{{ $t('tools.explore.filters') }}
 				</span>
 			</v-card-title>
-			<v-card-text>
+			<v-card-text class="pb-0">
 				<v-autocomplete
 					:label="filters.locationTypeFilter.type['name_' + locale]"
 					:placeholder="filters.locationTypeFilter.type['name_' + locale]"
@@ -61,7 +61,7 @@
 					></v-autocomplete>
 				</template>
 			</v-card-text>
-			<v-card-actions>
+			<v-card-actions class="d-flex justify-end">
 				<v-btn color="accent" @click="applyFilters">
 					{{ $t('tools.explore.apply_filters') }}
 				</v-btn>

@@ -46,4 +46,9 @@ export default {
 ::v-deep .v-btn--plain:not(.v-btn--active):not(.v-btn--loading):not(:focus):not(:hover) .v-btn__content {
   opacity: 1 !important;
 }
+
+::v-deep .v-breadcrumbs {
+  padding-top: 16px;
+  padding-bottom: 0;
+}
 </style>

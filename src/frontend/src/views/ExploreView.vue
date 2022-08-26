@@ -10,10 +10,7 @@
         ></MenuToolbar>
       </v-col>
       <v-col cols="auto">
-        <v-breadcrumbs
-          :items="breadcrumbs"
-          class="pb-0"
-        >
+        <v-breadcrumbs :items="breadcrumbs">
           <template v-slot:divider>
             <v-icon>mdi-chevron-right</v-icon>
           </template>
@@ -45,6 +42,12 @@
       </v-col>
       <v-col v-if="indicator" cols="auto" class="explore-content">
         <v-row class="fill-height no-gutters">
+          <v-col cols="3">
+            <v-row class="fill-height no-gutters flex-column px-4">
+              <filters-panel></filters-panel>
+              <docked-tooltip class="grow" :helpMessage="dockedTooltipHelpMessage" :activeTab="tab"></docked-tooltip>
+            </v-row>
+          </v-col>
           <v-col cols="9" class="px-4">
             <v-row class="fill-height no-gutters flex-column">
               <v-col cols="auto" class="shrink">
@@ -63,12 +66,6 @@
                   </v-tab-item>
                 </v-tabs-items>
               </v-col>
-            </v-row>
-          </v-col>
-          <v-col cols="3">
-            <v-row class="fill-height no-gutters flex-column">
-              <filters-panel></filters-panel>
-              <docked-tooltip class="grow" :helpMessage="dockedTooltipHelpMessage" :activeTab="tab"></docked-tooltip>
             </v-row>
           </v-col>
         </v-row>

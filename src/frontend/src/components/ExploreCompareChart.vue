@@ -5,7 +5,8 @@
 				<explore-tools-panel 
 					v-if="filters"
 					:showCompareOptions="true"
-					:draw="drawChart"
+					:showLabels="showCompareLabels"
+					:setShowLabels="setShowCompareLabels"
 				>
 				</explore-tools-panel>
 			</v-col>
@@ -42,7 +43,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['locale', 'filters', 'exploreData', 'compareSelections']),
+		...mapState(['locale', 'filters', 'exploreData', 'compareSelections', 'showCompareLabels']),
 	},
 	watch: {
 		locale() {
@@ -52,6 +53,9 @@ export default {
 			if (newValue) {
 				this.drawChart();
 			}
+		},
+		showCompareLabels() {
+			this.drawChart();
 		}
 	},
 	mounted () {
@@ -87,9 +91,9 @@ export default {
 		}, 100);
 	},
 	methods: {
-		...mapActions(['setDockedTooltip']),
+		...mapActions(['setDockedTooltip', 'setShowCompareLabels']),
 		//TODO: don't change bar color or cursor on hover
-		drawChart(showLabels) {
+		drawChart() {
 			let textStyle = {
 				fontFamily: '"Roboto", sans-serif !important',
 				fontSize: '16px'
@@ -164,7 +168,7 @@ export default {
 							return '{a|' + i18n.t('data.suppressed') + '}';
 						} else if (!o.data.value) {
 							return '{a|' + i18n.t('data.no_data') + '}';
-						} else if (showLabels) {
+						} else if (this.showCompareLabels) {
 							let rows = ['{a|' + i18n.t('data.value') +': ' + format(this.exploreData.indicator.typeId, o.data.value) + '}'];
 							if (o.data.moeLow || o.data.moeHigh) {
 								rows.push('{b|' + i18n.t('data.moe_range') 

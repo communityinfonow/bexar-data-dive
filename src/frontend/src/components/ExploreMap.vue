@@ -5,6 +5,8 @@
 				<explore-tools-panel 
 					v-if="filters"
 					:draw="drawMap"
+					:showLabels="showMapLabels"
+					:setShowLabels="setShowMapLabels"
 				>
 				</explore-tools-panel>
 			</v-col>
@@ -118,7 +120,6 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
-import L from 'leaflet'
 import { latLng } from 'leaflet'
 import { LMap, LTileLayer, LGeoJson, LControl } from 'vue2-leaflet'
 import { feature, featureCollection } from '@turf/helpers'
@@ -140,16 +141,15 @@ export default {
 		return {
 			componentInitialized: false,
 			mapInitialized: false,
-			zoom: 9,
+			zoom: 10,
 			center: latLng(29.43445, -98.473562383),
 			geojson: null,
 			refreshOptions: false,
-			selectedLocationType: null,
-			showLabels: false
+			selectedLocationType: null
 		}
 	},
 	computed: {
-		...mapState(['exploreData', 'locale', 'locationMenu', 'filters', 'filterSelections']),
+		...mapState(['exploreData', 'locale', 'locationMenu', 'filters', 'filterSelections', 'showMapLabels']),
 		layers() {
 			return this.locationMenu?.categories?.map(locationType => {
 				return {
@@ -188,7 +188,6 @@ export default {
 			} else {
 				shadingColors = colorbrewer.Blues[5].slice(0).reverse()
 			}
-			//shadingColors[0] = '#3b5a98';
 
 			return shadingColors
 		},
@@ -215,17 +214,20 @@ export default {
 	watch: {
 		exploreData(newValue) {
 			if (this.mapInitialized && newValue) {
-				this.drawMap(this.showLabels);
+				this.drawMap();
 			}
 		},
     	locale() {
-			this.drawMap(this.showLabels)
+			this.drawMap()
 		},
 		layers(newValue) {
 			this.selectedLocationType = newValue[0];
 		},
 		filterSelections(newValue) {
 			this.selectedLocationType = this.layers.find(l => l.id === newValue.locationType);
+		},
+		showMapLabels() {
+			this.drawMap();
 		}
 	},
 	mounted () {
@@ -235,17 +237,17 @@ export default {
 				this.selectedLocationType = this.layers.find(l => l.id === this.filterSelections.locationType);
 			}
 			if (this.mapInitialized && this.exploreData) {
-				this.drawMap(this.showLabels);
+				this.drawMap();
 			}
 		}, 100);
 		
 	},
 	methods: {
-		...mapActions(['setDockedTooltip', 'setFilterSelections']),
+		...mapActions(['setDockedTooltip', 'setFilterSelections', 'setShowMapLabels']),
 		initializeMap() {
 			this.mapInitialized = true;
 			if (this.exploreData) {
-				this.drawMap(this.showLabels);
+				this.drawMap();
 			}
 		},
 		resizeHandler() {
@@ -263,8 +265,7 @@ export default {
 			newFilterSelections.location = location;
 			this.setFilterSelections(newFilterSelections);
 		},
-		drawMap(showLabels) {
-			this.showLabels = showLabels;
+		drawMap() {
 			this.geojson = featureCollection(this.exploreData.locationData
 				.filter(ld => !!ld.geojson)
 				.map(ld => feature(JSON.parse(ld.geojson), 
@@ -279,7 +280,6 @@ export default {
 					{ id: ld.location.id }))
 			)
 			this.refreshOptions = Math.random(); // force a refresh
-			this.$refs.exploreMap?.mapObject.fitBounds(L.geoJSON(this.geojson).getBounds());
 		},
 		onEachFeature(feature, layer) {
 			let filteredFeature = feature.id === this.exploreData.filters.locationFilter.options[0]?.id;
@@ -288,7 +288,7 @@ export default {
 				layer.options.color = 'orange';
 			}
 			layer.options.fillColor = this.getLayerShadingColor(feature);
-			if (this.showLabels) {
+			if (this.showMapLabels) {
 				layer.bindTooltip(layer.feature.properties.locationName.replace('Zip Code', 'Zip').replace('Census Tract', 'Tract'), 
 					{
 						className: 'location-label',

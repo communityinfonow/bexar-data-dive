@@ -5,6 +5,8 @@
 				<explore-tools-panel 
 					v-if="filters"
 					:draw="drawChart"
+					:showLabels="showTrendLabels"
+					:setShowLabels="setShowTrendLabels"
 				>
 				</explore-tools-panel>
 			</v-col>
@@ -47,7 +49,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['locale', 'exploreData', 'filters']),
+		...mapState(['locale', 'exploreData', 'filters', 'showTrendLabels']),
 	},
 	watch: {
 		locale() {
@@ -57,6 +59,9 @@ export default {
 			if (newValue) {
 				this.drawChart();
 			}
+		},
+		showTrendLabels() {
+			this.drawChart();
 		}
 	},
 	mounted () {
@@ -92,8 +97,8 @@ export default {
 		
 	},
 	methods: {
-		...mapActions(['setDockedTooltip']),
-		drawChart(showLabels) {
+		...mapActions(['setDockedTooltip', 'setShowTrendLabels']),
+		drawChart() {
 			let textStyle = {
 				fontFamily: '"Roboto", sans-serif !important',
 				fontSize: '16px'
@@ -134,14 +139,14 @@ export default {
 				symbol: 'circle',
 				symbolSize: 12,
 				label: {
-					show: showLabels,
+					show: this.showTrendLabels,
 					position: 'top',
 					formatter: (o) => {
 						if (o.data.suppressed) {
 							return '';
 						} else if (!o.data.value) {
 							return '';
-						} else if (showLabels) {
+						} else if (this.showTrendLabels) {
 							let rows = ['{a|' + i18n.t('data.value') +': ' + format(this.exploreData.indicator.typeId, o.data.value) + '}'];
 							if (o.data.moeLow || o.data.moeHigh) {
 								rows.push('{b|' + i18n.t('data.moe_range') 

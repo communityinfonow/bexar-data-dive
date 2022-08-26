@@ -10,11 +10,7 @@
         ></MenuToolbar>
       </v-col>
       <v-col cols="auto">
-        <v-breadcrumbs
-          :items="breadcrumbs"
-          class="pb-0"
-          
-        >
+        <v-breadcrumbs :items="breadcrumbs">
           <template v-slot:divider>
             <v-icon>mdi-chevron-right</v-icon>
           </template>

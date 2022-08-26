@@ -1,7 +1,7 @@
 <template>
 	<div class="my-2">
 		<v-card outlined tile class="fill-height docked-tooltip">
-			<v-card-title class="docked-tooltip-title">
+			<v-card-title class="docked-tooltip-title white--text">
 				{{ $t('tools.explore.docked_tooltip.now_viewing')}}
 				<span v-if="activeTab === 0 && dockedTooltip">: {{ dockedTooltip.location }}</span>
 				<span v-else-if="activeTab !== 0">: {{ filteredLocation }}</span>
@@ -70,7 +70,6 @@ export default {
 		border: 1px solid rgba($color-secondary, 1);
 	}
 	.docked-tooltip-title {
-		color: var(--v-yellow-base);
 		background: rgba($color-secondary, 1);
 		
 	}
