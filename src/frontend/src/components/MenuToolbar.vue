@@ -1,5 +1,5 @@
 <template>
-  <v-toolbar dense class="menu-toolbar">
+  <v-toolbar dense class="menu-toolbar d-print-none">
     <v-toolbar-items style="width: 100%;">
       <v-row style="max-width: 100%;">
         <v-col cols="10">
