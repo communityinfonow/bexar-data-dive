@@ -19,8 +19,8 @@
             :placeholder="$t('tools.common.search')"
             v-model="selectedItem"
             :items="searchItems"
-            :item-text="'name_' + locale"
-            :search-input.sync="search"
+            :item-text="(item) => { return item['name_' + locale] + (item.hasData ? '' : ' (' + $t('tools.community.coming_soon') + ')') }"
+            :item-disabled="(item) => { return !item.hasData ? 'disabled' : '' }"
             @change="selectMatch"
             return-object
             hide-no-data
@@ -61,7 +61,6 @@ export default {
   data() {
     return {
       items: [],
-      search: '',
       selectedItem: null,
     }
   },
@@ -99,7 +98,6 @@ export default {
     selectMatch() {
         this.selectItem(this.selectedItem)
         this.$nextTick(() => {
-          this.search = ''
           this.selectedItem = null
         });
     }

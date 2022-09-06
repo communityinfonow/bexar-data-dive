@@ -3,7 +3,7 @@
     <v-list-item-title>
       {{ itemName }}
       <span v-if="!item.hasData">
-        (Coming Soon)
+        ({{ $t('tools.community.coming_soon') }})
       </span>
     </v-list-item-title>
   </v-list-item>
