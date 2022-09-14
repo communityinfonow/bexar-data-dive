@@ -1,6 +1,6 @@
 <template>
 	<v-form v-if="filters" ref="filtersForm" v-model="valid">
-		<v-card outlined tile>
+		<v-card outlined tile id="explore_filters">
 			<v-card-title>
 				<span class="text-h6 font-weight-light">
 					<v-icon color="accent">mdi-filter-variant</v-icon>
@@ -62,7 +62,7 @@
 				</template>
 			</v-card-text>
 			<v-card-actions class="d-flex justify-end">
-				<v-btn style="font-size: 14pt;" class="font-weight-bold" color="accent" @click="applyFilters">
+				<v-btn style="font-size: 14pt;" class="font-weight-bold" color="accent" @click="applyFilters" data-html2canvas-ignore>
 					{{ $t('tools.explore.apply_filters') }}
 				</v-btn>
 			</v-card-actions>

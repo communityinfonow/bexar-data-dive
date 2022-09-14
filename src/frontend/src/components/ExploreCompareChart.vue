@@ -7,6 +7,8 @@
 					:showCompareOptions="true"
 					:showLabels="showCompareLabels"
 					:setShowLabels="setShowCompareLabels"
+					dataVisualElementId="compare_chart_container"
+					dataVisualName="compare_chart"
 				>
 				</explore-tools-panel>
 			</v-col>
@@ -44,6 +46,9 @@ export default {
 	},
 	computed: {
 		...mapState(['locale', 'filters', 'exploreData', 'compareSelections', 'showCompareLabels']),
+		smallScreen() {
+			return document.body.clientWidth <= 1440;
+		}
 	},
 	watch: {
 		locale() {
@@ -96,10 +101,10 @@ export default {
 		drawChart() {
 			let textStyle = {
 				fontFamily: '"Roboto", sans-serif !important',
-				fontSize: '16px'
+				fontSize: this.smallScreen ? '14px' : '16px'
 			};
 			let option = {};
-			option.grid = { containLabel: true };
+			option.grid = { left: 20, right: 20, containLabel: true };
 			option.yAxis = { 
 				type: 'value', 
 				splitLine: { show: false },
@@ -119,7 +124,15 @@ export default {
 				type: 'category', 
 				data: xAxisData,
 				axisTick: { show: false },
-				axisLabel: { ...textStyle, interval: 0, width: '80', overflow: 'break', lineHeight: 16 },
+				axisLabel: { 
+					...textStyle, 
+					interval: 0, 
+					width: '80', 
+					overflow: 'break', 
+					lineHeight: 16, 
+					rotate: this.smallScreen ? 45 : 0,
+					margin: this.smallScreen ? 20 : 10
+				},
 				name: this.compareSelections 
 					? '' 
 					: (this.exploreData.category.parentCategoryId ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.exploreData.indicator['name_' + this.locale],
@@ -171,8 +184,7 @@ export default {
 						} else if (this.showCompareLabels) {
 							let rows = ['{a|' + i18n.t('data.value') +': ' + format(this.exploreData.indicator.typeId, o.data.value) + '}'];
 							if (o.data.moeLow || o.data.moeHigh) {
-								rows.push('{b|' + i18n.t('data.moe_range') 
-									+ ': ' 
+								rows.push('{b|' + (this.smallScreen ? '' : (i18n.t('data.moe_range') + ': ') )
 									+ format(this.exploreData.indicator.typeId, o.data.moeLow)
 									+ " - "
 									+ format(this.exploreData.indicator.typeId, o.data.moeHigh) + '}');
@@ -185,13 +197,13 @@ export default {
 					rich: { 
 						a: {
 							align: 'center',
-							fontSize: '16px',
+							fontSize: this.smallScreen ? '12px' : '16px',
 							lineHeight: '20',
 							color: '#333333'
 						},
 						b: {
 							align: 'center',
-							fontSize: '14px',
+							fontSize: this.smallScreen ? '10px' : '14px',
 							lineHeight: '16',
 							color: '#666666'
 						}

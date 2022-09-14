@@ -12,10 +12,10 @@
 			<v-card-text v-else>
 				<div class="text-h6 pt-2">
 					<span v-if="exploreData.category.parentCategoryId">{{ exploreData.category['name_' + locale] }} - </span>
-					{{ exploreData.indicator['name_' + locale] }}: {{ valueFormatted }}
+					{{ exploreData.indicator['name_' + locale] }}: <span v-if="dockedTooltip.location">{{ valueFormatted }}</span>
 				</div>
 				<ul class="text-body-1">
-					<li v-if="!dockedTooltip.noData">Range: {{  rangeFormatted }}</li>
+					<li v-if="!dockedTooltip.noData">Range: <span v-if="dockedTooltip.location">{{ rangeFormatted }}</span></li>
 					<li>Source: {{ exploreData.source['name_' + locale] }}</li>
 					<li>Year: {{ dockedTooltip.year }}</li>
 					<li v-for="filter in dockedTooltip.indicatorFilters" :key="filter.type.id">

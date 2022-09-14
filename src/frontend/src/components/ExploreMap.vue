@@ -7,6 +7,8 @@
 					:draw="drawMap"
 					:showLabels="showMapLabels"
 					:setShowLabels="setShowMapLabels"
+					dataVisualElementId="explore_map"
+					dataVisualName="map"
 				>
 				</explore-tools-panel>
 			</v-col>
@@ -14,6 +16,7 @@
 				<l-map
 					v-if="componentInitialized"
 					ref="exploreMap"
+					id="explore_map"
 					:zoom="zoom"
 					:center="center"
 					:options="{ zoomDelta: 0.5, zoomSnap: 0.5, preferCanvas: true }"
@@ -91,26 +94,29 @@
 						class="layer-control"
 						v-if="layers.length"
 					>
-						<v-card tile outlined :style="{ boxShadow: 'none !important' }">
-						<v-card-title class="pb-0 text--primary">
-							<v-icon color="accent">mdi-layers</v-icon>
-							{{ $t('tools.community.community_types') }}
-						</v-card-title>
-						<v-card-text>
-							<v-radio-group
-							v-model="selectedLocationType"
-							@change="selectLocationType"
-							>
-							<v-radio 
-								color="accent"
-								v-for="layer in layers" 
-								:key="layer.id" 
-								:value="layer" 
-								:label="layer['name_' + locale]">
-							</v-radio>
-							</v-radio-group>
-						</v-card-text>
-						</v-card>
+						<v-expansion-panels data-html2canvas-ignore>
+							<v-expansion-panel>
+								<v-expansion-panel-header class="text--primary">
+									<v-icon color="accent">mdi-layers</v-icon>
+									<span class="mx-2">{{ $t('tools.community.community_types') }}</span>
+								</v-expansion-panel-header>
+								<v-expansion-panel-content>
+									<v-radio-group
+									v-model="selectedLocationType"
+									@change="selectLocationType"
+									class="mt-0"
+									>
+									<v-radio 
+										color="accent"
+										v-for="layer in layers" 
+										:key="layer.id" 
+										:value="layer" 
+										:label="layer['name_' + locale]">
+									</v-radio>
+									</v-radio-group>
+								</v-expansion-panel-content>
+							</v-expansion-panel>
+						</v-expansion-panels>
 					</l-control>
 				</l-map>
 			</v-col>
@@ -266,6 +272,7 @@ export default {
 			this.setFilterSelections(newFilterSelections);
 		},
 		drawMap() {
+			this.setDefaultDockedTooltip();
 			this.geojson = featureCollection(this.exploreData.locationData
 				.filter(ld => !!ld.geojson)
 				.map(ld => feature(JSON.parse(ld.geojson), 
@@ -311,7 +318,7 @@ export default {
 				});
 			});
 			layer.on('mouseout', () => {
-				this.setDockedTooltip(null);
+				this.setDefaultDockedTooltip()
 			});
 			layer.on('click', (e) => {
 				this.selectLocation(e.target.feature.id);
@@ -326,6 +333,18 @@ export default {
 				this.shadingRanges.findIndex(
 					range => feature.properties.value >= range[0].value && feature.properties.value <= range[1].value)
 			];
+		},
+		setDefaultDockedTooltip() {
+			this.setDockedTooltip({
+					value: null,
+					suppressed: null,
+					noData: null,
+					moeLow: null,
+					moeHigh: null,
+					location: null,
+					year: this.exploreData.filters.yearFilter.options[0].id,
+					indicatorFilters: this.exploreData.filters.indicatorFilters
+				});
 		}
 	},
 }

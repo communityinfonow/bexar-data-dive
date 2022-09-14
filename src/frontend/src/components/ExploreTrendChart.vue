@@ -7,6 +7,8 @@
 					:draw="drawChart"
 					:showLabels="showTrendLabels"
 					:setShowLabels="setShowTrendLabels"
+					dataVisualElementId="trend_chart_container"
+					dataVisualName="trend_chart"
 				>
 				</explore-tools-panel>
 			</v-col>

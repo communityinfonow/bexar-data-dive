@@ -5,7 +5,7 @@
       <span class="float-left ml-4" style="line-height: 40px; font-size: 1.2em;">{{ $t('app.name') }} <sup class="text-caption font-weight-bold">BETA</sup></span>
     </v-toolbar-title>
     <v-spacer></v-spacer>
-    <v-btn-toggle :value="locale" mandatory group dark>
+    <v-btn-toggle :value="locale" mandatory group dark data-html2canvas-ignore>
       <v-btn text tile plain value="en" class="header-button" @click="setLocale('en')">English</v-btn>
       <div style="margin-top: 4px;" title="Coming soon"><v-btn text tile plain value="es" class="header-button" @click="setLocale('es')" disabled>Español</v-btn></div>
     </v-btn-toggle>

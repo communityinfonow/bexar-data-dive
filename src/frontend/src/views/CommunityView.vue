@@ -118,7 +118,7 @@
             </l-map>
           </v-col>
           <v-col cols="10">
-            <h1 class="text-h3 mt-2 mb-4">{{ community.location['name_' + locale] }}</h1>
+            <h1 class="text-h3 mt-2 mb-4" id="community_name">{{ community.location['name_' + locale] }}</h1>
             <v-select 
               style="width: 200px;"
               color="accent"
@@ -138,10 +138,9 @@
             <h2 :id="'category_' + data.category.id" class="text-h4 mb-4">{{ data.category['name_' + locale]}}</h2>
             <template v-for="item in data.indicators">
               <template v-if="item.indicators">
-                <div :key="'category_' + item.category.id" class="ml-4">
-                  <h3 class="text-h5 mb-2">{{ item.category['name_' + locale]}}</h3>
+                <div :key="'category_' + item.category.id">
                   <template v-for="subItem in item.indicators">
-                    <community-indicator :item="subItem" :key="'sub_indicator_' + subItem.indicator.id" :maxDemographics="maxDemographics"></community-indicator>
+                    <community-indicator :item="subItem" :parentName="item.category['name_' + locale]" :key="'sub_indicator_' + subItem.indicator.id" :maxDemographics="maxDemographics"></community-indicator>
                   </template>
                 </div>
               </template>
