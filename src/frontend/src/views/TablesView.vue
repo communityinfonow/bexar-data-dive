@@ -342,6 +342,7 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
+import axios from 'axios'
 import i18n from '@/i18n'
 import router from '@/router/index'
 import MenuToolbar from '@/components/MenuToolbar'
@@ -673,7 +674,18 @@ export default {
       this.getTablesData(this.selections);
     },
     downloadTablesData() {
-      window.open('/api/tables-download?indicator=' + this.indicator.id, '_blank');
+      let downloadSelections = Object.assign({}, this.selections);
+      downloadSelections.perPage = -1;
+      axios.post('/api/tables-download', { 
+        ...downloadSelections 
+      }).then(response => {
+        console.log(response);
+        let fileLink = document.createElement('a');
+        fileLink.download = 'table_download.csv';
+        fileLink.href = window.URL.createObjectURL(new Blob([response.data], { type: 'octet/stream'}))
+        fileLink.click();
+      });
+      //window.open('/api/tables-download?indicator=' + this.indicator.id, '_blank');
     },
     selectAllLocationTypesChange() {
       this.locationTypes.forEach(i => i.selected = this.selectAllLocationTypes);

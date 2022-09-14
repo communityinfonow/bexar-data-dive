@@ -46,10 +46,8 @@ public class TablesController {
 	 * @return the tables data spreadsheet
 	 * @throws IOException
 	 */
-	@GetMapping(value="/api/tables-download")
-    public ResponseEntity<ByteArrayResource> downloatTable(@RequestParam String indicator) throws Exception {
-		TablesDataRequest request = new TablesDataRequest();
-		request.setIndicator(indicator);
+	@PostMapping(value="/api/tables-download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public ResponseEntity<ByteArrayResource> downloatTable(@RequestBody TablesDataRequest request) throws Exception {
 		HttpHeaders header = new HttpHeaders();
 		header.setContentType(new MediaType("application", "force-download"));
 		header.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=table-download.csv");
