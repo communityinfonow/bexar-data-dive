@@ -32,6 +32,7 @@
 					flat
 					dense
 					:rules="[v => !!v || 'Please make a selection']"
+					@change="requestApply"
 				></v-autocomplete>
 				<v-autocomplete
 					:label="filters.yearFilter.type['name_' + locale]"
@@ -44,6 +45,7 @@
 					flat
 					dense
 					:rules="[v => !!v || 'Please make a selection']"
+					@change="requestApply"
 				></v-autocomplete>
 				<template v-for="filter in filters.indicatorFilters">
 					<v-autocomplete
@@ -58,11 +60,12 @@
 						flat
 						dense
 						:rules="[v => !!v || 'Please make a selection']"
+						@change="requestApply"
 					></v-autocomplete>
 				</template>
 			</v-card-text>
 			<v-card-actions class="d-flex justify-end">
-				<v-btn style="font-size: 14pt;" class="font-weight-bold" color="accent" @click="applyFilters" data-html2canvas-ignore>
+				<v-btn style="font-size: 14pt;" class="font-weight-bold" color="accent" :disabled="!applyNeeded" @click="applyFilters" data-html2canvas-ignore>
 					{{ $t('tools.explore.apply_filters') }}
 				</v-btn>
 			</v-card-actions>
@@ -78,6 +81,7 @@ export default {
 	name: 'FiltersPanel',
 	data() {
 		return {
+			applyNeeded: false,
 			selectedLocationType: null,
 			selectedLocation: null,
 			selectedYear: null,
@@ -90,7 +94,7 @@ export default {
 		locationFilterOptions() {
 			return this.filters.locationFilter.options
 				.filter(option => option.typeId === this.selectedLocationType)
-		},
+		}
 	},
 	watch: {
 		filters() {
@@ -105,6 +109,7 @@ export default {
 	methods: {
 		...mapActions(['setFilterSelections']),
 		initFilters() {
+			this.applyNeeded = false;
 			this.indicatorFilterSelections = {}
 			this.selectedLocationType = router.currentRoute.query.locationType || this.filters?.locationTypeFilter.options[0]?.id
 			this.selectedLocation = router.currentRoute.query.location || this.filters?.locationFilter.options.find(o => o.typeId == this.selectedLocationType)?.id
@@ -117,9 +122,13 @@ export default {
 				this.indicatorFilterSelections[filter.type.id] = option 
 			});
 		},
+		requestApply() {
+			this.applyNeeded = true;
+		},
 		selectLocationType() {
 			this.selectedLocation = this.filters.locationFilter.options
 				.filter(option => option.typeId === this.selectedLocationType)[0]?.id
+			this.requestApply();
 		},
 		validateFilters() {
 			this.$refs.filtersForm.validate()
@@ -135,7 +144,8 @@ export default {
 		applyFilters() { 
 			this.validateFilters();
 			if (this.valid) {
-				this.setFilterSelections(this.getFilterSelections())
+				this.setFilterSelections(this.getFilterSelections());
+				this.applyNeeded = false;
 			}
 		}
 	},

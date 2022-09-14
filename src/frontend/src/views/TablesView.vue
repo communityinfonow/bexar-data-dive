@@ -679,7 +679,6 @@ export default {
       axios.post('/api/tables-download', { 
         ...downloadSelections 
       }).then(response => {
-        console.log(response);
         let fileLink = document.createElement('a');
         fileLink.download = 'table_download.csv';
         fileLink.href = window.URL.createObjectURL(new Blob([response.data], { type: 'octet/stream'}))
