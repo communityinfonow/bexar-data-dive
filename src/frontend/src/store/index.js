@@ -55,15 +55,15 @@ export default new Vuex.Store({
           subTools: [
             {
               name: i18n.t('tools.explore.tabs.map'),
-              fullDescription: "TODO"
+              fullDescription: "The map pulls data from multiple local, state and national data sources at the county, ZIP code, SSA (Statistical Small Area), and census tract level to display an indicators geographic distribution."
             },
             {
               name: i18n.t('tools.explore.tabs.trend'),
-              fullDescription: "TODO"
+              fullDescription: "The trend chart pulls data from multiple local, state and national data sources at the county, ZIP code, SSA (Statistical Small Area), and census tract level to display an indicator, or multiple indicators, across time."
             },
             {
               name: i18n.t('tools.explore.tabs.compare'),
-              fullDescription: "TODO"
+              fullDescription: "The comparison chart pulls data from multiple local, state and national data sources at the county, ZIP code, SSA (Statistical Small Area), and census tract level to display an indicator, or multiple indicators, across categories."
             }
           ]
         },
