@@ -60,7 +60,6 @@ export default {
 		this.drawChart();
 	},
 	methods: {
-		//TODO: don't change bar color on hover
 		drawChart() {
 			let textStyle = {
 				fontFamily: '"Roboto", sans-serif !important',
@@ -91,6 +90,9 @@ export default {
 			let series = { 
 				type: 'bar', 
 				cursor: 'default',
+				emphasis: {
+					disabled: true
+				},
 				barWidth: '120px',
 				label: { 
 					show: true, 

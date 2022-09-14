@@ -138,6 +138,10 @@ export default {
 						}; 
 					}),
 				type: 'line',
+				cursor: 'default',
+				emphasis: {
+					disabled: true
+				},
 				symbol: 'circle',
 				symbolSize: 12,
 				label: {
@@ -195,6 +199,7 @@ export default {
 						}; 
 					}),
 				type: 'bar',
+				cursor: 'default',
 				label: {
 					show: true,
 					position: 'top',

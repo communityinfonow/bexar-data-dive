@@ -119,7 +119,7 @@ export default {
 			}
 		}
 	},
-	//FIXME: refreshing does not re-draw the compared columns
+	
 	mounted () {
 		this.initializeCompareByItems();
 		if (router.currentRoute.query.compareBy) {

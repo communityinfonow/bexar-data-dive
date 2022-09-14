@@ -97,7 +97,6 @@ export default {
 	},
 	methods: {
 		...mapActions(['setDockedTooltip', 'setShowCompareLabels']),
-		//TODO: don't change bar color or cursor on hover
 		drawChart() {
 			let textStyle = {
 				fontFamily: '"Roboto", sans-serif !important',
@@ -173,6 +172,10 @@ export default {
 			option.series = {
 				data: seriesData,
 				type: 'bar',
+				cursor: 'default',
+				emphasis: {
+					disabled: true
+				},
 				label: { 
 					show: true, 
 					position: 'top',
