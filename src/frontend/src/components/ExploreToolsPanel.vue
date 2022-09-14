@@ -67,7 +67,7 @@ import html2canvas from 'html2canvas'
 export default {
 	name: 'ExploreToolsPanel',
 	computed: {
-		...mapState(['filters', 'filterSelections', 'locale']),
+		...mapState(['filters', 'filterSelections', 'locale', 'filters']),
 		labels: {
 			get() { return this.showLabels },
 			set(value) { this.setShowLabels(value) }
@@ -102,6 +102,14 @@ export default {
 		}
 	},
 	watch: {
+		filters() {
+			this.compareBy = null;
+			this.compareWithQuery = '';
+			this.compareWith = [];
+			this.valid = true;
+			this.initializeCompareByItems();
+			this.$refs.compareForm.resetValidation();
+		},
 		filterSelections() {
 			if (this.compareBy) {
 				let prev = this.compareWith.map(w => w.id);
@@ -113,10 +121,7 @@ export default {
 	},
 	//FIXME: refreshing does not re-draw the compared columns
 	mounted () {
-		this.compareByItems.push(this.filters?.locationFilter.type);
-		this.filters?.indicatorFilters.forEach(filter => {
-			this.compareByItems.push(filter.type)
-		});
+		this.initializeCompareByItems();
 		if (router.currentRoute.query.compareBy) {
 			if (router.currentRoute.query.compareBy === 'l') {
 				this.compareBy = this.compareByItems[0];
@@ -136,6 +141,13 @@ export default {
 	},
 	methods: {
 		...mapActions(['setCompareSelections', 'setLoading']),
+		initializeCompareByItems() {
+			this.compareByItems = [];
+			this.compareByItems.push(this.filters?.locationFilter.type);
+			this.filters?.indicatorFilters.forEach(filter => {
+				this.compareByItems.push(filter.type)
+			});
+		},
 		selectCompareBy() {
 			this.compareWith = [];
 			this.compareWithItems = [];

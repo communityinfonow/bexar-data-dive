@@ -1,5 +1,5 @@
 <template>
-	<div class="my-2">
+	<div v-if="exploreData" class="my-2">
 		<v-card outlined tile class="fill-height docked-tooltip">
 			<v-card-title class="docked-tooltip-title white--text">
 				{{ $t('tools.explore.docked_tooltip.now_viewing')}}

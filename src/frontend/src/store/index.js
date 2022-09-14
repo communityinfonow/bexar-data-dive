@@ -212,11 +212,11 @@ export default new Vuex.Store({
       context.commit('SET_INDICATOR', indicator)
       if (indicator == null) {
         context.commit('SET_SOURCE', null)
-        context.commit('SET_FILTERS', null)
         context.commit('SET_FILTER_SELECTIONS', null)
         context.commit('SET_COMPARE_SELECTIONS', null)
         return Promise.resolve();
       } else {
+        context.commit('SET_COMPARE_SELECTIONS', null)
         return context.dispatch('getSource', indicator).then(() => {
           return context.dispatch('getFilters', indicator)
         });
