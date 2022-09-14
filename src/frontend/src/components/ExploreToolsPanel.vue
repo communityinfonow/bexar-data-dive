@@ -130,9 +130,9 @@ export default {
 					this.compareWith.push(this.compareWithItems.find(i => i.typeId == p.split("_")[0] && i.id == p.split("_")[1]));
 				});
 			} else {
-				this.compareBy = this.compareByItems.find(i => i.id);
+				this.compareBy = this.compareByItems.find(i => i.id == router.currentRoute.query.compareBy);
 				this.selectCompareBy();
-				router.currentRoute.query.compareWith?.forEach(p => {
+				[].concat(router.currentRoute.query.compareWith).forEach(p => {
 					this.compareWith.push(this.compareWithItems.find(i => i.id == p));
 				});
 			}
