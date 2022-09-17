@@ -80,6 +80,7 @@ public class FilterRepositoryPostgresql implements FilterRepository {
 			public Filter extractData(ResultSet rs) throws SQLException, DataAccessException {
 				Filter filter = new Filter();
 				filter.setType(new FilterType());
+				filter.getType().setId("l");
 				filter.getType().setName_en("Location");
 				filter.getType().setName_es("Location (es)");
 				while (rs.next()) {
@@ -114,6 +115,7 @@ public class FilterRepositoryPostgresql implements FilterRepository {
 			public Filter extractData(ResultSet rs) throws SQLException, DataAccessException {
 				Filter filter = new Filter();
 				filter.setType(new FilterType());
+				filter.getType().setId("y");
 				filter.getType().setName_en("Year");
 				filter.getType().setName_es("Year (es)");
 				while (rs.next()) {

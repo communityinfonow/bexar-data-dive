@@ -1,20 +1,14 @@
 package org.cinow.omh.tables;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.cinow.omh.filters.Filter;
 import org.cinow.omh.filters.FilterRepository;
 import org.cinow.omh.indicators.IndicatorRepository;
 import org.cinow.omh.sources.SourceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 /**
  * Service class for the Tables and Downloads view.

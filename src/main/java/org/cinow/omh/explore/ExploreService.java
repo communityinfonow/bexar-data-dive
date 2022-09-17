@@ -58,12 +58,17 @@ public class ExploreService {
 
 		if (dataRequest.getComparisons() != null) {
 			exploreData.setCompareData(new ArrayList<>());
-			if (dataRequest.getComparisons().getType().getName_en().equals("Location")) {
+			if (dataRequest.getComparisons().getType().getId().equals("l")) {
 				for (FilterOption option : dataRequest.getComparisons().getOptions()) {
 					dataRequest.getFilters().setLocation(option.getId());
 					dataRequest.getFilters().setLocationType(option.getTypeId());
 					exploreData.getCompareData().addAll(this.exploreRepository.getExploreData(dataRequest, false));
 				}		
+			} else if (dataRequest.getComparisons().getType().getId().equals("y")) { 
+				for (FilterOption option : dataRequest.getComparisons().getOptions()) {
+					dataRequest.getFilters().setYear(option.getId());
+					exploreData.getCompareData().addAll(this.exploreRepository.getExploreData(dataRequest, false));
+				}
 			} else {
 				for (FilterOption option : dataRequest.getComparisons().getOptions()) {
 					dataRequest.getFilters().getIndicatorFilters().put(dataRequest.getComparisons().getType().getId(), option);

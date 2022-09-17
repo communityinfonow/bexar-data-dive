@@ -112,10 +112,14 @@ export default {
 			};
 			let xAxisData = [];
 			if (this.exploreData.compareData) {
-				xAxisData.push(this.compareSelections.type.name_en === 'Location' 
-					? this.exploreData.filters.locationFilter.options[0]['name_' + this.locale]
-					: this.exploreData.filters.indicatorFilters.find(f => f.type.id === this.compareSelections.type.id).options[0]['name_' + this.locale])
-				xAxisData.push(...this.compareSelections.filterOptions.map(o => o['name_' + this.locale]))
+				if (this.compareSelections.type.id === 'l') {
+					xAxisData.push(this.exploreData.filters.locationFilter.options[0]['name_' + this.locale]);
+				} else if (this.compareSelections.type.id === 'y') {
+					xAxisData.push(this.exploreData.filters.yearFilter.options[0]['name_' + this.locale]);
+				} else {
+					xAxisData.push(this.exploreData.filters.indicatorFilters.find(f => f.type.id === this.compareSelections.type.id).options[0]['name_' + this.locale])
+				}
+				xAxisData.push(...this.compareSelections.options.map(o => o['name_' + this.locale]))
 			} else {
 				xAxisData.push('')
 			}
@@ -155,15 +159,16 @@ export default {
 			if (this.exploreData.compareData) {
 				seriesData.push(...this.exploreData.compareData.map((cd, index) => {
 					let compareIndicatorFilters = JSON.parse(JSON.stringify(this.exploreData.filters.indicatorFilters));
-					if (this.compareSelections.type.id) {
-						compareIndicatorFilters.find(f => f.type.id === this.compareSelections.type.id).options[0] = this.compareSelections.filterOptions[index];
+					if (!isNaN(this.compareSelections.type.id)) {
+						compareIndicatorFilters.find(f => f.type.id === this.compareSelections.type.id).options[0] = this.compareSelections.options[index];
 					}
+					let year = this.compareSelections.type.id === 'y' ? this.compareSelections.options[index].id : this.exploreData.filters.yearFilter.options[0].id;
 					return  { 
-						value: cd.yearData[this.exploreData.filters.yearFilter.options[0].id]?.value || 0,
-						suppressed: cd.yearData[this.exploreData.filters.yearFilter.options[0].id]?.suppressed,
-						noData: !cd.yearData[this.exploreData.filters.yearFilter.options[0].id]?.value,
-						moeLow: cd.yearData[this.exploreData.filters.yearFilter.options[0].id]?.moeLow,
-						moeHigh: cd.yearData[this.exploreData.filters.yearFilter.options[0].id]?.moeHigh,
+						value: cd.yearData[year]?.value || 0,
+						suppressed: cd.yearData[year]?.suppressed,
+						noData: !cd.yearData[year]?.value,
+						moeLow: cd.yearData[year]?.moeLow,
+						moeHigh: cd.yearData[year]?.moeHigh,
 						location: cd.location['name_' + this.locale],
 						indicatorFilters: compareIndicatorFilters
 					};

@@ -278,13 +278,13 @@ export default new Vuex.Store({
     },
     setCompareSelections(context, selections) {
       context.commit('SET_COMPARE_SELECTIONS', selections);
-      let compareWiths = selections.filterOptions.map(o => (o.typeId ? o.typeId + "_" : "") + o.id)
+      let compareWiths = selections.options.map(o => (o.typeId ? o.typeId + "_" : "") + o.id)
       if (compareWiths.length === 1) {
         compareWiths = compareWiths[0]
       }
       let compareQuery = {
         ...router.currentRoute.query,
-        compareBy: selections.type.id || 'l',
+        compareBy: selections.type.id,
         compareWith: compareWiths
 
       };
