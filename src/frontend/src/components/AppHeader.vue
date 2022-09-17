@@ -7,7 +7,7 @@
     <v-spacer></v-spacer>
     <v-btn-toggle :value="locale" mandatory group dark data-html2canvas-ignore>
       <v-btn text tile plain value="en" class="header-button" @click="setLocale('en')">English</v-btn>
-      <div style="margin-top: 4px;" title="Coming soon"><v-btn text tile plain value="es" class="header-button" @click="setLocale('es')" disabled>Español</v-btn></div>
+      <div style="margin-top: 4px;" title="Próximamente"><v-btn text tile plain value="es" class="header-button" @click="setLocale('es')" disabled>Español</v-btn></div>
     </v-btn-toggle>
     <span><img src="/img/cinow_logo.png" style="height: 30px;" alt="CI:Now Logo" /></span>
   </v-app-bar>
