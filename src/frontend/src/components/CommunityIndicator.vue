@@ -16,7 +16,7 @@
 							{{ item.source['name_' + locale] }} ({{ item.year }})
 						</p>
 					</div>
-					<v-btn color="accent" icon @click="downloadImage" data-html2canvas-ignore><v-icon>mdi-download</v-icon></v-btn>
+					<download-menu :downloadData="downloadData" :downloadImage="downloadImage"></download-menu>
 				</div>
 				<v-row>
 					<v-col cols="12">
@@ -45,11 +45,13 @@ import { mapActions, mapState } from 'vuex'
 import CommunityChart from '@/components/CommunityChart'
 import { format } from '@/formatter/formatter'
 import html2canvas from 'html2canvas'
+import DownloadMenu from '@/components/DownloadMenu'
 
 export default {
 	name: 'CommunityView',
 	components: {
-		CommunityChart
+		CommunityChart,
+		DownloadMenu
 	},
 	props: {
 		item: {
@@ -69,6 +71,9 @@ export default {
 		...mapActions(['setLoading']),
 		formatValue(type, value) {
 			return format(type, value)
+		},
+		downloadData() {
+			console.log('TODO');
 		},
 		downloadImage() {
 			this.setLoading(true);

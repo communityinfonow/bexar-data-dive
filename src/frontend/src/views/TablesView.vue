@@ -42,9 +42,7 @@
               <span v-if="tablesData.category.parentCategoryId">{{ tablesData.category['name_' + locale] }} - </span>
               {{ tablesData.indicator['name_' + locale] }}
             </span>
-            <v-btn color="accent" icon @click="downloadTablesData">
-              <v-icon>mdi-download</v-icon>
-            </v-btn>
+            <download-menu :downloadData="downloadTablesData"></download-menu>
           </h1>
           <h2 class="text-subtitle-1 mb-2">{{ tablesData.source['name_' + locale] }}</h2>
           <v-text-field v-model="search" :label="$t('tools.common.search')" hide-details @input="loadTablesData()">
@@ -347,13 +345,15 @@ import i18n from '@/i18n'
 import router from '@/router/index'
 import MenuToolbar from '@/components/MenuToolbar'
 import FeaturedCard from '@/components/FeaturedCard'
+import DownloadMenu from '@/components/DownloadMenu'
 import debounce from 'debounce'
 
 export default {
   name: 'TablesView',
   components: {
     MenuToolbar,
-    FeaturedCard
+    FeaturedCard,
+    DownloadMenu
   },
   data() {
     return {
@@ -684,7 +684,6 @@ export default {
         fileLink.href = window.URL.createObjectURL(new Blob([response.data], { type: 'octet/stream'}))
         fileLink.click();
       });
-      //window.open('/api/tables-download?indicator=' + this.indicator.id, '_blank');
     },
     selectAllLocationTypesChange() {
       this.locationTypes.forEach(i => i.selected = this.selectAllLocationTypes);

@@ -52,7 +52,7 @@
 					style="margin-top: 2px;"
 					v-model="labels"
 				></v-switch>
-				<v-btn color="accent" icon @click="downloadImage" data-html2canvas-ignore><v-icon>mdi-download</v-icon></v-btn>
+				<download-menu :downloadData="downloadData" :downloadImage="downloadImage"></download-menu>
 			</v-col>
 		</v-row>
 	</v-form>
@@ -62,10 +62,14 @@
 
 import { mapActions, mapState } from 'vuex'
 import router from '@/router/index'
+import DownloadMenu from '@/components/DownloadMenu'
 import html2canvas from 'html2canvas'
 
 export default {
 	name: 'ExploreToolsPanel',
+	components: {
+		DownloadMenu
+	},
 	computed: {
 		...mapState(['filters', 'filterSelections', 'locale', 'filters']),
 		labels: {
@@ -174,6 +178,9 @@ export default {
 			if (this.valid) {
 				this.setCompareSelections(this.getComparison());
 			}
+		},
+		downloadData() {
+			console.log('todo')
 		},
 		downloadImage() {
 			this.setLoading(true);

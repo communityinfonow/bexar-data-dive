@@ -118,7 +118,10 @@
             </l-map>
           </v-col>
           <v-col cols="10">
-            <h1 class="text-h3 mt-2 mb-4" id="community_name">{{ community.location['name_' + locale] }}</h1>
+            <div class="d-flex justify-space-between">
+              <h1 class="text-h3 mt-2 mb-4" id="community_name">{{ community.location['name_' + locale] }}</h1>
+              <download-menu :downloadData="downloadCommunityData"></download-menu>
+            </div>
             <v-select 
               style="width: 200px;"
               color="accent"
@@ -167,6 +170,7 @@ import { LMap, LTileLayer, LControl, LGeoJson } from 'vue2-leaflet'
 import { feature, featureCollection } from '@turf/helpers'
 import MenuToolbar from '@/components/MenuToolbar'
 import CommunityIndicator from '@/components/CommunityIndicator'
+import DownloadMenu from '@/components/DownloadMenu'
 
 export default {
   name: 'CommunityView',
@@ -176,7 +180,8 @@ export default {
     LControl,
     LGeoJson,
     MenuToolbar,
-    CommunityIndicator
+    CommunityIndicator,
+    DownloadMenu
   },
   data() {
     return {
@@ -395,6 +400,9 @@ export default {
 		},
     skipToCategory(category) {
       goTo("#category_" + category)
+    },
+    downloadCommunityData() {
+      console.log('TODO');
     }
   },
 }
