@@ -296,7 +296,7 @@ export default {
 			}
 			layer.options.fillColor = this.getLayerShadingColor(feature);
 			if (this.showMapLabels) {
-				layer.bindTooltip(layer.feature.properties.locationName.replace('Zip Code', 'Zip').replace('Census Tract', 'Tract'), 
+				layer.bindTooltip(layer.feature.properties.locationName.replace('Zip Code', 'Zip').replace('Census Tract', 'Tract') + '<br>' + format(this.exploreData.indicator.typeId, layer.feature.properties.value), 
 					{
 						className: 'location-label',
 						permanent: true, 
@@ -360,5 +360,6 @@ export default {
 		color: #000;
 		font-size: 14px;
 		text-shadow: -2px -2px 2px #fff, 2px -2px 2px #fff, -2px 2px 2px #fff, 2px 2px 2px #fff;
+		text-align: center;
 	}
 </style>
