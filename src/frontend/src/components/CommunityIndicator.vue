@@ -41,6 +41,7 @@
 </template>
 
 <script>
+import i18n from '@/i18n'
 import { mapActions, mapState } from 'vuex'
 import CommunityChart from '@/components/CommunityChart'
 import { format } from '@/formatter/formatter'
@@ -48,7 +49,7 @@ import html2canvas from 'html2canvas'
 import DownloadMenu from '@/components/DownloadMenu'
 
 export default {
-	name: 'CommunityView',
+	name: 'CommunityIndicator',
 	components: {
 		CommunityChart,
 		DownloadMenu
@@ -73,7 +74,22 @@ export default {
 			return format(type, value)
 		},
 		downloadData() {
-			console.log('TODO');
+			//TODO: espanol headers
+			let csv = 'Indicator,Source,Location,Year,Race/Ethnicity,Value,Range';
+			csv += this.item.demographicData.map(data => {
+				return '\n"' + ((this.parentName ? this.parentName + ' - ' : '') + this.item.indicator['name_' + this.locale])+ '",'
+					+ '"' + this.item.source['name_' + this.locale] + '",'
+					+ '"' + this.community.location['name_' + this.locale] + '",'
+					+ this.item.year + ','
+					+ '"' + (data.raceFilter['name_' + this.locale] || i18n.t('data.all')) + '",'
+					+ (data.suppressed ? i18n.t('data.suppressed') : data.value === null ? i18n.t('data.no_data') : data.value) + ','
+					+ (data.moeLow && data.moeHigh ? (data.moeLow + ' - ' + data.moeHigh) : '');
+				});
+			
+			let downloadLink = document.createElement('a');
+			downloadLink.download = 'community_data.csv';
+			downloadLink.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+			downloadLink.click();
 		},
 		downloadImage() {
 			this.setLoading(true);

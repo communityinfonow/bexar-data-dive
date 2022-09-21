@@ -402,7 +402,33 @@ export default {
       goTo("#category_" + category)
     },
     downloadCommunityData() {
-      console.log('TODO');
+      //TODO: espanol headers
+      let csv = 'Category,Indicator,Source,Location,Year,Race/Ethnicity,Value,Range';
+      this.sortedData.forEach(item => {
+        item.subcategories.forEach(subcat => {
+          csv += this.generateIndicatorCsvRecords(item.category, subcat.category, subcat.indicators)
+        });
+        csv += this.generateIndicatorCsvRecords(item.category, null, item.indicators.filter(ind => !ind.indicators));
+      });
+      
+      let downloadLink = document.createElement('a');
+      downloadLink.download = 'community_data.csv';
+      downloadLink.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+      downloadLink.click();
+    },
+    generateIndicatorCsvRecords(cat, subcat, inds) {
+      return inds.map(ind => {
+        return ind.demographicData.map(data => {
+          return '\n"' + cat['name_' + this.locale] + '",' 
+            + '"' + ((subcat ? subcat['name_' + this.locale] + ' - ' : '') + ind.indicator['name_' + this.locale])+ '",'
+            + '"' + ind.source['name_' + this.locale] + '",'
+            + '"' + this.community.location['name_' + this.locale] + '",'
+            + ind.year + ','
+            + '"' + (data.raceFilter['name_' + this.locale] || i18n.t('data.all')) + '",'
+            + (data.suppressed ? i18n.t('data.suppressed') : data.value === null ? i18n.t('data.no_data') : data.value) + ','
+            + (data.moeLow && data.moeHigh ? (data.moeLow + ' - ' + data.moeHigh) : '');
+        });
+      }).filter(record => record !== '');
     }
   },
 }

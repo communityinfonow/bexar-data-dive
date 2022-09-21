@@ -1,3 +1,7 @@
+--liquibase formatted sql
+
+--changeset herronrb:indicators9
+
 update tbl_indicators
 set description_en = '',
 	description_es = '';
