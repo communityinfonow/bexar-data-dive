@@ -38,7 +38,7 @@ public class TablesRepositoryPostgresql implements TablesRepository{
 			+ " 	edu.id_ as edu_id, coalesce(edu.name_en, 'All') as edu_en, coalesce(edu.name_es, 'Todos') as edu_es, "
 			+ " 	inc.id_ as inc_id, coalesce(inc.name_en, 'All') as inc_en, coalesce(inc.name_es, 'Todos') as inc_es "
 			+ " from tbl_indicator_values iv "
-			+ " 	join tbl_locations l on iv.location_id = l.id_"
+			+ " 	join tbl_locations l on iv.location_id = l.id_ and iv.location_type_id = l.location_type_id "
 			+ " 	join tbl_location_types lt on l.location_type_id = lt.id_ "
 			+ " 	left join tbl_filter_options race on race.id_ = iv.race_id "
 			+ " 	left join tbl_filter_options age on age.id_ = iv.age_id "

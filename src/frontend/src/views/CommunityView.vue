@@ -136,6 +136,7 @@
             </v-select>
           </v-col>
         </v-row>
+        <h2 v-if="noCommunityData" class="text-h4">{{ $t('tools.community.data_coming_soon')}}</h2>
         <section v-for="data in sortedData" :key="'category_' + data.category.id">
           <div v-if="data.category.hasData">
             <h2 :id="'category_' + data.category.id" class="text-h4 mb-4">{{ data.category['name_' + locale]}}</h2>
@@ -224,6 +225,9 @@ export default {
       }
 
       return crumbs;
+    },
+    noCommunityData() {
+      return this.community && !this.categories.some(c => c.hasData);
     },
     sortedData() {
       let sortedData = JSON.parse(JSON.stringify(this.community?.indicatorData));

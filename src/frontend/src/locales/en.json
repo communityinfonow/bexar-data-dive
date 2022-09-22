@@ -19,7 +19,8 @@
       "get_started": "To get started, browse or search for an indicator using the menu above or select a location on the map below.",
       "community_types": "Community Types",
       "skip": "Skip ahead to",
-      "coming_soon": "Coming Soon"
+      "coming_soon": "Coming Soon",
+      "data_coming_soon": "Data Coming Soon"
     },
     "explore": {
       "name": "Explore Data",
