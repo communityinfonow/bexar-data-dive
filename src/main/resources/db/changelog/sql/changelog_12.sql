@@ -20,7 +20,7 @@ create table tbl_indicator_values__deleted (
 	foreign key(location_id, location_type_id) references tbl_locations(id_, location_type_id)
 );
 
-create or replace procedure delete_indicator_values (ind numeric, yr text) as '
+create or replace function delete_indicator_values (ind numeric, yr text) returns void language plpgsql as '
 	begin
 		-- delete any existing backup data for the indicator/year
 		delete from tbl_indicator_values__deleted where indicator_id = ind and year_ = yr;
@@ -33,9 +33,9 @@ create or replace procedure delete_indicator_values (ind numeric, yr text) as '
 		refresh materialized view mv_indicator_metadata;
 		refresh materialized view mv_indicator_years;
 	end;
-' language plpgsql;
+';
 
-create or replace procedure restore_indicator_values (ind numeric, yr text) as '
+create or replace function restore_indicator_values (ind numeric, yr text) returns void language plpgsql as '
 	begin
 		-- restore the data for the indicator/year
 		insert into tbl_indicator_values
@@ -46,4 +46,4 @@ create or replace procedure restore_indicator_values (ind numeric, yr text) as '
 		refresh materialized view mv_indicator_metadata;
 		refresh materialized view mv_indicator_years;
 	end;
-' language plpgsql;
+';

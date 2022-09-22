@@ -12,7 +12,7 @@
                 <h4 class="mb-1 text-h6" :id="'indicator_' + subItem.indicator.id">{{ subItem.indicator['name_' + locale] }}</h4>
                 <section v-if="subItem.indicator['description_' + locale] !== ''" v-html="subItem.indicator['description_' + locale]"></section>
                 <p v-if="subItem.indicator['description_' + locale] === ''">{{ $t('tools.community.coming_soon') }}</p>
-                <p><a target="_blank" :href="subItem.source.url">{{ subItem.source['name_' + locale] }}</a></p>
+                <p><a target="_blank" :href="subItem.source.url">{{ $t('about_data_view.visit_source') }} <sup><v-icon x-small color="primary">mdi-open-in-new</v-icon></sup></a></p>
               </section>
             </template>
             <template v-else>
@@ -20,7 +20,7 @@
               <section class="mb-8">
                 <section v-if="!item.items && item.indicator['description_' + locale] !== ''" v-html="item.indicator['description_' + locale]"></section>
                 <p v-if="item.indicator['description_' + locale] === ''">{{ $t('tools.community.coming_soon') }}</p>
-                <p><a target="_blank" :href="item.source.url">{{ item.source['name_' + locale] }}</a></p>
+                <p><a target="_blank" :href="item.source.url">{{ $t('about_data_view.visit_source') }} <sup><v-icon x-small color="primary">mdi-open-in-new</v-icon></sup></a></p>
               </section>
             </template>
           </section>

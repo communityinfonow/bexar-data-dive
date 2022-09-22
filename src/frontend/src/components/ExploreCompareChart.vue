@@ -3,7 +3,7 @@
 		<v-row class="no-gutters flex-wrap flex-column fill-height">
 			<v-col cols="auto">
 				<explore-tools-panel 
-					v-if="filters"
+					v-if="filters && exploreData"
 					:showCompareOptions="true"
 					:showLabels="showCompareLabels"
 					:setShowLabels="setShowCompareLabels"
@@ -98,6 +98,9 @@ export default {
 	methods: {
 		...mapActions(['setDockedTooltip', 'setShowCompareLabels']),
 		drawChart() {
+			if (!this.chart) {
+				return;
+			}
 			let textStyle = {
 				fontFamily: '"Roboto", sans-serif !important',
 				fontSize: this.smallScreen ? '14px' : '16px'

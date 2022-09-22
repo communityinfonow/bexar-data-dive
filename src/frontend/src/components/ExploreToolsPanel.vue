@@ -60,6 +60,7 @@
 
 <script>
 
+import i18n from '@/i18n'
 import { mapActions, mapState } from 'vuex'
 import router from '@/router/index'
 import DownloadMenu from '@/components/DownloadMenu'
@@ -71,7 +72,7 @@ export default {
 		DownloadMenu
 	},
 	computed: {
-		...mapState(['filters', 'filterSelections', 'locale', 'filters']),
+		...mapState(['filters', 'filterSelections', 'locale', 'filters', 'exploreData']),
 		labels: {
 			get() { return this.showLabels },
 			set(value) { this.setShowLabels(value) }
@@ -167,7 +168,8 @@ export default {
 					.filter(o => o.id !== this.filterSelections?.location) || [];
 			} else if (this.compareBy?.name_en === 'Year') { 
 				this.compareWithItems = this.filters?.yearFilter.options
-					.filter(o => o.id !== this.filterSelections?.year) || [];
+					.filter(o => o.id !== this.filterSelections?.year
+						&& (Number(this.filterSelections?.year) - Number(o.id)) % this.exploreData.source.trendInterval === 0) || [];
 			} else {
 				this.compareWithItems = this.filters?.indicatorFilters
 					.find(filter => filter.type.name_en === this.compareBy?.name_en)?.options
@@ -190,7 +192,103 @@ export default {
 			}
 		},
 		downloadData() {
-			console.log('todo')
+			let fileName = '';
+			let csv = 'Indicator,Source,Location Type,Location,Year'
+			csv += this.filters.indicatorFilters.map(f => ',' + f.type['name_' + this.locale]).join('');
+			csv += ',Value,Range';
+			if (this.dataVisualName === 'map') {
+				fileName = 'explore_map_data.csv';
+				csv += this.exploreData.locationData.map((data) => {
+					let yearData = data.yearData[this.filterSelections.year];
+					return '\n' 
+						+ '"' + ((this.exploreData.category ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.exploreData.indicator['name_' + this.locale]) + '",'
+						+ '"' + this.exploreData.source['name_' + this.locale] + '",'
+						+ '"' + data.locationType['name_' + this.locale] + '",'
+						+ '"' + data.location['name_' + this.locale] + '",'
+						+ this.filterSelections.year + ','
+						+ this.filters.indicatorFilters.map(f => '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"').join(',') + ','
+						+ (yearData.suppressed ? i18n.t('data.suppressed') : yearData.value === null ? i18n.t('data.no_data') : yearData.value) + ','
+            			+ (yearData.moeLow && yearData.moeHigh ? (yearData.moeLow + ' - ' + yearData.moeHigh) : '');
+				}).join('');
+			} else if (this.dataVisualName === 'trend_chart') {
+				fileName = 'explore_trend_data.csv';
+				let data = this.exploreData.locationData.find(data => data.location.id === this.filterSelections.location);
+				csv += Object.entries(data.yearData).map(([year, values]) => {
+					return '\n'
+						+ '"' + ((this.exploreData.category ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.exploreData.indicator['name_' + this.locale]) + '",'
+						+ '"' + this.exploreData.source['name_' + this.locale] + '",'
+						+ '"' + data.locationType['name_' + this.locale] + '",'
+						+ '"' + data.location['name_' + this.locale] + '",'
+						+ year + ','
+						+ this.filters.indicatorFilters.map(f => '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"').join(',') + ','
+						+ (values.suppressed ? i18n.t('data.suppressed') : values.value === null ? i18n.t('data.no_data') : values.value) + ','
+            			+ (values.moeLow && values.moeHigh ? (values.moeLow + ' - ' + values.moeHigh) : '');
+				})
+			} else if (this.dataVisualName === 'compare_chart') {
+				fileName = 'explore_compare_data.csv';
+				let data = this.exploreData.locationData.find(data => data.location.id === this.filterSelections.location);
+				let yearData = data.yearData[this.filterSelections.year];
+				csv += '\n'
+					+ '"' + ((this.exploreData.category ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.exploreData.indicator['name_' + this.locale]) + '",'
+					+ '"' + this.exploreData.source['name_' + this.locale] + '",'
+					+ '"' + data.locationType['name_' + this.locale] + '",'
+					+ '"' + data.location['name_' + this.locale] + '",'
+					+ this.filterSelections.year + ','
+					+ this.filters.indicatorFilters.map(f => '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"').join(',') + ','
+					+ (yearData.suppressed ? i18n.t('data.suppressed') : yearData.value === null ? i18n.t('data.no_data') : yearData.value) + ','
+					+ (yearData.moeLow && yearData.moeHigh ? (yearData.moeLow + ' - ' + yearData.moeHigh) : '');
+				if (this.compareBy.id === 'l') {
+					this.exploreData.compareData.forEach(comp => {
+						let compYearData = comp.yearData[this.filterSelections.year];
+						csv += '\n'
+							+ '"' + ((this.exploreData.category ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.exploreData.indicator['name_' + this.locale]) + '",'
+							+ '"' + this.exploreData.source['name_' + this.locale] + '",'
+							+ '"' + comp.locationType['name_' + this.locale] + '",'
+							+ '"' + comp.location['name_' + this.locale] + '",'
+							+ this.filterSelections.year + ','
+							+ this.filters.indicatorFilters.map(f => '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"').join(',') + ','
+							+ (compYearData.suppressed ? i18n.t('data.suppressed') : compYearData.value === null ? i18n.t('data.no_data') : compYearData.value) + ','
+							+ (compYearData.moeLow && compYearData.moeHigh ? (compYearData.moeLow + ' - ' + compYearData.moeHigh) : '');
+					});
+				} else if (this.compareBy.id === 'y') {
+					this.compareWith.forEach(year => {
+						let compYearData = data.yearData[year.id] || {};
+						csv += '\n'
+							+ '"' + ((this.exploreData.category ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.exploreData.indicator['name_' + this.locale]) + '",'
+							+ '"' + this.exploreData.source['name_' + this.locale] + '",'
+							+ '"' + data.locationType['name_' + this.locale] + '",'
+							+ '"' + data.location['name_' + this.locale] + '",'
+							+ year.id + ','
+							+ this.filters.indicatorFilters.map(f => '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"').join(',') + ','
+							+ (compYearData.suppressed ? i18n.t('data.suppressed') : !compYearData.value ? i18n.t('data.no_data') : compYearData.value) + ','
+							+ (compYearData.moeLow && compYearData.moeHigh ? (compYearData.moeLow + ' - ' + compYearData.moeHigh) : '');
+					});
+				} else {
+					this.exploreData.compareData.forEach((comp, index) => {
+						let compYearData = comp.yearData[this.filterSelections.year];
+						csv += '\n'
+							+ '"' + ((this.exploreData.category ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.exploreData.indicator['name_' + this.locale]) + '",'
+							+ '"' + this.exploreData.source['name_' + this.locale] + '",'
+							+ '"' + data.locationType['name_' + this.locale] + '",'
+							+ '"' + data.location['name_' + this.locale] + '",'
+							+ this.filterSelections.year + ','
+							+ this.filters.indicatorFilters.map(f => {
+									if (f.type.id === this.compareBy.id) {
+										return '"' + this.compareWith[index]['name_' + this.locale] + '"'; 
+									} else {
+										return '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"';
+									}
+								}).join(',') + ','
+							+ (compYearData.suppressed ? i18n.t('data.suppressed') : compYearData.value === null ? i18n.t('data.no_data') : compYearData.value) + ','
+							+ (compYearData.moeLow && compYearData.moeHigh ? (compYearData.moeLow + ' - ' + compYearData.moeHigh) : '');
+					});
+				}
+				console.log(csv);
+			}
+			let downloadLink = document.createElement('a');
+			downloadLink.download = fileName;
+			downloadLink.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+			downloadLink.click();
 		},
 		downloadImage() {
 			this.setLoading(true);

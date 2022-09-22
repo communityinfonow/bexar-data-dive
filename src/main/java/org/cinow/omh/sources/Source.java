@@ -28,6 +28,11 @@ public class Source {
 	private String url;
 
 	/**
+	 * The data source's required trend interval.
+	 */
+	private int trendInterval;
+
+	/**
 	 * @return the id
 	 */
 	public String getId() {
@@ -81,5 +86,19 @@ public class Source {
 	 */
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	/**
+	 * @return the trendInterval
+	 */
+	public int getTrendInterval() {
+		return trendInterval;
+	}
+
+	/**
+	 * @param trendInterval the trendInterval to set
+	 */
+	public void setTrendInterval(int trendInterval) {
+		this.trendInterval = trendInterval;
 	}
 }

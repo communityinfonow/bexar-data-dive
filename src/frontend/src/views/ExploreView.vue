@@ -132,7 +132,7 @@ export default {
         }
       ];
 
-      if (this.exploreData) {
+      if (this.exploreData && this.indicator) {
         crumbs.push({
           text: (this.exploreData.category.parentCategoryId ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.indicator['name_' + this.locale],
           disabled: true

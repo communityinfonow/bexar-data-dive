@@ -81,7 +81,8 @@
 
   "about_data_view": {
     "name": "About the Data (es)",
-    "indicators": "Indicators (es)"
+    "indicators": "Indicators (es)",
+    "visit_source": "Go to source (es)"
   },
   "about_tools_view": {
     "name": "About the Tools (es)"
