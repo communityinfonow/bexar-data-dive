@@ -109,4 +109,9 @@ export default {
 .menu-toolbar ::v-deep .v-toolbar__content {
   padding: 0;
 }
+
+.menu-toolbar:hover ::v-deep .v-slide-group__prev i,
+.menu-toolbar:hover ::v-deep .v-slide-group__next i {
+  color: var(--v-primary-base);
+}
 </style>
