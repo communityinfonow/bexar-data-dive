@@ -16,7 +16,10 @@
 							{{ item.source['name_' + locale] }} ({{ item.year }})
 						</p>
 					</div>
-					<download-menu :downloadData="downloadData" :downloadImage="downloadImage"></download-menu>
+					<div>
+						<download-menu :downloadData="downloadData" :downloadImage="downloadImage"></download-menu>
+						<about-menu indicator :indicatorId="item.indicator.id"></about-menu>
+					</div>
 				</div>
 				<v-row>
 					<v-col cols="12">
@@ -47,12 +50,14 @@ import CommunityChart from '@/components/CommunityChart'
 import { format } from '@/formatter/formatter'
 import html2canvas from 'html2canvas'
 import DownloadMenu from '@/components/DownloadMenu'
+import AboutMenu from '@/components/AboutMenu'
 
 export default {
 	name: 'CommunityIndicator',
 	components: {
 		CommunityChart,
-		DownloadMenu
+		DownloadMenu,
+		AboutMenu
 	},
 	props: {
 		item: {

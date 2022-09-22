@@ -1,7 +1,7 @@
 <template>
 	<v-form v-if="filters" ref="compareForm" v-model="valid">
 		<v-row class="mt-2">
-			<v-col cols="4">
+			<v-col cols="3" xl="4">
 				<!--TODO: espanol -->
 				<v-select
 					v-if="showCompareOptions"
@@ -17,7 +17,7 @@
 				>
 				</v-select>
 			</v-col>
-			<v-col cols="4">
+			<v-col cols="3" xl="4">
 				<!--TODO: espanol -->
 				<v-autocomplete
 					v-if="showCompareOptions"
@@ -35,7 +35,7 @@
 				>
 				</v-autocomplete>
 			</v-col>
-			<v-col cols="2">
+			<v-col cols="2" xl="1">
 				<v-btn
 					v-if="showCompareOptions"
 					color="primary"
@@ -45,14 +45,18 @@
 					Compare
 				</v-btn>
 			</v-col>
-			<v-col cols="2" class="d-flex justify-space-between">
+			<v-col cols="4" xl="3" class="d-flex justify-end">
 				<v-switch
 					inset
 					:label="$t('tools.common.labels')"
 					style="margin-top: 2px;"
 					v-model="labels"
 				></v-switch>
-				<download-menu :downloadData="downloadData" :downloadImage="downloadImage"></download-menu>
+				<div>
+					<download-menu :downloadData="downloadData" :downloadImage="downloadImage"></download-menu>
+					<share-menu></share-menu>
+					<about-menu indicator tool :indicatorId="exploreData.indicator.id"></about-menu>
+				</div>
 			</v-col>
 		</v-row>
 	</v-form>
@@ -64,12 +68,16 @@ import i18n from '@/i18n'
 import { mapActions, mapState } from 'vuex'
 import router from '@/router/index'
 import DownloadMenu from '@/components/DownloadMenu'
+import ShareMenu from '@/components/ShareMenu'
+import AboutMenu from '@/components/AboutMenu'
 import html2canvas from 'html2canvas'
 
 export default {
 	name: 'ExploreToolsPanel',
 	components: {
-		DownloadMenu
+		DownloadMenu,
+		ShareMenu,
+		AboutMenu
 	},
 	computed: {
 		...mapState(['filters', 'filterSelections', 'locale', 'filters', 'exploreData']),

@@ -42,7 +42,11 @@
               <span v-if="tablesData.category.parentCategoryId">{{ tablesData.category['name_' + locale] }} - </span>
               {{ tablesData.indicator['name_' + locale] }}
             </span>
-            <download-menu :downloadData="downloadTablesData"></download-menu>
+            <div>
+              <download-menu :downloadData="downloadTablesData"></download-menu>
+              <share-menu></share-menu>
+              <about-menu indicator tool :indicatorId="indicator.id"></about-menu>
+            </div>
           </h1>
           <h2 class="text-subtitle-1 mb-2">{{ tablesData.source['name_' + locale] }}</h2>
           <v-text-field v-model="search" :label="$t('tools.common.search')" hide-details @input="loadTablesData()">
@@ -362,6 +366,8 @@ import router from '@/router/index'
 import MenuToolbar from '@/components/MenuToolbar'
 import FeaturedCard from '@/components/FeaturedCard'
 import DownloadMenu from '@/components/DownloadMenu'
+import ShareMenu from '@/components/ShareMenu'
+import AboutMenu from '@/components/AboutMenu'
 import debounce from 'debounce'
 
 export default {
@@ -369,7 +375,9 @@ export default {
   components: {
     MenuToolbar,
     FeaturedCard,
-    DownloadMenu
+    DownloadMenu,
+    ShareMenu,
+    AboutMenu
   },
   data() {
     return {

@@ -70,7 +70,12 @@
       "featured_indicators": "Featured Indicators",
       "search": "Search",
       "download": "Download",
-      "labels": "Labels"
+      "labels": "Labels",
+      "click_copy": "Click below to copy the link",
+      "copy_success": "Copied to clipboard!",
+      "copy_failure": "Sorry, we are unable to access your clipboard to automatically copy the link. Please manually copy the link above.",
+      "about_data": "About the indicator",
+      "about_tool": "About the tool"
     }
   },
   "home_view": {

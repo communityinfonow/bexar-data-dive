@@ -1,7 +1,7 @@
 <template>
 	<v-menu offset-y>
 		<template v-slot:activator="{ on }">
-			<v-btn color="accent" icon data-html2canvas-ignore v-on="on">
+			<v-btn color="accent" icon data-html2canvas-ignore v-on="on" class="mx-2">
 				<v-icon>mdi-download</v-icon>
 			</v-btn>
 		</template>

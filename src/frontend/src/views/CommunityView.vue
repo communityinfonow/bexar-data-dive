@@ -120,7 +120,11 @@
           <v-col cols="10">
             <div class="d-flex justify-space-between">
               <h1 class="text-h3 mt-2 mb-4" id="community_name">{{ community.location['name_' + locale] }}</h1>
-              <download-menu :downloadData="downloadCommunityData"></download-menu>
+              <div>
+                <download-menu :downloadData="downloadCommunityData"></download-menu>
+                <share-menu></share-menu>
+                <about-menu tool></about-menu>
+              </div>
             </div>
             <v-select 
               style="width: 200px;"
@@ -172,6 +176,8 @@ import { feature, featureCollection } from '@turf/helpers'
 import MenuToolbar from '@/components/MenuToolbar'
 import CommunityIndicator from '@/components/CommunityIndicator'
 import DownloadMenu from '@/components/DownloadMenu'
+import ShareMenu from '@/components/ShareMenu'
+import AboutMenu from '@/components/AboutMenu'
 
 export default {
   name: 'CommunityView',
@@ -182,7 +188,9 @@ export default {
     LGeoJson,
     MenuToolbar,
     CommunityIndicator,
-    DownloadMenu
+    DownloadMenu,
+    ShareMenu,
+    AboutMenu
   },
   data() {
     return {
