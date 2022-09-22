@@ -6,7 +6,9 @@
     "tagline": "[tagline]",
     "copyright": "Copyright",
     "cinow": "Community Information Now",
-    "all_rights_reserved": "All rights reserved."
+    "all_rights_reserved": "All rights reserved.",
+    "report_bug": "Report a Bug",
+    "connect": "Connect With Us"
   },
   "tools": {
     "tools": "Tools",

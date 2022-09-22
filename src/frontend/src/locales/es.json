@@ -6,7 +6,9 @@
     "tagline": "[eslogan]",
     "copyright": "Copyright (es)",
     "cinow": "Community Information Now (es)",
-    "all_rights_reserved": "All rights reserved (es)."
+    "all_rights_reserved": "All rights reserved (es).",
+    "report_bug": "Report a Bug (es)",
+    "connect": "Connect With Us (es)"
   },
   "tools": {
     "tools": "Tools (es)",
