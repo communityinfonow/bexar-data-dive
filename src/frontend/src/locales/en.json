@@ -41,7 +41,10 @@
         }
       },
       "filters": "Filters",
-      "apply_filters": "Apply Filters"
+      "apply_filters": "Apply Filters",
+      "compare_by": "Compare by",
+      "compare_with": "Compare with",
+      "compare": "Compare"
     },
     "tables": {
       "name": "Tables & Downloads",
@@ -75,7 +78,8 @@
       "copy_success": "Copied to clipboard!",
       "copy_failure": "Sorry, we are unable to access your clipboard to automatically copy the link. Please manually copy the link above.",
       "about_data": "About the indicator",
-      "about_tool": "About the tool"
+      "about_tool": "About the tool",
+      "make_selection": "Please make a selection"
     }
   },
   "home_view": {

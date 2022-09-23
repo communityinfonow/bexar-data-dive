@@ -1,17 +1,15 @@
 <template>
 	<div class="fill-height">
 		<v-row class="no-gutters flex-wrap flex-column fill-height">
-			<v-col cols="auto">
-				<explore-tools-panel 
-					v-if="filters && exploreData"
-					:showCompareOptions="true"
-					:showLabels="showCompareLabels"
-					:setShowLabels="setShowCompareLabels"
-					dataVisualElementId="compare_chart_container"
-					dataVisualName="compare_chart"
-				>
-				</explore-tools-panel>
-			</v-col>
+			<explore-tools-panel 
+				v-if="filters && exploreData"
+				:showCompareOptions="true"
+				:showLabels="showCompareLabels"
+				:setShowLabels="setShowCompareLabels"
+				dataVisualElementId="compare_chart_container"
+				dataVisualName="compare_chart"
+			>
+			</explore-tools-panel>
 			<v-col cols="auto" class="grow">
 				<div 
 					ref="compare_chart_container" 

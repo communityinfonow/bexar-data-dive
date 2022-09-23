@@ -1,17 +1,15 @@
 <template>
 	<div class="fill-height">
 		<v-row class="no-gutters flex-wrap flex-column fill-height">
-			<v-col cols="auto">
-				<explore-tools-panel 
-					v-if="filters"
-					:draw="drawMap"
-					:showLabels="showMapLabels"
-					:setShowLabels="setShowMapLabels"
-					dataVisualElementId="explore_map"
-					dataVisualName="map"
-				>
-				</explore-tools-panel>
-			</v-col>
+			<explore-tools-panel 
+				v-if="filters"
+				:draw="drawMap"
+				:showLabels="showMapLabels"
+				:setShowLabels="setShowMapLabels"
+				dataVisualElementId="explore_map"
+				dataVisualName="map"
+			>
+			</explore-tools-panel>
 			<v-col cols="auto" class="grow">
 				<l-map
 					v-if="componentInitialized"

@@ -1,65 +1,69 @@
 <template>
-	<v-form v-if="filters" ref="compareForm" v-model="valid">
-		<v-row class="mt-2">
-			<v-col cols="3" xl="4">
-				<!--TODO: espanol -->
-				<v-select
-					v-if="showCompareOptions"
-					label="Compare by"
-					dense
-					flat
-					return-object
-					:items="compareByItems"
-					:item-text="'name_' + locale"
-					v-model="compareBy"
-					@change="selectCompareBy"
-					:rules="[v => !!v || 'Please make a selection']"
-				>
-				</v-select>
-			</v-col>
-			<v-col cols="3" xl="4">
-				<!--TODO: espanol -->
-				<v-autocomplete
-					v-if="showCompareOptions"
-					label="Compare with"
-					dense
-					flat
-					return-object
-					:items="compareWithItems"
-					:item-text="'name_' + locale"
-					v-model="compareWith"
-					:rules="[v => !!v || 'Please make a selection']"
-					multiple
-					:search-input.sync="compareWithQuery"
-					@change="compareWithQuery = ''"
-				>
-				</v-autocomplete>
-			</v-col>
-			<v-col cols="2" xl="1">
-				<v-btn
-					v-if="showCompareOptions"
-					color="primary"
-					tile
-					@click="applyComparison"
-				>
-					Compare
-				</v-btn>
-			</v-col>
-			<v-col cols="4" xl="3" class="d-flex justify-end">
-				<v-switch
-					inset
-					:label="$t('tools.common.labels')"
-					style="margin-top: 2px;"
-					v-model="labels"
-				></v-switch>
-				<div>
-					<download-menu :downloadData="downloadData" :downloadImage="downloadImage"></download-menu>
-					<share-menu></share-menu>
-					<about-menu indicator tool :indicatorId="exploreData.indicator.id"></about-menu>
-				</div>
-			</v-col>
-		</v-row>
-	</v-form>
+	<!-- max-height to fix odd extra space below the col that started showing up after the icon button menus were added -->
+	<v-col cols="auto" style="max-height: 72px;">
+		<v-form v-if="filters" ref="compareForm" v-model="valid">
+			<v-row class="mt-2">
+				<v-col cols="3" xl="4">
+					<v-select
+						v-if="showCompareOptions"
+						:label="$t('tools.explore.compare_by')"
+						dense
+						flat
+						return-object
+						:items="compareByItems"
+						:item-text="'name_' + locale"
+						v-model="compareBy"
+						@change="selectCompareBy"
+						:rules="[v => !!v || $t('tools.common.make_selection')]"
+					>
+					</v-select>
+				</v-col>
+				<v-col cols="3" xl="4">
+					<v-autocomplete
+						v-if="showCompareOptions"
+						:label="$t('tools.explore.compare_with')"
+						dense
+						flat
+						return-object
+						:items="compareWithItems"
+						:item-text="'name_' + locale"
+						v-model="compareWith"
+						:rules="[v => !!v.length || $t('tools.common.make_selection')]"
+						multiple
+						:search-input.sync="compareWithQuery"
+						@change="compareWithQuery = ''"
+					>
+					</v-autocomplete>
+				</v-col>
+				<v-col cols="2" xl="1">
+					<v-btn
+						v-if="showCompareOptions"
+						color="primary"
+						tile
+						@click="applyComparison"
+					>
+						{{ $t('tools.explore.compare') }}
+					</v-btn>
+				</v-col>
+				<v-col cols="4" xl="3">
+					<div class="d-flex justify-end">
+					<v-switch
+						inset
+						:label="$t('tools.common.labels')"
+						style="margin-top: 2px;"
+						v-model="labels"
+						hide-details
+					></v-switch>
+					<div>
+						<download-menu :downloadData="downloadData" :downloadImage="downloadImage"></download-menu>
+						<share-menu></share-menu>
+						<about-menu indicator tool :indicatorId="indicatorId"></about-menu>
+					</div>
+					</div>
+				</v-col>
+			</v-row>
+		</v-form>
+	</v-col>
 </template>
 
 <script>
@@ -84,6 +88,9 @@ export default {
 		labels: {
 			get() { return this.showLabels },
 			set(value) { this.setShowLabels(value) }
+		},
+		indicatorId() {
+			return this.exploreData?.indicator?.id
 		}
 	},
 	props: {
@@ -171,17 +178,18 @@ export default {
 		selectCompareBy() {
 			this.compareWith = [];
 			this.compareWithItems = [];
-			if (this.compareBy?.name_en === 'Location') {
+			if (this.compareBy?.id === 'l') {
+				let typeIdsWithData = this.filters?.locationTypeFilter.options.map(o => o.id);
 				this.compareWithItems = this.filters?.locationFilter.options
-					.filter(o => o.id !== this.filterSelections?.location) || [];
-			} else if (this.compareBy?.name_en === 'Year') { 
+					.filter(o => o.id !== this.filterSelections?.location && typeIdsWithData.indexOf(o.typeId) !== -1) || [];
+			} else if (this.compareBy?.id === 'y') { 
 				this.compareWithItems = this.filters?.yearFilter.options
 					.filter(o => o.id !== this.filterSelections?.year
 						&& (Number(this.filterSelections?.year) - Number(o.id)) % this.exploreData.source.trendInterval === 0) || [];
 			} else {
 				this.compareWithItems = this.filters?.indicatorFilters
 					.find(filter => filter.type.name_en === this.compareBy?.name_en)?.options
-					.filter(o => o.id !== this.filterSelections?.indicatorFilters[this.compareBy?.id].id) || [];
+					.filter(o => o.id !== this.filterSelections?.indicatorFilters[this.compareBy?.id]?.id) || [];
 			}
 		},
 		validateComparison() {
@@ -201,6 +209,7 @@ export default {
 		},
 		downloadData() {
 			let fileName = '';
+			//TODO: espanol headers
 			let csv = 'Indicator,Source,Location Type,Location,Year'
 			csv += this.filters.indicatorFilters.map(f => ',' + f.type['name_' + this.locale]).join('');
 			csv += ',Value,Range';

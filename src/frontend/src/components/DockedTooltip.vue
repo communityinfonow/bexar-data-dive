@@ -18,9 +18,11 @@
 					<li v-if="!dockedTooltip.noData">Range: <span v-if="dockedTooltip.location">{{ rangeFormatted }}</span></li>
 					<li>Source: {{ exploreData.source['name_' + locale] }}</li>
 					<li>Year: {{ dockedTooltip.year }}</li>
-					<li v-for="filter in dockedTooltip.indicatorFilters" :key="filter.type.id">
-						{{ filter.type['name_' + locale] }}: {{ filter.options[0]['name_' + locale] }}
-					</li>
+					<template v-for="filter in dockedTooltip.indicatorFilters">
+						<li v-if="filter.type && filter.options[0]" :key="filter.type.id">
+							{{ filter.type['name_' + locale] }}: {{ filter.options[0]['name_' + locale] }}
+						</li>
+					</template>
 				</ul>
 			</v-card-text>
 		</v-card>

@@ -18,7 +18,7 @@
 					hide-no-data
 					flat
 					dense
-					:rules="[v => !!v || 'Please make a selection']"
+					:rules="[v => !!v || $t('tools.common.make_selection')]"
 					@change="selectLocationType"
 				></v-autocomplete>
 				<v-autocomplete
@@ -31,7 +31,7 @@
 					hide-no-data
 					flat
 					dense
-					:rules="[v => !!v || 'Please make a selection']"
+					:rules="[v => !!v || $t('tools.common.make_selection')]"
 					@change="requestApply"
 				></v-autocomplete>
 				<v-autocomplete
@@ -44,7 +44,7 @@
 					hide-no-data
 					flat
 					dense
-					:rules="[v => !!v || 'Please make a selection']"
+					:rules="[v => !!v || $t('tools.common.make_selection')]"
 					@change="requestApply"
 				></v-autocomplete>
 				<template v-for="filter in filters.indicatorFilters">
@@ -59,7 +59,7 @@
 						hide-no-data
 						flat
 						dense
-						:rules="[v => !!v || 'Please make a selection']"
+						:rules="[v => !!v || $t('tools.common.make_selection')]"
 						@change="requestApply"
 					></v-autocomplete>
 				</template>
@@ -102,8 +102,8 @@ export default {
 			this.$nextTick(() => this.applyFilters());
 		},
 		filterSelections(newValue) {
-			this.selectedLocationType = newValue.locationType;
-			this.selectedLocation = newValue.location;
+			this.selectedLocationType = newValue?.locationType;
+			this.selectedLocation = newValue?.location;
 		}
 	},
 	methods: {
@@ -131,7 +131,7 @@ export default {
 			this.requestApply();
 		},
 		validateFilters() {
-			this.$refs.filtersForm.validate()
+			this.$refs.filtersForm?.validate()
 		},
 		getFilterSelections() {	
 			return {
