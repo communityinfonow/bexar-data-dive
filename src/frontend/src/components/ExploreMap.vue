@@ -277,7 +277,7 @@ export default {
 					{
 						locationName: ld.location['name_' + this.locale],
 						value: ld.yearData[this.exploreData.filters.yearFilter.options[0].id]?.value,
-						noData: !ld.yearData[this.exploreData.filters.yearFilter.options[0].id]?.value,
+						noData: ld.yearData[this.exploreData.filters.yearFilter.options[0].id]?.value === null,
 						moeLow: ld.yearData[this.exploreData.filters.yearFilter.options[0].id]?.moeLow,
 						moeHigh: ld.yearData[this.exploreData.filters.yearFilter.options[0].id]?.moeHigh,
 						suppressed: ld.yearData[this.exploreData.filters.yearFilter.options[0].id]?.suppressed

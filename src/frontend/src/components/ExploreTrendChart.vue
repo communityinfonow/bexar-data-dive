@@ -129,7 +129,7 @@ export default {
 						let yd = yearData[ty]; 
 						return { 
 							value: yd?.value, 
-							noData: !yd?.value,
+							noData: yd?.value === null,
 							suppressed: yd?.suppressed,
 							moeLow: yd?.moeLow, 
 							moeHigh: yd?.moeHigh
@@ -148,7 +148,7 @@ export default {
 					formatter: (o) => {
 						if (o.data.suppressed) {
 							return '';
-						} else if (!o.data.value) {
+						} else if (o.data.noData) {
 							return '';
 						} else if (this.showTrendLabels) {
 							let rows = ['{a|' + i18n.t('data.value') +': ' + format(this.exploreData.indicator.typeId, o.data.value) + '}'];
@@ -185,12 +185,12 @@ export default {
 				data: trendYears
 					.map(ty => {
 						let yd = yearData[ty];
-						if (yd?.value && !yd.suppressed) {
+						if (yd?.value !== null && !yd.suppressed) {
 							return null;
 						}
 						return { 
 							value: 0, 
-							noData: !yd?.value,
+							noData: yd?.value === null,
 							suppressed: yd?.suppressed,
 							moeLow: null, 
 							moeHigh: null

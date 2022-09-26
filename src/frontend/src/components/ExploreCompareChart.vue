@@ -151,7 +151,7 @@ export default {
 			seriesData.push({ 
 				value: filteredLocation.yearData[this.exploreData.filters.yearFilter.options[0].id]?.value || 0,
 				suppressed: filteredLocation.yearData[this.exploreData.filters.yearFilter.options[0].id]?.suppressed,
-				noData: !filteredLocation.yearData[this.exploreData.filters.yearFilter.options[0].id]?.value,
+				noData: filteredLocation.yearData[this.exploreData.filters.yearFilter.options[0].id]?.value === null,
 				moeLow: filteredLocation.yearData[this.exploreData.filters.yearFilter.options[0].id]?.moeLow, 
 				moeHigh: filteredLocation.yearData[this.exploreData.filters.yearFilter.options[0].id]?.moeHigh,
 				location: filteredLocation.location['name_' + this.locale] ,
@@ -167,7 +167,7 @@ export default {
 					return  { 
 						value: cd.yearData[year]?.value || 0,
 						suppressed: cd.yearData[year]?.suppressed,
-						noData: !cd.yearData[year]?.value,
+						noData: cd.yearData[year]?.value === null,
 						moeLow: cd.yearData[year]?.moeLow,
 						moeHigh: cd.yearData[year]?.moeHigh,
 						location: cd.location['name_' + this.locale],
@@ -188,7 +188,7 @@ export default {
 					formatter: (o) => {
 						if (o.data.suppressed) {
 							return '{a|' + i18n.t('data.suppressed') + '}';
-						} else if (!o.data.value) {
+						} else if (o.data.noData) {
 							return '{a|' + i18n.t('data.no_data') + '}';
 						} else if (this.showCompareLabels) {
 							let rows = ['{a|' + i18n.t('data.value') +': ' + format(this.exploreData.indicator.typeId, o.data.value) + '}'];
