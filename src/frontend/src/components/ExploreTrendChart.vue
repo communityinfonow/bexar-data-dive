@@ -3,7 +3,6 @@
 		<v-row class="no-gutters flex-wrap flex-column fill-height">
 			<explore-tools-panel 
 				v-if="filters"
-				:draw="drawChart"
 				:showLabels="showTrendLabels"
 				:setShowLabels="setShowTrendLabels"
 				dataVisualElementId="trend_chart_container"
@@ -49,14 +48,19 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['locale', 'exploreData', 'filters', 'showTrendLabels']),
+		...mapState(['locale', 'exploreData', 'filters', 'showTrendLabels', 'exploreTab']),
 	},
 	watch: {
 		locale() {
 			this.drawChart()
 		},
+		exploreTab(newValue) {
+			if (newValue === 'trend') {
+				window.setTimeout(() => this.chart?.resize(), 100);
+			}
+		},
 		exploreData(newValue) {
-			if (newValue) {
+			if (newValue && this.chart) {
 				this.drawChart();
 			}
 		},
@@ -88,7 +92,9 @@ export default {
 				}
 			});
 			window.addEventListener('resize', () => {
-				this.chart.resize();
+				if (this.exploreTab === 'trend') {
+					this.chart.resize();
+				}
 			});
 			if (this.exploreData) {
 				this.drawChart();

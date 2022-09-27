@@ -43,7 +43,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['locale', 'filters', 'exploreData', 'compareSelections', 'showCompareLabels']),
+		...mapState(['locale', 'filters', 'exploreData', 'compareSelections', 'showCompareLabels', 'exploreTab']),
 		smallScreen() {
 			return document.body.clientWidth <= 1440;
 		}
@@ -52,8 +52,13 @@ export default {
 		locale() {
 			this.drawChart()
 		},
+		exploreTab(newValue) {
+			if (newValue === 'compare') {
+				window.setTimeout(() => this.chart?.resize(), 100);
+			}
+		},
 		exploreData(newValue) {
-			if (newValue) {
+			if (newValue && this.chart) {
 				this.drawChart();
 			}
 		},
@@ -86,7 +91,9 @@ export default {
 				}
 			});
 			window.addEventListener('resize', () => {
-				this.chart.resize();
+				if (this.exploreTab === 'compare') {
+					this.chart.resize();
+				}
 			});
 			if (this.exploreData) {
 				this.drawChart();

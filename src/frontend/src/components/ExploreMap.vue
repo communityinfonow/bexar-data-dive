@@ -153,7 +153,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['exploreData', 'locale', 'locationMenu', 'filters', 'filterSelections', 'showMapLabels']),
+		...mapState(['exploreData', 'locale', 'locationMenu', 'filters', 'filterSelections', 'showMapLabels', 'exploreTab']),
 		layers() {
 			return this.locationMenu?.categories?.map(locationType => {
 				return {
@@ -164,7 +164,7 @@ export default {
 			});
 		},
 		options() {
-			this.refreshOptions
+			this.refreshOptions;
 			return {
 				onEachFeature: this.onEachFeature
 			}
@@ -224,6 +224,13 @@ export default {
     	locale() {
 			this.drawMap()
 		},
+		exploreTab(newValue) {
+			if (newValue === 'map') {
+				window.setTimeout(() => {
+					this.resizeHandler();
+				}, 100);
+			}
+		},
 		layers(newValue) {
 			this.selectedLocationType = newValue[0];
 		},
@@ -255,7 +262,9 @@ export default {
 			}
 		},
 		resizeHandler() {
-			this.$refs.indicatorMap?.mapObject?.invalidateSize();
+			if (this.exploreTab === 'map') {
+				this.$refs.exploreMap?.mapObject?.invalidateSize();
+			}
 		},
 		selectLocationType() {
 			let newFilterSelections = JSON.parse(JSON.stringify(this.filterSelections));

@@ -254,7 +254,7 @@ export default {
 					+ this.filters.indicatorFilters.map(f => '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"').join(',') + ','
 					+ (yearData.suppressed ? i18n.t('data.suppressed') : yearData.value === null ? i18n.t('data.no_data') : yearData.value) + ','
 					+ (yearData.moeLow && yearData.moeHigh ? (yearData.moeLow + ' - ' + yearData.moeHigh) : '');
-				if (this.compareBy.id === 'l') {
+				if (this.compareBy?.id === 'l') {
 					this.exploreData.compareData.forEach(comp => {
 						let compYearData = comp.yearData[this.filterSelections.year];
 						csv += '\n'
@@ -267,7 +267,7 @@ export default {
 							+ (compYearData.suppressed ? i18n.t('data.suppressed') : compYearData.value === null ? i18n.t('data.no_data') : compYearData.value) + ','
 							+ (compYearData.moeLow && compYearData.moeHigh ? (compYearData.moeLow + ' - ' + compYearData.moeHigh) : '');
 					});
-				} else if (this.compareBy.id === 'y') {
+				} else if (this.compareBy?.id === 'y') {
 					this.compareWith.forEach(year => {
 						let compYearData = data.yearData[year.id] || {};
 						csv += '\n'
@@ -281,7 +281,7 @@ export default {
 							+ (compYearData.moeLow && compYearData.moeHigh ? (compYearData.moeLow + ' - ' + compYearData.moeHigh) : '');
 					});
 				} else {
-					this.exploreData.compareData.forEach((comp, index) => {
+					this.exploreData.compareData?.forEach((comp, index) => {
 						let compYearData = comp.yearData[this.filterSelections.year];
 						csv += '\n'
 							+ '"' + ((this.exploreData.category ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.exploreData.indicator['name_' + this.locale]) + '",'
@@ -290,7 +290,7 @@ export default {
 							+ '"' + data.location['name_' + this.locale] + '",'
 							+ this.filterSelections.year + ','
 							+ this.filters.indicatorFilters.map(f => {
-									if (f.type.id === this.compareBy.id) {
+									if (f.type.id === this.compareBy?.id) {
 										return '"' + this.compareWith[index]['name_' + this.locale] + '"'; 
 									} else {
 										return '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"';

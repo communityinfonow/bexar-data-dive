@@ -50,7 +50,7 @@ public class TablesRepositoryPostgresql implements TablesRepository{
 			sql += " and (lt.id_::text in (:location_type_ids)) ";
 		}
 		if (!request.getLocations().isEmpty()) {
-			sql += " and (l.id_::text in (:location_ids)) ";
+			sql += " and (l.location_type_id || '_' || l.id_ in (:location_ids)) ";
 		}
 		if (!request.getYears().isEmpty()) {
 			sql += " and (iv.year_::text in (:years)) ";

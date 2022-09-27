@@ -449,7 +449,7 @@ export default {
           : this.filteredLocationTypes.map(i => i.id),
         locations: this.locations.length === this.filteredLocations.length
           ? undefined
-          : this.filteredLocations.map(i => i.id),
+          : this.filteredLocations.map(i => i.typeId + '_' + i.id),
         years: this.years.length === this.filteredYears.length
           ? undefined
           : this.filteredYears.map(i => i.id),  
