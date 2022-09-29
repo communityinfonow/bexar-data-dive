@@ -42,6 +42,7 @@ public class CommunityRepositoryPostgresql implements CommunityRepository {
 			+ " select "
 			+ "   ic.id_ as category_id, ic.parent_category_id, ic.name_en as category_name_en, ic.name_es as category_name_es, "
 			+ "   i.id_ as indicator_id, i.name_en as indicator_name_en, i.name_es as indicator_name_es, "
+			+ "   case when exists (select 1 from mv_indicator_metadata where indicator_id = i.id_ and has_data = true limit 1) then true else false end as has_data, "
 			+ "   it.id_ as indicator_type_id, it.name_ as indicator_type_name, "
 			+ "   iv.year_, round(iv.indicator_value, 1) as indicator_value, iv.suppress, round(iv.moe_low, 1) as moe_low, round(iv.moe_high, 1) as moe_high, round(iv.universe_value, 1) as universe_value, "
 			+ "   s.id_ as source_id, s.name_en as source_name_en, s.name_es as source_name_es, s.url_ as source_url, "
@@ -88,6 +89,7 @@ public class CommunityRepositoryPostgresql implements CommunityRepository {
 						indicatorData.getIndicator().setCategoryId(categoryData.getCategory().getId());
 						indicatorData.getIndicator().setName_en(rs.getString("indicator_name_en"));
 						indicatorData.getIndicator().setName_es(rs.getString("indicator_name_es"));
+						indicatorData.getIndicator().setHasData(rs.getBoolean("has_data"));
 						indicatorData.setIndicatorType(new IndicatorType());
 						indicatorData.getIndicatorType().setId(rs.getString("indicator_type_id"));
 						indicatorData.getIndicatorType().setName(rs.getString("indicator_type_name"));

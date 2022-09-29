@@ -1,7 +1,7 @@
 <template>
 	<div :id="'community_indicator_' + this.item.indicator.id" class="pl-4" :class="{ 'd-print-none': !item.year }">
 		<section class="mb-8">
-			<template v-if="item.year">
+			<template v-if="item.indicator.hasData && item.year">
 				<div class="d-flex justify-space-between">
 					<div>
 						<h3 class="text-h6">
@@ -33,11 +33,17 @@
 					</v-col>
 				</v-row>
 			</template>
+			<template v-else-if="item.indicator.hasData">
+				<h3 class="text-h6">
+					{{ item.indicator['name_' + locale]}}
+				</h3>
+				<p>No data is available for the selected geography</p>
+			</template>
 			<template v-else>
 				<h3 class="text-h6">
 					{{ item.indicator['name_' + locale]}}
 				</h3>
-				<p>Sorry, no data is available for this indicator</p>
+				<p>We're working to add this data but it is not yet available</p>
 			</template>
 		</section>
 	</div>

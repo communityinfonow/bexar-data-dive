@@ -191,7 +191,7 @@ export default {
 				data: trendYears
 					.map(ty => {
 						let yd = yearData[ty];
-						if (yd?.value !== null && !yd.suppressed) {
+						if (yd?.value !== null && !yd?.suppressed) {
 							return null;
 						}
 						return { 
