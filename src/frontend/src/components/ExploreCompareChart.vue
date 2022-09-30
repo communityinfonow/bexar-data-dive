@@ -158,7 +158,7 @@ export default {
 			seriesData.push({ 
 				value: filteredLocation.yearData[this.exploreData.filters.yearFilter.options[0].id]?.value || 0,
 				suppressed: filteredLocation.yearData[this.exploreData.filters.yearFilter.options[0].id]?.suppressed,
-				noData: filteredLocation.yearData[this.exploreData.filters.yearFilter.options[0].id]?.value === null,
+				noData: !filteredLocation.yearData[this.exploreData.filters.yearFilter.options[0].id] || filteredLocation.yearData[this.exploreData.filters.yearFilter.options[0].id]?.value === null,
 				moeLow: filteredLocation.yearData[this.exploreData.filters.yearFilter.options[0].id]?.moeLow, 
 				moeHigh: filteredLocation.yearData[this.exploreData.filters.yearFilter.options[0].id]?.moeHigh,
 				location: filteredLocation.location['name_' + this.locale] ,
@@ -174,7 +174,7 @@ export default {
 					return  { 
 						value: cd.yearData[year]?.value || 0,
 						suppressed: cd.yearData[year]?.suppressed,
-						noData: cd.yearData[year]?.value === null,
+						noData: !cd.yearData[year] || cd.yearData[year]?.value === null,
 						moeLow: cd.yearData[year]?.moeLow,
 						moeHigh: cd.yearData[year]?.moeHigh,
 						location: cd.location['name_' + this.locale],
