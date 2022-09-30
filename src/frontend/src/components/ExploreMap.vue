@@ -124,6 +124,7 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
+import i18n from '@/i18n'
 import { latLng } from 'leaflet'
 import { LMap, LTileLayer, LGeoJson, LControl } from 'vue2-leaflet'
 import { feature, featureCollection } from '@turf/helpers'
@@ -303,7 +304,9 @@ export default {
 			}
 			layer.options.fillColor = this.getLayerShadingColor(feature);
 			if (this.showMapLabels) {
-				layer.bindTooltip(layer.feature.properties.locationName.replace('Zip Code', 'Zip').replace('Census Tract', 'Tract') + '<br>' + format(this.exploreData.indicator.typeId, layer.feature.properties.value), 
+				layer.bindTooltip(layer.feature.properties.locationName.replace('Zip Code', 'Zip').replace('Census Tract', 'Tract') 
+						+ '<br>' 
+						+ (layer.feature.properties.suppressed ? i18n.t('data.suppressed') : format(this.exploreData.indicator.typeId, layer.feature.properties.value)), 
 					{
 						className: 'location-label',
 						permanent: true, 
