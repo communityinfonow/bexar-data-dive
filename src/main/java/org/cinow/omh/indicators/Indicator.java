@@ -42,6 +42,9 @@ public class Indicator {
 	 */
 	private String description_es;
 
+	/**
+	 * Whether the indicator has data yet.
+	 */
 	private boolean hasData;
 
 	/**

@@ -1,15 +1,14 @@
 <template>
 	<div class="fill-height">
 		<v-row class="no-gutters flex-wrap flex-column fill-height">
-			<v-col cols="auto">
-				<explore-tools-panel 
-					v-if="filters"
-					:draw="drawChart"
-					:showLabels="showTrendLabels"
-					:setShowLabels="setShowTrendLabels"
-				>
-				</explore-tools-panel>
-			</v-col>
+			<explore-tools-panel 
+				v-if="filters"
+				:showLabels="showTrendLabels"
+				:setShowLabels="setShowTrendLabels"
+				dataVisualElementId="trend_chart_container"
+				dataVisualName="trend_chart"
+			>
+			</explore-tools-panel>
 			<v-col cols="auto" class="grow">
 				<div
 					ref="trend_chart_container" 
@@ -49,14 +48,19 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['locale', 'exploreData', 'filters', 'showTrendLabels']),
+		...mapState(['locale', 'exploreData', 'filters', 'showTrendLabels', 'exploreTab']),
 	},
 	watch: {
 		locale() {
 			this.drawChart()
 		},
+		exploreTab(newValue) {
+			if (newValue === 'trend') {
+				window.setTimeout(() => this.chart?.resize(), 100);
+			}
+		},
 		exploreData(newValue) {
-			if (newValue) {
+			if (newValue && this.chart) {
 				this.drawChart();
 			}
 		},
@@ -88,7 +92,9 @@ export default {
 				}
 			});
 			window.addEventListener('resize', () => {
-				this.chart.resize();
+				if (this.exploreTab === 'trend') {
+					this.chart.resize();
+				}
 			});
 			if (this.exploreData) {
 				this.drawChart();
@@ -129,13 +135,17 @@ export default {
 						let yd = yearData[ty]; 
 						return { 
 							value: yd?.value, 
-							noData: !yd?.value,
+							noData: yd?.value === null,
 							suppressed: yd?.suppressed,
 							moeLow: yd?.moeLow, 
 							moeHigh: yd?.moeHigh
 						}; 
 					}),
 				type: 'line',
+				cursor: 'default',
+				emphasis: {
+					disabled: true
+				},
 				symbol: 'circle',
 				symbolSize: 12,
 				label: {
@@ -144,7 +154,7 @@ export default {
 					formatter: (o) => {
 						if (o.data.suppressed) {
 							return '';
-						} else if (!o.data.value) {
+						} else if (o.data.noData) {
 							return '';
 						} else if (this.showTrendLabels) {
 							let rows = ['{a|' + i18n.t('data.value') +': ' + format(this.exploreData.indicator.typeId, o.data.value) + '}'];
@@ -181,18 +191,19 @@ export default {
 				data: trendYears
 					.map(ty => {
 						let yd = yearData[ty];
-						if (yd?.value && !yd.suppressed) {
+						if (yd?.value !== null && !yd?.suppressed) {
 							return null;
 						}
 						return { 
 							value: 0, 
-							noData: !yd?.value,
+							noData: yd?.value === null,
 							suppressed: yd?.suppressed,
 							moeLow: null, 
 							moeHigh: null
 						}; 
 					}),
 				type: 'bar',
+				cursor: 'default',
 				label: {
 					show: true,
 					position: 'top',

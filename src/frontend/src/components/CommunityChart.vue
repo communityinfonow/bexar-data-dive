@@ -39,6 +39,9 @@ export default {
 	},
 	computed: {
 		...mapState(['locale']),
+		smallScreen() {
+			return document.body.clientWidth <= 1440;
+		}
 	},
 	watch: {
 		locale() {
@@ -57,14 +60,13 @@ export default {
 		this.drawChart();
 	},
 	methods: {
-		//TODO: don't change bar color on hover
 		drawChart() {
 			let textStyle = {
 				fontFamily: '"Roboto", sans-serif !important',
-				fontSize: '16px'
+				fontSize: this.smallScreen ? '14px' : '16px'
 			};
 			let option = {};
-			option.grid = { left: 40, right: 40, containLabel: true };
+			option.grid = { left: 20, right: 20, containLabel: true };
 			option.yAxis = { 
 				type: 'value', 
 				splitLine: { show: false },
@@ -88,6 +90,9 @@ export default {
 			let series = { 
 				type: 'bar', 
 				cursor: 'default',
+				emphasis: {
+					disabled: true
+				},
 				barWidth: '120px',
 				label: { 
 					show: true, 
@@ -111,13 +116,13 @@ export default {
 					rich: { 
 						a: {
 							align: 'center',
-							fontSize: '16px',
+							fontSize: this.smallScreen ? '12px' : '16px',
 							lineHeight: '20',
 							color: '#333333'
 						},
 						b: {
 							align: 'center',
-							fontSize: '14px',
+							fontSize: this.smallScreen ? '10px' : '14px',
 							lineHeight: '16',
 							color: '#666666'
 						}

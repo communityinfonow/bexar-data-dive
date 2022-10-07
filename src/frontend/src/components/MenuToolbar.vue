@@ -1,5 +1,5 @@
 <template>
-  <v-toolbar dense class="menu-toolbar">
+  <v-toolbar dense class="menu-toolbar d-print-none">
     <v-toolbar-items style="width: 100%;">
       <v-row style="max-width: 100%;">
         <v-col cols="10">
@@ -19,8 +19,8 @@
             :placeholder="$t('tools.common.search')"
             v-model="selectedItem"
             :items="searchItems"
-            :item-text="'name_' + locale"
-            :search-input.sync="search"
+            :item-text="(item) => { return item['name_' + locale] + (item.hasData ? '' : ' (' + $t('tools.community.coming_soon') + ')') }"
+            :item-disabled="(item) => { return !item.hasData ? 'disabled' : '' }"
             @change="selectMatch"
             return-object
             hide-no-data
@@ -61,7 +61,6 @@ export default {
   data() {
     return {
       items: [],
-      search: '',
       selectedItem: null,
     }
   },
@@ -99,7 +98,6 @@ export default {
     selectMatch() {
         this.selectItem(this.selectedItem)
         this.$nextTick(() => {
-          this.search = ''
           this.selectedItem = null
         });
     }
@@ -110,5 +108,10 @@ export default {
 <style lang="scss" scoped>
 .menu-toolbar ::v-deep .v-toolbar__content {
   padding: 0;
+}
+
+.menu-toolbar:hover ::v-deep .v-slide-group__prev i,
+.menu-toolbar:hover ::v-deep .v-slide-group__next i {
+  color: var(--v-primary-base);
 }
 </style>

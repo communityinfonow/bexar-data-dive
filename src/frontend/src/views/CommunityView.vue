@@ -118,7 +118,14 @@
             </l-map>
           </v-col>
           <v-col cols="10">
-            <h1 class="text-h3 mt-2 mb-4">{{ community.location['name_' + locale] }}</h1>
+            <div class="d-flex justify-space-between">
+              <h1 class="text-h3 mt-2 mb-4" id="community_name">{{ community.location['name_' + locale] }}</h1>
+              <div>
+                <download-menu :downloadData="downloadCommunityData"></download-menu>
+                <share-menu></share-menu>
+                <about-menu tool></about-menu>
+              </div>
+            </div>
             <v-select 
               style="width: 200px;"
               color="accent"
@@ -133,15 +140,15 @@
             </v-select>
           </v-col>
         </v-row>
+        <h2 v-if="noCommunityData" class="text-h4">{{ $t('tools.community.data_coming_soon')}}</h2>
         <section v-for="data in sortedData" :key="'category_' + data.category.id">
           <div v-if="data.category.hasData">
             <h2 :id="'category_' + data.category.id" class="text-h4 mb-4">{{ data.category['name_' + locale]}}</h2>
             <template v-for="item in data.indicators">
               <template v-if="item.indicators">
-                <div :key="'category_' + item.category.id" class="ml-4">
-                  <h3 class="text-h5 mb-2">{{ item.category['name_' + locale]}}</h3>
+                <div :key="'category_' + item.category.id">
                   <template v-for="subItem in item.indicators">
-                    <community-indicator :item="subItem" :key="'sub_indicator_' + subItem.indicator.id" :maxDemographics="maxDemographics"></community-indicator>
+                    <community-indicator :item="subItem" :parentName="item.category['name_' + locale]" :key="'sub_indicator_' + subItem.indicator.id" :maxDemographics="maxDemographics"></community-indicator>
                   </template>
                 </div>
               </template>
@@ -168,6 +175,9 @@ import { LMap, LTileLayer, LControl, LGeoJson } from 'vue2-leaflet'
 import { feature, featureCollection } from '@turf/helpers'
 import MenuToolbar from '@/components/MenuToolbar'
 import CommunityIndicator from '@/components/CommunityIndicator'
+import DownloadMenu from '@/components/DownloadMenu'
+import ShareMenu from '@/components/ShareMenu'
+import AboutMenu from '@/components/AboutMenu'
 
 export default {
   name: 'CommunityView',
@@ -177,7 +187,10 @@ export default {
     LControl,
     LGeoJson,
     MenuToolbar,
-    CommunityIndicator
+    CommunityIndicator,
+    DownloadMenu,
+    ShareMenu,
+    AboutMenu
   },
   data() {
     return {
@@ -220,6 +233,9 @@ export default {
       }
 
       return crumbs;
+    },
+    noCommunityData() {
+      return this.community && !this.categories.some(c => c.hasData);
     },
     sortedData() {
       let sortedData = JSON.parse(JSON.stringify(this.community?.indicatorData));
@@ -396,6 +412,35 @@ export default {
 		},
     skipToCategory(category) {
       goTo("#category_" + category)
+    },
+    downloadCommunityData() {
+      //TODO: espanol headers
+      let csv = 'Category,Indicator,Source,Location,Year,Race/Ethnicity,Value,Range';
+      this.sortedData.forEach(item => {
+        item.subcategories.forEach(subcat => {
+          csv += this.generateIndicatorCsvRecords(item.category, subcat.category, subcat.indicators)
+        });
+        csv += this.generateIndicatorCsvRecords(item.category, null, item.indicators.filter(ind => !ind.indicators));
+      });
+      
+      let downloadLink = document.createElement('a');
+      downloadLink.download = 'community_data.csv';
+      downloadLink.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+      downloadLink.click();
+    },
+    generateIndicatorCsvRecords(cat, subcat, inds) {
+      return inds.map(ind => {
+        return ind.demographicData.map(data => {
+          return '\n"' + cat['name_' + this.locale] + '",' 
+            + '"' + ((subcat ? subcat['name_' + this.locale] + ' - ' : '') + ind.indicator['name_' + this.locale])+ '",'
+            + '"' + ind.source['name_' + this.locale] + '",'
+            + '"' + this.community.location['name_' + this.locale] + '",'
+            + ind.year + ','
+            + '"' + (data.raceFilter['name_' + this.locale] || i18n.t('data.all')) + '",'
+            + (data.suppressed ? i18n.t('data.suppressed') : data.value === null ? i18n.t('data.no_data') : data.value) + ','
+            + (data.moeLow && data.moeHigh ? (data.moeLow + ' - ' + data.moeHigh) : '');
+        });
+      }).filter(record => record !== '');
     }
   },
 }

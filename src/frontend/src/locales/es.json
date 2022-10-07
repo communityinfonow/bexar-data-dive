@@ -6,7 +6,9 @@
     "tagline": "[eslogan]",
     "copyright": "Copyright (es)",
     "cinow": "Community Information Now (es)",
-    "all_rights_reserved": "All rights reserved (es)."
+    "all_rights_reserved": "All rights reserved (es).",
+    "report_bug": "Report a Bug (es)",
+    "connect": "Connect With Us (es)"
   },
   "tools": {
     "tools": "Tools (es)",
@@ -17,7 +19,8 @@
       "get_started": "To get started, browse or search for an indicator using the menu above or select a location on the map below (es).",
       "community_types": "Community Types (es)",
       "skip": "Skip ahead to (es)",
-      "coming_soon": "Coming Soon"
+      "coming_soon": "Coming Soon",
+      "data_coming_soon": "Data Coming Soon"
     },
     "explore": {
       "name": "Panel",
@@ -38,7 +41,10 @@
         }
       },
       "filters": "Filters (es)",
-      "apply_filters": "Apply Filters (es)"
+      "apply_filters": "Apply Filters (es)",
+      "compare_by": "Compare by (es)",
+      "compare_with": "Compare with (es)",
+      "compare": "Compare"
     },
     "tables": {
       "name": "Tables & Downloads (es)",
@@ -70,7 +76,13 @@
       "featured_indicators": "Indicadores destacados",
       "search": "Search (es)",
       "download": "Download (es)",
-      "labels": "Labels (es)"
+      "labels": "Labels (es)",
+      "click_copy": "Click below to copy the link (es)",
+      "copy_success": "Copied to clipboard!",
+      "copy_failure": "Sorry, we are unable to access your clipboard to automatically copy the link. Please manually copy the link above.",
+      "about_data": "About the indicator",
+      "about_tool": "About the tool",
+      "make_selection": "Please make a selection"
     }
   },
   "home_view": {
@@ -81,7 +93,8 @@
 
   "about_data_view": {
     "name": "About the Data (es)",
-    "indicators": "Indicators (es)"
+    "indicators": "Indicators (es)",
+    "visit_source": "Go to source (es)"
   },
   "about_tools_view": {
     "name": "About the Tools (es)"

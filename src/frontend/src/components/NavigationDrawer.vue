@@ -43,10 +43,21 @@
           </template>
         </v-item-group>
         <v-list-item href="https://cinow.info/contact/#form" target="_blank">
+          <v-list-item-icon><v-icon>mdi-bug</v-icon></v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title
+              >{{ $t('app.report_bug') }}
+              <sup
+                ><v-icon x-small>mdi-open-in-new</v-icon></sup
+              ></v-list-item-title
+            >
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item href="https://cinow.info/contact/#form" target="_blank">
           <v-list-item-icon><v-icon>mdi-email</v-icon></v-list-item-icon>
           <v-list-item-content>
             <v-list-item-title
-              >Connect With Us
+              >{{ $t('app.connect') }}
               <sup
                 ><v-icon x-small>mdi-open-in-new</v-icon></sup
               ></v-list-item-title
@@ -86,12 +97,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-/*::v-deep .v-list .v-list-item--active {
-  color: #0065a4;
-}
-::v-deep .theme--light.v-list-item--active:hover::before,
-.theme--light.v-list-item--active::before {
-  color: #0065a4;
-  opacity: 0.12;
-}*/
 </style>

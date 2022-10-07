@@ -23,8 +23,8 @@ export default new Vuex.Store({
     filters: null,
     dockedTooltip: null,
     showMapLabels: false,
-    showTrendLabels: false,
-    showCompareLabels: false,
+    showTrendLabels: true,
+    showCompareLabels: true,
     exploreData: null,
     exploreTab: null,
     filterSelections: null,
@@ -55,15 +55,15 @@ export default new Vuex.Store({
           subTools: [
             {
               name: i18n.t('tools.explore.tabs.map'),
-              fullDescription: "TODO"
+              fullDescription: "The map pulls data from multiple local, state and national data sources at the county, ZIP code, SSA (Statistical Small Area), and census tract level to display an indicators geographic distribution."
             },
             {
               name: i18n.t('tools.explore.tabs.trend'),
-              fullDescription: "TODO"
+              fullDescription: "The trend chart pulls data from multiple local, state and national data sources at the county, ZIP code, SSA (Statistical Small Area), and census tract level to display an indicator, or multiple indicators, across time."
             },
             {
               name: i18n.t('tools.explore.tabs.compare'),
-              fullDescription: "TODO"
+              fullDescription: "The comparison chart pulls data from multiple local, state and national data sources at the county, ZIP code, SSA (Statistical Small Area), and census tract level to display an indicator, or multiple indicators, across categories."
             }
           ]
         },
@@ -83,7 +83,7 @@ export default new Vuex.Store({
         {
           name: i18n.t('about_tools_view.name'),
           route: 'about-tools',
-          icon: 'mdi-hammer-wrench'
+          icon: 'mdi-information'
         },
         {
           name: i18n.t('about_data_view.name'),
@@ -217,6 +217,7 @@ export default new Vuex.Store({
         context.commit('SET_COMPARE_SELECTIONS', null)
         return Promise.resolve();
       } else {
+        context.commit('SET_COMPARE_SELECTIONS', null)
         return context.dispatch('getSource', indicator).then(() => {
           return context.dispatch('getFilters', indicator)
         });
@@ -278,10 +279,14 @@ export default new Vuex.Store({
     },
     setCompareSelections(context, selections) {
       context.commit('SET_COMPARE_SELECTIONS', selections);
+      let compareWiths = selections.options.map(o => (o.typeId ? o.typeId + "_" : "") + o.id)
+      if (compareWiths.length === 1) {
+        compareWiths = compareWiths[0]
+      }
       let compareQuery = {
         ...router.currentRoute.query,
-        compareBy: selections.type.id || 'l',
-        compareWith: selections.filterOptions.map(o => (o.typeId ? o.typeId + "_" : "") + o.id)
+        compareBy: selections.type.id,
+        compareWith: compareWiths
 
       };
       if (JSON.stringify(compareQuery) !== JSON.stringify(router.currentRoute.query)) {

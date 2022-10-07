@@ -1,5 +1,5 @@
 <template>
-	<div class="my-2">
+	<div v-if="exploreData" class="my-2">
 		<v-card outlined tile class="fill-height docked-tooltip">
 			<v-card-title class="docked-tooltip-title white--text">
 				{{ $t('tools.explore.docked_tooltip.now_viewing')}}
@@ -12,15 +12,17 @@
 			<v-card-text v-else>
 				<div class="text-h6 pt-2">
 					<span v-if="exploreData.category.parentCategoryId">{{ exploreData.category['name_' + locale] }} - </span>
-					{{ exploreData.indicator['name_' + locale] }}: {{ valueFormatted }}
+					{{ exploreData.indicator['name_' + locale] }}: <span v-if="dockedTooltip.location">{{ valueFormatted }}</span>
 				</div>
 				<ul class="text-body-1">
-					<li v-if="!dockedTooltip.noData">Range: {{  rangeFormatted }}</li>
+					<li v-if="!dockedTooltip.noData">Range: <span v-if="dockedTooltip.location">{{ rangeFormatted }}</span></li>
 					<li>Source: {{ exploreData.source['name_' + locale] }}</li>
 					<li>Year: {{ dockedTooltip.year }}</li>
-					<li v-for="filter in dockedTooltip.indicatorFilters" :key="filter.type.id">
-						{{ filter.type['name_' + locale] }}: {{ filter.options[0]['name_' + locale] }}
-					</li>
+					<template v-for="filter in dockedTooltip.indicatorFilters">
+						<li v-if="filter.type && filter.options[0]" :key="filter.type.id">
+							{{ filter.type['name_' + locale] }}: {{ filter.options[0]['name_' + locale] }}
+						</li>
+					</template>
 				</ul>
 			</v-card-text>
 		</v-card>
@@ -70,6 +72,7 @@ export default {
 		border: 1px solid rgba($color-secondary, 1);
 	}
 	.docked-tooltip-title {
+		color: white;
 		background: rgba($color-secondary, 1);
 		
 	}

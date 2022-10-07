@@ -1,15 +1,15 @@
 <template>
 	<div class="fill-height">
 		<v-row class="no-gutters flex-wrap flex-column fill-height">
-			<v-col cols="auto">
-				<explore-tools-panel 
-					v-if="filters"
-					:showCompareOptions="true"
-					:showLabels="showCompareLabels"
-					:setShowLabels="setShowCompareLabels"
-				>
-				</explore-tools-panel>
-			</v-col>
+			<explore-tools-panel 
+				v-if="filters && exploreData"
+				:showCompareOptions="true"
+				:showLabels="showCompareLabels"
+				:setShowLabels="setShowCompareLabels"
+				dataVisualElementId="compare_chart_container"
+				dataVisualName="compare_chart"
+			>
+			</explore-tools-panel>
 			<v-col cols="auto" class="grow">
 				<div 
 					ref="compare_chart_container" 
@@ -43,14 +43,22 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['locale', 'filters', 'exploreData', 'compareSelections', 'showCompareLabels']),
+		...mapState(['locale', 'filters', 'exploreData', 'compareSelections', 'showCompareLabels', 'exploreTab']),
+		smallScreen() {
+			return document.body.clientWidth <= 1440;
+		}
 	},
 	watch: {
 		locale() {
 			this.drawChart()
 		},
+		exploreTab(newValue) {
+			if (newValue === 'compare') {
+				window.setTimeout(() => this.chart?.resize(), 100);
+			}
+		},
 		exploreData(newValue) {
-			if (newValue) {
+			if (newValue && this.chart) {
 				this.drawChart();
 			}
 		},
@@ -83,7 +91,9 @@ export default {
 				}
 			});
 			window.addEventListener('resize', () => {
-				this.chart.resize();
+				if (this.exploreTab === 'compare') {
+					this.chart.resize();
+				}
 			});
 			if (this.exploreData) {
 				this.drawChart();
@@ -92,14 +102,16 @@ export default {
 	},
 	methods: {
 		...mapActions(['setDockedTooltip', 'setShowCompareLabels']),
-		//TODO: don't change bar color or cursor on hover
 		drawChart() {
+			if (!this.chart) {
+				return;
+			}
 			let textStyle = {
 				fontFamily: '"Roboto", sans-serif !important',
-				fontSize: '16px'
+				fontSize: this.smallScreen ? '14px' : '16px'
 			};
 			let option = {};
-			option.grid = { containLabel: true };
+			option.grid = { left: 20, right: 20, containLabel: true };
 			option.yAxis = { 
 				type: 'value', 
 				splitLine: { show: false },
@@ -108,10 +120,14 @@ export default {
 			};
 			let xAxisData = [];
 			if (this.exploreData.compareData) {
-				xAxisData.push(this.compareSelections.type.name_en === 'Location' 
-					? this.exploreData.filters.locationFilter.options[0]['name_' + this.locale]
-					: this.exploreData.filters.indicatorFilters.find(f => f.type.id === this.compareSelections.type.id).options[0]['name_' + this.locale])
-				xAxisData.push(...this.compareSelections.filterOptions.map(o => o['name_' + this.locale]))
+				if (this.compareSelections.type.id === 'l') {
+					xAxisData.push(this.exploreData.filters.locationFilter.options[0]['name_' + this.locale]);
+				} else if (this.compareSelections.type.id === 'y') {
+					xAxisData.push(this.exploreData.filters.yearFilter.options[0]['name_' + this.locale]);
+				} else {
+					xAxisData.push(this.exploreData.filters.indicatorFilters.find(f => f.type.id === this.compareSelections.type.id).options[0]['name_' + this.locale])
+				}
+				xAxisData.push(...this.compareSelections.options.map(o => o['name_' + this.locale]))
 			} else {
 				xAxisData.push('')
 			}
@@ -119,7 +135,15 @@ export default {
 				type: 'category', 
 				data: xAxisData,
 				axisTick: { show: false },
-				axisLabel: { ...textStyle, interval: 0, width: '80', overflow: 'break', lineHeight: 16 },
+				axisLabel: { 
+					...textStyle, 
+					interval: 0, 
+					width: '80', 
+					overflow: 'break', 
+					lineHeight: 16, 
+					rotate: this.smallScreen ? 45 : 0,
+					margin: this.smallScreen ? 20 : 10
+				},
 				name: this.compareSelections 
 					? '' 
 					: (this.exploreData.category.parentCategoryId ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.exploreData.indicator['name_' + this.locale],
@@ -134,7 +158,7 @@ export default {
 			seriesData.push({ 
 				value: filteredLocation.yearData[this.exploreData.filters.yearFilter.options[0].id]?.value || 0,
 				suppressed: filteredLocation.yearData[this.exploreData.filters.yearFilter.options[0].id]?.suppressed,
-				noData: !filteredLocation.yearData[this.exploreData.filters.yearFilter.options[0].id]?.value,
+				noData: !filteredLocation.yearData[this.exploreData.filters.yearFilter.options[0].id] || filteredLocation.yearData[this.exploreData.filters.yearFilter.options[0].id]?.value === null,
 				moeLow: filteredLocation.yearData[this.exploreData.filters.yearFilter.options[0].id]?.moeLow, 
 				moeHigh: filteredLocation.yearData[this.exploreData.filters.yearFilter.options[0].id]?.moeHigh,
 				location: filteredLocation.location['name_' + this.locale] ,
@@ -143,15 +167,16 @@ export default {
 			if (this.exploreData.compareData) {
 				seriesData.push(...this.exploreData.compareData.map((cd, index) => {
 					let compareIndicatorFilters = JSON.parse(JSON.stringify(this.exploreData.filters.indicatorFilters));
-					if (this.compareSelections.type.id) {
-						compareIndicatorFilters.find(f => f.type.id === this.compareSelections.type.id).options[0] = this.compareSelections.filterOptions[index];
+					if (!isNaN(this.compareSelections.type.id)) {
+						compareIndicatorFilters.find(f => f.type.id === this.compareSelections.type.id).options[0] = this.compareSelections.options[index];
 					}
+					let year = this.compareSelections.type.id === 'y' ? this.compareSelections.options[index].id : this.exploreData.filters.yearFilter.options[0].id;
 					return  { 
-						value: cd.yearData[this.exploreData.filters.yearFilter.options[0].id]?.value || 0,
-						suppressed: cd.yearData[this.exploreData.filters.yearFilter.options[0].id]?.suppressed,
-						noData: !cd.yearData[this.exploreData.filters.yearFilter.options[0].id]?.value,
-						moeLow: cd.yearData[this.exploreData.filters.yearFilter.options[0].id]?.moeLow,
-						moeHigh: cd.yearData[this.exploreData.filters.yearFilter.options[0].id]?.moeHigh,
+						value: cd.yearData[year]?.value || 0,
+						suppressed: cd.yearData[year]?.suppressed,
+						noData: !cd.yearData[year] || cd.yearData[year]?.value === null,
+						moeLow: cd.yearData[year]?.moeLow,
+						moeHigh: cd.yearData[year]?.moeHigh,
 						location: cd.location['name_' + this.locale],
 						indicatorFilters: compareIndicatorFilters
 					};
@@ -160,19 +185,22 @@ export default {
 			option.series = {
 				data: seriesData,
 				type: 'bar',
+				cursor: 'default',
+				emphasis: {
+					disabled: true
+				},
 				label: { 
 					show: true, 
 					position: 'top',
 					formatter: (o) => {
 						if (o.data.suppressed) {
 							return '{a|' + i18n.t('data.suppressed') + '}';
-						} else if (!o.data.value) {
+						} else if (o.data.noData) {
 							return '{a|' + i18n.t('data.no_data') + '}';
 						} else if (this.showCompareLabels) {
 							let rows = ['{a|' + i18n.t('data.value') +': ' + format(this.exploreData.indicator.typeId, o.data.value) + '}'];
 							if (o.data.moeLow || o.data.moeHigh) {
-								rows.push('{b|' + i18n.t('data.moe_range') 
-									+ ': ' 
+								rows.push('{b|' + (this.smallScreen ? '' : (i18n.t('data.moe_range') + ': ') )
 									+ format(this.exploreData.indicator.typeId, o.data.moeLow)
 									+ " - "
 									+ format(this.exploreData.indicator.typeId, o.data.moeHigh) + '}');
@@ -185,13 +213,13 @@ export default {
 					rich: { 
 						a: {
 							align: 'center',
-							fontSize: '16px',
+							fontSize: this.smallScreen ? '12px' : '16px',
 							lineHeight: '20',
 							color: '#333333'
 						},
 						b: {
 							align: 'center',
-							fontSize: '14px',
+							fontSize: this.smallScreen ? '10px' : '14px',
 							lineHeight: '16',
 							color: '#666666'
 						}

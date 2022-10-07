@@ -1,19 +1,20 @@
 <template>
 	<div class="fill-height">
 		<v-row class="no-gutters flex-wrap flex-column fill-height">
-			<v-col cols="auto">
-				<explore-tools-panel 
-					v-if="filters"
-					:draw="drawMap"
-					:showLabels="showMapLabels"
-					:setShowLabels="setShowMapLabels"
-				>
-				</explore-tools-panel>
-			</v-col>
+			<explore-tools-panel 
+				v-if="filters"
+				:draw="drawMap"
+				:showLabels="showMapLabels"
+				:setShowLabels="setShowMapLabels"
+				dataVisualElementId="explore_map"
+				dataVisualName="map"
+			>
+			</explore-tools-panel>
 			<v-col cols="auto" class="grow">
 				<l-map
 					v-if="componentInitialized"
 					ref="exploreMap"
+					id="explore_map"
 					:zoom="zoom"
 					:center="center"
 					:options="{ zoomDelta: 0.5, zoomSnap: 0.5, preferCanvas: true }"
@@ -91,26 +92,29 @@
 						class="layer-control"
 						v-if="layers.length"
 					>
-						<v-card tile outlined :style="{ boxShadow: 'none !important' }">
-						<v-card-title class="pb-0 text--primary">
-							<v-icon color="accent">mdi-layers</v-icon>
-							{{ $t('tools.community.community_types') }}
-						</v-card-title>
-						<v-card-text>
-							<v-radio-group
-							v-model="selectedLocationType"
-							@change="selectLocationType"
-							>
-							<v-radio 
-								color="accent"
-								v-for="layer in layers" 
-								:key="layer.id" 
-								:value="layer" 
-								:label="layer['name_' + locale]">
-							</v-radio>
-							</v-radio-group>
-						</v-card-text>
-						</v-card>
+						<v-expansion-panels data-html2canvas-ignore>
+							<v-expansion-panel>
+								<v-expansion-panel-header class="text--primary">
+									<v-icon color="accent">mdi-layers</v-icon>
+									<span class="mx-2">{{ $t('tools.community.community_types') }}</span>
+								</v-expansion-panel-header>
+								<v-expansion-panel-content>
+									<v-radio-group
+									v-model="selectedLocationType"
+									@change="selectLocationType"
+									class="mt-0"
+									>
+									<v-radio 
+										color="accent"
+										v-for="layer in layers" 
+										:key="layer.id" 
+										:value="layer" 
+										:label="layer['name_' + locale]">
+									</v-radio>
+									</v-radio-group>
+								</v-expansion-panel-content>
+							</v-expansion-panel>
+						</v-expansion-panels>
 					</l-control>
 				</l-map>
 			</v-col>
@@ -120,6 +124,7 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
+import i18n from '@/i18n'
 import { latLng } from 'leaflet'
 import { LMap, LTileLayer, LGeoJson, LControl } from 'vue2-leaflet'
 import { feature, featureCollection } from '@turf/helpers'
@@ -149,7 +154,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['exploreData', 'locale', 'locationMenu', 'filters', 'filterSelections', 'showMapLabels']),
+		...mapState(['exploreData', 'locale', 'locationMenu', 'filters', 'filterSelections', 'showMapLabels', 'exploreTab']),
 		layers() {
 			return this.locationMenu?.categories?.map(locationType => {
 				return {
@@ -160,7 +165,7 @@ export default {
 			});
 		},
 		options() {
-			this.refreshOptions
+			this.refreshOptions;
 			return {
 				onEachFeature: this.onEachFeature
 			}
@@ -220,6 +225,13 @@ export default {
     	locale() {
 			this.drawMap()
 		},
+		exploreTab(newValue) {
+			if (newValue === 'map') {
+				window.setTimeout(() => {
+					this.resizeHandler();
+				}, 100);
+			}
+		},
 		layers(newValue) {
 			this.selectedLocationType = newValue[0];
 		},
@@ -251,7 +263,9 @@ export default {
 			}
 		},
 		resizeHandler() {
-			this.$refs.indicatorMap?.mapObject?.invalidateSize();
+			if (this.exploreTab === 'map') {
+				this.$refs.exploreMap?.mapObject?.invalidateSize();
+			}
 		},
 		selectLocationType() {
 			let newFilterSelections = JSON.parse(JSON.stringify(this.filterSelections));
@@ -266,13 +280,14 @@ export default {
 			this.setFilterSelections(newFilterSelections);
 		},
 		drawMap() {
+			this.setDefaultDockedTooltip();
 			this.geojson = featureCollection(this.exploreData.locationData
 				.filter(ld => !!ld.geojson)
 				.map(ld => feature(JSON.parse(ld.geojson), 
 					{
 						locationName: ld.location['name_' + this.locale],
 						value: ld.yearData[this.exploreData.filters.yearFilter.options[0].id]?.value,
-						noData: !ld.yearData[this.exploreData.filters.yearFilter.options[0].id]?.value,
+						noData: ld.yearData[this.exploreData.filters.yearFilter.options[0].id]?.value === null,
 						moeLow: ld.yearData[this.exploreData.filters.yearFilter.options[0].id]?.moeLow,
 						moeHigh: ld.yearData[this.exploreData.filters.yearFilter.options[0].id]?.moeHigh,
 						suppressed: ld.yearData[this.exploreData.filters.yearFilter.options[0].id]?.suppressed
@@ -289,7 +304,9 @@ export default {
 			}
 			layer.options.fillColor = this.getLayerShadingColor(feature);
 			if (this.showMapLabels) {
-				layer.bindTooltip(layer.feature.properties.locationName.replace('Zip Code', 'Zip').replace('Census Tract', 'Tract'), 
+				layer.bindTooltip(layer.feature.properties.locationName.replace('Zip Code', 'Zip').replace('Census Tract', 'Tract') 
+						+ '<br>' 
+						+ (layer.feature.properties.suppressed ? i18n.t('data.suppressed') : format(this.exploreData.indicator.typeId, layer.feature.properties.value)), 
 					{
 						className: 'location-label',
 						permanent: true, 
@@ -311,7 +328,7 @@ export default {
 				});
 			});
 			layer.on('mouseout', () => {
-				this.setDockedTooltip(null);
+				this.setDefaultDockedTooltip()
 			});
 			layer.on('click', (e) => {
 				this.selectLocation(e.target.feature.id);
@@ -326,6 +343,18 @@ export default {
 				this.shadingRanges.findIndex(
 					range => feature.properties.value >= range[0].value && feature.properties.value <= range[1].value)
 			];
+		},
+		setDefaultDockedTooltip() {
+			this.setDockedTooltip({
+					value: null,
+					suppressed: null,
+					noData: null,
+					moeLow: null,
+					moeHigh: null,
+					location: null,
+					year: this.exploreData.filters.yearFilter.options[0].id,
+					indicatorFilters: this.exploreData.filters.indicatorFilters
+				});
 		}
 	},
 }
@@ -341,5 +370,6 @@ export default {
 		color: #000;
 		font-size: 14px;
 		text-shadow: -2px -2px 2px #fff, 2px -2px 2px #fff, -2px 2px 2px #fff, 2px 2px 2px #fff;
+		text-align: center;
 	}
 </style>

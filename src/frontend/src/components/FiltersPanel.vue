@@ -1,6 +1,6 @@
 <template>
 	<v-form v-if="filters" ref="filtersForm" v-model="valid">
-		<v-card outlined tile>
+		<v-card outlined tile id="explore_filters">
 			<v-card-title>
 				<span class="text-h6 font-weight-light">
 					<v-icon color="accent">mdi-filter-variant</v-icon>
@@ -18,7 +18,7 @@
 					hide-no-data
 					flat
 					dense
-					:rules="[v => !!v || 'Please make a selection']"
+					:rules="[v => !!v || $t('tools.common.make_selection')]"
 					@change="selectLocationType"
 				></v-autocomplete>
 				<v-autocomplete
@@ -31,7 +31,8 @@
 					hide-no-data
 					flat
 					dense
-					:rules="[v => !!v || 'Please make a selection']"
+					:rules="[v => !!v || $t('tools.common.make_selection')]"
+					@change="requestApply"
 				></v-autocomplete>
 				<v-autocomplete
 					:label="filters.yearFilter.type['name_' + locale]"
@@ -43,7 +44,8 @@
 					hide-no-data
 					flat
 					dense
-					:rules="[v => !!v || 'Please make a selection']"
+					:rules="[v => !!v || $t('tools.common.make_selection')]"
+					@change="requestApply"
 				></v-autocomplete>
 				<template v-for="filter in filters.indicatorFilters">
 					<v-autocomplete
@@ -57,12 +59,13 @@
 						hide-no-data
 						flat
 						dense
-						:rules="[v => !!v || 'Please make a selection']"
+						:rules="[v => !!v || $t('tools.common.make_selection')]"
+						@change="requestApply"
 					></v-autocomplete>
 				</template>
 			</v-card-text>
 			<v-card-actions class="d-flex justify-end">
-				<v-btn color="accent" @click="applyFilters">
+				<v-btn style="font-size: 14pt;" class="font-weight-bold" color="accent" :disabled="!applyNeeded" @click="applyFilters" data-html2canvas-ignore>
 					{{ $t('tools.explore.apply_filters') }}
 				</v-btn>
 			</v-card-actions>
@@ -78,6 +81,7 @@ export default {
 	name: 'FiltersPanel',
 	data() {
 		return {
+			applyNeeded: false,
 			selectedLocationType: null,
 			selectedLocation: null,
 			selectedYear: null,
@@ -90,7 +94,7 @@ export default {
 		locationFilterOptions() {
 			return this.filters.locationFilter.options
 				.filter(option => option.typeId === this.selectedLocationType)
-		},
+		}
 	},
 	watch: {
 		filters() {
@@ -98,13 +102,14 @@ export default {
 			this.$nextTick(() => this.applyFilters());
 		},
 		filterSelections(newValue) {
-			this.selectedLocationType = newValue.locationType;
-			this.selectedLocation = newValue.location;
+			this.selectedLocationType = newValue?.locationType;
+			this.selectedLocation = newValue?.location;
 		}
 	},
 	methods: {
 		...mapActions(['setFilterSelections']),
 		initFilters() {
+			this.applyNeeded = false;
 			this.indicatorFilterSelections = {}
 			this.selectedLocationType = router.currentRoute.query.locationType || this.filters?.locationTypeFilter.options[0]?.id
 			this.selectedLocation = router.currentRoute.query.location || this.filters?.locationFilter.options.find(o => o.typeId == this.selectedLocationType)?.id
@@ -117,12 +122,16 @@ export default {
 				this.indicatorFilterSelections[filter.type.id] = option 
 			});
 		},
+		requestApply() {
+			this.applyNeeded = true;
+		},
 		selectLocationType() {
 			this.selectedLocation = this.filters.locationFilter.options
 				.filter(option => option.typeId === this.selectedLocationType)[0]?.id
+			this.requestApply();
 		},
 		validateFilters() {
-			this.$refs.filtersForm.validate()
+			this.$refs.filtersForm?.validate()
 		},
 		getFilterSelections() {	
 			return {
@@ -135,7 +144,8 @@ export default {
 		applyFilters() { 
 			this.validateFilters();
 			if (this.valid) {
-				this.setFilterSelections(this.getFilterSelections())
+				this.setFilterSelections(this.getFilterSelections());
+				this.applyNeeded = false;
 			}
 		}
 	},

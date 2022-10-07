@@ -36,7 +36,7 @@
             </template>
           </section>
       </v-col>
-      <v-col v-if="indicator && exploreData" cols="auto" class="pt-4 px-4">
+      <v-col v-if="indicator && exploreData" cols="auto" class="pt-4 px-4" id="explore_indicator">
           <h1 class="text-h3 mb-1"><span v-if="exploreData.category.parentCategoryId">{{ exploreData.category['name_' + locale] }} - </span>{{ indicator['name_' + locale] }}</h1>
           <h2 v-if="source" class="text-subtitle-1 mb-2">{{ source['name_' + locale] }}</h2>
       </v-col>
@@ -132,7 +132,7 @@ export default {
         }
       ];
 
-      if (this.exploreData) {
+      if (this.exploreData && this.indicator) {
         crumbs.push({
           text: (this.exploreData.category.parentCategoryId ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.indicator['name_' + this.locale],
           disabled: true

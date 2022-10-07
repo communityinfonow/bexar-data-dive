@@ -42,9 +42,11 @@
               <span v-if="tablesData.category.parentCategoryId">{{ tablesData.category['name_' + locale] }} - </span>
               {{ tablesData.indicator['name_' + locale] }}
             </span>
-            <v-btn color="accent" icon @click="downloadTablesData">
-              <v-icon>mdi-download</v-icon>
-            </v-btn>
+            <div>
+              <download-menu :downloadData="downloadTablesData"></download-menu>
+              <share-menu></share-menu>
+              <about-menu indicator tool :indicatorId="indicator.id"></about-menu>
+            </div>
           </h1>
           <h2 class="text-subtitle-1 mb-2">{{ tablesData.source['name_' + locale] }}</h2>
           <v-text-field v-model="search" :label="$t('tools.common.search')" hide-details @input="loadTablesData()">
@@ -64,70 +66,74 @@
             <!-- FIXME: DRY -->
             <template v-slot:header.locationType="{ header }">
               {{ header.text }}
-              <v-menu offset-y max-height="400px" allow-overflow eager>
+              <v-menu offset-y eager>
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn icon color="accent" v-bind="attrs" v-on="on" :aria-label="$t('tools.tables.filter')">
                     <v-icon>mdi-filter-variant</v-icon>
                   </v-btn>
                 </template>
-                <v-list>
-                  <v-list-item>
+                <v-card>
+                  <v-list class="filter-list">
+                    <v-list-item>
+                      <v-list-item-action>
+                        <v-checkbox v-model="selectAllLocationTypes" @click.stop="" @change="selectAllLocationTypesChange"></v-checkbox>
+                      </v-list-item-action>
+                      <v-list-item-title>
+                        <em v-if="selectAllLocationTypes">{{ $t('tools.tables.clear_selections') }}</em>
+                        <em v-else>{{ $t('tools.tables.select_all') }}</em>
+                      </v-list-item-title>
+                    </v-list-item>
+                    <v-list-item v-for="locationType in locationTypes" :key="locationType.name" @click.stop="">
+                      <v-list-item-action>
+                        <v-checkbox
+                          v-model="locationType.selected"
+                          color="primary"
+                          hide-details
+                        ></v-checkbox>
+                      </v-list-item-action>
+                      <v-list-item-title>{{ locationType['name_' + locale] }}</v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                  <v-card-actions>
                     <v-btn block color="accent" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
-                  </v-list-item>
-                  <v-list-item>
-                    <v-list-item-action>
-                      <v-checkbox v-model="selectAllLocationTypes" @click.stop="" @change="selectAllLocationTypesChange"></v-checkbox>
-                    </v-list-item-action>
-                    <v-list-item-title>
-                      <em v-if="selectAllLocationTypes">{{ $t('tools.tables.clear_selections') }}</em>
-                      <em v-else>{{ $t('tools.tables.select_all') }}</em>
-                    </v-list-item-title>
-                  </v-list-item>
-                  <v-list-item v-for="locationType in locationTypes" :key="locationType.name" @click.stop="">
-                    <v-list-item-action>
-                      <v-checkbox
-                        v-model="locationType.selected"
-                        color="primary"
-                        hide-details
-                      ></v-checkbox>
-                    </v-list-item-action>
-                    <v-list-item-title>{{ locationType['name_' + locale] }}</v-list-item-title>
-                  </v-list-item>
-                </v-list>
+                  </v-card-actions>
+                </v-card>
               </v-menu>
             </template>
             <template v-slot:header.location="{ header }">
               {{ header.text }}
-              <v-menu offset-y max-height="400px" allow-overflow eager>
+              <v-menu offset-y eager>
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn icon color="accent" v-bind="attrs" v-on="on" :aria-label="$t('tools.tables.filter')">
                     <v-icon>mdi-filter-variant</v-icon>
                   </v-btn>
                 </template>
-                <v-list>
-                  <v-list-item>
+                <v-card>
+                  <v-list class="filter-list">
+                    <v-list-item>
+                      <v-list-item-action>
+                        <v-checkbox v-model="selectAllLocations" @click.stop="" @change="selectAllLocationsChange"></v-checkbox>
+                      </v-list-item-action>
+                      <v-list-item-title>
+                        <em v-if="selectAllLocations">{{ $t('tools.tables.clear_selections') }}</em>
+                        <em v-else>{{ $t('tools.tables.select_all') }}</em>
+                      </v-list-item-title>
+                    </v-list-item>
+                    <v-list-item v-for="location in locations" :key="location.name" @click.stop="">
+                      <v-list-item-action>
+                        <v-checkbox
+                          v-model="location.selected"
+                          color="primary"
+                          hide-details
+                        ></v-checkbox>
+                      </v-list-item-action>
+                      <v-list-item-title>{{ location['name_' + locale] }}</v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                  <v-card-actions>
                     <v-btn block color="accent" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
-                  </v-list-item>
-                  <v-list-item>
-                    <v-list-item-action>
-                      <v-checkbox v-model="selectAllLocations" @click.stop="" @change="selectAllLocationsChange"></v-checkbox>
-                    </v-list-item-action>
-                    <v-list-item-title>
-                      <em v-if="selectAllLocations">{{ $t('tools.tables.clear_selections') }}</em>
-                      <em v-else>{{ $t('tools.tables.select_all') }}</em>
-                    </v-list-item-title>
-                  </v-list-item>
-                  <v-list-item v-for="location in locations" :key="location.name" @click.stop="">
-                    <v-list-item-action>
-                      <v-checkbox
-                        v-model="location.selected"
-                        color="primary"
-                        hide-details
-                      ></v-checkbox>
-                    </v-list-item-action>
-                    <v-list-item-title>{{ location['name_' + locale] }}</v-list-item-title>
-                  </v-list-item>
-                </v-list>
+                  </v-card-actions>
+                </v-card>
               </v-menu>
             </template>
             <template v-slot:header.year="{ header }">
@@ -138,30 +144,32 @@
                     <v-icon>mdi-filter-variant</v-icon>
                   </v-btn>
                 </template>
-                <v-list>
-                  <v-list-item>
+                <v-card>
+                  <v-list class="filter-list">
+                    <v-list-item>
+                      <v-list-item-action>
+                        <v-checkbox v-model="selectAllYears" @click.stop="" @change="selectAllYearsChange"></v-checkbox>
+                      </v-list-item-action>
+                      <v-list-item-title>
+                        <em v-if="selectAllYears">{{ $t('tools.tables.clear_selections') }}</em>
+                        <em v-else>{{ $t('tools.tables.select_all') }}</em>
+                      </v-list-item-title>
+                    </v-list-item>
+                    <v-list-item v-for="year in years" :key="year.name" @click.stop="">
+                      <v-list-item-action>
+                        <v-checkbox
+                          v-model="year.selected"
+                          color="primary"
+                          hide-details
+                        ></v-checkbox>
+                      </v-list-item-action>
+                      <v-list-item-title>{{ year['name_' + locale] }}</v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                  <v-card-actions>
                     <v-btn block color="accent" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
-                  </v-list-item>
-                  <v-list-item>
-                    <v-list-item-action>
-                      <v-checkbox v-model="selectAllYears" @click.stop="" @change="selectAllYearsChange"></v-checkbox>
-                    </v-list-item-action>
-                    <v-list-item-title>
-                      <em v-if="selectAllYears">{{ $t('tools.tables.clear_selections') }}</em>
-                      <em v-else>{{ $t('tools.tables.select_all') }}</em>
-                    </v-list-item-title>
-                  </v-list-item>
-                  <v-list-item v-for="year in years" :key="year.name" @click.stop="">
-                    <v-list-item-action>
-                      <v-checkbox
-                        v-model="year.selected"
-                        color="primary"
-                        hide-details
-                      ></v-checkbox>
-                    </v-list-item-action>
-                    <v-list-item-title>{{ year['name_' + locale] }}</v-list-item-title>
-                  </v-list-item>
-                </v-list>
+                  </v-card-actions>
+                </v-card>
               </v-menu>
             </template>
             <template v-if="filteredHeaders.find(f => f.value === 'race')" v-slot:header.race="{ header }">
@@ -172,30 +180,32 @@
                     <v-icon>mdi-filter-variant</v-icon>
                   </v-btn>
                 </template>
-                <v-list>
-                  <v-list-item>
+                <v-card>
+                  <v-list class="filter-list">
+                    <v-list-item>
+                      <v-list-item-action>
+                        <v-checkbox v-model="selectAllRaces" @click.stop="" @change="selectAllRacesChange"></v-checkbox>
+                      </v-list-item-action>
+                      <v-list-item-title>
+                        <em v-if="selectAllRaces">{{ $t('tools.tables.clear_selections') }}</em>
+                        <em v-else>{{ $t('tools.tables.select_all') }}</em>
+                      </v-list-item-title>
+                    </v-list-item>
+                    <v-list-item v-for="race in races" :key="race.name" @click.stop="">
+                      <v-list-item-action>
+                        <v-checkbox
+                          v-model="race.selected"
+                          color="primary"
+                          hide-details
+                        ></v-checkbox>
+                      </v-list-item-action>
+                      <v-list-item-title>{{ race['name_' + locale] }}</v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                  <v-card-actions>
                     <v-btn block color="accent" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
-                  </v-list-item>
-                  <v-list-item>
-                    <v-list-item-action>
-                      <v-checkbox v-model="selectAllRaces" @click.stop="" @change="selectAllRacesChange"></v-checkbox>
-                    </v-list-item-action>
-                    <v-list-item-title>
-                      <em v-if="selectAllRaces">{{ $t('tools.tables.clear_selections') }}</em>
-                      <em v-else>{{ $t('tools.tables.select_all') }}</em>
-                    </v-list-item-title>
-                  </v-list-item>
-                  <v-list-item v-for="race in races" :key="race.name" @click.stop="">
-                    <v-list-item-action>
-                      <v-checkbox
-                        v-model="race.selected"
-                        color="primary"
-                        hide-details
-                      ></v-checkbox>
-                    </v-list-item-action>
-                    <v-list-item-title>{{ race['name_' + locale] }}</v-list-item-title>
-                  </v-list-item>
-                </v-list>
+                  </v-card-actions>
+                </v-card>
               </v-menu>
             </template>
             <template v-if="filteredHeaders.find(f => f.value === 'age')" v-slot:header.age="{ header }">
@@ -206,30 +216,32 @@
                     <v-icon>mdi-filter-variant</v-icon>
                   </v-btn>
                 </template>
-                <v-list>
-                  <v-list-item>
+                <v-card>
+                  <v-list class="filter-list">
+                    <v-list-item>
+                      <v-list-item-action>
+                        <v-checkbox v-model="selectAllAges" @click.stop="" @change="selectAllAgesChange"></v-checkbox>
+                      </v-list-item-action>
+                      <v-list-item-title>
+                        <em v-if="selectAllAges">{{ $t('tools.tables.clear_selections') }}</em>
+                        <em v-else>{{ $t('tools.tables.select_all') }}</em>
+                      </v-list-item-title>
+                    </v-list-item>
+                    <v-list-item v-for="age in ages" :key="age.name" @click.stop="">
+                      <v-list-item-action>
+                        <v-checkbox
+                          v-model="age.selected"
+                          color="primary"
+                          hide-details
+                        ></v-checkbox>
+                      </v-list-item-action>
+                      <v-list-item-title>{{ age['name_' + locale] }}</v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                  <v-card-actions>
                     <v-btn block color="accent" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
-                  </v-list-item>
-                  <v-list-item>
-                    <v-list-item-action>
-                      <v-checkbox v-model="selectAllAges" @click.stop="" @change="selectAllAgesChange"></v-checkbox>
-                    </v-list-item-action>
-                    <v-list-item-title>
-                      <em v-if="selectAllAges">{{ $t('tools.tables.clear_selections') }}</em>
-                      <em v-else>{{ $t('tools.tables.select_all') }}</em>
-                    </v-list-item-title>
-                  </v-list-item>
-                  <v-list-item v-for="age in ages" :key="age.name" @click.stop="">
-                    <v-list-item-action>
-                      <v-checkbox
-                        v-model="age.selected"
-                        color="primary"
-                        hide-details
-                      ></v-checkbox>
-                    </v-list-item-action>
-                    <v-list-item-title>{{ age['name_' + locale] }}</v-list-item-title>
-                  </v-list-item>
-                </v-list>
+                  </v-card-actions>
+                </v-card>
               </v-menu>
             </template>
             <template v-if="filteredHeaders.find(f => f.value === 'sex')" v-slot:header.sex="{ header }">
@@ -240,30 +252,32 @@
                     <v-icon>mdi-filter-variant</v-icon>
                   </v-btn>
                 </template>
-                <v-list>
-                  <v-list-item>
+                <v-card>
+                  <v-list class="filter-list">
+                    <v-list-item>
+                      <v-list-item-action>
+                        <v-checkbox v-model="selectAllSexes" @click.stop="" @change="selectAllSexesChange"></v-checkbox>
+                      </v-list-item-action>
+                      <v-list-item-title>
+                        <em v-if="selectAllSexes">{{ $t('tools.tables.clear_selections') }}</em>
+                        <em v-else>{{ $t('tools.tables.select_all') }}</em>
+                      </v-list-item-title>
+                    </v-list-item>
+                    <v-list-item v-for="sex in sexes" :key="sex.name" @click.stop="">
+                      <v-list-item-action>
+                        <v-checkbox
+                          v-model="sex.selected"
+                          color="primary"
+                          hide-details
+                        ></v-checkbox>
+                      </v-list-item-action>
+                      <v-list-item-title>{{ sex['name_' + locale] }}</v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                  <v-card-actions>
                     <v-btn block color="accent" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
-                  </v-list-item>
-                  <v-list-item>
-                    <v-list-item-action>
-                      <v-checkbox v-model="selectAllSexes" @click.stop="" @change="selectAllSexesChange"></v-checkbox>
-                    </v-list-item-action>
-                    <v-list-item-title>
-                      <em v-if="selectAllSexes">{{ $t('tools.tables.clear_selections') }}</em>
-                      <em v-else>{{ $t('tools.tables.select_all') }}</em>
-                    </v-list-item-title>
-                  </v-list-item>
-                  <v-list-item v-for="sex in sexes" :key="sex.name" @click.stop="">
-                    <v-list-item-action>
-                      <v-checkbox
-                        v-model="sex.selected"
-                        color="primary"
-                        hide-details
-                      ></v-checkbox>
-                    </v-list-item-action>
-                    <v-list-item-title>{{ sex['name_' + locale] }}</v-list-item-title>
-                  </v-list-item>
-                </v-list>
+                  </v-card-actions>
+                </v-card>
               </v-menu>
             </template>
             <template v-if="filteredHeaders.find(f => f.value === 'education')" v-slot:header.education="{ header }">
@@ -274,30 +288,32 @@
                     <v-icon>mdi-filter-variant</v-icon>
                   </v-btn>
                 </template>
-                <v-list>
-                  <v-list-item>
+                <v-card>
+                  <v-list class="filter-list">
+                    <v-list-item>
+                      <v-list-item-action>
+                        <v-checkbox v-model="selectAllEducations" @click.stop="" @change="selectAllEducationsChange"></v-checkbox>
+                      </v-list-item-action>
+                      <v-list-item-title>
+                        <em v-if="selectAllEducations">{{ $t('tools.tables.clear_selections') }}</em>
+                        <em v-else>{{ $t('tools.tables.select_all') }}</em>
+                      </v-list-item-title>
+                    </v-list-item>
+                    <v-list-item v-for="education in educations" :key="education.name" @click.stop="">
+                      <v-list-item-action>
+                        <v-checkbox
+                          v-model="education.selected"
+                          color="primary"
+                          hide-details
+                        ></v-checkbox>
+                      </v-list-item-action>
+                      <v-list-item-title>{{ education['name_' + locale] }}</v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                  <v-card-actions>
                     <v-btn block color="accent" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
-                  </v-list-item>
-                  <v-list-item>
-                    <v-list-item-action>
-                      <v-checkbox v-model="selectAllEducations" @click.stop="" @change="selectAllEducationsChange"></v-checkbox>
-                    </v-list-item-action>
-                    <v-list-item-title>
-                      <em v-if="selectAllEducations">{{ $t('tools.tables.clear_selections') }}</em>
-                      <em v-else>{{ $t('tools.tables.select_all') }}</em>
-                    </v-list-item-title>
-                  </v-list-item>
-                  <v-list-item v-for="education in educations" :key="education.name" @click.stop="">
-                    <v-list-item-action>
-                      <v-checkbox
-                        v-model="education.selected"
-                        color="primary"
-                        hide-details
-                      ></v-checkbox>
-                    </v-list-item-action>
-                    <v-list-item-title>{{ education['name_' + locale] }}</v-list-item-title>
-                  </v-list-item>
-                </v-list>
+                  </v-card-actions>
+                </v-card>
               </v-menu>
             </template>
             <template v-if="filteredHeaders.find(f => f.value === 'income')" v-slot:header.income="{ header }">
@@ -308,30 +324,32 @@
                     <v-icon>mdi-filter-variant</v-icon>
                   </v-btn>
                 </template>
-                <v-list>
-                  <v-list-item>
+                <v-card>
+                  <v-list class="filter-list">
+                    <v-list-item>
+                      <v-list-item-action>
+                        <v-checkbox v-model="selectAllIncomes" @click.stop="" @change="selectAllIncomesChange"></v-checkbox>
+                      </v-list-item-action>
+                      <v-list-item-title>
+                        <em v-if="selectAllIncomes">{{ $t('tools.tables.clear_selections') }}</em>
+                        <em v-else>{{ $t('tools.tables.select_all') }}</em>
+                      </v-list-item-title>
+                    </v-list-item>
+                    <v-list-item v-for="income in incomes" :key="income.name" @click.stop="">
+                      <v-list-item-action>
+                        <v-checkbox
+                          v-model="income.selected"
+                          color="primary"
+                          hide-details
+                        ></v-checkbox>
+                      </v-list-item-action>
+                      <v-list-item-title>{{ income['name_' + locale] }}</v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                  <v-card-actions>
                     <v-btn block color="accent" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
-                  </v-list-item>
-                  <v-list-item>
-                    <v-list-item-action>
-                      <v-checkbox v-model="selectAllIncomes" @click.stop="" @change="selectAllIncomesChange"></v-checkbox>
-                    </v-list-item-action>
-                    <v-list-item-title>
-                      <em v-if="selectAllIncomes">{{ $t('tools.tables.clear_selections') }}</em>
-                      <em v-else>{{ $t('tools.tables.select_all') }}</em>
-                    </v-list-item-title>
-                  </v-list-item>
-                  <v-list-item v-for="income in incomes" :key="income.name" @click.stop="">
-                    <v-list-item-action>
-                      <v-checkbox
-                        v-model="income.selected"
-                        color="primary"
-                        hide-details
-                      ></v-checkbox>
-                    </v-list-item-action>
-                    <v-list-item-title>{{ income['name_' + locale] }}</v-list-item-title>
-                  </v-list-item>
-                </v-list>
+                  </v-card-actions>
+                </v-card>
               </v-menu>
             </template>
           </v-data-table>
@@ -342,17 +360,24 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
+import axios from 'axios'
 import i18n from '@/i18n'
 import router from '@/router/index'
 import MenuToolbar from '@/components/MenuToolbar'
 import FeaturedCard from '@/components/FeaturedCard'
+import DownloadMenu from '@/components/DownloadMenu'
+import ShareMenu from '@/components/ShareMenu'
+import AboutMenu from '@/components/AboutMenu'
 import debounce from 'debounce'
 
 export default {
   name: 'TablesView',
   components: {
     MenuToolbar,
-    FeaturedCard
+    FeaturedCard,
+    DownloadMenu,
+    ShareMenu,
+    AboutMenu
   },
   data() {
     return {
@@ -424,7 +449,7 @@ export default {
           : this.filteredLocationTypes.map(i => i.id),
         locations: this.locations.length === this.filteredLocations.length
           ? undefined
-          : this.filteredLocations.map(i => i.id),
+          : this.filteredLocations.map(i => i.typeId + '_' + i.id),
         years: this.years.length === this.filteredYears.length
           ? undefined
           : this.filteredYears.map(i => i.id),  
@@ -673,7 +698,16 @@ export default {
       this.getTablesData(this.selections);
     },
     downloadTablesData() {
-      window.open('/api/tables-download?indicator=' + this.indicator.id, '_blank');
+      let downloadSelections = Object.assign({}, this.selections);
+      downloadSelections.perPage = -1;
+      axios.post('/api/tables-download', { 
+        ...downloadSelections 
+      }).then(response => {
+        let fileLink = document.createElement('a');
+        fileLink.download = 'table_download.csv';
+        fileLink.href = window.URL.createObjectURL(new Blob([response.data], { type: 'octet/stream'}))
+        fileLink.click();
+      });
     },
     selectAllLocationTypesChange() {
       this.locationTypes.forEach(i => i.selected = this.selectAllLocationTypes);
@@ -709,5 +743,10 @@ export default {
 ::v-deep .v-data-table-header .v-icon:after,
 ::v-deep .v-data-table-header .v-data-table-header__sort-badge {
   color: var(--v-accent-base) !important;
+}
+.filter-list {
+  min-width: 160px;
+  max-height: 400px;
+  overflow-y: auto;
 }
 </style>

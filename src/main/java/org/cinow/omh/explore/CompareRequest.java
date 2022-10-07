@@ -46,7 +46,7 @@ public class CompareRequest {
 	/**
 	 * @param options the options to set
 	 */
-	public void setFilterOptions(List<FilterOption> options) {
+	public void setOptions(List<FilterOption> options) {
 		this.options = options;
 	}
 }

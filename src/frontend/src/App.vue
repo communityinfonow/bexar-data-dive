@@ -1,6 +1,7 @@
 <template>
   <v-app>
     <AppHeader></AppHeader>
+    <PrintHeader></PrintHeader>
     <NavigationDrawer></NavigationDrawer>
     <v-main>
       <router-view />
@@ -21,12 +22,13 @@
 <script>
 import { mapState } from 'vuex'
 import AppHeader from '@/components/AppHeader'
+import PrintHeader from '@/components/PrintHeader'
 import AppFooter from '@/components/AppFooter'
 import NavigationDrawer from '@/components/NavigationDrawer'
 
 export default {
   name: 'App',
-  components: { AppHeader, AppFooter, NavigationDrawer },
+  components: { AppHeader, PrintHeader, AppFooter, NavigationDrawer },
   computed: {
     ...mapState(['loading'])
   },
@@ -34,10 +36,23 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@media screen {
+  .print-header {
+    display: none !important;
+  }
+}
+
 @media print {
   @page {
-    orientation: landscape;
-    
+    orientation: landscape; 
+  }
+
+  ::v-deep .v-breadcrumbs {
+    display: none;
+  }
+
+  .print-header {
+    display: block;
   }
 }
 ::v-deep .v-menu__content {
@@ -45,6 +60,9 @@ export default {
 }
 ::v-deep .v-btn--plain:not(.v-btn--active):not(.v-btn--loading):not(:focus):not(:hover) .v-btn__content {
   opacity: 1 !important;
+}
+::v-deep .theme--light.v-breadcrumbs .v-breadcrumbs__item--disabled {
+  color: rgba(0, 0, 0, 0.6)
 }
 
 ::v-deep .v-breadcrumbs {
