@@ -49,7 +49,7 @@
 				></v-autocomplete>
 				<template v-for="filter in filters.indicatorFilters">
 					<v-autocomplete
-						:key="filter.id"
+						:key="filter.type.id"
 						:label="filter.type['name_' + locale]"
 						:placeholder="filter.type['name_' + locale]"
 						v-model="indicatorFilterSelections[filter.type.id]"
@@ -60,7 +60,8 @@
 						flat
 						dense
 						:rules="[v => !!v || $t('tools.common.make_selection')]"
-						@change="requestApply"
+						@change="selectIndicatorFilter"
+						:disabled="!availableFilterCombos[filter.type.id]"
 					></v-autocomplete>
 				</template>
 			</v-card-text>
@@ -86,7 +87,8 @@ export default {
 			selectedLocation: null,
 			selectedYear: null,
 			indicatorFilterSelections: {},
-			valid: true
+			valid: true,
+			availableFilterCombos: {}
 		}
 	},
 	computed: {
@@ -104,6 +106,9 @@ export default {
 		filterSelections(newValue) {
 			this.selectedLocationType = newValue?.locationType;
 			this.selectedLocation = newValue?.location;
+		},
+		indicatorFilterSelections() {
+			this.selectIndicatorFilter();
 		}
 	},
 	methods: {
@@ -129,6 +134,24 @@ export default {
 			this.selectedLocation = this.filters.locationFilter.options
 				.filter(option => option.typeId === this.selectedLocationType)[0]?.id
 			this.requestApply();
+		},
+		selectIndicatorFilter() {
+			let combos = {};
+			this.filters?.indicatorFilters.forEach(filter => {
+				let setFilters = Object.entries(this.indicatorFilterSelections || {})
+					.filter(e => e[1].id !== null)
+					.map(e => e[0])
+					.sort()
+					.join();
+
+				combos[filter.type.id] = setFilters === "" || !!filter.compatibleFilterTypeIds.some(fc => fc.join() === setFilters);
+			});
+			this.availableFilterCombos = combos;
+			this.requestApply();
+			// this isn't quite working...
+			// try going back to the watcher, but watch a computed that is just an array of the filter type IDs from the indicatorFilterSelections?
+			// the deep watch didn't work, but it seems like that is what is needed
+			// we're *this* close, but something isn't triggering the refresh via watcher or @change or computed...
 		},
 		validateFilters() {
 			this.$refs.filtersForm?.validate()

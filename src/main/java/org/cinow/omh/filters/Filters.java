@@ -27,7 +27,7 @@ public class Filters {
 	/**
 	 * The indicator filters.
 	 */
-	private List<Filter> indicatorFilters;
+	private List<IndicatorFilter> indicatorFilters;
 	
 	/**
 	 * @return the locationTypeFilter
@@ -74,14 +74,14 @@ public class Filters {
 	/**
 	 * @return the indicatorFilters
 	 */
-	public List<Filter> getIndicatorFilters() {
+	public List<IndicatorFilter> getIndicatorFilters() {
 		return indicatorFilters;
 	}
 
 	/**
 	 * @param indicatorFilters the indicatorFilters to set
 	 */
-	public void setIndicatorFilters(List<Filter> indicatorFilters) {
+	public void setIndicatorFilters(List<IndicatorFilter> indicatorFilters) {
 		this.indicatorFilters = indicatorFilters;
 	}
 }

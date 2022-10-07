@@ -134,7 +134,7 @@ public class FilterRepositoryPostgresql implements FilterRepository {
 	 * {@inheritDoc}}
 	 */
 	@Override
-	public List<Filter> getIndicatorFilters(String indicatorId) {
+	public List<IndicatorFilter> getIndicatorFilters(String indicatorId) {
 		String sql = ""
 			+ " select distinct type_id, type_name_en, type_name_es, "
 			+ " 	option_id, option_name_en, option_name_es, sort_order "
@@ -145,18 +145,18 @@ public class FilterRepositoryPostgresql implements FilterRepository {
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
 		paramMap.addValue("indicator_id", indicatorId);
 
-		return this.namedParameterJdbcTemplate.query(sql, paramMap, new ResultSetExtractor<List<Filter>>() {
+		return this.namedParameterJdbcTemplate.query(sql, paramMap, new ResultSetExtractor<List<IndicatorFilter>>() {
 			@Override
-			public List<Filter> extractData(ResultSet rs)
+			public List<IndicatorFilter> extractData(ResultSet rs)
 					throws SQLException, DataAccessException {
 				
-				List<Filter> filters = new ArrayList<>();
-				Filter filter = new Filter();
+				List<IndicatorFilter> filters = new ArrayList<>();
+				IndicatorFilter filter = new IndicatorFilter();
 				String typeId = "0";
 				while (rs.next()) {
 					if (!rs.getString("type_id").equals(typeId)) {
 						typeId = rs.getString("type_id");
-						filter = new Filter();
+						filter = new IndicatorFilter();
 						FilterType type = new FilterType();
 						type.setId(rs.getString("type_id"));
 						type.setName_en(rs.getString("type_name_en"));
@@ -174,4 +174,54 @@ public class FilterRepositoryPostgresql implements FilterRepository {
 			}	
 		});
 	}
+
+	@Override
+	public List<List<String>> getCompatibleFitlerTypeIds(String indicatorId, String filterTypeId) {
+		String sql = " "
+			+ " select * "
+			+ " from mv_indicator_filter_combos "
+			+ " where indicator_id = :indicator_id::numeric ";
+		if(FilterTypes.RACE.getId().equals(filterTypeId)) {
+				sql += " and race = true ";
+		} else if (FilterTypes.AGE.getId().equals(filterTypeId)) {
+			sql += " and age = true ";
+		} else if (FilterTypes.SEX.getId().equals(filterTypeId)) {
+			sql += " and sex = true ";
+		} else if (FilterTypes.INCOME.getId().equals(filterTypeId)) {
+			sql += " and income = true ";
+		} else if (FilterTypes.EDUCATION.getId().equals(filterTypeId)) {
+			sql += " and education = true ";
+		}
+
+		MapSqlParameterSource paramMap = new MapSqlParameterSource();
+		paramMap.addValue("indicator_id", indicatorId);
+		paramMap.addValue("filter_type_id", filterTypeId);
+
+		return this.namedParameterJdbcTemplate.query(sql, paramMap, new ResultSetExtractor<List<List<String>>>() {
+			@Override
+			public List<List<String>> extractData(ResultSet rs) throws SQLException, DataAccessException {
+				List<List<String>> combos = new ArrayList<>();
+				while (rs.next()) {
+					List<String> combo = new ArrayList<>();
+					if (rs.getBoolean("race")) {
+						combo.add(FilterTypes.RACE.getId());
+					}
+					if (rs.getBoolean("age")) {
+						combo.add(FilterTypes.AGE.getId());
+					}
+					if (rs.getBoolean("sex")) {
+						combo.add(FilterTypes.SEX.getId());
+					}
+					if (rs.getBoolean("income")) {
+						combo.add(FilterTypes.INCOME.getId());
+					}
+					if (rs.getBoolean("education")) {
+						combo.add(FilterTypes.EDUCATION.getId());
+					}
+					combos.add(combo);
+				}
+				return combos;
+			}
+		});
+	}	
 }

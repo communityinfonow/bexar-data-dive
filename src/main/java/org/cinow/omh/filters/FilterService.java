@@ -38,6 +38,7 @@ public class FilterService {
 
 		filters.getIndicatorFilters().stream().forEach(filter -> {
 			filter.getOptions().add(0, allFilterOption());
+			filter.setCompatibleFilterTypeIds(this.filterRepository.getCompatibleFitlerTypeIds(indicatorId, filter.getType().getId()));
 		});
 
 		return filters;

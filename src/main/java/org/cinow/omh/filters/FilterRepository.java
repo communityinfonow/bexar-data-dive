@@ -38,5 +38,7 @@ public interface FilterRepository {
 	 * @param indicatorId the indicator id
 	 * @return the filters
 	 */
-	List<Filter> getIndicatorFilters(String indicatorId);
+	List<IndicatorFilter> getIndicatorFilters(String indicatorId);
+
+	List<List<String>> getCompatibleFitlerTypeIds(String indicatorId, String filterTypeId);
 }
