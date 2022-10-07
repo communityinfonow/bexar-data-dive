@@ -217,6 +217,9 @@ export default {
 				fileName = 'explore_map_data.csv';
 				csv += this.exploreData.locationData.map((data) => {
 					let yearData = data.yearData[this.filterSelections.year];
+					if (!yearData) {
+						return '';
+					}
 					return '\n' 
 						+ '"' + ((this.exploreData.category ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.exploreData.indicator['name_' + this.locale]) + '",'
 						+ '"' + this.exploreData.source['name_' + this.locale] + '",'
@@ -225,7 +228,7 @@ export default {
 						+ this.filterSelections.year + ','
 						+ this.filters.indicatorFilters.map(f => '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"').join(',') + ','
 						+ (yearData.suppressed ? i18n.t('data.suppressed') : yearData.value === null ? i18n.t('data.no_data') : yearData.value) + ','
-            			+ (yearData.moeLow && yearData.moeHigh ? (yearData.moeLow + ' - ' + yearData.moeHigh) : '');
+            			+ (yearData.moeLow || yearData.moeHigh ? (yearData.moeLow + ' - ' + yearData.moeHigh) : '');
 				}).join('');
 			} else if (this.dataVisualName === 'trend_chart') {
 				fileName = 'explore_trend_data.csv';
@@ -239,7 +242,7 @@ export default {
 						+ year + ','
 						+ this.filters.indicatorFilters.map(f => '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"').join(',') + ','
 						+ (values.suppressed ? i18n.t('data.suppressed') : values.value === null ? i18n.t('data.no_data') : values.value) + ','
-            			+ (values.moeLow && values.moeHigh ? (values.moeLow + ' - ' + values.moeHigh) : '');
+            			+ (values.moeLow || values.moeHigh ? (values.moeLow + ' - ' + values.moeHigh) : '');
 				})
 			} else if (this.dataVisualName === 'compare_chart') {
 				fileName = 'explore_compare_data.csv';
@@ -253,7 +256,7 @@ export default {
 					+ this.filterSelections.year + ','
 					+ this.filters.indicatorFilters.map(f => '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"').join(',') + ','
 					+ (yearData.suppressed ? i18n.t('data.suppressed') : yearData.value === null ? i18n.t('data.no_data') : yearData.value) + ','
-					+ (yearData.moeLow && yearData.moeHigh ? (yearData.moeLow + ' - ' + yearData.moeHigh) : '');
+					+ (yearData.moeLow || yearData.moeHigh ? (yearData.moeLow + ' - ' + yearData.moeHigh) : '');
 				if (this.compareBy?.id === 'l') {
 					this.exploreData.compareData.forEach(comp => {
 						let compYearData = comp.yearData[this.filterSelections.year];
@@ -265,7 +268,7 @@ export default {
 							+ this.filterSelections.year + ','
 							+ this.filters.indicatorFilters.map(f => '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"').join(',') + ','
 							+ (compYearData.suppressed ? i18n.t('data.suppressed') : compYearData.value === null ? i18n.t('data.no_data') : compYearData.value) + ','
-							+ (compYearData.moeLow && compYearData.moeHigh ? (compYearData.moeLow + ' - ' + compYearData.moeHigh) : '');
+							+ (compYearData.moeLow || compYearData.moeHigh ? (compYearData.moeLow + ' - ' + compYearData.moeHigh) : '');
 					});
 				} else if (this.compareBy?.id === 'y') {
 					this.compareWith.forEach(year => {
@@ -278,7 +281,7 @@ export default {
 							+ year.id + ','
 							+ this.filters.indicatorFilters.map(f => '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"').join(',') + ','
 							+ (compYearData.suppressed ? i18n.t('data.suppressed') : !compYearData.value ? i18n.t('data.no_data') : compYearData.value) + ','
-							+ (compYearData.moeLow && compYearData.moeHigh ? (compYearData.moeLow + ' - ' + compYearData.moeHigh) : '');
+							+ (compYearData.moeLow || compYearData.moeHigh ? (compYearData.moeLow + ' - ' + compYearData.moeHigh) : '');
 					});
 				} else {
 					this.exploreData.compareData?.forEach((comp, index) => {
@@ -297,7 +300,7 @@ export default {
 									}
 								}).join(',') + ','
 							+ (compYearData.suppressed ? i18n.t('data.suppressed') : compYearData.value === null ? i18n.t('data.no_data') : compYearData.value) + ','
-							+ (compYearData.moeLow && compYearData.moeHigh ? (compYearData.moeLow + ' - ' + compYearData.moeHigh) : '');
+							+ (compYearData.moeLow || compYearData.moeHigh ? (compYearData.moeLow + ' - ' + compYearData.moeHigh) : '');
 					});
 				}
 				console.log(csv);
