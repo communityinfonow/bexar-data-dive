@@ -6,6 +6,7 @@
     style="z-index: 10000"
     :mini-variant="miniNavDrawer"
     class="d-print-none"
+    width=320
   >
     <v-list nav>
       <v-list-item-group

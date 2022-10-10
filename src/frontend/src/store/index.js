@@ -30,7 +30,8 @@ export default new Vuex.Store({
     filterSelections: null,
     compareSelections: null,
     tablesData: null,
-    aboutData: null
+    aboutData: null,
+    faqs: null
   },
   getters: {
     tools: (state) => {
@@ -89,6 +90,11 @@ export default new Vuex.Store({
           name: i18n.t('about_data_view.name'),
           route: 'about-data',
           icon: 'mdi-database'
+        },
+        {
+          name: i18n.t('faqs_view.name'),
+          route: 'faqs',
+          icon: 'mdi-help-circle' 
         }
       ]
     }
@@ -141,6 +147,9 @@ export default new Vuex.Store({
     },
     SET_ABOUT_DATA(state, data) {
       state.aboutData = data;
+    },
+    SET_FAQS(state, data) {
+      state.faqs = data;
     },
     SET_TOOL_ROUTE(state, params) {
       state[params.key + 'Route'] = params.route
@@ -321,6 +330,11 @@ export default new Vuex.Store({
     getAboutData(context) {
       axios.get('/api/about-data').then(response => {
         context.commit('SET_ABOUT_DATA', response.data);
+      });
+    },
+    getFaqs(context) {
+      axios.get('/api/faqs').then(response => {
+        context.commit('SET_FAQS', response.data)
       });
     },
     setToolRoute(context, params) {

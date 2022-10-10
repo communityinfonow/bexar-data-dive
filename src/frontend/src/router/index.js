@@ -6,6 +6,7 @@ import ExploreView from '@/views/ExploreView.vue'
 import TablesView from '@/views/TablesView.vue'
 import AboutToolsView from '@/views/AboutToolsView.vue'
 import AboutDataView from '@/views/AboutDataView.vue'
+import FaqsView from '@/views/FaqsView.vue'
 
 Vue.use(VueRouter)
 
@@ -44,6 +45,11 @@ const routes = [
     name: 'about-data',
     component: AboutDataView,
   },
+  {
+    path: '/faqs',
+    name: 'faqs',
+    component: FaqsView,
+  }
 ]
 
 const router = new VueRouter({

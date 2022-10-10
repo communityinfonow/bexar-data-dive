@@ -62,6 +62,8 @@
 						:rules="[v => !!v || $t('tools.common.make_selection')]"
 						@change="selectIndicatorFilter"
 						:disabled="!availableFilterCombos[filter.type.id]"
+						:readonly="!availableFilterCombos[filter.type.id]"
+						:title="!availableFilterCombos[filter.type.id] ? $t('tools.common.filter_unavailable') : ''"
 					></v-autocomplete>
 				</template>
 			</v-card-text>
@@ -140,18 +142,12 @@ export default {
 			this.filters?.indicatorFilters.forEach(filter => {
 				let setFilters = Object.entries(this.indicatorFilterSelections || {})
 					.filter(e => e[1].id !== null)
-					.map(e => e[0])
-					.sort()
-					.join();
+					.map(e => e[0]);
 
-				combos[filter.type.id] = setFilters === "" || !!filter.compatibleFilterTypeIds.some(fc => fc.join() === setFilters);
+				combos[filter.type.id] = !setFilters.length || !!filter.compatibleFilterTypeIds.some(fc => setFilters.every(sf => fc.includes(sf)));
 			});
 			this.availableFilterCombos = combos;
 			this.requestApply();
-			// this isn't quite working...
-			// try going back to the watcher, but watch a computed that is just an array of the filter type IDs from the indicatorFilterSelections?
-			// the deep watch didn't work, but it seems like that is what is needed
-			// we're *this* close, but something isn't triggering the refresh via watcher or @change or computed...
 		},
 		validateFilters() {
 			this.$refs.filtersForm?.validate()

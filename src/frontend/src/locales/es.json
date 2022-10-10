@@ -82,7 +82,8 @@
       "copy_failure": "Sorry, we are unable to access your clipboard to automatically copy the link. Please manually copy the link above.",
       "about_data": "About the indicator",
       "about_tool": "About the tool",
-      "make_selection": "Please make a selection"
+      "make_selection": "Please make a selection",
+      "filter_unavailable": "This filter is not available when combined with the other filters currently applied."
     }
   },
   "home_view": {
@@ -98,6 +99,10 @@
   },
   "about_tools_view": {
     "name": "About the Tools (es)"
+  },
+  "faqs_view": {
+    "name": "Frequently Asked Questions (es)",
+    "questions": "Questions (es)"
   },
   "data": {
     "value": "Value (es)",
