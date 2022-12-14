@@ -89,7 +89,8 @@
   "home_view": {
     "name": "Home (es)",
     "welcome_message": "Bienvenido a...",
-    "available_tools": "Herramientas Disponibles"
+    "available_tools": "Herramientas Disponibles",
+    "acknowledgement": "This project is supported by the Office of Minority Health of the U.S. Department of Health and Human Services (HHS) as part of a financial assistance award totaling $750,000 with 100 percent funded by OMH/OASH/HHS. The contents are those of the author(s) and do not necessarily represent the official views of, nor an endorsement by, OMH/OASH/HHS, or the U.S. Government. For more information, please visit <a target='_blank' href='https://www.minorityhealth.hhs.gov'>www.minorityhealth.hhs.gov</a>."
   },
 
   "about_data_view": {

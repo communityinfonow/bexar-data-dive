@@ -86,7 +86,8 @@
   "home_view": {
     "name": "Home",
     "welcome_message": "Welcome to the Bexar Data Dive, hosted by CI:Now. We have three tools to help you explore, visualize, and interact with data. For more information about how each tool works, click on the links below or in the side menu.",
-    "available_tools": "Available Tools"
+    "available_tools": "Available Tools",
+    "acknowledgement": "This project is supported by the Office of Minority Health of the U.S. Department of Health and Human Services (HHS) as part of a financial assistance award totaling $750,000 with 100 percent funded by OMH/OASH/HHS. The contents are those of the author(s) and do not necessarily represent the official views of, nor an endorsement by, OMH/OASH/HHS, or the U.S. Government. For more information, please visit <a target='_blank' href='https://www.minorityhealth.hhs.gov'>www.minorityhealth.hhs.gov</a>."
   },
   "about_data_view": {
     "name": "About the Data",
