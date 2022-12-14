@@ -69,4 +69,8 @@ export default {
   padding-top: 16px;
   padding-bottom: 0;
 }
+
+::v-deep .v-card__title {
+  word-break: break-word;
+}
 </style>

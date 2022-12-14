@@ -1,7 +1,7 @@
 <template>
 	<v-card
-        max-width="30%"
-        class="d-flex flex-column flex-grow-1 ma-4"
+        :width="maxWidth"
+        class="d-flex flex-column flex-grow-1 ma-4 featured-card"
       >
         <v-img :src="imagePath" class="align-end featured-image-gradient">
 			<v-card-title class="featured-card-title white--text">{{ name }}</v-card-title>
@@ -63,17 +63,29 @@
 				type: Function
 			}
 		},
+		computed: {
+			maxWidth() {
+				if (this.$vuetify.breakpoint.smAndDown) {
+					return '';
+				}
+
+				return '30%';
+			}
+		},
 	}
 </script>
 
 <style lang="scss" scoped>
+	.featured-image-gradient {
+		background: rgba($color-secondary, 1);
+	}
 	.featured-card-title {
 		font-size: 1.5rem;
 		background: rgba($color-secondary, 1);
 		font-weight: bold;
 	}
 	.featured-card-text {
-		min-height: 100px;
+		/*min-height: 100px;/ /* remove min height until we re-show the descriptions */
 		background: rgba($color-secondary, 1);
 	}
 	.featured-card-text .description {
