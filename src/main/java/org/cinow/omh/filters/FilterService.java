@@ -40,6 +40,7 @@ public class FilterService {
 			filter.getOptions().add(0, allFilterOption());
 			filter.setCompatibleFilterTypeIds(this.filterRepository.getCompatibleFitlerTypeIds(indicatorId, filter.getType().getId()));
 		});
+		filters.setLocationTypeYears(this.filterRepository.getLocationTypeYears(indicatorId));
 
 		return filters;
 	}

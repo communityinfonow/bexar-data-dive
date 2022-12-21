@@ -69,9 +69,6 @@
         "clear_selections": "Clear selections (es)"
       }
     },
-    "about_data": {
-      "name": "About the Data"
-    },
     "common": {
       "featured_indicators": "Indicadores destacados",
       "search": "Search (es)",
@@ -94,7 +91,7 @@
   },
 
   "about_data_view": {
-    "name": "About the Data (es)",
+    "name": "Sobre la Información",
     "indicators": "Indicators (es)",
     "visit_source": "Go to source (es)"
   },

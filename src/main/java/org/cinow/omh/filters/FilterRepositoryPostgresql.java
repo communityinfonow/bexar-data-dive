@@ -3,7 +3,9 @@ package org.cinow.omh.filters;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -11,6 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -221,6 +224,34 @@ public class FilterRepositoryPostgresql implements FilterRepository {
 					combos.add(combo);
 				}
 				return combos;
+			}
+		});
+	}
+
+	@Override
+	public Map<String, List<String>> getLocationTypeYears(String indicatorId) {
+		String sql = ""
+			+ " select unnest(location_types) as location_type, year_"
+			+ " from mv_indicator_years "
+			+ " where indicator_id = :indicator_id::numeric "
+			+ " order by location_type, year_ ";
+		
+			MapSqlParameterSource paramMap = new MapSqlParameterSource();
+		paramMap.addValue("indicator_id", indicatorId);
+
+		return this.namedParameterJdbcTemplate.query(sql, paramMap, new ResultSetExtractor<Map<String, List<String>>>() {
+			@Override
+			@Nullable
+			public Map<String, List<String>> extractData(ResultSet rs) throws SQLException, DataAccessException {
+				Map<String, List<String>> locationTypeYears = new LinkedHashMap<>();
+				while (rs.next()) {
+					if (locationTypeYears.get(rs.getString("location_type")) == null) {
+						locationTypeYears.put(rs.getString("location_type"), new ArrayList<>());
+					}
+					locationTypeYears.get(rs.getString("location_type")).add(rs.getString("year_"));
+				}
+				
+				return locationTypeYears;
 			}
 		});
 	}	

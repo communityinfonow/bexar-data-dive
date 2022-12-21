@@ -38,15 +38,25 @@
 					:label="filters.yearFilter.type['name_' + locale]"
 					:placeholder="filters.yearFilter.type['name_' + locale]"
 					v-model="selectedYear"
-					:items="filters.yearFilter.options"
+					:items="yearOptions"
 					:item-text="'name_' + locale"
 					item-value="name_en"
+					item-disabled="disabled"
 					hide-no-data
 					flat
 					dense
 					:rules="[v => !!v || $t('tools.common.make_selection')]"
 					@change="requestApply"
-				></v-autocomplete>
+				>
+					<template v-slot:item="{parent, item}">
+						<v-list-item-content>
+							<v-list-item-title 
+								v-html="parent.genFilteredText(item['name_' + locale])"
+								:title="item.disabled ? 'No data is available for the selected location type for this year' : null"
+							></v-list-item-title>
+						</v-list-item-content>
+					</template>
+				</v-autocomplete>
 				<template v-for="filter in filters.indicatorFilters">
 					<v-autocomplete
 						:key="filter.type.id"
@@ -98,6 +108,14 @@ export default {
 		locationFilterOptions() {
 			return this.filters.locationFilter.options
 				.filter(option => option.typeId === this.selectedLocationType)
+		},
+		yearOptions() {
+			return this.filters.yearFilter.options.map(o => {
+				return {
+					...o,
+					disabled: this.filters.locationTypeYears[this.selectedLocationType].indexOf(o.id) === -1
+				}
+			})
 		}
 	},
 	watch: {
@@ -130,6 +148,9 @@ export default {
 			});
 		},
 		requestApply() {
+			if (this.yearOptions.find(y => y.id === this.selectedYear).disabled) {
+				this.selectedYear = this.yearOptions.find(y => !y.disabled).id;
+			}
 			this.applyNeeded = true;
 		},
 		selectLocationType() {
@@ -172,5 +193,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+	::v-deep .v-list-item--disabled {
+		pointer-events: all;
+	}
 </style>
