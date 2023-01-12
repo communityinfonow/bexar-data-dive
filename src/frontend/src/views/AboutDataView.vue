@@ -116,7 +116,7 @@ export default {
     ...mapActions(['getAboutData']),
     scrollToItem(item) {
       goTo("#indicator_" + item.id)
-      if (!router.currentRoute.query.indicator == item.id) {
+      if (router.currentRoute.query.indicator != item.id) {
         router.replace({
             query: {
               ...router.currentRoute.query,

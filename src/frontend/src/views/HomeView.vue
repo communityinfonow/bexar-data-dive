@@ -10,7 +10,7 @@
     <!--<p class="text-subtitle-1 mb-4">{{ $t('app.tagline') }}</p>-->
     <p class="welcome-message font-weight-light my-8 mx-4">{{ $t('home_view.welcome_message') }}</p>
     <h2 class="text-h5 mt-8 mb-2 mx-4">{{ $t('home_view.available_tools') }}</h2>
-    <section class="d-flex flex-row">
+    <section class="d-flex" :class="{ 'flex-row': $vuetify.breakpoint.mdAndUp, 'flex-column': $vuetify.breakpoint.smAndDown }">
       <template v-for="tool in tools">
         <featured-card 
           :key="tool.route" 
@@ -24,6 +24,7 @@
         </featured-card>
       </template>
     </section>
+    <p class="my-4 mx-4 font-weight-light font-italic" v-html="$t('home_view.acknowledgement')"></p>
   </v-container>
 </template>
 

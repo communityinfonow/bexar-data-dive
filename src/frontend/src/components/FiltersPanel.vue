@@ -38,18 +38,28 @@
 					:label="filters.yearFilter.type['name_' + locale]"
 					:placeholder="filters.yearFilter.type['name_' + locale]"
 					v-model="selectedYear"
-					:items="filters.yearFilter.options"
+					:items="yearOptions"
 					:item-text="'name_' + locale"
 					item-value="name_en"
+					item-disabled="disabled"
 					hide-no-data
 					flat
 					dense
 					:rules="[v => !!v || $t('tools.common.make_selection')]"
 					@change="requestApply"
-				></v-autocomplete>
+				>
+					<template v-slot:item="{parent, item}">
+						<v-list-item-content>
+							<v-list-item-title 
+								v-html="parent.genFilteredText(item['name_' + locale])"
+								:title="item.disabled ? 'No data is available for the selected location type for this year' : null"
+							></v-list-item-title>
+						</v-list-item-content>
+					</template>
+				</v-autocomplete>
 				<template v-for="filter in filters.indicatorFilters">
 					<v-autocomplete
-						:key="filter.id"
+						:key="filter.type.id"
 						:label="filter.type['name_' + locale]"
 						:placeholder="filter.type['name_' + locale]"
 						v-model="indicatorFilterSelections[filter.type.id]"
@@ -60,7 +70,10 @@
 						flat
 						dense
 						:rules="[v => !!v || $t('tools.common.make_selection')]"
-						@change="requestApply"
+						@change="selectIndicatorFilter"
+						:disabled="!availableFilterCombos[filter.type.id]"
+						:readonly="!availableFilterCombos[filter.type.id]"
+						:title="!availableFilterCombos[filter.type.id] ? $t('tools.common.filter_unavailable') : ''"
 					></v-autocomplete>
 				</template>
 			</v-card-text>
@@ -86,7 +99,8 @@ export default {
 			selectedLocation: null,
 			selectedYear: null,
 			indicatorFilterSelections: {},
-			valid: true
+			valid: true,
+			availableFilterCombos: {}
 		}
 	},
 	computed: {
@@ -94,6 +108,14 @@ export default {
 		locationFilterOptions() {
 			return this.filters.locationFilter.options
 				.filter(option => option.typeId === this.selectedLocationType)
+		},
+		yearOptions() {
+			return this.filters.yearFilter.options.map(o => {
+				return {
+					...o,
+					disabled: this.filters.locationTypeYears[this.selectedLocationType].indexOf(o.id) === -1
+				}
+			})
 		}
 	},
 	watch: {
@@ -104,6 +126,9 @@ export default {
 		filterSelections(newValue) {
 			this.selectedLocationType = newValue?.locationType;
 			this.selectedLocation = newValue?.location;
+		},
+		indicatorFilterSelections() {
+			this.selectIndicatorFilter();
 		}
 	},
 	methods: {
@@ -123,11 +148,26 @@ export default {
 			});
 		},
 		requestApply() {
+			if (this.yearOptions.find(y => y.id === this.selectedYear).disabled) {
+				this.selectedYear = this.yearOptions.find(y => !y.disabled).id;
+			}
 			this.applyNeeded = true;
 		},
 		selectLocationType() {
 			this.selectedLocation = this.filters.locationFilter.options
 				.filter(option => option.typeId === this.selectedLocationType)[0]?.id
+			this.requestApply();
+		},
+		selectIndicatorFilter() {
+			let combos = {};
+			this.filters?.indicatorFilters.forEach(filter => {
+				let setFilters = Object.entries(this.indicatorFilterSelections || {})
+					.filter(e => e[1].id !== null)
+					.map(e => e[0]);
+
+				combos[filter.type.id] = !setFilters.length || !!filter.compatibleFilterTypeIds.some(fc => setFilters.every(sf => fc.includes(sf)));
+			});
+			this.availableFilterCombos = combos;
 			this.requestApply();
 		},
 		validateFilters() {
@@ -153,5 +193,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+	::v-deep .v-list-item--disabled {
+		pointer-events: all;
+	}
 </style>

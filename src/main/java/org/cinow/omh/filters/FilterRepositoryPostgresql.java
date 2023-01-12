@@ -3,7 +3,9 @@ package org.cinow.omh.filters;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -11,6 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -134,7 +137,7 @@ public class FilterRepositoryPostgresql implements FilterRepository {
 	 * {@inheritDoc}}
 	 */
 	@Override
-	public List<Filter> getIndicatorFilters(String indicatorId) {
+	public List<IndicatorFilter> getIndicatorFilters(String indicatorId) {
 		String sql = ""
 			+ " select distinct type_id, type_name_en, type_name_es, "
 			+ " 	option_id, option_name_en, option_name_es, sort_order "
@@ -145,18 +148,18 @@ public class FilterRepositoryPostgresql implements FilterRepository {
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
 		paramMap.addValue("indicator_id", indicatorId);
 
-		return this.namedParameterJdbcTemplate.query(sql, paramMap, new ResultSetExtractor<List<Filter>>() {
+		return this.namedParameterJdbcTemplate.query(sql, paramMap, new ResultSetExtractor<List<IndicatorFilter>>() {
 			@Override
-			public List<Filter> extractData(ResultSet rs)
+			public List<IndicatorFilter> extractData(ResultSet rs)
 					throws SQLException, DataAccessException {
 				
-				List<Filter> filters = new ArrayList<>();
-				Filter filter = new Filter();
+				List<IndicatorFilter> filters = new ArrayList<>();
+				IndicatorFilter filter = new IndicatorFilter();
 				String typeId = "0";
 				while (rs.next()) {
 					if (!rs.getString("type_id").equals(typeId)) {
 						typeId = rs.getString("type_id");
-						filter = new Filter();
+						filter = new IndicatorFilter();
 						FilterType type = new FilterType();
 						type.setId(rs.getString("type_id"));
 						type.setName_en(rs.getString("type_name_en"));
@@ -174,4 +177,82 @@ public class FilterRepositoryPostgresql implements FilterRepository {
 			}	
 		});
 	}
+
+	@Override
+	public List<List<String>> getCompatibleFitlerTypeIds(String indicatorId, String filterTypeId) {
+		String sql = " "
+			+ " select * "
+			+ " from mv_indicator_filter_combos "
+			+ " where indicator_id = :indicator_id::numeric ";
+		if(FilterTypes.RACE.getId().equals(filterTypeId)) {
+				sql += " and race = true ";
+		} else if (FilterTypes.AGE.getId().equals(filterTypeId)) {
+			sql += " and age = true ";
+		} else if (FilterTypes.SEX.getId().equals(filterTypeId)) {
+			sql += " and sex = true ";
+		} else if (FilterTypes.INCOME.getId().equals(filterTypeId)) {
+			sql += " and income = true ";
+		} else if (FilterTypes.EDUCATION.getId().equals(filterTypeId)) {
+			sql += " and education = true ";
+		}
+
+		MapSqlParameterSource paramMap = new MapSqlParameterSource();
+		paramMap.addValue("indicator_id", indicatorId);
+		paramMap.addValue("filter_type_id", filterTypeId);
+
+		return this.namedParameterJdbcTemplate.query(sql, paramMap, new ResultSetExtractor<List<List<String>>>() {
+			@Override
+			public List<List<String>> extractData(ResultSet rs) throws SQLException, DataAccessException {
+				List<List<String>> combos = new ArrayList<>();
+				while (rs.next()) {
+					List<String> combo = new ArrayList<>();
+					if (rs.getBoolean("race")) {
+						combo.add(FilterTypes.RACE.getId());
+					}
+					if (rs.getBoolean("age")) {
+						combo.add(FilterTypes.AGE.getId());
+					}
+					if (rs.getBoolean("sex")) {
+						combo.add(FilterTypes.SEX.getId());
+					}
+					if (rs.getBoolean("income")) {
+						combo.add(FilterTypes.INCOME.getId());
+					}
+					if (rs.getBoolean("education")) {
+						combo.add(FilterTypes.EDUCATION.getId());
+					}
+					combos.add(combo);
+				}
+				return combos;
+			}
+		});
+	}
+
+	@Override
+	public Map<String, List<String>> getLocationTypeYears(String indicatorId) {
+		String sql = ""
+			+ " select unnest(location_types) as location_type, year_"
+			+ " from mv_indicator_years "
+			+ " where indicator_id = :indicator_id::numeric "
+			+ " order by location_type, year_ ";
+		
+			MapSqlParameterSource paramMap = new MapSqlParameterSource();
+		paramMap.addValue("indicator_id", indicatorId);
+
+		return this.namedParameterJdbcTemplate.query(sql, paramMap, new ResultSetExtractor<Map<String, List<String>>>() {
+			@Override
+			@Nullable
+			public Map<String, List<String>> extractData(ResultSet rs) throws SQLException, DataAccessException {
+				Map<String, List<String>> locationTypeYears = new LinkedHashMap<>();
+				while (rs.next()) {
+					if (locationTypeYears.get(rs.getString("location_type")) == null) {
+						locationTypeYears.put(rs.getString("location_type"), new ArrayList<>());
+					}
+					locationTypeYears.get(rs.getString("location_type")).add(rs.getString("year_"));
+				}
+				
+				return locationTypeYears;
+			}
+		});
+	}	
 }

@@ -4,13 +4,14 @@
 		<v-form v-if="filters" ref="compareForm" v-model="valid">
 			<v-row class="mt-2">
 				<v-col cols="3" xl="4">
+					<!-- TODO: try a custom v-item slot to allow for disabled items with tooltips rather than removing unavailable items -->
 					<v-select
 						v-if="showCompareOptions"
 						:label="$t('tools.explore.compare_by')"
 						dense
 						flat
 						return-object
-						:items="compareByItems"
+						:items="availableCompareByItems"
 						:item-text="'name_' + locale"
 						v-model="compareBy"
 						@change="selectCompareBy"
@@ -91,6 +92,22 @@ export default {
 		},
 		indicatorId() {
 			return this.exploreData?.indicator?.id
+		},
+		availableCompareByItems() {
+			let items = [];
+			items.push(this.filters?.locationFilter.type);
+			items.push(this.filters?.yearFilter.type);
+			this.filters?.indicatorFilters.forEach(filter => {
+				let setFilters = Object.entries(this.filterSelections.indicatorFilters || {})
+					.filter(e => e[1].id !== null)
+					.map(e => e[0]);
+
+				if (!setFilters.length || !!filter.compatibleFilterTypeIds.some(fc => setFilters.every(sf => fc.includes(sf)))) {
+					items.push(filter.type);
+				}
+			});
+
+			return items;
 		}
 	},
 	props: {
