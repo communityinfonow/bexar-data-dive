@@ -30,15 +30,18 @@ export default {
 	name: 'ShareMenu',
 	data() {
 		return {
+			shareUrl: window.location.href,
 			shareMessages: []
 		}
 	},
 	computed: {
 		copyMessage() {
 			return i18n.t('tools.common.click_copy');
-		},
-		shareUrl() {
-			return window.location.href; 
+		}
+	},
+	watch: {
+		$route(to) {
+			this.shareUrl = window.location.origin + to.fullPath;
 		}
 	},
 	methods: {
