@@ -7,6 +7,7 @@ import TablesView from '@/views/TablesView.vue'
 import AboutToolsView from '@/views/AboutToolsView.vue'
 import AboutDataView from '@/views/AboutDataView.vue'
 import FaqsView from '@/views/FaqsView.vue'
+import AdminView from '@/views/AdminView.vue'
 
 Vue.use(VueRouter)
 
@@ -49,6 +50,11 @@ const routes = [
     path: '/faqs',
     name: 'faqs',
     component: FaqsView,
+  },
+  {
+    path: '/admin',
+    name: 'admin',
+    component: AdminView
   }
 ]
 
