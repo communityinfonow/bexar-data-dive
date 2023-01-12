@@ -21,13 +21,12 @@
         <p>{{ $t('tools.tables.long_description') }}</p>
         <p>{{ $t('tools.tables.get_started') }}</p>
         <h2 v-if="featuredIndicators" class="text-h5 mt-8 mb-2">{{ $t('tools.common.featured_indicators') }}</h2>
-          <section v-if="featuredIndicators" class="d-flex flex-row">
+          <section v-if="featuredIndicators" class="d-flex" :class="{ 'flex-row': $vuetify.breakpoint.mdAndUp, 'flex-column': $vuetify.breakpoint.smAndDown }">
             <template v-for="indicator in featuredIndicators">
               <featured-card 
                 :key="indicator.id" 
                 :item="indicator"
                 :name="indicator['name_' + locale]" 
-                :description="indicator['description_' + locale]" 
                 :about_route="'about-data?indicator=' + indicator.id" 
                 :view_route="indicator.route"
                 :click_route="selectItem"

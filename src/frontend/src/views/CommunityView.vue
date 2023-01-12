@@ -28,7 +28,7 @@
           :zoom="zoom"
           :center="center"
           :options="{ zoomDelta: 0.5, zoomSnap: 0.5, preferCanvas: true }"
-          :style="{ height: '100%' }"
+          :style="{ height: '100%', 'min-height': '300px' }"
           v-resize:debounce.100="resizeHandler"
           @ready="initializeSelectionMap"
         >

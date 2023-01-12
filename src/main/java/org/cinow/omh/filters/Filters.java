@@ -1,6 +1,7 @@
 package org.cinow.omh.filters;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * This object represents the full set of filters.
@@ -25,9 +26,14 @@ public class Filters {
 	private Filter yearFilter;
 
 	/**
+	 * The valid years for each location type.
+	 */
+	private Map<String, List<String>> locationTypeYears;
+
+	/**
 	 * The indicator filters.
 	 */
-	private List<Filter> indicatorFilters;
+	private List<IndicatorFilter> indicatorFilters;
 	
 	/**
 	 * @return the locationTypeFilter
@@ -74,14 +80,22 @@ public class Filters {
 	/**
 	 * @return the indicatorFilters
 	 */
-	public List<Filter> getIndicatorFilters() {
+	public List<IndicatorFilter> getIndicatorFilters() {
 		return indicatorFilters;
 	}
 
 	/**
 	 * @param indicatorFilters the indicatorFilters to set
 	 */
-	public void setIndicatorFilters(List<Filter> indicatorFilters) {
+	public void setIndicatorFilters(List<IndicatorFilter> indicatorFilters) {
 		this.indicatorFilters = indicatorFilters;
+	}
+
+	public Map<String, List<String>> getLocationTypeYears() {
+		return locationTypeYears;
+	}
+
+	public void setLocationTypeYears(Map<String, List<String>> locationTypeYears) {
+		this.locationTypeYears = locationTypeYears;
 	}
 }

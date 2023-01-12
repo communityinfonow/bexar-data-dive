@@ -3,8 +3,8 @@ package org.cinow.omh.tables;
 import java.io.IOException;
 import java.util.List;
 
-import org.cinow.omh.filters.Filter;
 import org.cinow.omh.filters.FilterRepository;
+import org.cinow.omh.filters.IndicatorFilter;
 import org.cinow.omh.indicators.IndicatorRepository;
 import org.cinow.omh.sources.SourceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,7 +68,7 @@ public class TablesService {
 	public byte[] getTablesDataDownloadCsv(TablesDataRequest request) throws IOException {
 		//TODO: espanol for headers and rows
 		TablesData data = this.getTablesData(request);
-		List<Filter> filters = this.filterRepository.getIndicatorFilters(request.getIndicator());
+		List<IndicatorFilter> filters = this.filterRepository.getIndicatorFilters(request.getIndicator());
 
 		StringBuilder csv = new StringBuilder();
 		csv.append(enquote("Indicator") + ",");

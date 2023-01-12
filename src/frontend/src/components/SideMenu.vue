@@ -1,5 +1,5 @@
 <template>
-  <v-card style="position: fixed; top: 0; bottom: 0; right: 0; margin: 64px 0 34px 0; overflow-y: scroll; max-width: 40%;">
+  <v-card style="position: fixed; top: 0; bottom: 0; right: 0; margin: 64px 0 34px 0; overflow-y: scroll; width: 40%;">
 	<v-card-title>{{ title }}</v-card-title>
 	<v-card-actions>
 		<v-autocomplete
@@ -18,7 +18,7 @@
 			flat
 		></v-autocomplete>
 	</v-card-actions>
-	<v-list>
+	<v-list v-if="menu.categories.length > 1">
 		<template v-for="category in menu.categories">
 			<v-list-group :value="true" no-action :key="category.id">
 				<template v-slot:activator>
@@ -47,6 +47,13 @@
 				</template>
 			</v-list-group>
 		</template>
+	</v-list>
+	<v-list v-else-if="menu.categories.length === 1">
+		<v-list-item v-for="item in menu.categories[0].items" :key="item.id" @click="selectFromList(item)">
+			<v-list-item-title>
+				{{ item['name_' + locale]}}
+			</v-list-item-title>
+		</v-list-item>
 	</v-list>
   </v-card>
 </template>

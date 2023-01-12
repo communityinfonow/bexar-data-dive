@@ -1,6 +1,7 @@
 package org.cinow.omh.filters;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Repository for filters.
@@ -38,5 +39,9 @@ public interface FilterRepository {
 	 * @param indicatorId the indicator id
 	 * @return the filters
 	 */
-	List<Filter> getIndicatorFilters(String indicatorId);
+	List<IndicatorFilter> getIndicatorFilters(String indicatorId);
+
+	List<List<String>> getCompatibleFitlerTypeIds(String indicatorId, String filterTypeId);
+
+	Map<String, List<String>> getLocationTypeYears(String indicatorId);
 }
