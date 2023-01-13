@@ -8,6 +8,7 @@ import AboutToolsView from '@/views/AboutToolsView.vue'
 import AboutDataView from '@/views/AboutDataView.vue'
 import FaqsView from '@/views/FaqsView.vue'
 import AdminView from '@/views/AdminView.vue'
+import UnauthorizedView from '@/views/UnauthorizedView.vue'
 
 Vue.use(VueRouter)
 
@@ -55,6 +56,11 @@ const routes = [
     path: '/admin',
     name: 'admin',
     component: AdminView
+  },
+  {
+    path: '/unauthorized',
+    name: 'unauthorized',
+    component: UnauthorizedView
   }
 ]
 
