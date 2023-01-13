@@ -52,7 +52,7 @@
               <v-col cols="auto" class="shrink">
                 <v-tabs v-model="tab" grow>
                   <v-tab v-for="tab in tabs" :key="tab" @click="selectTab(tab)">
-                    {{ $t('tools.explore.tabs.' + tab) }}
+                    {{ $t('tools.explore.tabs.' + tab + '.name') }}
                   </v-tab>
                 </v-tabs>
               </v-col>

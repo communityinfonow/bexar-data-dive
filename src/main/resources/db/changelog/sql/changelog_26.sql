@@ -1,0 +1,254 @@
+--liquibase formatted sql
+
+--changeset herronrb:espanol_2
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>Un dueño de propiedad ausente es alguien que es dueño de una propiedad dentro de los límites de la Ciudad de San Antonio pero que vive fuera del Condado de Bexar, Texas. Este indicador mide dueños de propiedad ausentes que han tenido más de una violación de mantenimiento de propiedad en un período de 12 meses. Lea más aquí: <a target="_blank" href="https://www.sanantonio.gov/Portals/0/Files/CES/AbsenteeOwnerBrochure.pdf">https://www.sanantonio.gov/Portals/0/Files/CES/AbsenteeOwnerBrochure.pdf</a></p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Las siguientes clasificaciones especiales son definidas y valuadas como:<ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Distrito de Tasación del Condado de Bexar (BCAD, por sus siglas en inglés)</p>',
+	name_es = 'Dueños de la propiedad ausentes con dos o más violaciones de mantenimiento de propiedad en un período de 12 meses'
+where id_ = 5; -- "Absentee property owners with two or more property maintenance violations within a 12-month period"
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>El Departamento de Seguridad Pública de Texas (Texas DPS, por sus siglas en inglés) define a la agresión con agravantes como "un ataque ilegal perpetrado por una persona sobre otra para ocasionar lesiones corporales severas o agravadas. Este tipo de agresión usualmente está acompañada por el uso de un arma o medios que pueden causar la muerte o daño corporal serio. Las estadísticas para agresión con agravantes incluyen intentos de cometer agresión con agravantes". Lea más aquí: <a target="_blank" href="https://www.dps.texas.gov/sites/default/files/documents/crimereports/20/2020cit.pdf">https://www.dps.texas.gov/sites/default/files/documents/crimereports/20/2020cit.pdf</a></p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Las siguientes clasificaciones especiales son definidas y valuadas como:<ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Departamento de Seguridad Pública de Texas (Texas DPS, por sus siglas en inglés): Expedientes Criminales</p>',
+	name_es = 'Agresión con Agravantes (por 100,000)'
+where id_ = 6; -- "Aggravated assaults (per 100k)"
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>El Departamento de Seguridad Pública de Texas (Texas DPS, por sus siglas en inglés) define al robo como "la entrada ilegal de una estructura con la intensión de cometer un delito o hurto. Mientras el uso de fuerza para ingresar no es un requisito para clasificar una ofensa como robo, las tentativas de entrada forzosa para cometer robo son contabilizadas en estas estadísticas criminales". Lea más aquí: <a target="_blank" href="https://www.dps.texas.gov/sites/default/files/documents/crimereports/20/2020cit.pdf">https://www.dps.texas.gov/sites/default/files/documents/crimereports/20/2020cit.pdf</a></p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Las siguientes clasificaciones especiales son definidas y valuadas como:<ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Departamento de Seguridad Pública de Texas (Texas DPS, por sus siglas en inglés): Expedientes Criminales</p>',
+	name_es = 'Robos (por 100,000)'
+where id_ = 7; -- "Burglaries (per 100k)"
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>Existen cuatro tipos principales de abuso infantil: abuso físico, negligencia, abuso sexual y abuso emocional. El Departamento de Servicios para la Familia y de Protección de Texas (Texas DFPS, por sus siglas en inglés) describe cada uno de ellos en detalle aquí: <a target="_blank" href="https://www.dfps.state.tx.us/Child_Protection/Child_Safety/recognize_abuse.asp">https://www.dfps.state.tx.us/Child_Protection/Child_Safety/recognize_abuse.asp</a>. Admisión Estatal se refiere a la división responsable de evaluar todos los reportes de abuso, negligencia y explotación. Este indicador mide el número de niños/as que han atravesado una admisión estatal por abuso infantil. Lea más sobre la División de Admisión Estatal (SWI, por sus siglas en inglés) aquí: <a target="_blank" href="https://www.dfps.state.tx.us/About_DFPS/Statewide_Intake/default.asp">https://www.dfps.state.tx.us/About_DFPS/Statewide_Intake/default.asp</a>.</p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Las siguientes clasificaciones especiales son definidas y valuadas como:<ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Departamento de Servicios para la Familia y de Protección de Texas (Texas DFPS, por sus siglas en inglés)</p>',
+	name_es = 'Prevalencia de abuso infantil - admisiones (por 1,000 de niños/as)'
+where id_ = 8; -- "Child abuse prevalence - intakes (per 1k children)"
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>Existen cuatro tipos principales de abuso infantil: abuso físico, negligencia, abuso sexual y abuso emocional. El Departamento de Servicios para la Familia y de Protección de Texas (Texas DFPS, por sus siglas en inglés) describe cada uno de ellos en detalle aquí: <a target="_blank" href="https://www.dfps.state.tx.us/Child_Protection/Child_Safety/recognize_abuse.asp">https://www.dfps.state.tx.us/Child_Protection/Child_Safety/recognize_abuse.asp</a>. Este indicador mide el número de niños/as que fueron víctimas confirmadas de abuso infantil.</p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Las siguientes clasificaciones especiales son definidas y valuadas como:<ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Departamento de Servicios para la Familia y de Protección de Texas (Texas DFPS, por sus siglas en inglés)</p>',
+	name_es = 'Prevalencia de abuso infantil - víctimas confirmadas (por 1,000 de niños/as)'
+where id_ = 9; -- "Child abuse prevalence - confirmed victims (per 1k children)"
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>Existen cuatro tipos principales de abuso infantil: abuso físico, negligencia, abuso sexual y abuso emocional. El Departamento de Servicios para la Familia y de Protección de Texas (Texas DFPS, por sus siglas en inglés) describe cada uno de ellos en detalle aquí: <a target="_blank" href="https://www.dfps.state.tx.us/Child_Protection/Child_Safety/recognize_abuse.asp">https://www.dfps.state.tx.us/Child_Protection/Child_Safety/recognize_abuse.asp</a>. Este indicador mide el número de niños/as que fueron víctimas confirmadas de abuso infantil y fueron revictimizadas dentro de los siguientes 5 años.</p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Las siguientes clasificaciones especiales son definidas y valuadas como:<ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Departamento de Servicios para la Familia y de Protección de Texas (Texas DFPS, por sus siglas en inglés)</p>',
+	name_es = 'Abuso infantil - víctimas confirmadas revictimizadas dentro de los siguientes 5 años'
+where id_ = 10; -- "Child abuse - confirmed victims revictimized within 5 years"
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>La tasa de arrestos en los que estuvo involucrada la presencia de drogas ilegales.</p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Las siguientes clasificaciones especiales son definidas y valuadas como:<ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Departamento de Policía de San Antonio</p>',
+	name_es = 'Tasa de arrestos relacionados con drogas (por 100,000)'
+where id_ = 11; -- "Drug-related arrest rate (per 100k)"
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>El Código Familiar de Texas define la violencia familiar como "un acto producido por un miembro de una familia u hogar contra otro miembro que tiene como fin producir daño físico, lesión corporal, agresión o una amenaza que razonablemente le produce a la persona miedo o daño físico inminente”. Familia incluye individuos con un lazo de sangre o afinidad. Lea más aquí: <a target="_blank" href="https://www.dps.texas.gov/sites/default/files/documents/crimereports/08/citch5.pdf">https://www.dps.texas.gov/sites/default/files/documents/crimereports/08/citch5.pdf</a>.</p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Las siguientes clasificaciones especiales son definidas y valuadas como:<ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Departamento de Seguridad Pública de Texas (Texas DPS, por sus siglas en inglés): Expedientes Criminales</p>',
+	name_es = 'Tasa de violencia familiar (por 1,000)'
+where id_ = 12; -- "Family violence rate (per 1k)"
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>El asesinato y homicidio doloso son definidos como la matanza deliberada de un ser humano a manos de otro. La tentativa de homicidio, el intento de agresión, suicidios, muertes accidentales y homicidios justificables estás excluidos de la clasificación de asesinato. Lea más aquí: <a target="_blank" href="https://www.dps.texas.gov/sites/default/files/documents/crimereports/20/2020cit.pdf">https://www.dps.texas.gov/sites/default/files/documents/crimereports/20/2020cit.pdf</a>.</p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Las siguientes clasificaciones especiales son definidas y valuadas como:<ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Departamento de Policía de San Antonio</p>',
+	name_es = 'Tasa de homicidio y homicidio involuntario (por 100,000)'
+where id_ = 13; -- "Homicide and manslaughter rate (per 100k)"
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>La tasa de jóvenes a quienes se les dio una orden judicial de libertad provisional juvenil, la cual les permite realizar sus actividades normales bajo la supervisión de un agente de vigilancia.</p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Las siguientes clasificaciones especiales son definidas y valuadas como: <ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Condado de Bexar</p>',
+	name_es = 'Tasa de libertad provisional juvenil (por 100,000)'
+where id_ = 14; -- "Juvenile probation rate (per 100k)"
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>Personas que se encuentran institucionalizados en cuarteles grupales de establecimientos correccionales para adultos.</p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Los márgenes de error asociados con cada estimación son reportados como límites altos o bajos. Las siguientes clasificaciones especiales son definidas y valuadas como:<ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Estimaciones de 5 años según la Encuesta sobre la Comunidad Estadounidense de la Oficina del Censo (USCB ACS, por sus siglas en inglés), B26103 A-I</p>',
+	name_es = 'Población Encarcelada'
+where id_ = 15; -- "Incarcerated as of 2020 Census"
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>Los crímenes contra la propiedad incluyen robo, hurto/robo y robo de vehículos de motor e incendio provocado.</p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Las siguientes clasificaciones especiales son definidas y valuadas como: <ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Departamento de Policía de San Antonio</p>',
+	name_es = 'Tasa de crímenes contra la propiedad (por 100,000)'
+where id_ = 16; -- "Property crime rate (per 100k)"
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>El Programa de Reporte Uniforme de Delitos (UCR, por sus siglas en inglés) del Buró Federal de Investigaciones (FBI, por sus siglas en inglés) define al crimen de odio como "una ofensa criminal cometida que está motivada, completamente o en parte, por el prejuicio del criminal contra una raza, religión, discapacidad, orientación sexual, etnia, género o identidad de género". Incluso si los criminales tienen una percepción errónea de que la víctima era miembro de un cierto grupo, la ofensa todavía es considerada un crimen de odio. Lea más aquí: <a target="_blank" href="https://www.fbi.gov/services/cjis/ucr/hate-crime">https://www.fbi.gov/services/cjis/ucr/hate-crime</a>.</p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Las siguientes clasificaciones especiales son definidas y valuadas como:<ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Buró Federal de Investigaciones (FBI, por sus siglas en inglés)</p>',
+	name_es = 'Tasa de crímenes de odio reportados (por 100,000)'
+where id_ = 17; -- "Reported hate crime offense rate (per 100k)"
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>La Ciudad de San Antonio utiliza la definición de agresión sexual del Reporte Uniforme de Delitos (UCR, por sus siglas en inglés) del FBI, la cual establece que es "el conocimiento carnal de una mujer por la fuerza y contra su voluntad. También se incluyen las agresiones o intentos de violación por la fuerza o la amenaza de fuerza; sin embargo, se excluyen la corrupción de menores (sin uso de fuerza) y otras ofensas sexuales". Lea más aquí: <a target="_blank" href="https://www.sanantonio.gov/SAPD/FAQ">https://www.sanantonio.gov/SAPD/FAQ</a>.</p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Las siguientes clasificaciones especiales son definidas y valuadas como:<ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Departamento de Policía de San Antonio</p>',
+	name_es = 'Tasa de agresión sexual (por 100,000)'
+where id_ = 18; -- "Sexual assault rate (per 100k)"
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>La tasa en el que las personas son arrestadas.</p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Las siguientes clasificaciones especiales son definidas y valuadas como:<ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Departamento de Policía de San Antonio</p>',
+	name_es = 'Tasa de arrestos (por 100,000)'
+where id_ = 19; -- "Arrest rate (per 100k)"
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>Los crímenes violentos incluyen asesinato y homicidio doloso, violación, robo y agresión con agravantes.</p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Las siguientes clasificaciones especiales son definidas y valuadas como:<ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Departamento de Policía de San Antonio</p>',
+	name_es = 'Tasa de delitos violentos (por 100,000)'
+where id_ = 20; -- "Violent crime rate (per 100k)"
+
+update tbl_indicators
+set name_es = 'Acceso a préstamos y capital'
+where id_ = 42; -- Access to loans and capital
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>ALICE, en inglés, es un acrónimo para Activo Limitado, Ingreso Restringido, Asalariado, "y representa el creciente número de familias que están empleadas, pero no son capaces de cubrir sus necesidades básicas de casa, cuidado infantil, comida, transporte, atención médica o tecnología". ALICE ayuda a registrar información sobre familias que puede que ganen demasiado dinero para ser beneficiados por programas sociales, pero tienen problemas para solventar un nivel de vida promedio. Lea más aquí: <a target="_blank" href="https://www.uwsatx.org/alice/">https://www.uwsatx.org/alice/</a>.</p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Los márgenes de error asociados con cada estimación son reportados como límites altos o bajos. Las siguientes clasificaciones especiales son definidas y valuadas como:<ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>United Way de San Antonio y el Condado de Bexar</p>',
+	name_es = 'Hogares ALICE y por debajo del umbral de pobreza'
+where id_ = 43; -- "ALICE households"
+
+update tbl_indicators
+set name_es = 'Asistencia (comida, asistencia para alquiler)'
+where id_ = 44; -- Assistance (food, rent assistance)
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>% de Capacidad de Cuidado Infantil Autorizado con Acreditación (Autorización: Departamento de Servicios para la Familia y de Protección de Texas (Texas DFPS, por sus siglas en inglés); Acreditación: organismos de acreditación reconocidos por la Comisión de la Fuerza Laboral de Texas (TWC, por sus siglas en inglés))</p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Los márgenes de error asociados con cada estimación son reportados como límites altos o bajos. Las siguientes clasificaciones especiales son definidas y valuadas como:<ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Comisión de Salud y Servicios Humanos de Texas</p>',
+	name_es = 'Capacidad para la atención infantil (por 1,000 de niños)'
+where id_ = 45; -- "Child care capacity (per 1k kids)"
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>Porcentaje de personas de 16 años y mayores en la fuerza laboral civil que están empleados.</p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Los márgenes de error asociados con cada estimación son reportados como límites altos o bajos. Las siguientes clasificaciones especiales son definidas y valuadas como:<ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Estimaciones de 5 años según la Encuesta sobre la Comunidad Estadounidense de la Oficina del Censo (USCB ACS, por sus siglas en inglés), B23001, C23002</p>',
+	name_es = 'Asalariado'
+where id_ = 47; -- "Employed"
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>Porcentaje de personas de 16 años y mayores en la fuerza laboral civil que están desempleados.</p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Los márgenes de error asociados con cada estimación son reportados como límites altos o bajos. Las siguientes clasificaciones especiales son definidas y valuadas como:<ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Estimaciones de 5 años según la Encuesta sobre la Comunidad Estadounidense de la Oficina del Censo (USCB ACS, por sus siglas en inglés), B23001, C23002</p>',
+	name_es = 'Desempleado'
+where id_ = 48; -- "Unemployed"
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>Porcentaje de personas de 16 años y mayores que no trabajan ni están buscando trabajo de forma activa.</p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Los márgenes de error asociados con cada estimación son reportados como límites altos o bajos. Las siguientes clasificaciones especiales son definidas y valuadas como:<ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Estimaciones de 5 años según la Encuesta sobre la Comunidad Estadounidense de la Oficina del Censo (USCB ACS, por sus siglas en inglés), B23001, C23002</p>',
+	name_es = 'Fuera de la fuerza laboral'
+where id_ = 49; -- "Not in labor force"
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>Porcentaje de unidades de vivienda que están ocupadas por sus dueños.</p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Los márgenes de error asociados con cada estimación son reportados como límites altos o bajos. Las siguientes clasificaciones especiales son definidas y valuadas como:<ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Estimaciones de 5 años según la Encuesta sobre la Comunidad Estadounidense de la Oficina del Censo (USCB ACS, por sus siglas en inglés), B25106</p>',
+	name_es = 'Propiedad de vivienda'
+where id_ = 50; -- "Home ownership"
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>Porcentaje de unidades de vivienda ocupadas en las que los ocupantes gastan 30% o más del ingreso del hogar en costos de vivienda o renta.</p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Los márgenes de error asociados con cada estimación son reportados como límites altos o bajos. Las siguientes clasificaciones especiales son definidas y valuadas como:<ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Estimaciones de 5 años según la Encuesta sobre la Comunidad Estadounidense de la Oficina del Censo (USCB ACS, por sus siglas en inglés), B25106</p>',
+	name_es = 'Carga económica por vivienda'
+where id_ = 51; -- "Housing cost burden"
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>Porcentaje de unidades de vivienda ocupadas por su dueño en las que los ocupantes gastan 30% o más del ingreso del hogar en costos de vivienda.</p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Los márgenes de error asociados con cada estimación son reportados como límites altos o bajos. Las siguientes clasificaciones especiales son definidas y valuadas como: <ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Estimaciones de 5 años según la Encuesta sobre la Comunidad Estadounidense de la Oficina del Censo (USCB ACS, por sus siglas en inglés), B25106</p>',
+	name_es = 'Carga económica por vivienda ocupada por su dueño'
+where id_ = 52; -- "Owner occupied housing cost burden"
+
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>Porcentaje de unidades de vivienda ocupadas por inquilinos en las que los ocupantes gastan 30% o más del ingreso del hogar renta.</p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Los márgenes de error asociados con cada estimación son reportados como límites altos o bajos. Las siguientes clasificaciones especiales son definidas y valuadas como: <ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Estimaciones de 5 años según la Encuesta sobre la Comunidad Estadounidense de la Oficina del Censo (USCB ACS, por sus siglas en inglés), B25106</p>',
+	name_es = 'Carga económica por vivienda ocupada por inquilinos'
+where id_ = 53; -- "Renter occupied housing cost burden"
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>La Oficina del Censo de Estados Unidos describe al Índice de Gini como "una medida sinóptica de desigualdad de ingresos. El coeficiente de Gini incorpora la información detallada compartida en una sola estadística, la cual resume la dispersión de ingresos a través de toda la distribución de los ingresos". Para obtener más información, visite <a target="_blank" href="https://www.census.gov/topics/income-poverty/income-inequality/about/metrics/gini-index.html">https://www.census.gov/topics/income-poverty/income-inequality/about/metrics/gini-index.html</a>.</p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Los márgenes de error asociados con cada estimación son reportados como límites altos o bajos. Las siguientes clasificaciones especiales son definidas y valuadas como:<ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Estimaciones de 5 años según la Encuesta sobre la Comunidad Estadounidense de la Oficina del Censo (USCB ACS, por sus siglas en inglés), B19083</p>',
+	name_es = 'Desigualdad de ingresos (Índice de Gini)'
+where id_ = 54; -- "Income inequality (Gini Index)"
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>Trabajos por 100,000 personas por lugar donde los trabajadores están empleados.</p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Los márgenes de error asociados con cada estimación son reportados como límites altos o bajos. Las siguientes clasificaciones especiales son definidas y valuadas como: <ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Centro de Estudios Económicos (CES, por sus siglas en inglés) de la Oficina del Censo 2020: Dinámicas Longitudinales Empleador-Hogar (LEHD, por sus siglas en inglés)</p>',
+	name_es = 'Trabajos por 100,000'
+where id_ = 55; -- "Jobs per 100K"
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>Para hogares y familias, "la mediana de ingresos se basa en la distribución del número total de hogares y familias, incluyendo aquellos que no tengan ingresos". Para leer más sobre mediana de ingreso familiar, visite <a target="_blank" href="https://www.census.gov/quickfacts/fact/note/US/INC110220">https://www.census.gov/quickfacts/fact/note/US/INC110220</a>.</p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Los márgenes de error asociados con cada estimación son reportados como límites altos o bajos. Las siguientes clasificaciones especiales son definidas y valuadas como:<ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Estimaciones de 5 años según la Encuesta sobre la Comunidad Estadounidense de la Oficina del Censo (USCB ACS, por sus siglas en inglés), B19113</p>',
+	name_es = 'Ingreso familiar (mediana)'
+where id_ = 56; -- "Family income (median)"
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>Para hogares y familias, " la mediana de ingresos se basa en la distribución del número total de hogares y familias, incluyendo aquellos que no tengan ingresos". Para leer más sobre mediana de ingreso familiar, visite <a target="_blank" href="https://www.census.gov/quickfacts/fact/note/US/INC110220">https://www.census.gov/quickfacts/fact/note/US/INC110220</a>.</p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Los márgenes de error asociados con cada estimación son reportados como límites altos o bajos. Las siguientes clasificaciones especiales son definidas y valuadas como:<ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Estimaciones de 5 años según la Encuesta sobre la Comunidad Estadounidense de la Oficina del Censo (USCB ACS, por sus siglas en inglés), B19013, B19049</p>',
+	name_es = 'Ingreso del hogar (promedio)'
+where id_ = 57; -- "Household income (median)"
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>Porcentaje de trabajos por ingresos por mes por lugar donde los trabajadores están empleados.</p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Los márgenes de error asociados con cada estimación son reportados como límites altos o bajos. Las siguientes clasificaciones especiales son definidas y valuadas como:<ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Centro de Estudios Económicos (CES, por sus siglas en inglés) de la Oficina del Censo 2020: Dinámicas Longitudinales Empleador-Hogar (LEHD, por sus siglas en inglés)</p>',
+	name_es = 'Ingresos Mensuales'
+where id_ = 58; -- "Monthly Earnings"
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>El porcentaje de hogares produciendo menos del 30% de la mediana de ingresos para la zona (AMI, por sus siglas en inglés). Tener un menor porcentaje de AMI es un indicativo de hogares con ingresos más bajos.</p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Los márgenes de error asociados con cada estimación son reportados como límites altos o bajos. Las siguientes clasificaciones especiales son definidas y valuadas como: <ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Estimaciones de 5 años según la Encuesta sobre la Comunidad Estadounidense de la Oficina del Censo (USCB ACS, por sus siglas en inglés), B19001</p>',
+	name_es = 'Hogares con ingresos <30% AMI'
+where id_ = 59; -- "Households with income <30% AMI"
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>El porcentaje de hogares produciendo menos del 60% de la mediana de ingresos para la zona (AMI, por sus siglas en inglés). Tener un menor porcentaje de AMI es un indicativo de hogares con ingresos más bajos.</p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Los márgenes de error asociados con cada estimación son reportados como límites altos o bajos. Las siguientes clasificaciones especiales son definidas y valuadas como: <ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Estimaciones de 5 años según la Encuesta sobre la Comunidad Estadounidense de la Oficina del Censo (USCB ACS, por sus siglas en inglés), B19001</p>',
+	name_es = 'Hogares con ingresos <60% AMI'
+where id_ = 60; -- "Households with income <60% AMI"
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>El porcentaje de hogares produciendo menos del 80% de la mediana de ingresos para la zona (AMI, por sus siglas en inglés). Tener un menor porcentaje de AMI es un indicativo de hogares con ingresos más bajos.</p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Los márgenes de error asociados con cada estimación son reportados como límites altos o bajos. Las siguientes clasificaciones especiales son definidas y valuadas como: <ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Estimaciones de 5 años según la Encuesta sobre la Comunidad Estadounidense de la Oficina del Censo (USCB ACS, por sus siglas en inglés), B19001</p>',
+	name_es = 'Hogares con ingresos <80% AMI'
+where id_ = 61; -- "Households with income <80% AMI"
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>El porcentaje de la población que actualmente está prestando servicios en las fuerzas armadas de Estados Unidos.</p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Los márgenes de error asociados con cada estimación son reportados como límites altos o bajos. Las siguientes clasificaciones especiales son definidas y valuadas como: <ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Estimaciones de 5 años según la Encuesta sobre la Comunidad Estadounidense de la Oficina del Censo (USCB ACS, por sus siglas en inglés), B23025, C23002</p>',
+	name_es = 'Población en las fuerzas armadas'
+where id_ = 62; -- "Population in armed forces"
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>El porcentaje de hogares que cuentan con un ingreso que está por debajo del umbral de pobreza. El umbral de pobreza depende del número de personas que hay en la familia. Lea más sobre los umbrales de pobreza aquí <a target="_blank" href="https://www.census.gov/topics/income-poverty/poverty/guidance/poverty-measures.html">https://www.census.gov/topics/income-poverty/poverty/guidance/poverty-measures.html</a>.</p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Los márgenes de error asociados con cada estimación son reportados como límites altos o bajos. Las siguientes clasificaciones especiales son definidas y valuadas como: <ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Estimaciones de 5 años según la Encuesta sobre la Comunidad Estadounidense de la Oficina del Censo (USCB ACS, por sus siglas en inglés), B17001, B17003</p>',
+	name_es = 'Ingresos por debajo del umbral de pobreza'
+where id_ = 63; -- "Income below poverty"
+
+update tbl_indicators
+set name_es = 'Asistencia para la renta'
+where id_ = 64;
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>Tal como lo describe la Oficina del Censo, "el programa federal SSI provee asistencia monetaria mensual a personas mayores con bajos ingresos y a personas con discapacidad con bajos ingresos". Lea más sobre cómo la SSI puede ser utilizada para calcular la pobreza aquí <a target="_blank" href="https://www.census.gov/programs-surveys/saipe/guidance/model-input-data/security.html">https://www.census.gov/programs-surveys/saipe/guidance/model-input-data/security.html</a>.</p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Los márgenes de error asociados con cada estimación son reportados como límites altos o bajos. Las siguientes clasificaciones especiales son definidas y valuadas como: <ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Estimaciones de 5 años según la Encuesta sobre la Comunidad Estadounidense de la Oficina del Censo (USCB ACS, por sus siglas en inglés), B19056, B17015</p>',
+	name_es = 'Seguridad de Ingreso Suplementario (SSI, por sus siglas en inglés)'
+where id_ = 65; -- "Supplemental Security Income (SSI)"
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>El porcentaje de personas que no tiene seguro médico.</p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Los márgenes de error asociados con cada estimación son reportados como límites altos o bajos. Las siguientes clasificaciones especiales son definidas y valuadas como: <ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Estimaciones de 5 años según la Encuesta sobre la Comunidad Estadounidense de la Oficina del Censo (USCB ACS, por sus siglas en inglés), B27001</p>',
+	name_es = 'Sin seguro médico'
+where id_ = 66; -- "Uninsured"
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>El porcentaje de adultos entre 18 y 24 años que no están inscriptos al colegio ni trabajan. Este indicador mide el número de jóvenes que no realizan estas actividades por diversas razones. Lea más sobre estos jóvenes aquí <a target="_blank" href="https://nces.ed.gov/programs/coe/indicator/col/not-in-school-not-working-neet">https://nces.ed.gov/programs/coe/indicator/col/not-in-school-not-working-neet</a>.</p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Los márgenes de error asociados con cada estimación son reportados como límites altos o bajos. Las siguientes clasificaciones especiales son definidas y valuadas como:<ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Estimaciones de 5 años según la Encuesta sobre la Comunidad Estadounidense de la Oficina del Censo (USCB ACS, por sus siglas en inglés), B14005</p>',
+	name_es = 'Jóvenes que no van al colegio ni trabajan'
+where id_ = 67; -- "Youth not in school or not working"
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>Mientras más alto es el índice de costo de transporte, más bajo es el costo de transporte en ese vecindario. Tal como lo explica el Departamento de Vivienda y Desarrollo Urbano de Estados Unidos (HUD, por sus siglas en inglés), los costos de transporte pueden ser bajos por varias razones, incluyendo "mayor acceso a transporte público y la densidad de hogares, servicios y trabajos en el vecindario y la comunidad vecina". Para obtener más información, visite <a target="_blank" href="https://hudgis-hud.opendata.arcgis.com/datasets/HUD::low-transportation-cost-index/about">https://hudgis-hud.opendata.arcgis.com/datasets/HUD::low-transportation-cost-index/about</a>.</p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Los márgenes de error asociados con cada estimación son reportados como límites altos o bajos. Las siguientes clasificaciones especiales son definidas y valuadas como:<ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Departamento de Vivienda y Desarrollo Urbano de Estados Unidos (HUD, por sus siglas en inglés)</p>',
+	name_es = 'Índice de bajo costo de transporte'
+where id_ = 68; -- "Low transportation cost index"
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>El porcentaje de personas cuya educación es menor a la obtención de un título secundario o GED.</p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Los márgenes de error asociados con cada estimación son reportados como límites altos o bajos. Las siguientes clasificaciones especiales son definidas y valuadas como: <ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Estimaciones de 5 años según la Encuesta sobre la Comunidad Estadounidense de la Oficina del Censo (USCB ACS, por sus siglas en inglés), C15002</p>',
+	name_es = 'Educación menor a un título secundario/Desarrollo Educativo General (GED, por sus siglas en inglés)'
+where id_ = 69; -- "Education less than high school diploma/GED"
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>El porcentaje de personas que tengan una diplomatura o un nivel educativo superior.</p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Los márgenes de error asociados con cada estimación son reportados como límites altos o bajos. Las siguientes clasificaciones especiales son definidas y valuadas como: <ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Estimaciones de 5 años según la Encuesta sobre la Comunidad Estadounidense de la Oficina del Censo (USCB ACS, por sus siglas en inglés), C15002</p>',
+	name_es = 'Diplomatura o nivel educativo superior'
+where id_ = 70; -- "Education Bachelor''s degree or higher"
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>El porcentaje de niños/as de 3 y 4 años que están inscriptos en preescolar.</p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Los márgenes de error asociados con cada estimación son reportados como límites altos o bajos. Las siguientes clasificaciones especiales son definidas y valuadas como: <ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Estimaciones de 5 años según la Encuesta sobre la Comunidad Estadounidense de la Oficina del Censo (USCB ACS, por sus siglas en inglés), B14002, B14006, B14007</p>',
+	name_es = 'Inscripto en preescolar'
+where id_ = 71; -- "Enrolled in preschool"
+
+update tbl_indicators
+set name_es = 'Niños/as en un jardín de infantes de alta calidad o guardería'
+where id_ = '72';
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>El Instrumento de Desarrollo Temprano (EDI, por sus siglas en inglés) mide el desarrollo de los/as niños/as, quienes son considerados/as como "vulnerables" cuando su puntaje se encuentra en el 10° percentil de la base de datos EDI nacional o por debajo del mismo.</p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Los márgenes de error asociados con cada estimación son reportados como límites altos o bajos. Las siguientes clasificaciones especiales son definidas y valuadas como: <ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>ReadyKidSA</p>',
+	name_es = 'Niños/as que califican como "Vulnerable" en la prueba de preparación para jardín de infantes'
+where id_ = 73; -- "Children scoring "Vulnerable" on kinder-readiness"
+
+update tbl_indicators
+set name_es = 'Acceso a parques y espacios verdes'
+where id_ = '74';
+
+update tbl_indicators
+set name_es = 'Índice de riesgo de cáncer por toxinas en el aire'
+where id_ = '75';
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>Tal como lo describe el Departamento de Vivienda y Desarrollo Urbano de Estados Unidos (HUD, por sus siglas en inglés), "el Índice de Exposición a Peligros para la Salud Ambiental resume la potencial exposición a toxinas nocivas en el vecindario". Para obtener más información, visite <a target="_blank" href="https://hudgis-hud.opendata.arcgis.com/datasets/c7e2c62560bd4a999f0e0b2f4cee2494_0/explore?location=33.379342%2C52.449633%2C3.80">https://hudgis-hud.opendata.arcgis.com/datasets/c7e2c62560bd4a999f0e0b2f4cee2494_0/explore?location=33.379342%2C52.449633%2C3.80</a>.</p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Los márgenes de error asociados con cada estimación son reportados como límites altos o bajos. Las siguientes clasificaciones especiales son definidas y valuadas como: <ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Departamento de Vivienda y Desarrollo Urbano de Estados Unidos (HUD, por sus siglas en inglés)</p>',
+	name_es = 'Índice de peligro para la salud ambiental'
+where id_ = 76; -- "Environmental health hazard index"
+
+
+update tbl_indicators
+set description_es = '<p><span class="font-weight-bold">Definición: </span>Los desiertos alimentarios miden áreas con bajo nivel de acceso a comida y productos frescos. Para obtener más información, visite <a target="_blank" href="https://gisportal.ers.usda.gov/portal/apps/experiencebuilder/experience/?id=a53ebd7396cd4ac3a3ed09137676fd40">https://gisportal.ers.usda.gov/portal/apps/experiencebuilder/experience/?id=a53ebd7396cd4ac3a3ed09137676fd40</a>.</p><p><span class="font-weight-bold">Notas sobre la Información: </span>Los porcentajes estimados que se presentan son los declarados (ver Fuentes de Información). Los márgenes de error asociados con cada estimación son reportados como límites altos o bajos. Las siguientes clasificaciones especiales son definidas y valuadas como: <ul><li>0.0 - la información está disponible y el porcentaje es menor a 0.1; valuado como 0.0</li></ul></p><p><span class="font-weight-bold">Fuente de Información: </span>Departamento de Agricultura de Estados Unidos: Servicio de Investigación Económica (USDA ERS, por sus siglas en inglés)</p>',
+	name_es = 'Inseguridad alimentaria/desiertos alimentarios'
+where id_ = 77; -- "Food insecurity/food deserts"

@@ -28,9 +28,18 @@
       "long_description": "Explore Data is where you can take a deeper dive into the indicators about your community through interactive maps and charts. Indicators can be mapped across geographic areas, trended in charts to view that data over time, or compared to other local communities in a bar chart. You will also have the ability to filter results by location, year, race/ethnicity, sex, education level or poverty status depending on what's available from the data source. Additionally, you can download and save the visuals you create.",
       "get_started": "To get started, browse or search for an indicator using the menu above or explore one of the featured indicators below.",
       "tabs": {
-        "map": "Map",
-        "trend": "Trend Chart",
-        "compare": "Comparison Chart"
+        "map": {
+          "name": "Map",
+          "description": "The map pulls data from multiple local, state and national data sources at the county, ZIP code, SSA (Statistical Small Area), and census tract level to display an indicators geographic distribution."
+        },
+        "trend": {
+          "name": "Trend Chart",
+          "description": "The trend chart pulls data from multiple local, state and national data sources at the county, ZIP code, SSA (Statistical Small Area), and census tract level to display an indicator, or multiple indicators, across time."
+        },
+        "compare": {
+          "name": "Comparison Chart",
+          "description": "The comparison chart pulls data from multiple local, state and national data sources at the county, ZIP code, SSA (Statistical Small Area), and census tract level to display an indicator, or multiple indicators, across categories."
+        }
       },
       "docked_tooltip": {
         "now_viewing": "Now Viewing",

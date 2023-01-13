@@ -11,26 +11,35 @@
     "connect": "Connect With Us (es)"
   },
   "tools": {
-    "tools": "Tools (es)",
+    "tools": "Herramientas",
     "community": {
       "name": "Mi Comunidad",
       "short_description": "Mi Comunidad es...",
-      "long_description": "Mi Comunidad es una herramienta...",
-      "get_started": "To get started, browse or search for an indicator using the menu above or select a location on the map below (es).",
+      "long_description": "Mi Comunidad es una herramienta que le permite explorar la información sobre la demografía, la vivienda, la educación y mucho más a través de las comunidades en el Condado de Bexar. Las SSAs son combinaciones de secciones censales agrupadas según indicadores significativos como raza/etnia, vivienda, edad, educación e ingresos. CI:Now creó las SSAs para ayudar a los usuarios a analizar los datos en áreas lo suficientemente pequeñas como para ver diferencias significativas en el condado, pero lo suficientemente grandes como para producir mejores estimaciones.",
+      "get_started": "Para empezar, navegue o busque un indicador utilizando el menú de arriba o seleccione una ubicación en el mapa de abajo.",
       "community_types": "Community Types (es)",
       "skip": "Skip ahead to (es)",
       "coming_soon": "Coming Soon",
       "data_coming_soon": "Data Coming Soon"
     },
     "explore": {
-      "name": "Panel",
-      "short_description": "Panel es...",
-      "long_description": "Panel es una herramienta...",
-      "get_started": "Para comenzar, navegue o busque un indicador usando el menú de arriba, o haga clic en uno de los Indicadores destacados a continuación.",
+      "name": "Exploración de Datos",
+      "short_description": "Exploración de Datos es...",
+      "long_description": "En la sección Exploración de Datos podrá profundizar en los indicadores de su comunidad a través de mapas y gráficos interactivos. Los indicadores pueden ser mapeados a través de las áreas geográficas, con tendencias en los gráficos para ver los datos en el tiempo, o en comparación con otras comunidades locales en un gráfico de barras. También tendrá la posibilidad de filtrar los resultados por ubicación, año, raza/etnia, sexo, nivel educativo o estado de pobreza, según lo que disponga la fuente de datos. Además, podrá descargar y guardar los gráficos que cree.",
+      "get_started": "Para empezar, navegue o busque un indicador utilizando el menú de arriba o haga clic en uno de los indicadores destacados de abajo.",
       "tabs": {
-        "map": "Map (es)",
-        "trend": "Trend Chart (es)",
-        "compare": "Comparison Chart (es)"
+        "map": {
+          "name": "Mapa",
+          "description": "El Mapa extrae datos de múltiples fuentes de datos locales, estatales y nacionales a nivel de condado, código postal, SSA (Área Estadística Pequeña) y sección censal para mostrar una distribución geográfica de los indicadores."
+        },
+        "trend": {
+          "name": "Gráfico de Tendencias",
+          "description": "El gráfico de tendencias extrae datos de múltiples fuentes de datos locales, estatales y nacionales a nivel de condado, código postal, SSA (Área Estadística Pequeña) y sección censal para mostrar un indicador, o múltiples indicadores, a lo largo del tiempo."
+        },
+        "compare": {
+          "name": "Cuadro Comparativo",
+          "description": "El cuadro comparativo extrae datos de múltiples fuentes de datos locales, estatales y nacionales a nivel de condado, código postal, SSA (Área Estadística Pequeña) y sección censal para mostrar un indicador, o múltiples indicadores, a través de categorías."
+        }
       },
       "docked_tooltip": {
         "now_viewing": "Now Viewing (es)",
@@ -47,10 +56,10 @@
       "compare": "Compare"
     },
     "tables": {
-      "name": "Tables & Downloads (es)",
-      "short_description": "Tables & Downloads (es) es...",
-      "long_description": "Explorar Datos es una herramienta...",
-      "get_started": "Para comenzar, navegue o busque un indicador usando el menú de arriba, o haga clic en uno de los Indicadores destacados a continuación.",
+      "name": "Tablas y Descargas",
+      "short_description": "Tablas y Descargas es...",
+      "long_description": "Tablas y Descargas es donde puede acceder a los datos en un formato de hoja de cálculo legible por ordenador para utilizarlos en sus propias herramientas de procesamiento y visualización de datos. Puede filtrar los datos por ubicación, año, raza/etnia, nivel educativo o estado de pobreza, según lo que esté disponible en la fuente de datos, descargar y guardar las tablas de datos que cree.",
+      "get_started": "Para empezar, navegue o busque un indicador utilizando el menú de arriba o haga clic en uno de los indicadores destacados que aparecen a continuación.",
       "filter": "Filter (es)",
       "headers": {
         "location_type": "Location Type (es)",
@@ -85,7 +94,7 @@
   },
   "home_view": {
     "name": "Home (es)",
-    "welcome_message": "Bienvenido a...",
+    "welcome_message": "Bienvenido a Data Dive de Bexar, organizada por CI:Now. Disponemos de tres herramientas para ayudarle a explorar, visualizar e interactuar con los datos. Para obtener más información sobre el funcionamiento de cada herramienta, haga clic en los enlaces siguientes o en el menú lateral.",
     "available_tools": "Herramientas Disponibles",
     "acknowledgement": "This project is supported by the Office of Minority Health of the U.S. Department of Health and Human Services (HHS) as part of a financial assistance award totaling $750,000 with 100 percent funded by OMH/OASH/HHS. The contents are those of the author(s) and do not necessarily represent the official views of, nor an endorsement by, OMH/OASH/HHS, or the U.S. Government. For more information, please visit <a target='_blank' href='https://www.minorityhealth.hhs.gov'>www.minorityhealth.hhs.gov</a>."
   },
@@ -96,11 +105,11 @@
     "visit_source": "Go to source (es)"
   },
   "about_tools_view": {
-    "name": "About the Tools (es)"
+    "name": "Sobre las Herramientas"
   },
   "faqs_view": {
-    "name": "Frequently Asked Questions (es)",
-    "questions": "Questions (es)"
+    "name": "Preguntas Frecuentes",
+    "questions": "Preguntas"
   },
   "data": {
     "value": "Value (es)",
