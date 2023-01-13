@@ -2,6 +2,9 @@ package org.cinow.omh;
 
 import java.util.Arrays;
 
+import org.cinow.omh.user.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,6 +18,12 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+	@Autowired
+	UserService userService;
+
+	@Value("${login.success.url}")
+	String loginSuccessUrl;
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -23,7 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.cors()
 			.and()
             .authorizeRequests(a -> a
-                .antMatchers("/api/admin/**").authenticated()
+                .antMatchers("/api/admin/**").access("hasRole('bdd-admin')")
                 .anyRequest().permitAll()
             )
             .exceptionHandling(e -> e
@@ -36,7 +45,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
 			)
             .oauth2Login()
-			.defaultSuccessUrl("http://localhost:3000/admin");
+			.defaultSuccessUrl(loginSuccessUrl)
+			.userInfoEndpoint().oidcUserService(this.userService);
         // @formatter:on
 	}
 }
