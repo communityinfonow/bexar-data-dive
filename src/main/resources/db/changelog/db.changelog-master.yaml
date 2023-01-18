@@ -57,3 +57,5 @@ databaseChangeLog:
       file: /db/changelog/sql/changelog_28.sql
   - include:
       file: /db/changelog/sql/changelog_29.sql
+  - include:
+      file: /db/changelog/sql/changelog_31.sql

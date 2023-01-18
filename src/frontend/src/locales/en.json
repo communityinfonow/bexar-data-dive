@@ -1,6 +1,7 @@
 {
   "app": {
     "name": "Bexar Data Dive",
+    "title": "Bexar Data Dive",
     "name_line_1": "Bexar",
     "name_line_2": "Data Dive",
     "tagline": "[tagline]",
@@ -43,6 +44,9 @@
       },
       "docked_tooltip": {
         "now_viewing": "Now Viewing",
+        "range": "Range",
+        "source": "Source",
+        "year": "Year",
         "help_messages": {
           "map": "Hover over a shaded area on the map to view more information.",
           "trend": "Hover over a point on the chart to view more information.",
@@ -81,7 +85,6 @@
     "common": {
       "featured_indicators": "Featured Indicators",
       "search": "Search",
-      "download": "Download",
       "labels": "Labels",
       "click_copy": "Click below to copy the link",
       "copy_success": "Copied to clipboard!",
@@ -89,7 +92,25 @@
       "about_data": "About the indicator",
       "about_tool": "About the tool",
       "make_selection": "Please make a selection",
-      "filter_unavailable": "This filter is not available when combined with the other filters currently applied."
+      "filter_unavailable": "This filter is not available when combined with the other filters currently applied.",
+      "download": {
+        "name": "Download",
+        "items": {
+          "data": "Data",
+          "image": "Image"
+        },
+        "headers": {
+          "category": "Category",
+          "indicator": "Indicator",
+          "source": "Source",
+          "location_type": "Location Type",
+          "location": "Location",
+          "year": "Year",
+          "race": "Race/Ethnicity",
+          "value": "Value",
+          "range": "Range"
+        }
+      }
     }
   },
   "home_view": {

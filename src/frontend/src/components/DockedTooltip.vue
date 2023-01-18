@@ -15,9 +15,9 @@
 					{{ exploreData.indicator['name_' + locale] }}: <span v-if="dockedTooltip.location">{{ valueFormatted }}</span>
 				</div>
 				<ul class="text-body-1">
-					<li v-if="!dockedTooltip.noData">Range: <span v-if="dockedTooltip.location">{{ rangeFormatted }}</span></li>
-					<li>Source: {{ exploreData.source['name_' + locale] }}</li>
-					<li>Year: {{ dockedTooltip.year }}</li>
+					<li v-if="!dockedTooltip.noData">{{ $t('tools.explore.docked_tooltip.range')}}: <span v-if="dockedTooltip.location">{{ rangeFormatted }}</span></li>
+					<li>{{ $t('tools.explore.docked_tooltip.source') }}: {{ exploreData.source['name_' + locale] }}</li>
+					<li>{{ $t('tools.explore.docked_tooltip.year') }}: {{ dockedTooltip.year }}</li>
 					<template v-for="filter in dockedTooltip.indicatorFilters">
 						<li v-if="filter.type && filter.options[0]" :key="filter.type.id">
 							{{ filter.type['name_' + locale] }}: {{ filter.options[0]['name_' + locale] }}
