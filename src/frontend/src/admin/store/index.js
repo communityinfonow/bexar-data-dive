@@ -36,37 +36,37 @@ export default new Vuex.Store({
         {
           key: 'announcements',
           name: 'Announcements',
-          route: 'announcements'
+          route: '/admin/announcements'
         },
         {
           key: 'indicators',
           name: 'Indicators',
-          route: 'indicators'
+          route: '/admin/indicators'
         },
         {
           key: 'filters',
           name: 'Filters',
-          route: 'filters'
+          route: '/admin/filters'
         },
         {
           key: 'sources',
           name: 'Sources',
-          route: 'sources'
+          route: '/admin/sources'
         },
         {
           key: 'about-tools',
           name: 'About the Tools',
-          route: 'about-tools'
+          route: '/admin/about-tools'
         },
         {
           key: 'about-data',
           name: 'About the Data',
-          route: 'about-data'
+          route: '/admin/about-data'
         },
         {
           key: 'faqs',
           name: 'Frequently Asked Questions',
-          route: 'faqs'
+          route: '/admin/faqs'
         }
       ]
     },
