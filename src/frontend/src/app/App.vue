@@ -21,10 +21,10 @@
 
 <script>
 import { mapState } from 'vuex'
-import AppHeader from '@/components/AppHeader'
-import PrintHeader from '@/components/PrintHeader'
-import AppFooter from '@/components/AppFooter'
-import NavigationDrawer from '@/components/NavigationDrawer'
+import AppHeader from '@/app/components/AppHeader'
+import PrintHeader from '@/app/components/PrintHeader'
+import AppFooter from '@/app/components/AppFooter'
+import NavigationDrawer from '@/app/components/NavigationDrawer'
 
 export default {
   name: 'App',

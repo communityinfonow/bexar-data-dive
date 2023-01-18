@@ -21,8 +21,8 @@
 import i18n from '@/i18n'
 import goTo from 'vuetify/lib/services/goto'
 import { mapActions, mapState } from 'vuex'
-import router from '@/router/index'
-import SideMenu from '@/components/SideMenu'
+import router from '@/app/router/index'
+import SideMenu from '@/app/components/SideMenu'
 
 export default {
   name: 'FaqsView',

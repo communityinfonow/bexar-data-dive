@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import router from '@/router/index'
+import router from '@/app/router/index'
 import i18n from '@/i18n'
 import axios from 'axios'
 import { format } from '@/formatter/formatter'
@@ -173,7 +173,7 @@ export default new Vuex.Store({
         context.commit('SET_LOCALE', locale)
         localStorage.setItem('cinow-locale', locale)
         i18n.locale = locale
-        document.title = i18n.t('app.name')
+        document.title = i18n.t('app.title')
         if (router.currentRoute.query.lang !== locale) {
           router.replace({
             query: {

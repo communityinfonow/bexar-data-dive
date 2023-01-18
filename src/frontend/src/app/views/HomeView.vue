@@ -30,7 +30,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import FeaturedCard from '@/components/FeaturedCard'
+import FeaturedCard from '@/app/components/FeaturedCard'
 export default {
   name: 'HomeView',
   components: {

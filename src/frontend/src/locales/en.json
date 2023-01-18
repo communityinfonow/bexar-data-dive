@@ -1,6 +1,7 @@
 {
   "app": {
     "name": "Bexar Data Dive",
+    "title": "Bexar Data Dive",
     "name_line_1": "Bexar",
     "name_line_2": "Data Dive",
     "tagline": "[tagline]",

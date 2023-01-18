@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import MenuItem from '@/components/MenuItem'
+import MenuItem from '@/app/components/MenuItem'
 import { mapState } from 'vuex'
 
 export default {

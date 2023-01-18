@@ -88,7 +88,7 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
-import router from '@/router/index'
+import router from '@/app/router/index'
 
 export default {
 	name: 'FiltersPanel',

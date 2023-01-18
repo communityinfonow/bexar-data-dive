@@ -361,12 +361,12 @@
 import { mapActions, mapState } from 'vuex'
 import axios from 'axios'
 import i18n from '@/i18n'
-import router from '@/router/index'
-import MenuToolbar from '@/components/MenuToolbar'
-import FeaturedCard from '@/components/FeaturedCard'
-import DownloadMenu from '@/components/DownloadMenu'
-import ShareMenu from '@/components/ShareMenu'
-import AboutMenu from '@/components/AboutMenu'
+import router from '@/app/router/index'
+import MenuToolbar from '@/app/components/MenuToolbar'
+import FeaturedCard from '@/app/components/FeaturedCard'
+import DownloadMenu from '@/app/components/DownloadMenu'
+import ShareMenu from '@/app/components/ShareMenu'
+import AboutMenu from '@/app/components/AboutMenu'
 import debounce from 'debounce'
 
 export default {

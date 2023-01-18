@@ -1,14 +1,12 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import HomeView from '@/views/HomeView.vue'
-import CommunityView from '@/views/CommunityView.vue'
-import ExploreView from '@/views/ExploreView.vue'
-import TablesView from '@/views/TablesView.vue'
-import AboutToolsView from '@/views/AboutToolsView.vue'
-import AboutDataView from '@/views/AboutDataView.vue'
-import FaqsView from '@/views/FaqsView.vue'
-import AdminView from '@/views/AdminView.vue'
-import UnauthorizedView from '@/views/UnauthorizedView.vue'
+import HomeView from '@/app/views/HomeView.vue'
+import CommunityView from '@/app/views/CommunityView.vue'
+import ExploreView from '@/app/views/ExploreView.vue'
+import TablesView from '@/app/views/TablesView.vue'
+import AboutToolsView from '@/app/views/AboutToolsView.vue'
+import AboutDataView from '@/app/views/AboutDataView.vue'
+import FaqsView from '@/app/views/FaqsView.vue'
 
 Vue.use(VueRouter)
 
@@ -51,16 +49,6 @@ const routes = [
     path: '/faqs',
     name: 'faqs',
     component: FaqsView,
-  },
-  {
-    path: '/admin',
-    name: 'admin',
-    component: AdminView
-  },
-  {
-    path: '/unauthorized',
-    name: 'unauthorized',
-    component: UnauthorizedView
   }
 ]
 
