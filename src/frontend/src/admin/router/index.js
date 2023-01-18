@@ -22,37 +22,37 @@ const routes = [
     component: AdminView,
   },
   {
-    path: '/announcements',
+    path: '/admin/announcements',
     name: 'announcements',
     component: AnnouncementsView,
   },
   {
-    path: '/indicators',
+    path: '/admin/indicators',
     name: 'indicators',
     component: IndicatorsView,
   },
   {
-    path: '/filters',
+    path: '/admin/filters',
     name: 'filters',
     component: FiltersView,
   },
   {
-    path: '/sources',
+    path: '/admin/sources',
     name: 'sources',
     component: SourcesView,
   },
   {
-    path: '/about-tools',
+    path: '/admin/about-tools',
     name: 'about-tools',
     component: AboutToolsView,
   },
   {
-    path: '/about-data',
+    path: '/admin/about-data',
     name: 'about-data',
     component: AboutDataView,
   },
   {
-    path: '/faqs',
+    path: '/admin/faqs',
     name: 'faqs',
     component: FaqsView,
   }
