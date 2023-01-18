@@ -38,8 +38,8 @@
 
 <script>
 import { mapState } from 'vuex'
-import MenuCategory from '@/components/MenuCategory'
-import MenuButton from '@/components/MenuButton'
+import MenuCategory from '@/app/components/MenuCategory'
+import MenuButton from '@/app/components/MenuButton'
 
 export default {
   name: 'MenuToolbar',

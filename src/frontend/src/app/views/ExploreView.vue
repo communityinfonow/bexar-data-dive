@@ -75,15 +75,15 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
-import router from '@/router/index'
+import router from '@/app/router/index'
 import i18n from '@/i18n'
-import MenuToolbar from '@/components/MenuToolbar'
-import FeaturedCard from '@/components/FeaturedCard'
-import FiltersPanel from '@/components/FiltersPanel'
-import DockedTooltip from '@/components/DockedTooltip'
-import ExploreMap from '@/components/ExploreMap'
-import ExploreTrendChart from '@/components/ExploreTrendChart'
-import ExploreCompareChart from '@/components/ExploreCompareChart'
+import MenuToolbar from '@/app/components/MenuToolbar'
+import FeaturedCard from '@/app/components/FeaturedCard'
+import FiltersPanel from '@/app/components/FiltersPanel'
+import DockedTooltip from '@/app/components/DockedTooltip'
+import ExploreMap from '@/app/components/ExploreMap'
+import ExploreTrendChart from '@/app/components/ExploreTrendChart'
+import ExploreCompareChart from '@/app/components/ExploreCompareChart'
 export default {
   name: 'ExploreView',
   components: {

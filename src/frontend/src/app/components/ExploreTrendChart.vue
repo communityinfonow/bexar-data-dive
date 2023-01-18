@@ -29,7 +29,7 @@ import * as echarts from 'echarts/core';
 import { SVGRenderer } from 'echarts/renderers';
 import { AriaComponent, LegendComponent, GridComponent } from 'echarts/components';
 import { LineChart, BarChart } from 'echarts/charts';
-import ExploreToolsPanel from '@/components/ExploreToolsPanel'
+import ExploreToolsPanel from '@/app/components/ExploreToolsPanel'
 import { format } from '@/formatter/formatter'
 
 export default {

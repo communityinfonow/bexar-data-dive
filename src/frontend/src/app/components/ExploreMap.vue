@@ -130,7 +130,7 @@ import { LMap, LTileLayer, LGeoJson, LControl } from 'vue2-leaflet'
 import { feature, featureCollection } from '@turf/helpers'
 import colorbrewer from 'colorbrewer'
 import { ckmeans } from 'simple-statistics'
-import ExploreToolsPanel from '@/components/ExploreToolsPanel'
+import ExploreToolsPanel from '@/app/components/ExploreToolsPanel'
 import { format } from '@/formatter/formatter'
 
 export default {
