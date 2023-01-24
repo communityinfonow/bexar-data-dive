@@ -21,13 +21,16 @@
       "community_types": "Community Types",
       "skip": "Skip ahead to",
       "coming_soon": "Coming Soon",
-      "data_coming_soon": "Data Coming Soon"
+      "data_coming_soon": "Data Coming Soon",
+      "working_add_data": "We're working to add this data but it is not yet available",
+      "no_data_geography": "No data is available for the selected geography"
     },
     "explore": {
       "name": "Explore Data",
       "short_description": "A <span class='font-weight-black'>deeper dive</span> into local data through interactive mapping, trend and comparison visualization tools.",
       "long_description": "Explore Data is where you can take a deeper dive into the indicators about your community through interactive maps and charts. Indicators can be mapped across geographic areas, trended in charts to view that data over time, or compared to other local communities in a bar chart. You will also have the ability to filter results by location, year, race/ethnicity, sex, education level or poverty status depending on what's available from the data source. Additionally, you can download and save the visuals you create.",
       "get_started": "To get started, browse or search for an indicator using the menu above or explore one of the featured indicators below.",
+      "no_data_location_year": "No data is available for the selected location type for this year",
       "tabs": {
         "map": {
           "name": "Map",

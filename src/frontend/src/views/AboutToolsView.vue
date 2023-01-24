@@ -17,7 +17,7 @@
               </section>
               <v-btn 
                 color="primary" 
-                :to="tool.viewRoute" 
+                :to="tool.route" 
                 :aria-label="$t('featured_card.view') + ' ' + tool.name"
                 class="mt-6"
               >

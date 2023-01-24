@@ -97,25 +97,28 @@ public class TablesService {
 		csv.append("\n");
 		
 		for (TablesDataItem item : data.getItems()) {
-			csv.append(enquote((data.getCategory().getParentCategoryId() != null ? data.getCategory().getName_en() + " - " : "") + data.getIndicator().getName_en()) + ",");
-			csv.append(enquote(data.getSource().getName_en()) + ",");
-			csv.append(enquote(item.getLocationType_en()) + ",");
-			csv.append(enquote(item.getLocation_en()) + ",");
+			String indicator = "es".equalsIgnoreCase(request.getLang())
+				? (data.getCategory().getParentCategoryId() != null ? data.getCategory().getName_es() + " - " : "") + data.getIndicator().getName_es()
+				: (data.getCategory().getParentCategoryId() != null ? data.getCategory().getName_en() + " - " : "") + data.getIndicator().getName_en();
+			csv.append(enquote(indicator) + ",");
+			csv.append(enquote("es".equalsIgnoreCase(request.getLang()) ? data.getSource().getName_es() : data.getSource().getName_en()) + ",");
+			csv.append(enquote("es".equalsIgnoreCase(request.getLang()) ? item.getLocationType_es() : item.getLocationType_en()) + ",");
+			csv.append(enquote("es".equalsIgnoreCase(request.getLang()) ? item.getLocation_es() : item.getLocation_en()) + ",");
 			csv.append(enquote(item.getYear()) + ",");
 			if (filters.stream().anyMatch(f -> f.getType().getId().equals("1"))) {
-				csv.append(enquote(item.getRace_en()) + ",");
+				csv.append(enquote("es".equalsIgnoreCase(request.getLang()) ? item.getRace_es() : item.getRace_en()) + ",");
 			}
 			if (filters.stream().anyMatch(f -> f.getType().getId().equals("2"))) {
-				csv.append(enquote(item.getAge_en()) + ",");
+				csv.append(enquote("es".equalsIgnoreCase(request.getLang()) ? item.getAge_es() : item.getAge_en()) + ",");
 			}
 			if (filters.stream().anyMatch(f -> f.getType().getId().equals("3"))) {
-				csv.append(enquote(item.getSex_en()) + ",");
+				csv.append(enquote("es".equalsIgnoreCase(request.getLang()) ? item.getSex_en() : item.getSex_en()) + ",");
 			}
 			if (filters.stream().anyMatch(f -> f.getType().getId().equals("4"))) {
-				csv.append(enquote(item.getEducation_en()) + ",");
+				csv.append(enquote("es".equalsIgnoreCase(request.getLang()) ? item.getEducation_es() : item.getEducation_en()) + ",");
 			}
 			if (filters.stream().anyMatch(f -> f.getType().getId().equals("5"))) {
-				csv.append(enquote(item.getIncome_en()) + ",");
+				csv.append(enquote("es".equalsIgnoreCase(request.getLang()) ? item.getIncome_es() : item.getIncome_en()) + ",");
 			}
 			csv.append((item.getValue() != null ? item.getValue() : "") + ",");
 			csv.append((item.getMoeLow() != null ? item.getMoeLow() : "") + ",");
