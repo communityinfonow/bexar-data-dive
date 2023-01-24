@@ -37,13 +37,13 @@
 				<h3 class="text-h6">
 					{{ item.indicator['name_' + locale]}}
 				</h3>
-				<p>No data is available for the selected geography</p>
+				<p>{{ $t('tools.community.no_data_geography') }}</p>
 			</template>
 			<template v-else>
 				<h3 class="text-h6">
 					{{ item.indicator['name_' + locale]}}
 				</h3>
-				<p>We're working to add this data but it is not yet available</p>
+				<p>{{ $t('tools.community.working_add_data') }}</p>
 			</template>
 		</section>
 	</div>
