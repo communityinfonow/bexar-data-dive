@@ -37,3 +37,5 @@ node/*
 src/frontend/_cacache/*
 src/frontend/_logs/*
 src/frontend/node/*
+
+src/main/resources/application-local.properties

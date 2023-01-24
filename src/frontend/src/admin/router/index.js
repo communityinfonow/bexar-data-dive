@@ -13,11 +13,11 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
-    redirect: '/admin'
+    path: '/admin',
+    redirect: '/admin/home'
   },
   {
-    path: '/admin',
+    path: '/admin/home',
     name: 'admin',
     component: AdminView,
   },

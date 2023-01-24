@@ -3,15 +3,16 @@ package org.cinow.omh;
 import org.cinow.omh.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig {
 
 	@Autowired
 	UserService userService;
@@ -19,14 +20,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Value("${login.success.url}")
 	String loginSuccessUrl;
 	
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		// @formatter:off
         http
 			.cors()
 			.and()
             .authorizeRequests(a -> a
-                .antMatchers("/api/admin/**").access("hasRole('bdd-admin')")
+                .antMatchers("/admin", "/admin/**", "/api/admin/**").access("hasRole('bdd-admin')")
                 .anyRequest().permitAll()
             )
             .exceptionHandling(e -> e
@@ -42,5 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.defaultSuccessUrl(loginSuccessUrl)
 			.userInfoEndpoint().oidcUserService(this.userService);
         // @formatter:on
+
+		return http.build();
 	}
 }

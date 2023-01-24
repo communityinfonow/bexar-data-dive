@@ -1,5 +1,5 @@
 <template>
-	<v-alert type="error">Sorry, you are not authorized to view this page.</v-alert>
+	<v-alert type="error">Sorry, you are not authorized to view the requested page.</v-alert>
 </template>
 
 <script>

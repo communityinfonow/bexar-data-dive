@@ -6,13 +6,13 @@ create table if not exists tbl_admin_users (
 	email text primary key
 );
 
-create or replace procedure add_admin_user(email text)
+create or replace function add_admin_user(email text) returns void
 language sql
 as '
 	insert into tbl_admin_users (email) values (email);
 ';
 
-create or replace procedure remove_admin_user(email text)
+create or replace function remove_admin_user(email text) returns void
 language sql
 as '
 	delete from tbl_admin_users where email = email;
