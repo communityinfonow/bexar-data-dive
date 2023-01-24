@@ -1,14 +1,20 @@
 package org.cinow.omh;
 
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.cinow.omh.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @EnableWebSecurity
@@ -31,7 +37,14 @@ public class SecurityConfig {
                 .anyRequest().permitAll()
             )
             .exceptionHandling(e -> e
-                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+                // custom 403 handler to redirect to the vue unauthorized route
+				.accessDeniedHandler(new AccessDeniedHandlerImpl() {
+					public void handle(HttpServletRequest request, HttpServletResponse response,
+						AccessDeniedException accessDeniedException) throws IOException, ServletException {
+
+							response.sendRedirect("/unauthorized");
+					}
+				})
             )
 			.logout(l -> l
 				.logoutSuccessUrl("/").permitAll()
