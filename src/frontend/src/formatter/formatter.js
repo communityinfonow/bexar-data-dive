@@ -2,8 +2,8 @@ import i18n from '@/i18n'
 
 let formatter = new Intl.NumberFormat();
 export function format(type, value) {
-  if (isNaN(value)) {
-    i18n.t('data.no_data');
+  if (isNaN(value) || value === null) {
+    return i18n.t('data.no_data');
   }
 
   let formattedValue = '';

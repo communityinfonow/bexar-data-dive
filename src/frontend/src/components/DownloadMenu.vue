@@ -7,10 +7,10 @@
 		</template>
 		<v-list>
 			<v-list-item v-if="downloadData" @click="downloadData">
-				<v-list-item-title>Data</v-list-item-title>
+				<v-list-item-title>{{ $t('tools.common.download.items.data') }}</v-list-item-title>
 			</v-list-item>
 			<v-list-item v-if="downloadImage" @click="downloadImage">
-				<v-list-item-title >Image</v-list-item-title>
+				<v-list-item-title >{{ $t('tools.common.download.items.image') }}</v-list-item-title>
 			</v-list-item>
 		</v-list>
 	</v-menu>

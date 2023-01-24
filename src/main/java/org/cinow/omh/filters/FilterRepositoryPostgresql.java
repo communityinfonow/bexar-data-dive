@@ -54,7 +54,7 @@ public class FilterRepositoryPostgresql implements FilterRepository {
 				Filter filter = new Filter();
 				filter.setType(new FilterType());
 				filter.getType().setName_en("Location Type");
-				filter.getType().setName_es("Location Type (es)");
+				filter.getType().setName_es("Tipo de Ubicación");
 				while (rs.next()) {
 					FilterOption option = new FilterOption();
 					option.setId(rs.getString("id_"));
@@ -85,7 +85,7 @@ public class FilterRepositoryPostgresql implements FilterRepository {
 				filter.setType(new FilterType());
 				filter.getType().setId("l");
 				filter.getType().setName_en("Location");
-				filter.getType().setName_es("Location (es)");
+				filter.getType().setName_es("Ubicación");
 				while (rs.next()) {
 					FilterOption option = new FilterOption();
 					option.setId(rs.getString("id_"));
@@ -120,7 +120,7 @@ public class FilterRepositoryPostgresql implements FilterRepository {
 				filter.setType(new FilterType());
 				filter.getType().setId("y");
 				filter.getType().setName_en("Year");
-				filter.getType().setName_es("Year (es)");
+				filter.getType().setName_es("Año");
 				while (rs.next()) {
 					FilterOption option = new FilterOption();
 					option.setId(rs.getString("year_"));

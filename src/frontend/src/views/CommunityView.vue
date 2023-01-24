@@ -414,8 +414,16 @@ export default {
       goTo("#category_" + category)
     },
     downloadCommunityData() {
-      //TODO: espanol headers
-      let csv = 'Category,Indicator,Source,Location,Year,Race/Ethnicity,Value,Range';
+      let csv = [
+        i18n.t('tools.common.download.headers.category'),
+				i18n.t('tools.common.download.headers.indicator'), 
+				i18n.t('tools.common.download.headers.source'), 
+				i18n.t('tools.common.download.headers.location'), 
+				i18n.t('tools.common.download.headers.year'),
+				i18n.t('tools.common.download.headers.race'),
+				i18n.t('tools.common.download.headers.value'),
+				i18n.t('tools.common.download.headers.range')
+			].join(',');
       this.sortedData.forEach(item => {
         item.subcategories.forEach(subcat => {
           csv += this.generateIndicatorCsvRecords(item.category, subcat.category, subcat.indicators)

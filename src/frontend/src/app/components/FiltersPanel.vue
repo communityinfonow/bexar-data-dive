@@ -52,7 +52,7 @@
 						<v-list-item-content>
 							<v-list-item-title 
 								v-html="parent.genFilteredText(item['name_' + locale])"
-								:title="item.disabled ? 'No data is available for the selected location type for this year' : null"
+								:title="item.disabled ? $t('tools.explore.no_data_location_year') : null"
 							></v-list-item-title>
 						</v-list-item-content>
 					</template>

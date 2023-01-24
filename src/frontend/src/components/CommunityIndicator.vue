@@ -37,13 +37,13 @@
 				<h3 class="text-h6">
 					{{ item.indicator['name_' + locale]}}
 				</h3>
-				<p>No data is available for the selected geography</p>
+				<p>{{ $t('tools.community.no_data_geography') }}</p>
 			</template>
 			<template v-else>
 				<h3 class="text-h6">
 					{{ item.indicator['name_' + locale]}}
 				</h3>
-				<p>We're working to add this data but it is not yet available</p>
+				<p>{{ $t('tools.community.working_add_data') }}</p>
 			</template>
 		</section>
 	</div>
@@ -85,8 +85,15 @@ export default {
 			return format(type, value)
 		},
 		downloadData() {
-			//TODO: espanol headers
-			let csv = 'Indicator,Source,Location,Year,Race/Ethnicity,Value,Range';
+			let csv = [
+				i18n.t('tools.common.download.headers.indicator'), 
+				i18n.t('tools.common.download.headers.source'), 
+				i18n.t('tools.common.download.headers.location'), 
+				i18n.t('tools.common.download.headers.year'),
+				i18n.t('tools.common.download.headers.race'),
+				i18n.t('tools.common.download.headers.value'),
+				i18n.t('tools.common.download.headers.range')
+			].join(',');
 			csv += this.item.demographicData.map(data => {
 				return '\n"' + ((this.parentName ? this.parentName + ' - ' : '') + this.item.indicator['name_' + this.locale])+ '",'
 					+ '"' + this.item.source['name_' + this.locale] + '",'

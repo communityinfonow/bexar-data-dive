@@ -226,10 +226,18 @@ export default {
 		},
 		downloadData() {
 			let fileName = '';
-			//TODO: espanol headers
-			let csv = 'Indicator,Source,Location Type,Location,Year'
+			let csv = [
+				i18n.t('tools.common.download.headers.indicator'), 
+				i18n.t('tools.common.download.headers.source'), 
+				i18n.t('tools.common.download.headers.location_type'), 
+				i18n.t('tools.common.download.headers.location'), 
+				i18n.t('tools.common.download.headers.year')
+			].join(',');
 			csv += this.filters.indicatorFilters.map(f => ',' + f.type['name_' + this.locale]).join('');
-			csv += ',Value,Range';
+			csv += ',' + [
+				i18n.t('tools.common.download.headers.value'),
+				i18n.t('tools.common.download.headers.range')
+			].join(',');
 			if (this.dataVisualName === 'map') {
 				fileName = 'explore_map_data.csv';
 				csv += this.exploreData.locationData.map((data) => {
