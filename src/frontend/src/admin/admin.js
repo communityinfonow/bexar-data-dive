@@ -16,21 +16,6 @@ new Vue({
   i18n,
   render: (h) => h(Admin),
   created: function () {
-    let queryLocale = router.currentRoute.query.lang
-    let storedLocale
-    try {
-      storedLocale = localStorage.getItem('cinow-locale')
-    } catch {
-      storedLocale = null
-    }
-    if (queryLocale) {
-      this.$store.dispatch('setLocale', queryLocale)
-    } else if (storedLocale) {
-      this.$store.dispatch('setLocale', storedLocale)
-    } else {
-      this.$store.dispatch('setLocale', 'en')
-    }
-
     let requestCount = 0
     axios.interceptors.request.use(function(config) {
       if (requestCount === 0) {
@@ -47,9 +32,26 @@ new Vue({
       }
 
       return response;
+    }, error => {
+      requestCount--;
+      if (requestCount === 0) {
+        store.dispatch('setLoading', false);
+      }
+      if (error.response.status === 401) {
+        window.location = window.location.protocol +'//' + window.location.hostname + ':' + process.env.VUE_APP_API_PORT + '/oauth2/authorization/google';
+      }
+      if (error.response.status === 403) {
+        window.location = '/unauthorized';
+      }
+      throw error;
     });
   },
-  mounted: function () {
-    
+  beforeMount: function () {
+    axios.get('/api/admin/username')
+			.then((response) => {
+				this.$store.dispatch('setLoggedIn', true);
+        this.$store.dispatch('setUsername', response.data);
+        
+			});
   },
 }).$mount('#app')

@@ -51,7 +51,7 @@ export default {
   computed: {
     ...mapGetters(['tools']),
     navItems() {
-      return [{ route: '/admin', name: 'Admin Home' }]
+      return [{ route: '/admin/home', name: 'Admin Home' }]
         .concat(this.tools)
     },
   },

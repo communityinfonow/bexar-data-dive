@@ -52,9 +52,6 @@ new Vue({
       if (requestCount === 0) {
         store.dispatch('setLoading', false);
       }
-      if (error.response.status === 403) {
-        router.push('/unauthorized');
-      }
 
       return Promise.reject(error);
     });

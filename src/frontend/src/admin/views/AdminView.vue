@@ -1,13 +1,25 @@
 <template>
 	<div>
-		TODO: admin home view
+		welcome to the admin view, {{ username }}
 	</div>
 </template>
 
 <script>
-	export default {
+import { mapState } from 'vuex'
+
+export default {
+	name: 'AdminView',
+	data() {
+		return {
+		}
+	},
+	computed: {
+		...mapState(['username'])
+	},
+	mounted () {
 		
-	}
+	},
+}
 </script>
 
 <style lang="scss" scoped>

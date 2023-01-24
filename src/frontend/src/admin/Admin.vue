@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app v-if="loggedIn">
     <AppHeader></AppHeader>
     <NavigationDrawer></NavigationDrawer>
     <v-main>
@@ -28,7 +28,7 @@ export default {
   name: 'App',
   components: { AppHeader, AppFooter, NavigationDrawer },
   computed: {
-    ...mapState(['loading'])
+    ...mapState(['loading', 'loggedIn'])
   },
 }
 </script>
