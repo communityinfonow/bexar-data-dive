@@ -18,18 +18,18 @@ public class WebConfig implements WebMvcConfigurer {
          */
         @Override
         public void addViewControllers(ViewControllerRegistry registry) {
-                registry.addViewController("/admin")
-                                .setViewName("forward:/admin.html");
-                registry.addViewController("/admin/{x:[\\w\\-]+}")
-                                .setViewName("forward:/admin.html");
-                registry.addViewController("/admin/{x:^(?!api$).*$}/*/{y:[\\w\\-]+}")
-                                .setViewName("forward:/admin.html");
                 registry.addViewController("/")
                                 .setViewName("forward:/index.html");
                 registry.addViewController("/{x:[\\w\\-]+}")
                                 .setViewName("forward:/index.html");
                 registry.addViewController("/{x:^(?!api$).*$}/*/{y:[\\w\\-]+}")
                                 .setViewName("forward:/index.html");
+                registry.addViewController("/admin")
+                                .setViewName("forward:/admin.html");
+                registry.addViewController("/admin/{x:[\\w\\-]+}")
+                                .setViewName("forward:/admin.html");
+                registry.addViewController("/admin/{x:^(?!api$).*$}/*/{y:[\\w\\-]+}")
+                                .setViewName("forward:/admin.html");
         }
 
         /**
