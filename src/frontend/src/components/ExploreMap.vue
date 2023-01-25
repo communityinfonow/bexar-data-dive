@@ -82,7 +82,7 @@
 									</v-list-item>
 								</v-list>
 								<div class="text--primary text-caption">
-									Source: {{ exploreData.source['name_' + locale] }}
+									{{ $t('tools.explore.docked_tooltip.source') }}: {{ exploreData.source['name_' + locale] }}
 								</div>
 							</v-card-text>
 						</v-card>

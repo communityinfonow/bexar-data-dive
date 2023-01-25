@@ -219,6 +219,6 @@ export default {
 
 <style lang="scss" scoped>
   .explore-content {
-    height: 720px;
+    height: 820px;
   }
 </style>
