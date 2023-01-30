@@ -8,6 +8,7 @@ public class Faq {
 	private String answer_en;
 	private String answer_es;
 	private int sort_order;
+	private boolean display;
 	
 	public int getId() {
 		return id;
@@ -45,6 +46,10 @@ public class Faq {
 	public void setSort_order(int sort_order) {
 		this.sort_order = sort_order;
 	}
-
-	
+	public boolean isDisplay() {
+		return display;
+	}
+	public void setDisplay(boolean display) {
+		this.display = display;
+	}	
 }

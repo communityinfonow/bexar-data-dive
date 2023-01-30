@@ -48,6 +48,21 @@ public class Indicator {
 	private boolean hasData;
 
 	/**
+	 * The source id.
+	 */
+	private String sourceId;
+
+	/**
+	 * Whether the indicator is featured.
+	 */
+	private boolean featured;
+
+	/**
+	 * Whether the indicator displays.
+	 */
+	private boolean display;
+
+	/**
 	 * @return the id
 	 */
 	public String getId() {
@@ -145,13 +160,59 @@ public class Indicator {
 		this.description_es = description_es;
 	}
 
+	/**
+	 * @return the hasData
+	 */
 	public boolean isHasData() {
 		return hasData;
 	}
 
+	/**
+	 * @param hasData the hasData to set
+	 */
 	public void setHasData(boolean hasData) {
 		this.hasData = hasData;
 	}
 
-	
+	/**
+	 * @return the sourceId
+	 */
+	public String getSourceId() {
+		return sourceId;
+	}
+
+	/**
+	 * @param sourceId the sourceId to set
+	 */
+	public void setSourceId(String sourceId) {
+		this.sourceId = sourceId;
+	}
+
+	/**
+	 * @return the featured
+	 */
+	public boolean isFeatured() {
+		return featured;
+	}
+
+	/**
+	 * @param featured the featured to set
+	 */
+	public void setFeatured(boolean featured) {
+		this.featured = featured;
+	}
+
+	/**
+	 * @return the display
+	 */
+	public boolean isDisplay() {
+		return display;
+	}
+
+	/**
+	 * @param display the display to set
+	 */
+	public void setDisplay(boolean display) {
+		this.display = display;
+	}	
 }

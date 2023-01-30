@@ -47,6 +47,13 @@ new Vue({
       }
 
       return response;
+    }, error => {
+      requestCount--;
+      if (requestCount === 0) {
+        store.dispatch('setLoading', false);
+      }
+
+      return Promise.reject(error);
     });
   },
   mounted: function () {

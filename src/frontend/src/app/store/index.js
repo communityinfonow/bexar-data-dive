@@ -334,7 +334,7 @@ export default new Vuex.Store({
     },
     getFaqs(context) {
       axios.get('/api/faqs').then(response => {
-        context.commit('SET_FAQS', response.data)
+        context.commit('SET_FAQS', response.data.filter(f => !!f.display))
       });
     },
     setToolRoute(context, params) {

@@ -26,6 +26,16 @@ public class FilterOption {
 	private String name_es;
 
 	/**
+	 * The sort order.
+	 */
+	private int sortOrder;
+
+	/**
+	 * Whether to display.
+	 */
+	private boolean display;
+
+	/**
 	 * @return the id
 	 */
 	public String getId() {
@@ -80,4 +90,32 @@ public class FilterOption {
 	public void setName_es(String name_es) {
 		this.name_es = name_es;
 	}
+
+	/**
+	 * @return the sortOrder
+	 */
+	public int getSortOrder() {
+		return sortOrder;
+	}
+
+	/**
+	 * @param sortOrder the sortOrder to set
+	 */
+	public void setSortOrder(int sortOrder) {
+		this.sortOrder = sortOrder;
+	}
+
+	/**
+	 * @return the display
+	 */
+	public boolean isDisplay() {
+		return display;
+	}
+
+	/**
+	 * @param display the display to set
+	 */
+	public void setDisplay(boolean display) {
+		this.display = display;
+	}	
 }

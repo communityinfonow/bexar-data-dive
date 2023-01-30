@@ -5,8 +5,6 @@ import AnnouncementsView from '@/admin/views/AnnouncementsView.vue'
 import IndicatorsView from '@/admin/views/IndicatorsView.vue'
 import FiltersView from '@/admin/views/FiltersView.vue'
 import SourcesView from '@/admin/views/SourcesView.vue'
-import AboutToolsView from '@/admin/views/AboutToolsView.vue'
-import AboutDataView from '@/admin/views/AboutDataView.vue'
 import FaqsView from '@/admin/views/FaqsView.vue'
 
 Vue.use(VueRouter)
@@ -40,16 +38,6 @@ const routes = [
     path: '/admin/sources',
     name: 'sources',
     component: SourcesView,
-  },
-  {
-    path: '/admin/about-tools',
-    name: 'about-tools',
-    component: AboutToolsView,
-  },
-  {
-    path: '/admin/about-data',
-    name: 'about-data',
-    component: AboutDataView,
   },
   {
     path: '/admin/faqs',

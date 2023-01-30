@@ -1,5 +1,7 @@
 package org.cinow.omh.sources;
 
+import java.util.List;
+
 /**
  * Repository for sources.
  * 
@@ -14,4 +16,25 @@ public interface SourceRepository {
 	 * @return the source
 	 */
 	Source getSourceByIndicator(String indicatorId);
+
+	/**
+	 * Finds sources.
+	 * 
+	 * @return the sources
+	 */
+	List<Source> findSources();
+
+	/**
+	 * Adds a source.
+	 * 
+	 * @param source the source to add
+	 */
+	void addSource(Source source);
+
+	/**
+	 * Updates a source.
+	 * 
+	 * @param source the source to update
+	 */
+	void updateSource(Source source);
 }

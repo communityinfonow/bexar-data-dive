@@ -7,6 +7,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -18,10 +20,16 @@ public class FaqRepositoryPostgresql implements FaqRepository {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
+	/**
+	 * The named parameter JDBC template.
+	 */
+	@Autowired
+	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
 	@Override
 	public List<Faq> getFaqs() {
 		String sql = ""
-			+ " select id_, question_en, question_es, answer_en, answer_es, sort_order "
+			+ " select id_, question_en, question_es, answer_en, answer_es, sort_order, display "
 			+ " from tbl_faqs "
 			+ " order by sort_order ";
 
@@ -35,10 +43,51 @@ public class FaqRepositoryPostgresql implements FaqRepository {
 				faq.setAnswer_en(rs.getString("answer_en"));
 				faq.setAnswer_es(rs.getString("answer_es"));
 				faq.setSort_order(rs.getInt("sort_order"));
+				faq.setDisplay(rs.getBoolean("display"));
 
 				return faq;
 			}
 		});
 	}
-	
+
+	@Override
+	public void addFaq(Faq faq) {
+		String sql = ""
+			+ " insert into tbl_faqs(id_, question_en, question_es, answer_en, answer_es, sort_order, display) "
+			+ " values ((select max(id_) + 1 from tbl_faqs), :question_en, :question_es, :answer_en, :answer_es, :sort_order, :display) ";
+
+		MapSqlParameterSource paramMap = new MapSqlParameterSource();
+		paramMap.addValue("question_en", faq.getQuestion_en());
+		paramMap.addValue("question_es", faq.getQuestion_es());
+		paramMap.addValue("answer_en", faq.getAnswer_en());
+		paramMap.addValue("answer_es", faq.getAnswer_es());
+		paramMap.addValue("sort_order", faq.getSort_order());
+		paramMap.addValue("display", faq.isDisplay());
+
+		this.namedParameterJdbcTemplate.update(sql, paramMap);
+	}
+
+	@Override
+	public void updateFaq(Faq faq) {
+		String sql = ""
+			+ " update tbl_faqs set "
+			+ "   question_en = :question_en, "
+			+ "   question_es = :question_es, "
+			+ "   answer_en = :answer_en, "
+			+ "   answer_es = :answer_es, "
+			+ "   sort_order = :sort_order, "
+			+ "   display = :display "
+			+ " where id_ = :id ";
+
+		MapSqlParameterSource paramMap = new MapSqlParameterSource();
+		paramMap.addValue("question_en", faq.getQuestion_en());
+		paramMap.addValue("question_es", faq.getQuestion_es());
+		paramMap.addValue("answer_en", faq.getAnswer_en());
+		paramMap.addValue("answer_es", faq.getAnswer_es());
+		paramMap.addValue("sort_order", faq.getSort_order());
+		paramMap.addValue("display", faq.isDisplay());
+		paramMap.addValue("id", faq.getId());
+
+		this.namedParameterJdbcTemplate.update(sql, paramMap);	
+	}
 }

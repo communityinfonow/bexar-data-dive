@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.lang.Nullable;
@@ -178,6 +179,9 @@ public class FilterRepositoryPostgresql implements FilterRepository {
 		});
 	}
 
+	/**
+	 * {@inheritDoc}}
+	 */
 	@Override
 	public List<List<String>> getCompatibleFitlerTypeIds(String indicatorId, String filterTypeId) {
 		String sql = " "
@@ -228,6 +232,9 @@ public class FilterRepositoryPostgresql implements FilterRepository {
 		});
 	}
 
+	/**
+	 * {@inheritDoc}}
+	 */
 	@Override
 	public Map<String, List<String>> getLocationTypeYears(String indicatorId) {
 		String sql = ""
@@ -254,5 +261,101 @@ public class FilterRepositoryPostgresql implements FilterRepository {
 				return locationTypeYears;
 			}
 		});
+	}
+
+	/**
+	 * {@inheritDoc}}
+	 */
+	@Override
+	public List<FilterType> findFilterTypes() {
+		String sql = ""
+			+ " select id_, name_en, name_es "
+			+ " from tbl_filter_types "
+			+ " order by id_ ";
+
+		return this.jdbcTemplate.query(sql, new RowMapper<FilterType>() {
+			@Override
+			public FilterType mapRow(ResultSet rs, int rowNum) throws SQLException {
+				FilterType type = new FilterType();
+				type.setId(rs.getString("id_"));
+				type.setName_en(rs.getString("name_en"));
+				type.setName_es(rs.getString("name_es"));
+
+				return type;
+			}
+
+		});
+	}
+
+	/**
+	 * {@inheritDoc}}
+	 */
+	@Override
+	public List<FilterOption> findFilterOptions() {
+		String sql = ""
+			+ " select id_, type_id, name_en, name_es, sort_order, display "
+			+ " from tbl_filter_options "
+			+ " order by type_id, sort_order ";
+
+		return this.jdbcTemplate.query(sql, new RowMapper<FilterOption>() {
+			@Override
+			public FilterOption mapRow(ResultSet rs, int rowNum) throws SQLException {
+				FilterOption option = new FilterOption();
+				option.setId(rs.getString("id_"));
+				option.setTypeId(rs.getString("type_id"));
+				option.setName_en(rs.getString("name_en"));
+				option.setName_es(rs.getString("name_es"));
+				option.setSortOrder(rs.getInt("sort_order"));
+				option.setDisplay(rs.getBoolean("display"));
+
+				return option;
+			}
+			
+		});
+	}
+
+	/**
+	 * {@inheritDoc}}
+	 */
+	@Override
+	public void addFilterOption(FilterOption filterOption) {
+		String sql = ""
+			+ " insert into tbl_filter_options (id_, type_id, name_en, name_es, sort_order, display) "
+			+ " values (:id::numeric, :type_id::numeric, :name_en, :name_es, :sort_order, :display) ";
+
+		MapSqlParameterSource paramMap = new MapSqlParameterSource();
+		paramMap.addValue("id", filterOption.getId());
+		paramMap.addValue("type_id", filterOption.getTypeId());
+		paramMap.addValue("name_en", filterOption.getName_en());
+		paramMap.addValue("name_es", filterOption.getName_es());
+		paramMap.addValue("sort_order", filterOption.getSortOrder());
+		paramMap.addValue("display", filterOption.isDisplay());
+
+		this.namedParameterJdbcTemplate.update(sql, paramMap);
+	}
+
+	/**
+	 * {@inheritDoc}}
+	 */
+	@Override
+	public void updateFilterOption(FilterOption filterOption) {
+		String sql = ""
+			+ " update tbl_filter_options set "
+			+ "   type_id = :type_id::numeric, "
+			+ "   name_en = :name_en, "
+			+ "   name_es = :name_es, "
+			+ "   sort_order = :sort_order, "
+			+ "   display = :display "
+			+ " where id_ = :id::numeric ";
+
+		MapSqlParameterSource paramMap = new MapSqlParameterSource();
+		paramMap.addValue("id", filterOption.getId());
+		paramMap.addValue("type_id", filterOption.getTypeId());
+		paramMap.addValue("name_en", filterOption.getName_en());
+		paramMap.addValue("name_es", filterOption.getName_es());
+		paramMap.addValue("sort_order", filterOption.getSortOrder());
+		paramMap.addValue("display", filterOption.isDisplay());
+
+		this.namedParameterJdbcTemplate.update(sql, paramMap);
 	}	
 }

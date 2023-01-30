@@ -66,4 +66,49 @@ public class IndicatorService {
 	public List<Indicator> getFeaturedIndicators() {
 		return this.indicatorRepository.getFeaturedIndicators();
 	}
+
+	/**
+	 * Finds indicators.
+	 * 
+	 * @return the indicators
+	 */
+	public List<Indicator> findIndicators() {
+		return this.indicatorRepository.findIndicators();
+	}
+
+	/**
+	 * Finds indicator categories.
+	 * 
+	 * @return the indicator types
+	 */
+	public List<IndicatorCategory> findCategories() {
+		return this.indicatorRepository.findIndicatorCategories();
+	}
+
+	/**
+	 * Finds indicator types.
+	 * 
+	 * @return the indicator types
+	 */
+	public List<IndicatorType> findTypes() {
+		return this.indicatorRepository.findIndicatorTypes();
+	}
+
+	/**
+	 * Adds an indicator.
+	 * 
+	 * @param indicator the indicator
+	 */
+	public void addIndicator(Indicator indicator) {
+		this.indicatorRepository.addIndicator(indicator);
+	}
+
+	/**
+	 * Updates an indicator.
+	 * 
+	 * @param indicator the indicator
+	 */
+	public void updateIndicator(Indicator indicator) {
+		this.indicatorRepository.updateIndicator(indicator);
+	}
 }

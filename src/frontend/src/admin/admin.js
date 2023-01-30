@@ -43,7 +43,7 @@ new Vue({
       if (error.response.status === 403) {
         window.location = '/unauthorized';
       }
-      throw error;
+      return Promise.reject(error);
     });
   },
   beforeMount: function () {
