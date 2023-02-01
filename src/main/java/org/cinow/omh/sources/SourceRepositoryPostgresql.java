@@ -32,7 +32,7 @@ public class SourceRepositoryPostgresql implements SourceRepository {
 	@Override
 	public Source getSourceByIndicator(String indicatorId) {
 		String sql = ""
-			+ " select id_, name_en, name_es, url_, trend_interval "
+			+ " select id_, name_en, name_es, url_, trend_interval, display "
 			+ " from tbl_sources "
 			+ " where id_ = (select source_id "
 			+ "              from tbl_indicators "

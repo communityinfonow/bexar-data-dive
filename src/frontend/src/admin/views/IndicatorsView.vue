@@ -3,7 +3,7 @@
 		<h1 class="text-h3 mb-4">Indicators</h1>
 		<v-row dense>
 			<v-col cols="12" v-for="(ind, idx) in indicators" :key="ind.id">
-				<v-form ref="update_forms" v-model="updateForms[idx]">
+				<v-form ref="update_forms" v-model="updateForms[idx]" lazy-validation>
 					<v-card class="mb-8">
 						<v-card-title>Indicator {{ ind.id }}</v-card-title>
 						<v-card-text>
@@ -47,7 +47,7 @@
 							</v-select>
 							<v-select 
 								label="Source"
-								:items="sources.filter(s => !!s.display)"
+								:items="sourceOptions"
 								item-text="name_en"
 								item-value="id"
 								v-model="ind.sourceId"
@@ -113,7 +113,7 @@
 							</v-select>
 							<v-select 
 								label="Source"
-								:items="sources.filter(s => !!s.display)"
+								:items="sourceOptions"
 								item-text="name_en"
 								item-value="id"
 								v-model="newIndicator.sourceId"
@@ -162,7 +162,10 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['categories', 'types', 'sources', 'indicators'])
+		...mapState(['categories', 'types', 'sources', 'indicators']),
+		sourceOptions() {
+			return this.sources?.filter(s => !!s.display)
+		}
 	},
 	methods: {
 		...mapActions([
