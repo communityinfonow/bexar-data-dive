@@ -37,7 +37,7 @@
 						</v-card-text>
 						<v-card-actions>
 							<v-btn type="submit" color="primary" @click.prevent="addHandler">
-								Save
+								Add
 							</v-btn>
 						</v-card-actions>
 					</v-card>

@@ -56,7 +56,7 @@ public class FilterController {
 	 * @return 200 ok
 	 */
 	@PostMapping(path = "/api/admin/filter-options", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> addIndicatorSource(@RequestBody FilterOption filterOption) {
+	public ResponseEntity<?> addFilterOption(@RequestBody FilterOption filterOption) {
 		this.filterService.addFilterOption(filterOption);
 		return ResponseEntity.ok().build();
 	}
@@ -66,7 +66,7 @@ public class FilterController {
 	 * @return 200 ok
 	 */
 	@PutMapping(path = "/api/admin/filter-options", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> updateIndicatorSource(@RequestBody FilterOption filterOption) {
+	public ResponseEntity<?> updateFilterOption(@RequestBody FilterOption filterOption) {
 		this.filterService.updateFilterOption(filterOption);
 		return ResponseEntity.ok().build();
 	}
