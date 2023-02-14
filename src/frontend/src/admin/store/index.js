@@ -16,7 +16,9 @@ export default new Vuex.Store({
     sources: null,
     announcements: null,
     filterTypes: null,
-    filterOptions: null
+    filterOptions: null,
+    auditLog: null,
+    missedTranslations: null
   },
   getters: {
     tools: () => {
@@ -45,6 +47,16 @@ export default new Vuex.Store({
           key: 'faqs',
           name: 'Frequently Asked Questions',
           route: '/admin/faqs'
+        },
+        {
+          key: 'audit-log',
+          name: 'Audit Log',
+          route: '/admin/audit-log'
+        },
+        {
+          key: 'missed-tranlsations',
+          name: 'Missed Translations',
+          route: '/admin/missed-translations'
         }
       ]
     },
@@ -83,6 +95,12 @@ export default new Vuex.Store({
     SET_ANNOUNCEMENTS(state, announcements) {
       state.announcements = announcements
     },
+    SET_AUDIT_LOG(state, auditLog) {
+      state.auditLog = auditLog
+    },
+    SET_MISSED_TRANSLATIONS(state, missedTranslations) {
+      state.missedTranslations = missedTranslations
+    }
   },
   actions: {
     setLoading(context, loading) {
@@ -182,6 +200,16 @@ export default new Vuex.Store({
     updateAnnouncement(context, ann) {
       return axios.put('/api/admin/announcements', ann).then(() => {
         context.dispatch('getAnnouncements');
+      });
+    },
+    getAuditLog(context) {
+      return axios.get('/api/admin/audit-log').then((response) => {
+        context.commit('SET_AUDIT_LOG', response.data);
+      });
+    },
+    getMissedTranslations(context) {
+      return axios.get('/api/admin/missed-translations').then((response) => {
+        context.commit('SET_MISSED_TRANSLATIONS', response.data);
       });
     }
   },

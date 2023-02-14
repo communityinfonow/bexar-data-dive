@@ -6,6 +6,8 @@ import IndicatorsView from '@/admin/views/IndicatorsView.vue'
 import FiltersView from '@/admin/views/FiltersView.vue'
 import SourcesView from '@/admin/views/SourcesView.vue'
 import FaqsView from '@/admin/views/FaqsView.vue'
+import AuditLogView from '@/admin/views/AuditLogView.vue'
+import MissedTranslationsView from '@/admin/views/MissedTranslationsView.vue'
 
 Vue.use(VueRouter)
 
@@ -43,6 +45,16 @@ const routes = [
     path: '/admin/faqs',
     name: 'faqs',
     component: FaqsView,
+  },
+  {
+    path: '/admin/audit-log',
+    name: 'audit-log',
+    component: AuditLogView,
+  },
+  {
+    path: '/admin/missed-translations',
+    name: 'missed-translations',
+    component: MissedTranslationsView
   }
 ]
 
