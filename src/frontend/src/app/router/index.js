@@ -7,6 +7,7 @@ import TablesView from '@/app/views/TablesView.vue'
 import AboutToolsView from '@/app/views/AboutToolsView.vue'
 import AboutDataView from '@/app/views/AboutDataView.vue'
 import FaqsView from '@/app/views/FaqsView.vue'
+import AnnouncementsView from '@/app/views/AnnouncementsView.vue'
 import UnauthorizedView from '@/app/views/UnauthorizedView.vue'
 
 Vue.use(VueRouter)
@@ -50,6 +51,11 @@ const routes = [
     path: '/faqs',
     name: 'faqs',
     component: FaqsView,
+  },
+  {
+    path: '/announcements',
+    name: 'announcements',
+    component: AnnouncementsView,
   },
   {
     path: '/unauthorized',

@@ -10,12 +10,15 @@ import org.cinow.omh.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandlerImpl;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.util.matcher.RequestHeaderRequestMatcher;
 
 @EnableWebSecurity
 public class SecurityConfig {
@@ -45,6 +48,10 @@ public class SecurityConfig {
 							response.sendRedirect("/unauthorized");
 					}
 				})
+				.defaultAuthenticationEntryPointFor(
+					new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED),
+					new RequestHeaderRequestMatcher("X-Requested-With", "XMLHttpRequest")
+				)
             )
 			.logout(l -> l
 				.logoutSuccessUrl("/").permitAll()

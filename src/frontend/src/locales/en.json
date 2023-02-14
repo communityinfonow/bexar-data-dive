@@ -134,6 +134,9 @@
     "name": "Frequently Asked Questions",
     "questions": "Questions"
   },
+  "announcements_view": {
+    "name": "Announcements"
+  },
   "data": {
     "value": "Value",
     "moe": "MOE",

@@ -14,6 +14,7 @@ export default new Vuex.Store({
     categories: null,
     types: null,
     sources: null,
+    announcements: null,
     filterTypes: null,
     filterOptions: null
   },
@@ -78,7 +79,10 @@ export default new Vuex.Store({
     },
     SET_FILTER_OPTIONS(state, options) {
       state.filterOptions = options
-    }
+    },
+    SET_ANNOUNCEMENTS(state, announcements) {
+      state.announcements = announcements
+    },
   },
   actions: {
     setLoading(context, loading) {
@@ -163,6 +167,21 @@ export default new Vuex.Store({
     updateFilterOption(context, option) {
       return axios.put('/api/admin/filter-options', option).then(() => {
         context.dispatch('getFilterOptions')
+      });
+    },
+    getAnnouncements(context) {
+      return axios.get('/api/admin/announcements').then((response) => {
+        context.commit('SET_ANNOUNCEMENTS', response.data);
+      });
+    },
+    addAnnouncement(context, ann) {
+      return axios.post('/api/admin/announcements', ann).then(() => {
+        context.dispatch('getAnnouncements')
+      });
+    },
+    updateAnnouncement(context, ann) {
+      return axios.put('/api/admin/announcements', ann).then(() => {
+        context.dispatch('getAnnouncements');
       });
     }
   },

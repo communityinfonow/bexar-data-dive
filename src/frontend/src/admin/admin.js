@@ -16,6 +16,7 @@ new Vue({
   i18n,
   render: (h) => h(Admin),
   created: function () {
+    axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
     let requestCount = 0
     axios.interceptors.request.use(function(config) {
       if (requestCount === 0) {
@@ -38,7 +39,7 @@ new Vue({
         store.dispatch('setLoading', false);
       }
       if (error.response.status === 401) {
-        window.location = window.location.protocol +'//' + window.location.hostname + ':' + process.env.VUE_APP_API_PORT + '/oauth2/authorization/google';
+        window.open(window.location.protocol +'//' + window.location.hostname + ':' + process.env.VUE_APP_API_PORT + '/oauth2/authorization/google', '_blank');
       }
       if (error.response.status === 403) {
         window.location = '/unauthorized';
@@ -47,11 +48,15 @@ new Vue({
     });
   },
   beforeMount: function () {
-    axios.get('/api/admin/username')
-			.then((response) => {
-				this.$store.dispatch('setLoggedIn', true);
-        this.$store.dispatch('setUsername', response.data);
-        
-			});
+    this.loginCheck();
+  },
+  methods: {
+    loginCheck() {
+      axios.get('/api/admin/username')
+        .then((response) => {
+          this.$store.dispatch('setLoggedIn', true);
+          this.$store.dispatch('setUsername', response.data);
+        });
+    }
   },
 }).$mount('#app')

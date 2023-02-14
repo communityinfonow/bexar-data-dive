@@ -135,6 +135,9 @@
     "name": "Preguntas Frecuentes",
     "questions": "Preguntas"
   },
+  "announcements_view": {
+    "name": "Anuncios"
+  },
   "data": {
     "value": "Valor",
     "moe": "ME",

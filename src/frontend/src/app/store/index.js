@@ -31,7 +31,8 @@ export default new Vuex.Store({
     compareSelections: null,
     tablesData: null,
     aboutData: null,
-    faqs: null
+    faqs: null,
+    announcements: null
   },
   getters: {
     tools: (state) => {
@@ -92,6 +93,12 @@ export default new Vuex.Store({
           icon: 'mdi-database'
         },
         {
+          name: i18n.t('announcements_view.name'),
+          route: 'announcements',
+          icon: 'mdi-bullhorn',
+          icon_transform: 'rotate(-45deg)'
+        },
+        {
           name: i18n.t('faqs_view.name'),
           route: 'faqs',
           icon: 'mdi-help-circle' 
@@ -150,6 +157,9 @@ export default new Vuex.Store({
     },
     SET_FAQS(state, data) {
       state.faqs = data;
+    },
+    SET_ANNOUNCEMENTS(state, data) {
+      state.announcements = data;
     },
     SET_TOOL_ROUTE(state, params) {
       state[params.key + 'Route'] = params.route
@@ -335,6 +345,11 @@ export default new Vuex.Store({
     getFaqs(context) {
       axios.get('/api/faqs').then(response => {
         context.commit('SET_FAQS', response.data.filter(f => !!f.display))
+      });
+    },
+    getAnnouncements(context) {
+      axios.get('/api/announcements').then(response => {
+        context.commit('SET_ANNOUNCEMENTS', response.data)
       });
     },
     setToolRoute(context, params) {
