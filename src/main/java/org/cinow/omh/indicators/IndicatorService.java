@@ -99,8 +99,8 @@ public class IndicatorService {
 	 * 
 	 * @param indicator the indicator
 	 */
-	public void addIndicator(Indicator indicator) {
-		this.indicatorRepository.addIndicator(indicator);
+	public void addIndicator(Indicator indicator, String username) {
+		this.indicatorRepository.addIndicator(indicator, username);
 	}
 
 	/**
@@ -108,7 +108,7 @@ public class IndicatorService {
 	 * 
 	 * @param indicator the indicator
 	 */
-	public void updateIndicator(Indicator indicator) {
-		this.indicatorRepository.updateIndicator(indicator);
+	public void updateIndicator(Indicator indicator, String username) {
+		this.indicatorRepository.updateIndicator(indicator, username);
 	}
 }

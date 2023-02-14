@@ -76,8 +76,8 @@ public class FilterService {
 	 * 
 	 * @param filterOption the filter option
 	 */
-	public void addFilterOption(FilterOption filterOption) {
-		this.filterRepository.addFilterOption(filterOption);
+	public void addFilterOption(FilterOption filterOption, String username) {
+		this.filterRepository.addFilterOption(filterOption, username);
 	}
 
 	/**
@@ -85,8 +85,8 @@ public class FilterService {
 	 * 
 	 * @param filterOption the filter option
 	 */
-	public void updateFilterOption(FilterOption filterOption) {
-		this.filterRepository.updateFilterOption(filterOption);
+	public void updateFilterOption(FilterOption filterOption, String username) {
+		this.filterRepository.updateFilterOption(filterOption, username);
 		this.adminRepository.refreshMaterializedViews();
 	}
 

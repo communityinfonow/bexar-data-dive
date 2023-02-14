@@ -81,10 +81,10 @@ public class SourceRepositoryPostgresql implements SourceRepository {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void addSource(Source source) {
+	public void addSource(Source source, String username) {
 		String sql = ""
-			+ " insert into tbl_sources (id_, name_en, name_es, url_, trend_interval, display) "
-			+ " values (:id::numeric, :name_en, :name_es, :url, :trend_interval, :display) ";
+			+ " insert into tbl_sources (id_, name_en, name_es, url_, trend_interval, display, user_modified) "
+			+ " values (:id::numeric, :name_en, :name_es, :url, :trend_interval, :display, :username) ";
 
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
 		paramMap.addValue("id", source.getId());
@@ -93,6 +93,7 @@ public class SourceRepositoryPostgresql implements SourceRepository {
 		paramMap.addValue("url", source.getUrl());
 		paramMap.addValue("trend_interval", source.getTrendInterval());
 		paramMap.addValue("display", source.isDisplay());
+		paramMap.addValue("username", username);
 
 		this.namedParameterJdbcTemplate.update(sql, paramMap);
 	}
@@ -101,14 +102,16 @@ public class SourceRepositoryPostgresql implements SourceRepository {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void updateSource(Source source) {
+	public void updateSource(Source source, String username) {
 		String sql = ""
 			+ " update tbl_sources set "
 			+ "   name_en = :name_en, "
 			+ "   name_es = :name_es, "
 			+ "   url_ = :url, "
 			+ "   trend_interval = :trend_interval, "
-			+ "   display = :display "
+			+ "   display = :display, "
+			+ "   user_modified = :username, "
+			+ "   date_modified = current_timestamp "
 			+ " where id_ = :id::numeric ";
 
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
@@ -117,6 +120,7 @@ public class SourceRepositoryPostgresql implements SourceRepository {
 		paramMap.addValue("url", source.getUrl());
 		paramMap.addValue("trend_interval", source.getTrendInterval());
 		paramMap.addValue("display", source.isDisplay());
+		paramMap.addValue("username", username);
 		paramMap.addValue("id", source.getId());
 
 		this.namedParameterJdbcTemplate.update(sql, paramMap);

@@ -6,7 +6,7 @@ public interface FaqRepository {
 	
 	 List<Faq> getFaqs();
 
-	 void addFaq(Faq faq);
+	 void addFaq(Faq faq, String username);
 
-	 void updateFaq(Faq faq);
+	 void updateFaq(Faq faq, String username);
 }

@@ -15,11 +15,11 @@ public class FaqService {
 		return this.faqRepository.getFaqs();
 	}
 
-	public void addFaq(Faq faq) {
-		this.faqRepository.addFaq(faq);
+	public void addFaq(Faq faq, String username) {
+		this.faqRepository.addFaq(faq, username);
 	}
 
-	public void updateFaq(Faq faq) {
-		this.faqRepository.updateFaq(faq);
+	public void updateFaq(Faq faq, String username) {
+		this.faqRepository.updateFaq(faq, username);
 	}
 }

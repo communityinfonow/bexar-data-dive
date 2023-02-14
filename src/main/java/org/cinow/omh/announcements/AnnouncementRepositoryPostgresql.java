@@ -60,19 +60,19 @@ public class AnnouncementRepositoryPostgresql implements AnnouncementRepository 
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void add(Announcement announcement) {
+	public void add(Announcement announcement, String username) {
 		String sql = ""
-			+ " insert into tbl_announcements (title_en, title_es, message_en, message_es, date_, display) "
-			+ " values (:title_en, :title_es, :message_en, :message_es, :date, :display) ";
+			+ " insert into tbl_announcements (title_en, title_es, message_en, message_es, date_, display, user_modified) "
+			+ " values (:title_en, :title_es, :message_en, :message_es, :date, :display, :username) ";
 
-		this.namedParameterJdbcTemplate.update(sql, this.paramMap(announcement));
+		this.namedParameterJdbcTemplate.update(sql, this.paramMap(announcement, username));
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void update(Announcement announcement) {
+	public void update(Announcement announcement, String username) {
 		String sql = ""
 			+ " update tbl_announcements set "
 			+ "   title_en = :title_en, "
@@ -80,10 +80,12 @@ public class AnnouncementRepositoryPostgresql implements AnnouncementRepository 
 			+ "   message_en = :message_en, "
 			+ "   message_es = :message_es, "
 			+ "   date_ = :date, "
-			+ "   display = :display "
+			+ "   display = :display, "
+			+ "   user_modified = :username, "
+			+ "   date_modified = current_timestamp "
 			+ " where id_ = :id ";
 		
-		this.namedParameterJdbcTemplate.update(sql, this.paramMap(announcement));
+		this.namedParameterJdbcTemplate.update(sql, this.paramMap(announcement, username));
 	}
 
 	/**
@@ -115,7 +117,7 @@ public class AnnouncementRepositoryPostgresql implements AnnouncementRepository 
 	 * @param announcement the announcement
 	 * @return the parameter map
 	 */
-	private MapSqlParameterSource paramMap(Announcement announcement) {
+	private MapSqlParameterSource paramMap(Announcement announcement, String username) {
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
 		if (announcement.getId() != 0) {
 			paramMap.addValue("id", announcement.getId());
@@ -126,6 +128,7 @@ public class AnnouncementRepositoryPostgresql implements AnnouncementRepository 
 		paramMap.addValue("message_es", announcement.getMessage_es());
 		paramMap.addValue("date", announcement.getDate());
 		paramMap.addValue("display", announcement.isDisplay());
+		paramMap.addValue("username", username);
 
 		return paramMap;
 	}

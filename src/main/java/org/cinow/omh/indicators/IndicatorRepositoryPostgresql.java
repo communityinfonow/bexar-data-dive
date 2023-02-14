@@ -253,10 +253,10 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void addIndicator(Indicator indicator) {
+	public void addIndicator(Indicator indicator, String username) {
 		String sql = ""
-			+ " insert into tbl_indicators (id_, indicator_category_id, indicator_type_id, name_en, name_es, description_en, description_es, source_id, featured, display) "
-			+ " values (:id::numeric, :indicator_category_id::numeric, :indicator_type_id::numeric, :name_en, :name_es, :description_en, :description_es, :source_id::numeric, :featured, :display) ";
+			+ " insert into tbl_indicators (id_, indicator_category_id, indicator_type_id, name_en, name_es, description_en, description_es, source_id, featured, display, user_modified) "
+			+ " values (:id::numeric, :indicator_category_id::numeric, :indicator_type_id::numeric, :name_en, :name_es, :description_en, :description_es, :source_id::numeric, :featured, :display, :username) ";
 
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
 		paramMap.addValue("id", indicator.getId());
@@ -269,6 +269,7 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 		paramMap.addValue("source_id", indicator.getSourceId());
 		paramMap.addValue("featured", indicator.isFeatured());
 		paramMap.addValue("display", indicator.isDisplay());
+		paramMap.addValue("username", username);
 
 		this.namedParameterJdbcTemplate.update(sql, paramMap);
 	}
@@ -277,7 +278,7 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void updateIndicator(Indicator indicator) {
+	public void updateIndicator(Indicator indicator, String username) {
 		String sql = ""
 			+ " update tbl_indicators set "
 			+ "   indicator_category_id = :indicator_category_id::numeric, "
@@ -288,7 +289,9 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 			+ "   description_es = :description_es, "
 			+ "   source_id = :source_id::numeric, "
 			+ "   featured = :featured, "
-			+ "   display = :display "
+			+ "   display = :display, "
+			+ "   user_modified = :username, "
+			+ "   date_modified = current_timestamp "
 			+ " where id_ = :id::numeric ";
 
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
@@ -301,6 +304,7 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 		paramMap.addValue("source_id", indicator.getSourceId());
 		paramMap.addValue("featured", indicator.isFeatured());
 		paramMap.addValue("display", indicator.isDisplay());
+		paramMap.addValue("username", username);
 		paramMap.addValue("id", indicator.getId());
 
 		this.namedParameterJdbcTemplate.update(sql, paramMap);

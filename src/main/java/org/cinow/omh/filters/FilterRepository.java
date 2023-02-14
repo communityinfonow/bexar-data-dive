@@ -77,12 +77,12 @@ public interface FilterRepository {
 	 * 
 	 * @param filterOption the filter option
 	 */
-	void addFilterOption(FilterOption filterOption);
+	void addFilterOption(FilterOption filterOption, String username);
 
 	/**
 	 * Updates a filter option.
 	 * 
 	 * @param filterOption the filter option
 	 */
-	void updateFilterOption(FilterOption filterOption);
+	void updateFilterOption(FilterOption filterOption, String username);
 }

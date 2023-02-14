@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -48,8 +50,8 @@ public class AnnouncementController {
 	 * @param announcement the announcement to add
 	 */
 	@PostMapping(path = "/api/admin/announcements", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> add(@RequestBody Announcement announcement) {
-		this.announcementService.add(announcement);
+	public ResponseEntity<?> add(@AuthenticationPrincipal OAuth2User principal, @RequestBody Announcement announcement) {
+		this.announcementService.add(announcement, principal.getAttribute("email"));
 
 		return ResponseEntity.ok().build();
 	}
@@ -60,8 +62,8 @@ public class AnnouncementController {
 	 * @param announcement the announcement to update
 	 */
 	@PutMapping(path = "/api/admin/announcements", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> update(@RequestBody Announcement announcement) {
-		this.announcementService.update(announcement);
+	public ResponseEntity<?> update(@AuthenticationPrincipal OAuth2User principal, @RequestBody Announcement announcement) {
+		this.announcementService.update(announcement, principal.getAttribute("email"));
 
 		return ResponseEntity.ok().build();
 	}

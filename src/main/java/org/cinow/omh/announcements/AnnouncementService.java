@@ -42,8 +42,8 @@ public class AnnouncementService {
 	 * 
 	 * @param announcement the announcement to add
 	 */
-	public void add(Announcement announcement) {
-		this.announcementRepository.add(announcement);
+	public void add(Announcement announcement, String username) {
+		this.announcementRepository.add(announcement, username);
 	}
 
 	/**
@@ -51,7 +51,7 @@ public class AnnouncementService {
 	 * 
 	 * @param announcement the announcement to update
 	 */
-	public void update(Announcement announcement) {
-		this.announcementRepository.update(announcement);
+	public void update(Announcement announcement, String username) {
+		this.announcementRepository.update(announcement, username);
 	}
 }

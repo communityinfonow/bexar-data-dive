@@ -318,10 +318,10 @@ public class FilterRepositoryPostgresql implements FilterRepository {
 	 * {@inheritDoc}}
 	 */
 	@Override
-	public void addFilterOption(FilterOption filterOption) {
+	public void addFilterOption(FilterOption filterOption, String username) {
 		String sql = ""
-			+ " insert into tbl_filter_options (id_, type_id, name_en, name_es, sort_order, display) "
-			+ " values (:id::numeric, :type_id::numeric, :name_en, :name_es, :sort_order, :display) ";
+			+ " insert into tbl_filter_options (id_, type_id, name_en, name_es, sort_order, display, user_modified) "
+			+ " values (:id::numeric, :type_id::numeric, :name_en, :name_es, :sort_order, :display, :username) ";
 
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
 		paramMap.addValue("id", filterOption.getId());
@@ -330,6 +330,7 @@ public class FilterRepositoryPostgresql implements FilterRepository {
 		paramMap.addValue("name_es", filterOption.getName_es());
 		paramMap.addValue("sort_order", filterOption.getSortOrder());
 		paramMap.addValue("display", filterOption.isDisplay());
+		paramMap.addValue("username", username);
 
 		this.namedParameterJdbcTemplate.update(sql, paramMap);
 	}
@@ -338,14 +339,16 @@ public class FilterRepositoryPostgresql implements FilterRepository {
 	 * {@inheritDoc}}
 	 */
 	@Override
-	public void updateFilterOption(FilterOption filterOption) {
+	public void updateFilterOption(FilterOption filterOption, String username) {
 		String sql = ""
 			+ " update tbl_filter_options set "
 			+ "   type_id = :type_id::numeric, "
 			+ "   name_en = :name_en, "
 			+ "   name_es = :name_es, "
 			+ "   sort_order = :sort_order, "
-			+ "   display = :display "
+			+ "   display = :display, "
+			+ "   user_modified = :username, "
+			+ "   date_modified = current_timestamp "
 			+ " where id_ = :id::numeric ";
 
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
@@ -355,6 +358,7 @@ public class FilterRepositoryPostgresql implements FilterRepository {
 		paramMap.addValue("name_es", filterOption.getName_es());
 		paramMap.addValue("sort_order", filterOption.getSortOrder());
 		paramMap.addValue("display", filterOption.isDisplay());
+		paramMap.addValue("username", username);
 
 		this.namedParameterJdbcTemplate.update(sql, paramMap);
 	}	

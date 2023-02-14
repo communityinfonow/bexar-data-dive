@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -56,8 +58,8 @@ public class FilterController {
 	 * @return 200 ok
 	 */
 	@PostMapping(path = "/api/admin/filter-options", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> addFilterOption(@RequestBody FilterOption filterOption) {
-		this.filterService.addFilterOption(filterOption);
+	public ResponseEntity<?> addFilterOption(@AuthenticationPrincipal OAuth2User principal, @RequestBody FilterOption filterOption) {
+		this.filterService.addFilterOption(filterOption, principal.getAttribute("email"));
 		return ResponseEntity.ok().build();
 	}
 
@@ -66,8 +68,8 @@ public class FilterController {
 	 * @return 200 ok
 	 */
 	@PutMapping(path = "/api/admin/filter-options", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> updateFilterOption(@RequestBody FilterOption filterOption) {
-		this.filterService.updateFilterOption(filterOption);
+	public ResponseEntity<?> updateFilterOption(@AuthenticationPrincipal OAuth2User principal, @RequestBody FilterOption filterOption) {
+		this.filterService.updateFilterOption(filterOption, principal.getAttribute("email"));
 		return ResponseEntity.ok().build();
 	}
 }

@@ -29,12 +29,12 @@ public interface SourceRepository {
 	 * 
 	 * @param source the source to add
 	 */
-	void addSource(Source source);
+	void addSource(Source source, String username);
 
 	/**
 	 * Updates a source.
 	 * 
 	 * @param source the source to update
 	 */
-	void updateSource(Source source);
+	void updateSource(Source source, String username);
 }

@@ -43,8 +43,8 @@ public class SourceService {
 	 * 
 	 * @param source the source to add
 	 */
-	public void addSource(Source source) {
-		this.sourceRepository.addSource(source);
+	public void addSource(Source source, String username) {
+		this.sourceRepository.addSource(source, username);
 	}
 
 	/**
@@ -52,7 +52,7 @@ public class SourceService {
 	 * 
 	 * @param source the source to update
 	 */
-	public void updateSource(Source source) {
-		this.sourceRepository.updateSource(source);
+	public void updateSource(Source source, String username) {
+		this.sourceRepository.updateSource(source, username);
 	}
 }

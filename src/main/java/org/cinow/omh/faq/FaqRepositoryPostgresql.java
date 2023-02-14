@@ -51,10 +51,10 @@ public class FaqRepositoryPostgresql implements FaqRepository {
 	}
 
 	@Override
-	public void addFaq(Faq faq) {
+	public void addFaq(Faq faq, String username) {
 		String sql = ""
-			+ " insert into tbl_faqs(id_, question_en, question_es, answer_en, answer_es, sort_order, display) "
-			+ " values ((select max(id_) + 1 from tbl_faqs), :question_en, :question_es, :answer_en, :answer_es, :sort_order, :display) ";
+			+ " insert into tbl_faqs(id_, question_en, question_es, answer_en, answer_es, sort_order, display, user_modified) "
+			+ " values ((select max(id_) + 1 from tbl_faqs), :question_en, :question_es, :answer_en, :answer_es, :sort_order, :display, :username) ";
 
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
 		paramMap.addValue("question_en", faq.getQuestion_en());
@@ -63,12 +63,13 @@ public class FaqRepositoryPostgresql implements FaqRepository {
 		paramMap.addValue("answer_es", faq.getAnswer_es());
 		paramMap.addValue("sort_order", faq.getSort_order());
 		paramMap.addValue("display", faq.isDisplay());
+		paramMap.addValue("username", username);
 
 		this.namedParameterJdbcTemplate.update(sql, paramMap);
 	}
 
 	@Override
-	public void updateFaq(Faq faq) {
+	public void updateFaq(Faq faq, String username) {
 		String sql = ""
 			+ " update tbl_faqs set "
 			+ "   question_en = :question_en, "
@@ -76,7 +77,9 @@ public class FaqRepositoryPostgresql implements FaqRepository {
 			+ "   answer_en = :answer_en, "
 			+ "   answer_es = :answer_es, "
 			+ "   sort_order = :sort_order, "
-			+ "   display = :display "
+			+ "   display = :display, "
+			+ "   user_modified = :username, "
+			+ "   date_modified = current_timestamp "
 			+ " where id_ = :id ";
 
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
@@ -86,6 +89,7 @@ public class FaqRepositoryPostgresql implements FaqRepository {
 		paramMap.addValue("answer_es", faq.getAnswer_es());
 		paramMap.addValue("sort_order", faq.getSort_order());
 		paramMap.addValue("display", faq.isDisplay());
+		paramMap.addValue("username", username);
 		paramMap.addValue("id", faq.getId());
 
 		this.namedParameterJdbcTemplate.update(sql, paramMap);	

@@ -28,12 +28,12 @@ public interface AnnouncementRepository {
 	 * 
 	 * @param announcement the announcement to add
 	 */
-	void add(Announcement announcement);
+	void add(Announcement announcement, String username);
 
 	/**
 	 * Updates an announcement.
 	 * 
 	 * @param announcement the announcement to update
 	 */
-	void update(Announcement announcement);
+	void update(Announcement announcement, String username);
 }

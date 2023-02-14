@@ -74,12 +74,12 @@ public interface IndicatorRepository {
 	 * 
 	 * @param indicator the indicator
 	 */
-	void addIndicator(Indicator indicator);
+	void addIndicator(Indicator indicator, String username);
 
 	/**
 	 * Updates an indicator.
 	 * 
 	 * @param indicator the indicator
 	 */
-	void updateIndicator(Indicator indicator);
+	void updateIndicator(Indicator indicator, String username);
 }

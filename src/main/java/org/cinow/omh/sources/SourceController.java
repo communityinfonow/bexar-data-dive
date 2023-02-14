@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -48,8 +50,8 @@ public class SourceController {
 	 * @return 200 ok
 	 */
 	@PostMapping(path = "/api/admin/indicator-sources", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> addIndicatorSource(@RequestBody Source source) {
-		this.sourceService.addSource(source);
+	public ResponseEntity<?> addIndicatorSource(@AuthenticationPrincipal OAuth2User principal, @RequestBody Source source) {
+		this.sourceService.addSource(source, principal.getAttribute("email"));
 		return ResponseEntity.ok().build();
 	}
 
@@ -58,8 +60,8 @@ public class SourceController {
 	 * @return 200 ok
 	 */
 	@PutMapping(path = "/api/admin/indicator-sources", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> updateIndicatorSource(@RequestBody Source source) {
-		this.sourceService.updateSource(source);
+	public ResponseEntity<?> updateIndicatorSource(@AuthenticationPrincipal OAuth2User principal, @RequestBody Source source) {
+		this.sourceService.updateSource(source, principal.getAttribute("email"));
 		return ResponseEntity.ok().build();
 	}
 }
