@@ -22,6 +22,11 @@
           </v-list-item>
         </template>
       </v-list-item-group>
+      <v-list-item @click="downloadSurveyResponses">
+          <v-list-item-content>
+              Download Survey Responses
+          </v-list-item-content>
+        </v-list-item>
     </v-list>
     <template v-slot:append>
       <v-list nav>
@@ -41,6 +46,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -60,7 +66,20 @@ export default {
       this.miniNavDrawer = true
     },
   },
-  methods: {},
+  methods: {
+    downloadSurveyResponses() {
+      axios.get('/api/admin/survey-responses').then((response) => {
+        console.log(response.data);
+        let filename = 'survey_responses.csv';
+        let csv = 'Date,Response,Language,IP Address';
+        csv += response.data.map(r => '\n' + r.date + ',' + r.response + ',' + r.lang + ',' + r.ipAddress);
+        let downloadLink = document.createElement('a');
+        downloadLink.download = filename;
+        downloadLink.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+        downloadLink.click();
+      });
+    }
+  },
 }
 </script>
 

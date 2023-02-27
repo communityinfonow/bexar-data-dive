@@ -151,5 +151,15 @@
   "featured_card": {
     "learn_more": "Saber Más",
     "view": "Ir"
+  },
+  "survey": {
+    "question": "Por favor califique la utilidad de Data Dive durante su visita",
+    "options": [
+      "Poco útil",
+      "Muy útil"
+    ],
+    "submit": "Enviar",
+    "feedback": "¡Muchas gracias por su respuesta! ¿Estaría dispuesta/o a ayudarnos aprender más sobre cómo se están usando Data Dive y los datos de la comunidad? En tal caso, por favor <a target='_blank' href='https://cinow.info/contact/#form'>contáctenos</a>.",
+    "close": "Cerrar"
   }
 }

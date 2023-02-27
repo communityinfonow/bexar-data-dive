@@ -6,6 +6,7 @@
     <v-main>
       <router-view />
     </v-main>
+    <VisitorSurvey class="mr-4"></VisitorSurvey>
     <v-progress-linear
       v-if="loading"
       indeterminate
@@ -25,10 +26,11 @@ import AppHeader from '@/app/components/AppHeader'
 import PrintHeader from '@/app/components/PrintHeader'
 import AppFooter from '@/app/components/AppFooter'
 import NavigationDrawer from '@/app/components/NavigationDrawer'
+import VisitorSurvey from '@/app/components/VisitorSurvey'
 
 export default {
   name: 'App',
-  components: { AppHeader, PrintHeader, AppFooter, NavigationDrawer },
+  components: { AppHeader, PrintHeader, AppFooter, NavigationDrawer, VisitorSurvey },
   computed: {
     ...mapState(['loading'])
   },

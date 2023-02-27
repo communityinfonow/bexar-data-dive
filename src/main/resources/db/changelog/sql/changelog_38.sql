@@ -29,8 +29,8 @@ alter table tbl_filter_options add user_modified text, add date_modified timesta
 alter table tbl_sources add user_modified text, add date_modified timestamp default current_timestamp;
 alter table tbl_faqs add user_modified text, add date_modified timestamp default current_timestamp;
 
-create trigger trigger_tbl_announcements_audit after insert or update or delete on tbl_announcements for each row execute function audit_log_trigger();
-create trigger trigger_tbl_indicators_audit after insert or update or delete on tbl_indicators for each row execute function audit_log_trigger();
-create trigger trigger_tbl_filter_options_audit after insert or update or delete on tbl_filter_options for each row execute function audit_log_trigger();
-create trigger trigger_tbl_sources_audit after insert or update or delete on tbl_sources for each row execute function audit_log_trigger();
-create trigger trigger_tbl_faqs_audit after insert or update or delete on tbl_faqs for each row execute function audit_log_trigger();
+create trigger trigger_tbl_announcements_audit after insert or update or delete on tbl_announcements for each row execute procedure audit_log_trigger();
+create trigger trigger_tbl_indicators_audit after insert or update or delete on tbl_indicators for each row execute procedure audit_log_trigger();
+create trigger trigger_tbl_filter_options_audit after insert or update or delete on tbl_filter_options for each row execute procedure audit_log_trigger();
+create trigger trigger_tbl_sources_audit after insert or update or delete on tbl_sources for each row execute procedure audit_log_trigger();
+create trigger trigger_tbl_faqs_audit after insert or update or delete on tbl_faqs for each row execute procedure audit_log_trigger();

@@ -32,7 +32,8 @@ export default new Vuex.Store({
     tablesData: null,
     aboutData: null,
     faqs: null,
-    announcements: null
+    announcements: null,
+    surveySubmitted: false
   },
   getters: {
     tools: (state) => {
@@ -172,6 +173,9 @@ export default new Vuex.Store({
     },
     SET_SHOW_COMPARE_LABELS(state, showLabels) {
       state.showCompareLabels = showLabels
+    },
+    SET_SURVEY_SUBMITTED(state, surveySubmitted) {
+      state.surveySubmitted = surveySubmitted
     }
   },
   actions: {
@@ -363,6 +367,10 @@ export default new Vuex.Store({
     },
     setShowCompareLabels(context, showLabels) {
       context.commit('SET_SHOW_COMPARE_LABELS', showLabels)
+    },
+    setSurveySubmitted(context, surveySubmitted) {
+      sessionStorage.setItem('cinow-survey-submitted', surveySubmitted)
+      context.commit('SET_SURVEY_SUBMITTED', surveySubmitted)
     }
   },
   modules: {},

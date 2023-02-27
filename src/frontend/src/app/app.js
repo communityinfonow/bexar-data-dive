@@ -31,6 +31,14 @@ new Vue({
       this.$store.dispatch('setLocale', 'en')
     }
 
+    let storedSurveySubmitted
+    try {
+      storedSurveySubmitted = sessionStorage.getItem('cinow-survey-submitted') === 'true'
+    } catch {
+      storedSurveySubmitted = false
+    }
+    this.$store.dispatch('setSurveySubmitted', storedSurveySubmitted)
+
     let requestCount = 0
     axios.interceptors.request.use(function(config) {
       if (requestCount === 0) {
