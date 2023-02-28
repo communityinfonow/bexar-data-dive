@@ -33,6 +33,11 @@ public class Source {
 	private int trendInterval;
 
 	/**
+	 * Whether the source displays.
+	 */
+	private boolean display;
+
+	/**
 	 * @return the id
 	 */
 	public String getId() {
@@ -101,4 +106,18 @@ public class Source {
 	public void setTrendInterval(int trendInterval) {
 		this.trendInterval = trendInterval;
 	}
+
+	/**
+	 * @return the display
+	 */
+	public boolean isDisplay() {
+		return display;
+	}
+
+	/**
+	 * @param display the display to set
+	 */
+	public void setDisplay(boolean display) {
+		this.display = display;
+	}	
 }

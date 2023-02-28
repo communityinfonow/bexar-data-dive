@@ -24,6 +24,12 @@ public class WebConfig implements WebMvcConfigurer {
                                 .setViewName("forward:/index.html");
                 registry.addViewController("/{x:^(?!api$).*$}/*/{y:[\\w\\-]+}")
                                 .setViewName("forward:/index.html");
+                registry.addViewController("/admin")
+                                .setViewName("forward:/admin.html");
+                registry.addViewController("/admin/{x:[\\w\\-]+}")
+                                .setViewName("forward:/admin.html");
+                registry.addViewController("/admin/{x:^(?!api$).*$}/*/{y:[\\w\\-]+}")
+                                .setViewName("forward:/admin.html");
         }
 
         /**

@@ -134,6 +134,9 @@
     "name": "Frequently Asked Questions",
     "questions": "Questions"
   },
+  "announcements_view": {
+    "name": "Announcements"
+  },
   "data": {
     "value": "Value",
     "moe": "MOE",
@@ -147,5 +150,15 @@
   "featured_card": {
     "learn_more": "Learn More",
     "view": "Go"
+  },
+  "survey": {
+    "question": "Please rate how useful Data Dive was on this visit",
+    "options": [
+      "Not useful",
+      "Very useful"
+    ],
+    "submit": "Submit",
+    "feedback": "Thank you for your response! Would you be willing to help us learn how Data Dive and community data are being used? If so please <a target='_blank' href='https://cinow.info/contact/#form'>contact us</a>",
+    "close": "Close"
   }
 }

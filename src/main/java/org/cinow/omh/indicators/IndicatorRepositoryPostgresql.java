@@ -176,6 +176,9 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 		});
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean hasData(String id) {
 		String sql = ""
@@ -194,4 +197,116 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 			}
 		});
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<Indicator> findIndicators() {
+		String sql = ""
+			+ " select id_, indicator_category_id, indicator_type_id, name_en, name_es, description_en, description_es, source_id, featured, display "
+			+ " from tbl_indicators "
+			+ " order by id_";
+
+		return this.jdbcTemplate.query(sql, new RowMapper<Indicator>() {
+			@Override
+			public Indicator mapRow(ResultSet rs, int rowNum) throws SQLException {
+				Indicator indicator = new Indicator();
+				indicator.setId(rs.getString("id_"));
+				indicator.setCategoryId(rs.getString("indicator_category_id"));
+				indicator.setTypeId(rs.getString("indicator_type_id"));
+				indicator.setName_en(rs.getString("name_en"));
+				indicator.setName_es(rs.getString("name_es"));
+				indicator.setDescription_en(rs.getString("description_en"));
+				indicator.setDescription_es(rs.getString("description_es"));
+				indicator.setSourceId(rs.getString("source_id"));
+				indicator.setFeatured(rs.getBoolean("featured"));
+				indicator.setDisplay(rs.getBoolean("display"));
+
+				return indicator;
+			}
+		});
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<IndicatorType> findIndicatorTypes() {
+		String sql = ""
+			+ " select id_, name_ "
+			+ " from tbl_indicator_types ";
+
+		return this.jdbcTemplate.query(sql, new RowMapper<IndicatorType>() {
+			@Override
+			public IndicatorType mapRow(ResultSet rs, int rowNum) throws SQLException {
+				IndicatorType type = new IndicatorType();
+				type.setId(rs.getString("id_"));
+				type.setName(rs.getString("name_"));
+				
+				return type;
+			}
+		});
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void addIndicator(Indicator indicator, String username) {
+		String sql = ""
+			+ " insert into tbl_indicators (id_, indicator_category_id, indicator_type_id, name_en, name_es, description_en, description_es, source_id, featured, display, user_modified) "
+			+ " values (:id::numeric, :indicator_category_id::numeric, :indicator_type_id::numeric, :name_en, :name_es, :description_en, :description_es, :source_id::numeric, :featured, :display, :username) ";
+
+		MapSqlParameterSource paramMap = new MapSqlParameterSource();
+		paramMap.addValue("id", indicator.getId());
+		paramMap.addValue("indicator_category_id", indicator.getCategoryId());
+		paramMap.addValue("indicator_type_id", indicator.getTypeId());
+		paramMap.addValue("name_en", indicator.getName_en());
+		paramMap.addValue("name_es", indicator.getName_es());
+		paramMap.addValue("description_en", indicator.getDescription_en());
+		paramMap.addValue("description_es", indicator.getDescription_es());
+		paramMap.addValue("source_id", indicator.getSourceId());
+		paramMap.addValue("featured", indicator.isFeatured());
+		paramMap.addValue("display", indicator.isDisplay());
+		paramMap.addValue("username", username);
+
+		this.namedParameterJdbcTemplate.update(sql, paramMap);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void updateIndicator(Indicator indicator, String username) {
+		String sql = ""
+			+ " update tbl_indicators set "
+			+ "   indicator_category_id = :indicator_category_id::numeric, "
+			+ "   indicator_type_id = :indicator_type_id::numeric, "
+			+ "   name_en = :name_en, "
+			+ "   name_es = :name_es, "
+			+ "   description_en = :description_en, "
+			+ "   description_es = :description_es, "
+			+ "   source_id = :source_id::numeric, "
+			+ "   featured = :featured, "
+			+ "   display = :display, "
+			+ "   user_modified = :username, "
+			+ "   date_modified = current_timestamp "
+			+ " where id_ = :id::numeric ";
+
+		MapSqlParameterSource paramMap = new MapSqlParameterSource();
+		paramMap.addValue("indicator_category_id", indicator.getCategoryId());
+		paramMap.addValue("indicator_type_id", indicator.getTypeId());
+		paramMap.addValue("name_en", indicator.getName_en());
+		paramMap.addValue("name_es", indicator.getName_es());
+		paramMap.addValue("description_en", indicator.getDescription_en());
+		paramMap.addValue("description_es", indicator.getDescription_es());
+		paramMap.addValue("source_id", indicator.getSourceId());
+		paramMap.addValue("featured", indicator.isFeatured());
+		paramMap.addValue("display", indicator.isDisplay());
+		paramMap.addValue("username", username);
+		paramMap.addValue("id", indicator.getId());
+
+		this.namedParameterJdbcTemplate.update(sql, paramMap);
+	}	
 }

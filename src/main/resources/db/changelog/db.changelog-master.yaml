@@ -58,6 +58,22 @@ databaseChangeLog:
   - include:
       file: /db/changelog/sql/changelog_29.sql
   - include:
+      file: /db/changelog/sql/changelog_30.sql
+  - include:
       file: /db/changelog/sql/changelog_31.sql
   - include:
       file: /db/changelog/sql/changelog_32.sql
+  - include:
+      file: /db/changelog/sql/changelog_33.sql
+  - include:
+      file: /db/changelog/sql/changelog_34.sql
+  - include:
+      file: /db/changelog/sql/changelog_35.sql
+  - include:
+      file: /db/changelog/sql/changelog_36.sql
+  - include:
+      file: /db/changelog/sql/changelog_37.sql
+  - include:
+      file: /db/changelog/sql/changelog_38.sql
+  - include:
+      file: /db/changelog/sql/changelog_39.sql

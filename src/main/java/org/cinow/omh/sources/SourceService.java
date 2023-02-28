@@ -1,5 +1,7 @@
 package org.cinow.omh.sources;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,5 +27,32 @@ public class SourceService {
 	 */
 	public Source getSourceByIndicator(String indicatorId) {
 		return this.sourceRepository.getSourceByIndicator(indicatorId);
+	}
+
+	/**
+	 * Finds sources.
+	 * 
+	 * @return the sources
+	 */
+	public List<Source> findSources() {
+		return this.sourceRepository.findSources();
+	}
+
+	/**
+	 * Adds a source.
+	 * 
+	 * @param source the source to add
+	 */
+	public void addSource(Source source, String username) {
+		this.sourceRepository.addSource(source, username);
+	}
+
+	/**
+	 * Updates a source.
+	 * 
+	 * @param source the source to update
+	 */
+	public void updateSource(Source source, String username) {
+		this.sourceRepository.updateSource(source, username);
 	}
 }

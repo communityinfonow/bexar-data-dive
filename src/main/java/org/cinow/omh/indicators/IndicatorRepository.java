@@ -54,4 +54,32 @@ public interface IndicatorRepository {
 	 * @return <code>true</code> if data is present
 	 */
 	boolean hasData(String id);
+
+	/**
+	 * Finds indicators.
+	 * 
+	 * @return the indicators
+	 */
+	List<Indicator> findIndicators();
+
+	/**
+	 * Finds indicator types.
+	 * 
+	 * @return the indicator types
+	 */
+	List<IndicatorType> findIndicatorTypes();
+
+	/**
+	 * Adds an indicator.
+	 * 
+	 * @param indicator the indicator
+	 */
+	void addIndicator(Indicator indicator, String username);
+
+	/**
+	 * Updates an indicator.
+	 * 
+	 * @param indicator the indicator
+	 */
+	void updateIndicator(Indicator indicator, String username);
 }

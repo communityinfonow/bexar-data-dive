@@ -14,4 +14,12 @@ public class FaqService {
 	public List<Faq> getFaqs() {
 		return this.faqRepository.getFaqs();
 	}
+
+	public void addFaq(Faq faq, String username) {
+		this.faqRepository.addFaq(faq, username);
+	}
+
+	public void updateFaq(Faq faq, String username) {
+		this.faqRepository.updateFaq(faq, username);
+	}
 }
