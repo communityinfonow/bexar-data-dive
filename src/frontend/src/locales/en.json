@@ -96,6 +96,7 @@
       "about_tool": "About the tool",
       "make_selection": "Please make a selection",
       "filter_unavailable": "This filter is not available when combined with the other filters currently applied.",
+      "map_attribution": "Map tiles by <a href='http://stamen.com'>Stamen Design</a>, under <a href='http://creativecommons.org/licenses/by/3.0'>CC BY 3.0</a>. Data by <a href='http://openstreetmap.org'>OpenStreetMap</a>, under <a href='http://www.openstreetmap.org/copyright'>ODbL</a>.",
       "download": {
         "name": "Download",
         "items": {

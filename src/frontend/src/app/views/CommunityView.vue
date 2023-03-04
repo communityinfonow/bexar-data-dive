@@ -35,18 +35,12 @@
           <l-tile-layer
             url="https://stamen-tiles.a.ssl.fastly.net/toner-background/{z}/{x}/{y}.png"
             :options="{ crossOrigin: 'anonymous' }"
-            attribution="Map tiles by <a href='http://stamen.com'>Stamen Design</a>, 
-            under <a href='http://creativecommons.org/licenses/by/3.0'>CC BY 3.0</a>. 
-            Data by <a href='http://openstreetmap.org'>OpenStreetMap</a>, 
-            under <a href='http://www.openstreetmap.org/copyright'>ODbL</a>."
+            :attribution="$t('tools.common.map_attribution')"
           />
           <l-tile-layer
             url="https://stamen-tiles.a.ssl.fastly.net/toner-hybrid/{z}/{x}/{y}.png"
             :options="{ crossOrigin: 'anonymous' }"
-            attribution="Map tiles by <a href='http://stamen.com'>Stamen Design</a>, 
-            under <a href='http://creativecommons.org/licenses/by/3.0'>CC BY 3.0</a>. 
-            Data by <a href='http://openstreetmap.org'>OpenStreetMap</a>, 
-            under <a href='http://www.openstreetmap.org/copyright'>ODbL</a>."
+            :attribution="$t('tools.common.map_attribution')"
           />
           <l-geo-json
             v-if="selectionGeojson"
@@ -97,18 +91,12 @@
               <l-tile-layer
                 url="https://stamen-tiles.a.ssl.fastly.net/toner-background/{z}/{x}/{y}.png"
                 :options="{ crossOrigin: 'anonymous' }"
-                attribution="Map tiles by <a href='http://stamen.com'>Stamen Design</a>, 
-                under <a href='http://creativecommons.org/licenses/by/3.0'>CC BY 3.0</a>. 
-                Data by <a href='http://openstreetmap.org'>OpenStreetMap</a>, 
-                under <a href='http://www.openstreetmap.org/copyright'>ODbL</a>."
+                :attribution="$t('tools.common.map_attribution')"
               />
               <l-tile-layer
                 url="https://stamen-tiles.a.ssl.fastly.net/toner-hybrid/{z}/{x}/{y}.png"
                 :options="{ crossOrigin: 'anonymous' }"
-                attribution="Map tiles by <a href='http://stamen.com'>Stamen Design</a>, 
-                under <a href='http://creativecommons.org/licenses/by/3.0'>CC BY 3.0</a>. 
-                Data by <a href='http://openstreetmap.org'>OpenStreetMap</a>, 
-                under <a href='http://www.openstreetmap.org/copyright'>ODbL</a>."
+                :attribution="$t('tools.common.map_attribution')"
               />
               <l-geo-json
                 v-if="communityGeojson"
