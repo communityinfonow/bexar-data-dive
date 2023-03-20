@@ -156,11 +156,11 @@ export default {
 	computed: {
 		...mapState(['exploreData', 'locale', 'locationMenu', 'filters', 'filterSelections', 'showMapLabels', 'exploreTab']),
 		layers() {
-			return this.locationMenu?.categories?.map(locationType => {
+			return this.filters?.locationTypeFilter?.options?.map(option => {
 				return {
-					id: locationType.id,
-					name_en: locationType.name_en,
-					name_es: locationType.name_es
+					id: option.id,
+					name_en: option.name_en,
+					name_es: option.name_es
 				};
 			});
 		},
