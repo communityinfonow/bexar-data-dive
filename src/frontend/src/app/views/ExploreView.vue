@@ -36,7 +36,15 @@
           </section>
       </v-col>
       <v-col v-if="indicator && exploreData" cols="auto" class="pt-4 px-4" id="explore_indicator">
-          <h1 class="text-h3 mb-1"><span v-if="exploreData.category.parentCategoryId">{{ exploreData.category['name_' + locale] }} - </span>{{ indicator['name_' + locale] }}</h1>
+            <h1 class="text-h3 mb-1"><span v-if="exploreData.category.parentCategoryId">
+              {{ exploreData.category['name_' + locale] }} - </span>{{ indicator['name_' + locale] }}
+              <v-tooltip :open-on-hover="false" right max-width="20%" color="accent">
+                <template v-slot:activator="{ on, attrs}">
+                  <sup v-on="on" v-bind="attrs"><v-btn icon color="accent"><v-icon>mdi-book-alphabet</v-icon></v-btn></sup>
+                </template>
+                <span v-html="indicator['description_' + locale].substring(3, indicator['description_' + locale].indexOf('</p>'))"></span>
+              </v-tooltip>
+            </h1>
           <h2 v-if="source" class="text-subtitle-1 mb-2">{{ source['name_' + locale] }}</h2>
       </v-col>
       <v-col v-if="indicator" cols="auto" class="explore-content">
