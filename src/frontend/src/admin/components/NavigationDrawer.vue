@@ -69,7 +69,6 @@ export default {
   methods: {
     downloadSurveyResponses() {
       axios.get('/api/admin/survey-responses').then((response) => {
-        console.log(response.data);
         let filename = 'survey_responses.csv';
         let csv = 'Date,Response,Language,IP Address';
         csv += response.data.map(r => '\n' + r.date + ',' + r.response + ',' + r.lang + ',' + r.ipAddress);

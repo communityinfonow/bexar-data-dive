@@ -27,7 +27,8 @@
 						flat
 						return-object
 						:items="compareWithItems"
-						:item-text="'name_' + locale"
+						:item-text="(item) => (item['name_' + locale]) + (item.filtered ? (' (' + $t('tools.explore.current_filter_setting') + ')') : '')"
+						:item-disabled="(item) => item.filtered"
 						v-model="compareWith"
 						:rules="[v => !!v.length || $t('tools.common.make_selection')]"
 						multiple
@@ -198,15 +199,16 @@ export default {
 			if (this.compareBy?.id === 'l') {
 				let typeIdsWithData = this.filters?.locationTypeFilter.options.map(o => o.id);
 				this.compareWithItems = this.filters?.locationFilter.options
-					.filter(o => o.id !== this.filterSelections?.location && typeIdsWithData.indexOf(o.typeId) !== -1) || [];
+					.filter(o => typeIdsWithData.indexOf(o.typeId) !== -1) || [];
+				this.compareWithItems.forEach(i => i.filtered = (i.id === this.filterSelections?.location));
 			} else if (this.compareBy?.id === 'y') { 
 				this.compareWithItems = this.filters?.yearFilter.options
-					.filter(o => o.id !== this.filterSelections?.year
-						&& (Number(this.filterSelections?.year) - Number(o.id)) % this.exploreData.source.trendInterval === 0) || [];
+					.filter(o => (Number(this.filterSelections?.year) - Number(o.id)) % this.exploreData.source.trendInterval === 0) || [];
+				this.compareWithItems.forEach(i => i.filtered = (i.id === this.filterSelections?.year));
 			} else {
 				this.compareWithItems = this.filters?.indicatorFilters
-					.find(filter => filter.type.name_en === this.compareBy?.name_en)?.options
-					.filter(o => o.id !== this.filterSelections?.indicatorFilters[this.compareBy?.id]?.id) || [];
+					.find(filter => filter.type.name_en === this.compareBy?.name_en)?.options || [];
+				this.compareWithItems.forEach(i => i.filtered = (i.id === this.filterSelections?.indicatorFilters[this.compareBy?.id]?.id));
 			}
 		},
 		validateComparison() {
@@ -328,7 +330,6 @@ export default {
 							+ (compYearData.moeLow || compYearData.moeHigh ? (compYearData.moeLow + ' - ' + compYearData.moeHigh) : '');
 					});
 				}
-				console.log(csv);
 			}
 			let downloadLink = document.createElement('a');
 			downloadLink.download = fileName;

@@ -613,21 +613,45 @@ export default {
     filters(newValue) {
       if (newValue) {
         this.locationTypes = newValue.locationTypeFilter.options
-          .map(o => Object.assign({ selected: true }, o));
+          .map(o => Object.assign({ 
+              selected: !router.currentRoute.query.locationTypes || [].concat(router.currentRoute.query.locationTypes).find(q => q === o.id) 
+            }, o)
+          );
         this.locations = newValue.locationFilter.options
-          .map(o => Object.assign({ selected: true }, o));
+          .map(o => Object.assign({ 
+              selected: !router.currentRoute.query.locations || [].concat(router.currentRoute.query.locations).find(q => q === o.typeId + '_' + o.id) 
+            }, o)
+          );
         this.years = newValue.yearFilter.options
-          .map(o => Object.assign({ selected: true }, o));
+          .map(o => Object.assign({ 
+              selected: !router.currentRoute.query.years || [].concat(router.currentRoute.query.years).find(q => q == o.id)  
+            }, o)
+          );
         this.races = newValue.indicatorFilters?.find(f => f.type.id === '1')?.options
-          .map(o => Object.assign({ selected: true }, o));
+          .map(o => Object.assign({ 
+              selected: !router.currentRoute.query.races || [].concat(router.currentRoute.query.races).find(q => (q === '000' && !o.id) || q == o.id)   
+            }, o)
+          );
         this.ages = newValue.indicatorFilters?.find(f => f.type.id === '2')?.options
-          .map(o => Object.assign({ selected: true }, o));
+          .map(o => Object.assign({ 
+              selected: !router.currentRoute.query.ages || [].concat(router.currentRoute.query.ages).find(q => (q === '000' && !o.id) || q == o.id)   
+            }, o)
+          );
         this.sexes = newValue.indicatorFilters?.find(f => f.type.id === '3')?.options
-          .map(o => Object.assign({ selected: true }, o));
+          .map(o => Object.assign({ 
+              selected: !router.currentRoute.query.sexes || [].concat(router.currentRoute.query.sexes).find(q => (q === '000' && !o.id) || q == o.id)   
+            }, o)
+          );
         this.educations = newValue.indicatorFilters?.find(f => f.type.id === '4')?.options
-          .map(o => Object.assign({ selected: true }, o));
+          .map(o => Object.assign({ 
+              selected: !router.currentRoute.query.educations || [].concat(router.currentRoute.query.educations).find(q => (q === '000' && !o.id) || q == o.id)    
+            }, o)
+          );
         this.incomes = newValue.indicatorFilters?.find(f => f.type.id === '5')?.options
-          .map(o => Object.assign({ selected: true }, o));
+          .map(o => Object.assign({ 
+              selected: !router.currentRoute.query.incomes || [].concat(router.currentRoute.query.incomes).find(q => (q === '000' && !o.id) || q == o.id)    
+            }, o)
+          );
       }
     }
 	},

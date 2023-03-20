@@ -320,23 +320,70 @@ export default new Vuex.Store({
       context.dispatch('getExploreData');
     },
     getTablesData(context, request) {
-        axios.post('/api/tables-data', { 
-          ...request 
-        }).then(response => {
-          response.data.items.forEach(i => {
-            if (i.suppressed) {
-              i.valueLabel = i18n.t('data.suppressed');
-            } else if (i.value === null) { 
-              i.valueLabel = i18n.t('data.no_data');
-            } else  {
-              i.valueLabel = format(response.data.indicator.typeId, i.value);
-            }
-            i.moeLowLabel = format(response.data.indicator.typeId, i.moeLow);
-            i.moeHighLabel = format(response.data.indicator.typeId, i.moeHigh);
-            i.universeValueLabel = format('1', i.universeValue);
-          })
-          context.commit('SET_TABLES_DATA', response.data);
+      let filterQuery = {
+        ...router.currentRoute.query
+      }
+      if (request.locationTypes) {
+        filterQuery.locationTypes = Array.isArray(request.locationTypes) && request.locationTypes.length > 1 ? request.locationTypes : request.locationTypes[0]
+      }
+      if (request.locations) {
+        filterQuery.locations = Array.isArray(request.locations) && request.locations.length > 1 ? request.locations : request.locations[0]
+      }
+      if (request.years) {
+        filterQuery.years = Array.isArray(request.years) && request.years.length > 1 ? request.years : request.years[0]
+      }
+      if (request.races) {
+        filterQuery.races = request.races.map(r => r === null ? '000' : r)
+        filterQuery.races = Array.isArray(filterQuery.races) && filterQuery.races.length > 1 ? filterQuery.races : filterQuery.races[0]
+      } else {
+        delete filterQuery.races
+      }
+      if (request.ages) {
+        filterQuery.ages = request.ages.map(a => a === null ? '000' : a)
+        filterQuery.ages = Array.isArray(filterQuery.ages) && filterQuery.ages.length > 1 ? filterQuery.ages : filterQuery.ages[0]
+      } else {
+        delete filterQuery.ages
+      }
+      if (request.sexes) {
+        filterQuery.sexes = request.sexes.map(s => s === null ? '000' : s)
+        filterQuery.sexes = Array.isArray(filterQuery.sexes) && filterQuery.sexes.length > 1 ? filterQuery.sexes : filterQuery.sexes[0]
+      } else {
+        delete filterQuery.sexes
+      }
+      if (request.educations) {
+        filterQuery.educations = request.educations.map(e => e === null ? '000' : e)
+        filterQuery.educations = Array.isArray(filterQuery.educations) && filterQuery.educations.length > 1 ? filterQuery.educations : filterQuery.educations[0]
+      } else {
+        delete filterQuery.educations
+      }
+      if (request.incomes) {
+        filterQuery.incomes = request.incomes.map(i => i === null ? '000' : i)
+        filterQuery.incomes = Array.isArray(filterQuery.incomes) && filterQuery.incomes.length > 1 ? filterQuery.incomes : filterQuery.incomes[0]
+      } else {
+        delete filterQuery.incomes
+      }
+      if (JSON.stringify(filterQuery) !== JSON.stringify(router.currentRoute.query)) {
+        router.replace({
+          query: filterQuery
         });
+      }
+      axios.post('/api/tables-data', { 
+        ...request 
+      }).then(response => {
+        response.data.items.forEach(i => {
+          if (i.suppressed) {
+            i.valueLabel = i18n.t('data.suppressed');
+          } else if (i.value === null) { 
+            i.valueLabel = i18n.t('data.no_data');
+          } else  {
+            i.valueLabel = format(response.data.indicator.typeId, i.value);
+          }
+          i.moeLowLabel = format(response.data.indicator.typeId, i.moeLow);
+          i.moeHighLabel = format(response.data.indicator.typeId, i.moeHigh);
+          i.universeValueLabel = format('1', i.universeValue);
+        })
+        context.commit('SET_TABLES_DATA', response.data);
+      });
     },
     setTablesData(context, data) {
       context.commit('SET_TABLES_DATA', data);
