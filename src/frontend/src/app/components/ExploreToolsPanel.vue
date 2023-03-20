@@ -330,7 +330,6 @@ export default {
 							+ (compYearData.moeLow || compYearData.moeHigh ? (compYearData.moeLow + ' - ' + compYearData.moeHigh) : '');
 					});
 				}
-				console.log(csv);
 			}
 			let downloadLink = document.createElement('a');
 			downloadLink.download = fileName;

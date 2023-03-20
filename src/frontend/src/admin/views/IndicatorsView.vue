@@ -177,7 +177,6 @@ export default {
 			'updateIndicator'
 		]),
 		addHandler() {
-			console.log('add...')
 			this.$refs.add_form.validate();
 			if (this.addForm) {
 				this.addIndicator(this.newIndicator).then(() => {

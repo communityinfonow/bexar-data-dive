@@ -97,6 +97,7 @@
       "about_tool": "Sobre la herramienta",
       "make_selection": "Por favor, realiza una selección",
       "filter_unavailable": "Este filtro no está disponible cuando se combina con los otros filtros aplicados en este momento.",
+      "map_attribution": "Mapa mosaico por <a href='http://stamen.com'>Stamen Design</a>, bajo <a href='http://creativecommons.org/licenses/by/3.0'>CC BY 3.0</a>. Datos por <a href='http://openstreetmap.org'>OpenStreetMap</a>, bajo <a href='http://www.openstreetmap.org/copyright'>ODbL</a>.",
       "download": {
         "name": "Descargar",
         "items": {
