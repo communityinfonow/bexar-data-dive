@@ -10,6 +10,7 @@
 							<span v-if="item.demographicData[0].suppressed" class="text-h6 mb-0">{{ $t('data.suppressed') }}</span>
 							<span v-else-if="item.demographicData[0].value === null" class="text-h6 mb-0">{{ $t('data.no_data') }}</span>
 							<span v-else class="text-h6 mb-0">{{ formatValue(item.indicatorType.id, item.demographicData[0].value) }}</span>
+							<indicator-definition :indicator="item.indicator"></indicator-definition>
 						</h3>
 						<p class="text-subtitle-1 mb-4">
 							{{ community.location['name_' + locale]}}, 
@@ -57,13 +58,15 @@ import { format } from '@/formatter/formatter'
 import html2canvas from 'html2canvas'
 import DownloadMenu from '@/app/components/DownloadMenu'
 import AboutMenu from '@/app/components/AboutMenu'
+import IndicatorDefinition from '@/app/components/IndicatorDefinition'
 
 export default {
 	name: 'CommunityIndicator',
 	components: {
 		CommunityChart,
 		DownloadMenu,
-		AboutMenu
+		AboutMenu,
+		IndicatorDefinition
 	},
 	props: {
 		item: {
