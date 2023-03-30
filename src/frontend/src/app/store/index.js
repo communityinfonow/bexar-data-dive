@@ -14,6 +14,7 @@ export default new Vuex.Store({
     communityRoute: 'community',
     exploreRoute: 'explore',
     tablesRoute: 'tables',
+    customLocationsRoute: 'custom-locations',
     locationMenu: null,
     indicatorMenu: null,
     featuredIndicators: null,
@@ -33,7 +34,8 @@ export default new Vuex.Store({
     aboutData: null,
     faqs: null,
     announcements: null,
-    surveySubmitted: false
+    surveySubmitted: false,
+    customLocations: []
   },
   getters: {
     tools: (state) => {
@@ -46,6 +48,7 @@ export default new Vuex.Store({
           icon: 'mdi-map',
           shortDescription: i18n.t('tools.community.short_description'),
           fullDescription: i18n.t('tools.community.long_description'),
+          showOnHome: true
         },
         {
           key: 'explore',
@@ -55,6 +58,7 @@ export default new Vuex.Store({
           icon: 'mdi-view-dashboard',
           shortDescription: i18n.t('tools.explore.short_description'),
           fullDescription: i18n.t('tools.explore.long_description'),
+          showOnHome: true,
           subTools: [
             {
               name: i18n.t('tools.explore.tabs.map.name'),
@@ -78,7 +82,18 @@ export default new Vuex.Store({
           icon: 'mdi-grid',
           shortDescription: i18n.t('tools.tables.short_description'),
           fullDescription: i18n.t('tools.tables.long_description'),
+          showOnHome: true
         },
+        {
+          key: 'custom-locations',
+          name: i18n.t('tools.custom_locations.name'),
+          imagePath: "/img/custom_locations_tables_" + i18n.locale + ".png",
+          route: state.customLocationsRoute,
+          icon: 'mdi-map-plus',
+          shortDescription: i18n.t('tools.custom_locations.short_description'),
+          fullDescription: i18n.t('tools.custom_locations.long_description'),
+          showOnHome: false
+        }
       ]
     },
     about_views: () => {
@@ -176,6 +191,32 @@ export default new Vuex.Store({
     },
     SET_SURVEY_SUBMITTED(state, surveySubmitted) {
       state.surveySubmitted = surveySubmitted
+    },
+    SET_CUSTOM_LOCATIONS(state, locations) {
+      state.customLocations = locations
+    },
+    ADD_CUSTOM_LOCATION(state, location) {
+      if (state.customLocations.find(l => l.name === location.name)) {
+        state.customLocations = state.customLocations.map(l => {
+          if (l.name === location.name) {
+            return location
+          } else {
+            return l
+          }
+        });
+      } else {
+        state.customLocations.push(location);
+      }
+      localStorage.setItem('cinow-custom-locations', JSON.stringify(state.customLocations));
+      router.replace({
+        query: {
+          ...router.currentRoute.query,
+          locationTypeId: location.locationTypeId,
+          locationIds: location.locationIds,
+          locationName: location.name,
+
+        }
+      });
     }
   },
   actions: {
@@ -418,6 +459,12 @@ export default new Vuex.Store({
     setSurveySubmitted(context, surveySubmitted) {
       sessionStorage.setItem('cinow-survey-submitted', surveySubmitted)
       context.commit('SET_SURVEY_SUBMITTED', surveySubmitted)
+    },
+    setCustomLocations(context, locations) {
+      context.commit('SET_CUSTOM_LOCATIONS', locations)
+    },
+    addCustomLocation(context, location) {
+      context.commit('ADD_CUSTOM_LOCATION', location)
     }
   },
   modules: {},

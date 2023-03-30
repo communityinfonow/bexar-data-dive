@@ -116,6 +116,19 @@
           "range": "Rango"
         }
       }
+    },
+    "custom_locations": {
+      "name": "Custom Locations (es)",
+      "short_description": "TODO: short tool intro text (es)",
+      "long_description": "TODO: long tool intro text (es)",
+      "get_started": "TODO: get started text (es)",
+      "location_name": "Location name (es)",
+      "open": "Open Location (es)",
+      "open_description": "Select a location from the list, or paste a location code in the box below. (es)",
+      "no_locations": "No locations have been saved. (es)",
+      "code": "Custom location code (es)",
+      "save": "Save (es)",
+      "export": "Export (es)"
     }
   },
   "home_view": {

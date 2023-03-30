@@ -4,6 +4,7 @@ import HomeView from '@/app/views/HomeView.vue'
 import CommunityView from '@/app/views/CommunityView.vue'
 import ExploreView from '@/app/views/ExploreView.vue'
 import TablesView from '@/app/views/TablesView.vue'
+import CustomLocationsView from '@/app/views/CustomLocationsView.vue'
 import AboutToolsView from '@/app/views/AboutToolsView.vue'
 import AboutDataView from '@/app/views/AboutDataView.vue'
 import FaqsView from '@/app/views/FaqsView.vue'
@@ -36,6 +37,11 @@ const routes = [
     path: '/tables',
     name: 'tables',
     component: TablesView,
+  },
+  {
+    path: '/custom-locations',
+    name: 'custom-locations',
+    component: CustomLocationsView
   },
   {
     path: '/about-tools',

@@ -151,7 +151,8 @@ public class CommunityRepositoryPostgresql implements CommunityRepository {
 			+ " 		join tbl_location_geometries g on g.location_id = l.id_ and g.location_type_id = l.location_type_id "
 			+ " 	where l.location_type_id = :location_type::numeric "
 			+ " ) ranked_geos "
-			+ " where year_rank = 1 ";
+			+ " where year_rank = 1 "
+			+ " order by id_::numeric ";
 		
 
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();

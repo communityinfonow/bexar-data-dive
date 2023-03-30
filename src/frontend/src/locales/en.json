@@ -116,6 +116,19 @@
           "range": "Range"
         }
       }
+    },
+    "custom_locations": {
+      "name": "Custom Locations",
+      "short_description": "TODO: short tool intro text",
+      "long_description": "TODO: long tool intro text",
+      "get_started": "TODO: get started text",
+      "location_name": "Location name",
+      "open": "Open Location",
+      "open_description": "Select a location from the list, or paste a location code in the box below.",
+      "no_locations": "No locations have been saved.",
+      "code": "Custom location code",
+      "save": "Save",
+      "export": "Export"
     }
   },
   "home_view": {
