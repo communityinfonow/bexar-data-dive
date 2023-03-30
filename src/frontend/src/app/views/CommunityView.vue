@@ -161,6 +161,7 @@ import L from 'leaflet'
 import { latLng } from 'leaflet'
 import { LMap, LTileLayer, LControl, LGeoJson } from 'vue2-leaflet'
 import { feature, featureCollection } from '@turf/helpers'
+import combine  from '@turf/combine'
 import MenuToolbar from '@/app/components/MenuToolbar'
 import CommunityIndicator from '@/app/components/CommunityIndicator'
 import DownloadMenu from '@/app/components/DownloadMenu'
@@ -195,7 +196,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['locale', 'locationMenu', 'community' ]),
+    ...mapState(['locale', 'locationMenu', 'community', 'customLocations' ]),
     showIntro() {
       return !this.community && !router.currentRoute.query.location;
     },
@@ -346,6 +347,17 @@ export default {
 		},
     drawSelectionMap() {
       if (this.selectedLayer) {
+        if (this.selectedLayer.id === "7") {
+          this.selectionGeojson = featureCollection(this.customLocations.map(location => {
+            //FIXME: geojson is invalid. right-hand rule violation, maybe?
+              console.log(feature(combine(location.geojson)));
+              return feature(combine(location.geojson)
+)
+            })
+          );
+          this.refreshOptions = Math.random(); // force a refresh
+          return;
+        }
         axios.get('/api/community-locations', { params: { 
             locationType: this.selectedLayer.id
           }
