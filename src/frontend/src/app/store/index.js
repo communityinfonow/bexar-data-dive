@@ -248,6 +248,7 @@ export default new Vuex.Store({
     },
     getLocationMenu(context) {
       axios.get('/api/location-menu').then(response => {
+        //TODO: custom locations
         context.commit('SET_LOCATION_MENU', response.data)
       })
     },

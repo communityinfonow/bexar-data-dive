@@ -160,8 +160,10 @@ import axios from 'axios'
 import L from 'leaflet'
 import { latLng } from 'leaflet'
 import { LMap, LTileLayer, LControl, LGeoJson } from 'vue2-leaflet'
-import { feature, featureCollection } from '@turf/helpers'
-import combine  from '@turf/combine'
+import { feature, featureCollection, multiPolygon } from '@turf/helpers'
+//import combine from '@turf/combine'
+//import flatten from '@turf/flatten'
+//import dissolve from '@turf/dissolve'
 import MenuToolbar from '@/app/components/MenuToolbar'
 import CommunityIndicator from '@/app/components/CommunityIndicator'
 import DownloadMenu from '@/app/components/DownloadMenu'
@@ -348,13 +350,13 @@ export default {
     drawSelectionMap() {
       if (this.selectedLayer) {
         if (this.selectedLayer.id === "7") {
-          this.selectionGeojson = featureCollection(this.customLocations.map(location => {
-            //FIXME: geojson is invalid. right-hand rule violation, maybe?
-              console.log(feature(combine(location.geojson)));
-              return feature(combine(location.geojson)
-)
-            })
-          );
+          this.selectionGeojson = featureCollection(
+            this.customLocations.map(cl => multiPolygon(cl.geojson.features
+                .map(clf => clf.geometry)
+                .reduce((acc, cur) => acc.concat(cur.coordinates), []),
+              { name: cl.name }))
+            );
+
           this.refreshOptions = Math.random(); // force a refresh
           return;
         }
@@ -403,6 +405,18 @@ export default {
     onEachFeature(feature, layer) {
 			layer.bindTooltip(feature.properties.name);
       layer.options.color = '#3b5a98';
+      layer.on('mouseover', () => {
+        layer.setStyle({
+          color: '#3b5a98',
+          weight: 4
+        });
+      });
+      layer.on('mouseout', () => {
+        layer.setStyle({
+          color: '#3b5a98',
+          weight: 3
+        });
+      });
       layer.on('click', () => {
         this.selectItem({
           id: feature.properties.id,
