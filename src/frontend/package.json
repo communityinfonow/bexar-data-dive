@@ -13,6 +13,8 @@
   "dependencies": {
     "@turf/helpers": "^6.5.0",
     "@turf/combine": "^6.5.0",
+    "@turf/flatten": "^6.5.0",
+    "@turf/dissolve": "^6.5.0",
     "axios": "^0.27.2",
     "colorbrewer": "^1.5.2",
     "core-js": "^3.8.3",
