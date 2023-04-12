@@ -141,12 +141,15 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-snackbar v-model="message" timeout="2000" color="success" class="mb-8">
+			{{ messageText }}
+		</v-snackbar>
   </v-container>
 </template>
 
 <script>
 import i18n from '@/i18n'
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapGetters } from 'vuex'
 import axios from 'axios'
 import { latLng } from 'leaflet'
 import { LMap, LTileLayer, LGeoJson } from 'vue2-leaflet'
@@ -174,10 +177,13 @@ export default {
       refreshOptions: false,
       selectedCategory: null,
       openDialog: false,
+      message: false,
+      messageText: null
     }
   },
   computed: {
-    ...mapState(['locale', 'locationMenu', 'customLocations' ]),
+    ...mapState(['locale', 'customLocations' ]),
+    ...mapGetters(['locationMenu']),
     breadcrumbs() {
       let crumbs = [
         {
@@ -331,6 +337,9 @@ export default {
       this.customLocation.locationIds = this.customLocationGeojson.features.map(f => f.id)
       this.customLocation.geojson = this.customLocationGeojson;
       this.addCustomLocation(this.customLocation);
+      this.messageText = i18n.t('tools.custom_locations.saved');
+      this.message = true;
+      //TODO: need feedback that the custom location was saved
     },
     exportCustomLocation() {
       let downloadLink = document.createElement('a');

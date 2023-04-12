@@ -120,6 +120,50 @@ export default new Vuex.Store({
           icon: 'mdi-help-circle' 
         }
       ]
+    },
+    locationMenu: (state) => {
+      let menu = JSON.parse(JSON.stringify(state.locationMenu))
+      if (menu) {
+        menu.categories.find(c => c.id === '7').items = state.customLocations.map((location) => {
+          return {
+            categoryId: '7',
+            description_en: null,
+            description_es: null,
+            hasData: true,
+            id: location.key,
+            name_en: location.name,
+            name_es: location.name
+          }
+        });
+      }
+      return menu
+    },
+    filters: (state) => {
+      let filters = JSON.parse(JSON.stringify(state.filters))
+      if (filters && state.customLocations?.some((location) => filters?.locationTypeFilter?.options?.some(locationType => locationType.id === location.locationTypeId))) {
+        filters.locationTypeFilter.options.push({
+          display: false, 
+          id: '7',
+          name_en: i18n.t('tools.custom_locations.name'),
+          name_es: i18n.t('tools.custom_locations.name')
+        });
+        filters.locationFilter.options = filters.locationFilter.options.concat(state.customLocations
+          .filter((location) => filters.locationTypeFilter?.options?.some(locationType => locationType.id === location.locationTypeId))
+          .map((location) => {
+            return {
+              display: false,
+              id: location.key,
+              name_en: location.name,
+              name_es: location.name,
+              typeId: '7'
+            };
+          })
+        );
+        //TODO: how best to handle this? years may vary for each custom location depending on the location type of the custom location.
+        filters.locationTypeYears[7] = Array.from(new Set(Object.values(filters.locationTypeYears).flat()));
+      }
+      
+      return filters
     }
   },
   mutations: {

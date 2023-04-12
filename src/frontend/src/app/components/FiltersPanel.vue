@@ -87,7 +87,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapGetters } from 'vuex'
 import router from '@/app/router/index'
 
 export default {
@@ -104,7 +104,8 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['filters', 'locale', 'filterSelections']),
+		...mapState(['locale', 'filterSelections']),
+		...mapGetters(['filters']),
 		locationFilterOptions() {
 			return this.filters.locationFilter.options
 				.filter(option => option.typeId === this.selectedLocationType)

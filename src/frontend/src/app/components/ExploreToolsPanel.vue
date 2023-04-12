@@ -69,7 +69,7 @@
 <script>
 
 import i18n from '@/i18n'
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapGetters } from 'vuex'
 import router from '@/app/router/index'
 import DownloadMenu from '@/app/components/DownloadMenu'
 import ShareMenu from '@/app/components/ShareMenu'
@@ -84,7 +84,8 @@ export default {
 		AboutMenu
 	},
 	computed: {
-		...mapState(['filters', 'filterSelections', 'locale', 'filters', 'exploreData']),
+		...mapState(['filterSelections', 'locale', 'exploreData']),
+		...mapGetters(['filters']),
 		labels: {
 			get() { return this.showLabels },
 			set(value) { this.setShowLabels(value) }

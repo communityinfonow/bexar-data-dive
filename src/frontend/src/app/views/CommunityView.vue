@@ -154,7 +154,7 @@
 <script>
 import i18n from '@/i18n'
 import goTo from 'vuetify/lib/services/goto'
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapGetters } from 'vuex'
 import router from '@/app/router/index'
 import axios from 'axios'
 import L from 'leaflet'
@@ -198,7 +198,8 @@ export default {
     }
   },
   computed: {
-    ...mapState(['locale', 'locationMenu', 'community', 'customLocations' ]),
+    ...mapState(['locale', 'community', 'customLocations' ]),
+    ...mapGetters(['locationMenu']),
     showIntro() {
       return !this.community && !router.currentRoute.query.location;
     },
@@ -354,7 +355,7 @@ export default {
             this.customLocations.map(cl => multiPolygon(cl.geojson.features
                 .map(clf => clf.geometry)
                 .reduce((acc, cur) => acc.concat(cur.coordinates), []),
-              { name: cl.name }))
+              { id: cl.key, typeId: "7", name: cl.name }))
             );
 
           this.refreshOptions = Math.random(); // force a refresh

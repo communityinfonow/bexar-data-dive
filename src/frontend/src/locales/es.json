@@ -128,7 +128,8 @@
       "no_locations": "No locations have been saved. (es)",
       "code": "Custom location code (es)",
       "save": "Save (es)",
-      "export": "Export (es)"
+      "export": "Export (es)",
+      "saved": "Custom location saved (es)"
     }
   },
   "home_view": {
