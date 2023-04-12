@@ -358,7 +358,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapGetters } from 'vuex'
 import axios from 'axios'
 import i18n from '@/i18n'
 import router from '@/app/router/index'
@@ -407,7 +407,8 @@ export default {
     }
   },
   computed: {
-    ...mapState(['indicatorMenu', 'indicator', 'filters', 'tablesData', 'locale', 'featuredIndicators']),
+    ...mapState(['indicatorMenu', 'indicator', 'tablesData', 'locale', 'featuredIndicators']),
+    ...mapGetters(['filters']),
     showIntro() {
       return !this.indicator && !router.currentRoute.query.indicator;
     },
@@ -593,11 +594,11 @@ export default {
     }
   },
   watch: {
-		locale(newValue, oldValue) {
+    locale(newValue, oldValue) {
       if (oldValue) {
         this.loadTablesData();
       }
-		},
+    },
     page() {
       this.loadTablesData();
     },

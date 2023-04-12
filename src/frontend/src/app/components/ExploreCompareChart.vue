@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapGetters } from 'vuex'
 import i18n from '@/i18n'
 import * as echarts from 'echarts/core';
 import { SVGRenderer } from 'echarts/renderers';
@@ -43,7 +43,8 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['locale', 'filters', 'exploreData', 'compareSelections', 'showCompareLabels', 'exploreTab']),
+		...mapState(['locale', 'exploreData', 'compareSelections', 'showCompareLabels', 'exploreTab']),
+		...mapGetters(['filters']),
 		smallScreen() {
 			return document.body.clientWidth <= 1440;
 		}

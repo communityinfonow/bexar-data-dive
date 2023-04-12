@@ -84,7 +84,7 @@
 					<l-control
 						position="bottomright"
 						class="layer-control"
-						v-if="layers.length"
+						v-if="layers && layers.length"
 					>
 						<v-expansion-panels data-html2canvas-ignore>
 							<v-expansion-panel>
@@ -117,7 +117,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapGetters } from 'vuex'
 import i18n from '@/i18n'
 import { latLng } from 'leaflet'
 import { LMap, LTileLayer, LGeoJson, LControl } from 'vue2-leaflet'
@@ -148,7 +148,8 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['exploreData', 'locale', 'locationMenu', 'filters', 'filterSelections', 'showMapLabels', 'exploreTab']),
+		...mapState(['exploreData', 'locale', 'filterSelections', 'showMapLabels', 'exploreTab']),
+		...mapGetters(['locationMenu', 'filters']),
 		layers() {
 			return this.filters?.locationTypeFilter?.options?.map(option => {
 				return {
