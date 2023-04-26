@@ -26,7 +26,7 @@ const routes = [
   {
     path: '/community',
     name: 'community',
-    component: CommunityView,
+    component: CommunityView
   },
   {
     path: '/explore',

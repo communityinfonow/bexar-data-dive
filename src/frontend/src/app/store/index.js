@@ -131,7 +131,7 @@ export default new Vuex.Store({
             description_es: null,
             hasData: true,
             id: location.key,
-            name_en: location.name,
+            name_en: location.name + ' (' + state.locationMenu.categories.find(c => c.id === location.locationTypeId)['name_' + state.locale] + ')',
             name_es: location.name
           }
         });
@@ -140,22 +140,23 @@ export default new Vuex.Store({
     },
     filters: (state) => {
       let filters = JSON.parse(JSON.stringify(state.filters))
-      if (filters && state.customLocations?.some((location) => filters?.locationTypeFilter?.options?.some(locationType => locationType.id === location.locationTypeId))) {
+      if (filters && state.customLocations?.length > 0) {
         filters.locationTypeFilter.options.push({
           display: false, 
           id: '7',
           name_en: i18n.t('tools.custom_locations.name'),
-          name_es: i18n.t('tools.custom_locations.name')
+          name_es: i18n.t('tools.custom_locations.name'),
+          disabled: !state.customLocations.some((location) => filters?.locationTypeFilter?.options?.some(locationType => locationType.id === location.locationTypeId))
         });
         filters.locationFilter.options = filters.locationFilter.options.concat(state.customLocations
-          .filter((location) => filters.locationTypeFilter?.options?.some(locationType => locationType.id === location.locationTypeId))
           .map((location) => {
             return {
               display: false,
               id: location.key,
-              name_en: location.name,
-              name_es: location.name,
-              typeId: '7'
+              name_en: location.name + ' (' + state.locationMenu.categories.find(c => c.id === location.locationTypeId)['name_en'] + ')',
+              name_es: location.name + ' (' + state.locationMenu.categories.find(c => c.id === location.locationTypeId)['name_es'] + ')',
+              typeId: '7',
+              disabled: !filters?.locationTypeFilter?.options?.some(locationType => locationType.id === location.locationTypeId)
             };
           })
         );
@@ -261,6 +262,10 @@ export default new Vuex.Store({
 
         }
       });
+    },
+    DELETE_CUSTOM_LOCATION(state, location) {
+      state.customLocations = state.customLocations.filter(l => l.key !== location);
+      localStorage.setItem('cinow-custom-locations', JSON.stringify(state.customLocations));
     }
   },
   actions: {
@@ -292,7 +297,6 @@ export default new Vuex.Store({
     },
     getLocationMenu(context) {
       axios.get('/api/location-menu').then(response => {
-        //TODO: custom locations
         context.commit('SET_LOCATION_MENU', response.data)
       })
     },
@@ -510,6 +514,9 @@ export default new Vuex.Store({
     },
     addCustomLocation(context, location) {
       context.commit('ADD_CUSTOM_LOCATION', location)
+    },
+    deleteCustomLocation(context, location) {
+      context.commit('DELETE_CUSTOM_LOCATION', location)
     }
   },
   modules: {},

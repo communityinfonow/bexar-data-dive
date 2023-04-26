@@ -355,7 +355,7 @@ export default {
             this.customLocations.map(cl => multiPolygon(cl.geojson.features
                 .map(clf => clf.geometry)
                 .reduce((acc, cur) => acc.concat(cur.coordinates), []),
-              { id: cl.key, typeId: "7", name: cl.name }))
+              { id: cl.key, typeId: "7", name: cl.name + ' (' + this.locationMenu.categories.find(c => c.id === cl.locationTypeId)['name_' + this.locale] + ')'}))
             );
 
           this.refreshOptions = Math.random(); // force a refresh
@@ -408,7 +408,7 @@ export default {
       layer.options.color = '#3b5a98';
       layer.on('mouseover', () => {
         layer.setStyle({
-          color: '#3b5a98',
+          color: '#f6921e',
           weight: 4
         });
       });
