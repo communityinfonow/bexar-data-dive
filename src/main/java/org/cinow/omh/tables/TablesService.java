@@ -49,6 +49,7 @@ public class TablesService {
 	 * @return the tables data
 	 */
 	public TablesData getTablesData(TablesDataRequest request) {
+		//FIXME: need to send/accept the custom location ids so that we don't get all ids in the db, just those the user has client side
 		TablesData tablesData = new TablesData();
 		tablesData.setIndicator(this.indicatorRepository.getIndicator(request.getIndicator()));
 		tablesData.setCategory(this.indicatorRepository.getIndicatorCategory(request.getIndicator()));

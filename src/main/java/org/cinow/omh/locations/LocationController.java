@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -29,4 +31,11 @@ public class LocationController {
 	public ResponseEntity<LocationMenu> getLocationMenu() {
 		return ResponseEntity.ok(this.locationService.buildLocationMenu());
 	}
+
+	@PostMapping(path = "/api/custom-locations", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> saveCustomLocation(@RequestBody CustomLocation location) {
+		this.locationService.saveCustomLocation(location);
+		return ResponseEntity.ok().build();
+	}
+
 }

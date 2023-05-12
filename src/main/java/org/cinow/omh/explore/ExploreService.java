@@ -54,15 +54,26 @@ public class ExploreService {
 		exploreData.setCategory(this.indicatorRepository.getIndicatorCategory(dataRequest.getIndicator()));
 		exploreData.setSource(this.sourceRepository.getSourceByIndicator(dataRequest.getIndicator()));
 		exploreData.setFilters(this.getIndicatorFilters(dataRequest));
-		exploreData.setLocationData(this.exploreRepository.getExploreData(dataRequest, true));
-
+		if (!"7".equals(dataRequest.getFilters().getLocationType())){
+			exploreData.setLocationData(this.exploreRepository.getExploreData(dataRequest, true));
+		} else {
+			//TODO: need to handle custom locations
+			exploreData.setLocationData(new ArrayList<>());
+		}
 		if (dataRequest.getComparisons() != null) {
 			exploreData.setCompareData(new ArrayList<>());
 			if (dataRequest.getComparisons().getType().getId().equals("l")) {
 				for (FilterOption option : dataRequest.getComparisons().getOptions()) {
+					//TODO: will need to send in location comparison IDs as a comma separated list so we can handle custom locations
 					dataRequest.getFilters().setLocation(option.getId());
 					dataRequest.getFilters().setLocationType(option.getTypeId());
-					exploreData.getCompareData().addAll(this.exploreRepository.getExploreData(dataRequest, false));
+					if (!"7".equals(dataRequest.getFilters().getLocationType())) {
+						exploreData.getCompareData().addAll(this.exploreRepository.getExploreData(dataRequest, false));
+					} else {
+						//TODO: need to handle custom locations
+						//exploreData.getCompareData().addAll(null);
+					}
+					
 				}		
 			} else if (dataRequest.getComparisons().getType().getId().equals("y")) { 
 				for (FilterOption option : dataRequest.getComparisons().getOptions()) {
@@ -88,6 +99,7 @@ public class ExploreService {
 	 */
 	private Filters getIndicatorFilters(ExploreDataRequest dataRequest) {
 		Filters filters = new Filters();
+		//TODO: need to handle custom locations
 		filters.setLocationTypeFilter(this.filterRepository.getLocationTypeFilter(dataRequest.getIndicator()));
 		filters.getLocationTypeFilter().setOptions(filters.getLocationTypeFilter().getOptions()
 			.stream()
@@ -95,7 +107,7 @@ public class ExploreService {
 			.collect(Collectors.toList()));
 		filters.setLocationFilter(this.filterRepository.getLocationFilter());
 		filters.getLocationFilter().setOptions(filters.getLocationFilter().getOptions()
-			.stream()
+			.stream() //TODO: need to handle custom locations
 			.filter(o -> o.getId().equals(dataRequest.getFilters().getLocation()) && o.getTypeId().equals(dataRequest.getFilters().getLocationType()))
 			.collect(Collectors.toList()));
 		filters.setYearFilter(this.filterRepository.getYearFilter(dataRequest.getIndicator()));

@@ -107,7 +107,12 @@
           </v-col>
           <v-col cols="10">
             <div class="d-flex justify-space-between">
-              <h1 class="text-h3 mt-2 mb-4" id="community_name">{{ community.location['name_' + locale] }}</h1>
+              <h1 class="text-h3 mt-2 mb-4" id="community_name">
+                {{ community.location['name_' + locale] }}
+                <span v-if="community.location.typeId === '7'">
+                  ({{ locationMenu.categories.find(c => c.id === customLocations.find(cl => cl.id === community.location.id).typeId)['name_' + this.locale]}})
+                </span>
+              </h1>
               <div>
                 <download-menu :downloadData="downloadCommunityData"></download-menu>
                 <share-menu></share-menu>
@@ -355,9 +360,9 @@ export default {
             this.customLocations.map(cl => multiPolygon(cl.geojson.features
                 .map(clf => clf.geometry)
                 .reduce((acc, cur) => acc.concat(cur.coordinates), []),
-              { id: cl.key, typeId: "7", name: cl.name + ' (' + this.locationMenu.categories.find(c => c.id === cl.locationTypeId)['name_' + this.locale] + ')'}))
+              { id: cl.id, typeId: "7", name: cl.name + ' (' + this.locationMenu.categories.find(c => c.id === cl.typeId)['name_' + this.locale] + ')'}))
             );
-
+          console.log(this.selectionGeojson);
           this.refreshOptions = Math.random(); // force a refresh
           return;
         }
@@ -388,7 +393,8 @@ export default {
             locationType: this.community.location.typeId
           }
         }).then(response => {
-          this.communityGeojson = feature(JSON.parse(response.data.geojson), 
+          if (response.data.typeId !== "7") {
+            this.communityGeojson = feature(JSON.parse(response.data.geojson), 
             {
               name: response.data['name_' + this.locale],
               id: response.data.id,
@@ -398,6 +404,14 @@ export default {
               id: response.data.id
             }
           );
+          } else {
+            this.communityGeojson = multiPolygon(JSON.parse(response.data.geojson).features
+              .map(clf => clf.geometry)
+              .reduce((acc, cur) => acc.concat(cur.coordinates), []),
+              { id: response.data.id, typeId: "7", name: response.data['name_' + this.locale] });
+              console.log(this.communityGeojson);
+          }
+          
           this.refreshOptions = Math.random(); // force a refresh
           this.$refs.communityMap?.mapObject.fitBounds(L.geoJSON(this.communityGeojson).getBounds());
         });

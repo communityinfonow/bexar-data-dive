@@ -62,6 +62,8 @@ public class Indicator {
 	 */
 	private boolean display;
 
+	private int ratePer;
+
 	/**
 	 * @return the id
 	 */
@@ -214,5 +216,19 @@ public class Indicator {
 	 */
 	public void setDisplay(boolean display) {
 		this.display = display;
-	}	
+	}
+
+	/**
+	 * @return the ratePer
+	 */
+	public int getRatePer() {
+		return ratePer;
+	}
+
+	/**
+	 * @param ratePer the ratePer to set
+	 */
+	public void setRatePer(int ratePer) {
+		this.ratePer = ratePer;
+	}
 }

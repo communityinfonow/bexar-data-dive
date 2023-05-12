@@ -204,7 +204,7 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 	@Override
 	public List<Indicator> findIndicators() {
 		String sql = ""
-			+ " select id_, indicator_category_id, indicator_type_id, name_en, name_es, description_en, description_es, source_id, featured, display "
+			+ " select id_, indicator_category_id, indicator_type_id, name_en, name_es, description_en, description_es, source_id, featured, display, rate_per "
 			+ " from tbl_indicators "
 			+ " order by id_";
 
@@ -222,6 +222,7 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 				indicator.setSourceId(rs.getString("source_id"));
 				indicator.setFeatured(rs.getBoolean("featured"));
 				indicator.setDisplay(rs.getBoolean("display"));
+				indicator.setRatePer(rs.getInt("rate_per"));
 
 				return indicator;
 			}
@@ -255,8 +256,8 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 	@Override
 	public void addIndicator(Indicator indicator, String username) {
 		String sql = ""
-			+ " insert into tbl_indicators (id_, indicator_category_id, indicator_type_id, name_en, name_es, description_en, description_es, source_id, featured, display, user_modified) "
-			+ " values (:id::numeric, :indicator_category_id::numeric, :indicator_type_id::numeric, :name_en, :name_es, :description_en, :description_es, :source_id::numeric, :featured, :display, :username) ";
+			+ " insert into tbl_indicators (id_, indicator_category_id, indicator_type_id, name_en, name_es, description_en, description_es, source_id, featured, display, user_modified, rate_per) "
+			+ " values (:id::numeric, :indicator_category_id::numeric, :indicator_type_id::numeric, :name_en, :name_es, :description_en, :description_es, :source_id::numeric, :featured, :display, :username, :rate_per) ";
 
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
 		paramMap.addValue("id", indicator.getId());
@@ -270,6 +271,7 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 		paramMap.addValue("featured", indicator.isFeatured());
 		paramMap.addValue("display", indicator.isDisplay());
 		paramMap.addValue("username", username);
+		paramMap.addValue("rate_per", indicator.getRatePer());
 
 		this.namedParameterJdbcTemplate.update(sql, paramMap);
 	}
@@ -291,7 +293,8 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 			+ "   featured = :featured, "
 			+ "   display = :display, "
 			+ "   user_modified = :username, "
-			+ "   date_modified = current_timestamp "
+			+ "   date_modified = current_timestamp, "
+			+ "   rate_per = :rate_per "
 			+ " where id_ = :id::numeric ";
 
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
@@ -306,6 +309,7 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 		paramMap.addValue("display", indicator.isDisplay());
 		paramMap.addValue("username", username);
 		paramMap.addValue("id", indicator.getId());
+		paramMap.addValue("rate_per", indicator.getRatePer());
 
 		this.namedParameterJdbcTemplate.update(sql, paramMap);
 	}	
