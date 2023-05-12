@@ -53,4 +53,14 @@ public class LocationService {
 
 		return locationMenu;
 	}
+
+
+	/**
+	 * Save a custom location.
+	 * 
+	 * @param location the location
+	 */
+	public void saveCustomLocation(CustomLocation location) {
+		this.locationRepository.saveCustomLocation(location);
+	}
 }

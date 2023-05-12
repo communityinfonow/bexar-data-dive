@@ -36,15 +36,28 @@
 								:rules="[rules.required]"
 							>
 							</v-select>
-							<v-select 
-								label="Type"
-								:items="types"
-								item-text="name"
-								item-value="id"
-								v-model="ind.typeId"
-								:rules="[rules.required]"
-							>
-							</v-select>
+							
+							<div class="d-flex">
+								<v-select 
+									label="Type"
+									:items="types"
+									item-text="name"
+									item-value="id"
+									v-model="ind.typeId"
+									:rules="[rules.required]"
+									class="flex-grow-1"
+								>
+								</v-select>
+								<v-text-field 
+									type="number"
+									label="Rate Per"
+									v-model="ind.ratePer"  
+									v-if="ind.typeId === '2'" 
+									:rules="[rules.required]"
+									class="flex-grow-1"
+								>
+								</v-text-field>
+							</div>
 							<v-select 
 								label="Source"
 								:items="sourceOptions"
@@ -102,15 +115,27 @@
 								:rules="[rules.required]"
 							>
 							</v-select>
-							<v-select 
-								label="Type"
-								:items="types"
-								item-text="name"
-								item-value="id"
-								v-model="newIndicator.typeId"
-								:rules="[rules.required]"
-							>
-							</v-select>
+							<div class="d-flex">
+								<v-select 
+									label="Type"
+									:items="types"
+									item-text="name"
+									item-value="id"
+									v-model="newIndicator.typeId"
+									:rules="[rules.required]"
+									class="flex-grow-1"
+								>
+								</v-select>
+								<v-text-field 
+									type="number"
+									label="Rate Per"
+									v-model="newIndicator.ratePer"  
+									v-if="newIndicator.typeId === '2'" 
+									:rules="[rules.required]"
+									class="flex-grow-1"
+								>
+								</v-text-field>
+							</div>
 							<v-select 
 								label="Source"
 								:items="sourceOptions"

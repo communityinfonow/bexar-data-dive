@@ -35,9 +35,13 @@ public class CommunityService {
 	 */
 	public CommunityData getCommunityData(String location, String locationType) {
 		CommunityData communityData = new CommunityData();
-		communityData.setLocation(this.locationRepository.findLocation(location, locationType));
-		communityData.setIndicatorData(this.communityRepository.getCommunityData(location, locationType));
-
+		if (!"7".equals(locationType)) {
+			communityData.setLocation(this.locationRepository.findLocation(location, locationType));
+			communityData.setIndicatorData(this.communityRepository.getCommunityData(location, locationType));
+		} else {
+			communityData.setLocation(this.locationRepository.findCustomLocation(location));
+			communityData.setIndicatorData(this.communityRepository.getCustomCommunityData(location));
+		}
 		communityData.getIndicatorData().stream().forEach(data -> {
 			if (data.getCategory().getParentCategoryId() != null) {
 				communityData.getIndicatorData()
@@ -73,6 +77,10 @@ public class CommunityService {
 	 * @return the location for the community
 	 */
 	public CommunityLocation getCommunityLocation(String location, String locationType) {
-		return this.communityRepository.getCommunityLocation(location, locationType);
+		if (!"7".equals(locationType)) {
+			return this.communityRepository.getCommunityLocation(location, locationType);
+		} else {
+			return this.communityRepository.getCustomCommunityLocation(location);
+		}
 	}
 }

@@ -130,9 +130,9 @@ export default new Vuex.Store({
             description_en: null,
             description_es: null,
             hasData: true,
-            id: location.key,
-            name_en: location.name + ' (' + state.locationMenu.categories.find(c => c.id === location.locationTypeId)['name_' + state.locale] + ')',
-            name_es: location.name
+            id: location.id,
+            name_en: location.name + ' (' + state.locationMenu.categories.find(c => c.id === location.typeId)['name_' + state.locale] + ')',
+            name_es: location.name + ' (' + state.locationMenu.categories.find(c => c.id === location.typeId)['name_' + state.locale] + ')',
           }
         });
       }
@@ -146,21 +146,20 @@ export default new Vuex.Store({
           id: '7',
           name_en: i18n.t('tools.custom_locations.name'),
           name_es: i18n.t('tools.custom_locations.name'),
-          disabled: !state.customLocations.some((location) => filters?.locationTypeFilter?.options?.some(locationType => locationType.id === location.locationTypeId))
+          disabled: !state.customLocations.some((location) => filters?.locationTypeFilter?.options?.some(locationType => locationType.id === location.typeId))
         });
         filters.locationFilter.options = filters.locationFilter.options.concat(state.customLocations
           .map((location) => {
             return {
               display: false,
-              id: location.key,
-              name_en: location.name + ' (' + state.locationMenu.categories.find(c => c.id === location.locationTypeId)['name_en'] + ')',
-              name_es: location.name + ' (' + state.locationMenu.categories.find(c => c.id === location.locationTypeId)['name_es'] + ')',
+              id: location.id,
+              name_en: location.name + ' (' + state.locationMenu.categories.find(c => c.id === location.typeId)['name_en'] + ')',
+              name_es: location.name + ' (' + state.locationMenu.categories.find(c => c.id === location.typeId)['name_es'] + ')',
               typeId: '7',
-              disabled: !filters?.locationTypeFilter?.options?.some(locationType => locationType.id === location.locationTypeId)
+              disabled: !filters?.locationTypeFilter?.options?.some(locationType => locationType.id === location.typeId)
             };
           })
         );
-        //TODO: how best to handle this? years may vary for each custom location depending on the location type of the custom location.
         filters.locationTypeYears[7] = Array.from(new Set(Object.values(filters.locationTypeYears).flat()));
       }
       
@@ -241,9 +240,9 @@ export default new Vuex.Store({
       state.customLocations = locations
     },
     ADD_CUSTOM_LOCATION(state, location) {
-      if (state.customLocations.find(l => l.name === location.name)) {
+      if (state.customLocations.find(l => l.id === location.id)) {
         state.customLocations = state.customLocations.map(l => {
-          if (l.name === location.name) {
+          if (l.id === location.id) {
             return location
           } else {
             return l
@@ -252,19 +251,9 @@ export default new Vuex.Store({
       } else {
         state.customLocations.push(location);
       }
-      localStorage.setItem('cinow-custom-locations', JSON.stringify(state.customLocations));
-      router.replace({
-        query: {
-          ...router.currentRoute.query,
-          locationTypeId: location.locationTypeId,
-          locationIds: location.locationIds,
-          locationName: location.name,
-
-        }
-      });
     },
     DELETE_CUSTOM_LOCATION(state, location) {
-      state.customLocations = state.customLocations.filter(l => l.key !== location);
+      state.customLocations = state.customLocations.filter(l => l.id !== location);
       localStorage.setItem('cinow-custom-locations', JSON.stringify(state.customLocations));
     }
   },
@@ -410,6 +399,7 @@ export default new Vuex.Store({
       context.dispatch('getExploreData');
     },
     getTablesData(context, request) {
+      //TODO: need to manually add custom location filters here so we don't fetch all custom locations other users have created
       let filterQuery = {
         ...router.currentRoute.query
       }
@@ -513,7 +503,23 @@ export default new Vuex.Store({
       context.commit('SET_CUSTOM_LOCATIONS', locations)
     },
     addCustomLocation(context, location) {
-      context.commit('ADD_CUSTOM_LOCATION', location)
+      let postLocation = JSON.parse(JSON.stringify(location));
+      //postLocation.name_en = postLocation.name + ' (' + this.state.locationMenu.categories.find(c => c.id === location.geojson.features[0].properties.typeId).name_en + ')';
+      //postLocation.name_es = postLocation.name + ' (' + this.state.locationMenu.categories.find(c => c.id === location.geojson.features[0].properties.typeId).name_es + ')';
+      postLocation.geojson = JSON.stringify(postLocation.geojson);
+      console.log(postLocation);
+      return axios.post('/api/custom-locations', postLocation).then(() => {
+        context.commit('ADD_CUSTOM_LOCATION', location);
+        localStorage.setItem('cinow-custom-locations', JSON.stringify(this.state.customLocations));
+        router.replace({
+          query: {
+            ...router.currentRoute.query,
+            typeId: location.typeId,
+            id: location.id
+  
+          }
+        });
+      });
     },
     deleteCustomLocation(context, location) {
       context.commit('DELETE_CUSTOM_LOCATION', location)

@@ -178,7 +178,7 @@
           <v-alert v-if="!customLocations.length" type="info">{{ $t('tools.custom_locations.no_locations_saved') }}</v-alert>
           <v-list>
             <v-list-item-group v-model="customLocationSelected" color="primary">
-              <v-list-item v-for="location in customLocations" :key="location.key" :value="location">
+              <v-list-item v-for="location in customLocations" :key="location.id" :value="location">
                 <v-list-item-content>
                   <v-list-item-title>{{ location.name }}</v-list-item-title>
                 </v-list-item-content>
@@ -186,7 +186,7 @@
                   <v-btn text inline color="primary" @click="viewCommunity(location)">
                     {{ $t('tools.custom_locations.view_community') }}
                   </v-btn>
-                  <v-btn text inline @click="removeCustomLocation(location.key)">
+                  <v-btn text inline @click="removeCustomLocation(location.id)">
                     {{ $t('tools.custom_locations.delete') }}
                   </v-btn>
                 </v-list-item-action>
@@ -210,14 +210,14 @@
           v-bind="attrs"
           @click="viewCommunity(customLocation)"
         >
-          i18n.t('tools.custom_locations.view_community')
+          {{ $t('tools.custom_locations.view_community') }}
         </v-btn>
         <v-btn
           text
           v-bind="attrs"
           @click="message = false"
         >
-          i18n.t('tools.custom_locations.dismiss')
+          {{ $t('tools.custom_locations.dismiss') }}
         </v-btn>
       </template>
 		</v-snackbar>
@@ -250,7 +250,7 @@ export default {
       selectionGeojson: null,
       customLocationFile: null,
       customLocationSelected: null,
-      customLocation: { key: null, name: null, locationTypeId: null, locationIds: []},
+      customLocation: { id: null, name: null, typeId: null, ids: []},
       customLocationGeojson: featureCollection([]),
       refreshOptions: false,
       selectedCategory: null,
@@ -271,12 +271,12 @@ export default {
         },
         {
           text: i18n.t('tools.custom_locations.name'),
-          disabled: !this.customLocation.key,
+          disabled: !this.customLocation.id,
           href: '/custom-locations'
         }
       ];
 
-      if (this.customLocation.key) {
+      if (this.customLocation.id) {
         crumbs.push({
           text: this.customLocation.name,
           disabled: true
@@ -345,7 +345,7 @@ export default {
     setTimeout(() => { 
 			this.componentInitialized = true;
       this.selectedLayer = this.layers?.find(l => l.id === '4')
-      this.customLocation.locationTypeId = this.selectedLayer.id;
+      this.customLocation.typeId = this.selectedLayer.id;
 			if (this.selectionMapInitialized) {
 				this.drawSelectionMap();
 			}
@@ -373,7 +373,7 @@ export default {
       this.$refs.selectionForm.$el.style.height = this.$refs.selectionMap.$el.clientHeight + 'px';
 		},
     selectLocationType() {
-      this.customLocation.locationTypeId = this.selectedLayer.id;
+      this.customLocation.typeId = this.selectedLayer.id;
       this.customLocationGeojson = featureCollection([]);
       this.drawSelectionMap();
     },
@@ -433,16 +433,15 @@ export default {
       //TODO: validate customLocationCode to ensure it is a valid custom location json object
       this.customLocationSelected = null;
       this.customLocationFile = null;
-      this.selectedLayer = this.layers.find(l => l.id === this.customLocation.locationTypeId);
+      this.selectedLayer = this.layers.find(l => l.id === this.customLocation.typeId);
       this.drawSelectionMap().then(() => {
-        this.customLocationGeojson = featureCollection(this.selectionGeojson.features.filter(f => this.customLocation.locationIds.includes(f.id)));
+        this.customLocationGeojson = featureCollection(this.selectionGeojson.features.filter(f => this.customLocation.ids.includes(f.id)));
         this.openDialog = false;
         this.$router.replace({
         query: {
           ...this.$router.currentRoute.query,
-          locationTypeId: this.customLocation.locationTypeId,
-          locationIds: this.customLocation.locationIds,
-          locationName: this.customLocation.name,
+          typeId: 7,
+          id: this.customLocation.id
 
         }
       });
@@ -450,12 +449,17 @@ export default {
     },
     saveCustomLocation() {
       if (this.$refs.selectionForm.validate()) {
-        this.customLocation.key = crypto.randomUUID();
-        this.customLocation.locationIds = this.customLocationGeojson.features.map(f => f.id)
+        this.customLocation.id = this.customLocation.id || crypto.randomUUID();
+        this.customLocation.ids = this.customLocationGeojson.features.map(f => f.id)
         this.customLocation.geojson = this.customLocationGeojson;
-        this.addCustomLocation(this.customLocation);
-        this.messageText = i18n.t('tools.custom_locations.saved');
-        this.message = true;
+        let matchingCustomLocation = this.customLocations.find(l => this.customLocation.name && l.name === this.customLocation.name);
+        if (matchingCustomLocation) {
+          this.customLocation.id = matchingCustomLocation.id;
+        }
+        this.addCustomLocation(this.customLocation).then(() => {
+          this.messageText = i18n.t('tools.custom_locations.saved');
+          this.message = true;
+        });
       }
     },
     exportCustomLocation() {
@@ -466,17 +470,16 @@ export default {
         downloadLink.click();
       }
     },
-    removeCustomLocation(key) {
-      this.deleteCustomLocation(key);
+    removeCustomLocation(id) {
+      this.deleteCustomLocation(id);
     },
     viewCommunity(customLocation) {
       this.$router.push({
         name: 'community',
         query: {
           lang: this.locale,
-          locationType: customLocation.locationTypeId,
-          locations: customLocation.locationIds,
-          name: customLocation.name,
+          typeId: 7,
+          id: customLocation.id
         }
       });
     }

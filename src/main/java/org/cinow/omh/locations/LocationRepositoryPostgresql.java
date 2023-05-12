@@ -2,6 +2,7 @@ package org.cinow.omh.locations;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,5 +71,36 @@ public class LocationRepositoryPostgresql implements LocationRepository {
 				return location;
 			}
 		};
+	}
+
+	@Override
+	public void saveCustomLocation(CustomLocation location) {
+		String sql = ""
+			+ " insert into tbl_custom_locations (id_, name_, location_type_id, location_ids, geojson) "
+			+ " values (:id_, :name_, :location_type_id::numeric, :location_ids, :geojson::json) "
+			+ " on conflict (id_) do update "
+			+ " set name_ = :name_, location_type_id = :location_type_id::numeric, location_ids = :location_ids, geojson = :geojson::json ";
+		
+		MapSqlParameterSource paramMap = new MapSqlParameterSource();
+		paramMap.addValue("id_", location.getId());
+		paramMap.addValue("name_", location.getName());
+		paramMap.addValue("location_type_id", location.getTypeId());
+		paramMap.addValue("location_ids", location.getIds().toArray(new String[0]), Types.ARRAY);
+		paramMap.addValue("geojson", location.getGeojson());
+
+		this.namedParameterJdbcTemplate.update(sql, paramMap);
+	}
+
+	@Override
+	public Location findCustomLocation(String id) {
+		String sql = ""
+			+ " select id_, '7' as location_type_id, name_ as name_en, name_ as name_es"
+			+ " from tbl_custom_locations "
+			+ " where id_ = :id ";
+
+		MapSqlParameterSource paramMap = new MapSqlParameterSource();
+		paramMap.addValue("id", id);
+
+		return this.namedParameterJdbcTemplate.queryForObject(sql, paramMap, this.locationRowMapper());
 	}
 }

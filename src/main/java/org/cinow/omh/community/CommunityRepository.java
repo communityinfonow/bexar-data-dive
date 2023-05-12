@@ -19,6 +19,14 @@ public interface CommunityRepository {
 	List<CommunityDataCategory> getCommunityData(String location, String locationType);
 
 	/**
+	 * Get the data for a custom community.
+	 * 
+	 * @param location the location id
+	 * @return the data for the custom community
+	 */
+	List<CommunityDataCategory> getCustomCommunityData(String location);
+
+	/**
 	 * Get the locations for a community.
 	 * 
 	 * @param locationType the location type id
@@ -34,4 +42,12 @@ public interface CommunityRepository {
 	 * @return the location for the community
 	 */
 	CommunityLocation getCommunityLocation(String location, String locationType);
+
+	/**
+	 * Get the location for a custom community.
+	 * 
+	 * @param location the location id
+	 * @return the location for the custom community
+	 */
+	CommunityLocation getCustomCommunityLocation(String location);
 }

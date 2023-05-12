@@ -6,6 +6,11 @@ package org.cinow.omh.indicators;
  * @author brian
  */
 public class IndicatorType {
+
+	public static final String COUNT = "1";
+	public static final String RATE = "2";
+	public static final String PERCENTAGE = "3";
+	public static final String CURRENCY = "4";
 	
 	/**
 	 * The id.
