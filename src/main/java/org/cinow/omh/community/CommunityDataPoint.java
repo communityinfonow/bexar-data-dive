@@ -24,26 +24,26 @@ public interface CommunityDataPoint {
 	/**
 	 * @return the moeHigh
 	 */
-	Double getMoeHigh();
+	BigDecimal getMoeHigh();
 
 	/**
 	 * @return the moeLow
 	 */
-	Double getMoeLow();
+	BigDecimal getMoeLow();
 
 	/**
 	 * @return the universeValue
 	 */
-	Double getUniverseValue();
+	BigDecimal getUniverseValue();
 
 	/**
 	 * @return the suppressed
 	 */
 	boolean isSuppressed();
 
-	Double getCountValue();
+	BigDecimal getCountValue();
 
-	Double getUniverseMoe();
+	BigDecimal getUniverseMoe();
 
-	Double getCountMoe();
+	BigDecimal getCountMoe();
 }

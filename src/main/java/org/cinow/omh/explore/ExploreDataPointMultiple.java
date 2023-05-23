@@ -1,26 +1,19 @@
-package org.cinow.omh.community;
+package org.cinow.omh.explore;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.cinow.omh.filters.FilterOption;
 import org.cinow.omh.indicators.IndicatorType;
 
 /**
- * This object represents a data point in the Commmunity view for multiple communities.
+ * This object represents a data point in the Explore Data view.
  * 
  * @author brian
  */
-public class CommunityDataPointMultiple implements CommunityDataPoint {
-
-	/**
-	 * The race filter.
-	 */
-	private FilterOption raceFilter;
-
-	/**
+public class ExploreDataPointMultiple implements ExploreDataPoint {
+/**
 	 * The indicator values.
 	 */
 	private Map<String, BigDecimal> values = new TreeMap<>();
@@ -161,20 +154,6 @@ public class CommunityDataPointMultiple implements CommunityDataPoint {
 		return null;
 	}
 
-	/**
-	 * @return the raceFilter
-	 */
-	public FilterOption getRaceFilter() {
-		return raceFilter;
-	}
-
-	/**
-	 * @param raceFilter the raceFilter to set
-	 */
-	public void setRaceFilter(FilterOption raceFilter) {
-		this.raceFilter = raceFilter;
-	}
-
 	public Map<String, BigDecimal> getValues() {
 		return values;
 	}
@@ -237,5 +216,5 @@ public class CommunityDataPointMultiple implements CommunityDataPoint {
 
 	public void setRatePer(int ratePer) {
 		this.ratePer = ratePer;
-	}
+	}	
 }

@@ -1,20 +1,13 @@
-package org.cinow.omh.community;
+package org.cinow.omh.explore;
 
 import java.math.BigDecimal;
 
-import org.cinow.omh.filters.FilterOption;
-
 /**
- * This object represents a data point in the Commmunity view for a single community.
+ * This object represents a data point in the Explore Data view.
  * 
  * @author brian
  */
-public class CommunityDataPointSingle implements CommunityDataPoint {
-
-	/**
-	 * The race filter.
-	 */
-	private FilterOption raceFilter;
+public class ExploreDataPointSingle implements ExploreDataPoint {
 
 	/**
 	 * The indicator value.
@@ -37,38 +30,15 @@ public class CommunityDataPointSingle implements CommunityDataPoint {
 	private BigDecimal universeValue;
 
 	/**
-	 * Whether the data value is suppressed.
+	 * Whether the indicator value is a suppressed.
 	 */
 	private boolean suppressed;
 
-	/**
-	 * The indicator count value.
-	 */
 	private BigDecimal countValue;
 
-	/**
-	 * The indicator universe margin of error.
-	 */
 	private BigDecimal universeMoe;
 
-	/**
-	 * The indicator count margin of error.
-	 */
 	private BigDecimal countMoe;
-
-	/**
-	 * @return the raceFilter
-	 */
-	public FilterOption getRaceFilter() {
-		return raceFilter;
-	}
-
-	/**
-	 * @param raceFilter the raceFilter to set
-	 */
-	public void setRaceFilter(FilterOption raceFilter) {
-		this.raceFilter = raceFilter;
-	}
 
 	/**
 	 * @return the value
@@ -163,4 +133,6 @@ public class CommunityDataPointSingle implements CommunityDataPoint {
 	public void setCountMoe(BigDecimal countMoe) {
 		this.countMoe = countMoe;
 	}
+	
+	
 }

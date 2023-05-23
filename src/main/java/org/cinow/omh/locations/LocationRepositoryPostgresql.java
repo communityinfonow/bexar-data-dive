@@ -103,4 +103,30 @@ public class LocationRepositoryPostgresql implements LocationRepository {
 
 		return this.namedParameterJdbcTemplate.queryForObject(sql, paramMap, this.locationRowMapper());
 	}
+
+	@Override
+	public String findCustomLocationType(String id) {
+		String sql = ""
+			+ " select location_type_id "
+			+ " from tbl_custom_locations "
+			+ " where id_ = :id ";
+
+		MapSqlParameterSource paramMap = new MapSqlParameterSource();
+		paramMap.addValue("id", id);
+		
+		return this.namedParameterJdbcTemplate.queryForObject(sql, paramMap, String.class);
+	}
+
+	@Override
+	public List<String> findCustomLocationIds(String id) {
+		String sql = ""
+			+ " select unnest(location_ids) "
+			+ " from tbl_custom_locations "
+			+ " where id_ = :id ";
+
+		MapSqlParameterSource paramMap = new MapSqlParameterSource();
+		paramMap.addValue("id", id);
+		
+		return this.namedParameterJdbcTemplate.queryForList(sql, paramMap, String.class);
+	}
 }

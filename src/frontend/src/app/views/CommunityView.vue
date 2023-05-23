@@ -362,7 +362,6 @@ export default {
                 .reduce((acc, cur) => acc.concat(cur.coordinates), []),
               { id: cl.id, typeId: "7", name: cl.name + ' (' + this.locationMenu.categories.find(c => c.id === cl.typeId)['name_' + this.locale] + ')'}))
             );
-          console.log(this.selectionGeojson);
           this.refreshOptions = Math.random(); // force a refresh
           return;
         }

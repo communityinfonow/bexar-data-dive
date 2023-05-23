@@ -146,7 +146,7 @@ public class TablesRepositoryPostgresql implements TablesRepository{
 			sql += " order by " + this.getSortByColumn(request.getSortBy(), request.getLang())  + (request.isSortDesc() ? " desc nulls last " : " nulls first ");
 		}
 		sql += " ) user_searched_sorted "
-			+	"  ";
+			+	" where record_number between :start and :end ";
 
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
 		paramMap.addValue("indicator_id", request.getIndicator());
@@ -257,7 +257,7 @@ public class TablesRepositoryPostgresql implements TablesRepository{
 						}
 						item.setSuppressed(rs.getBoolean("suppress"));
 
-						items.add(customLocationItem);
+						items.add(item);
 					}
 				}
 				return items;
