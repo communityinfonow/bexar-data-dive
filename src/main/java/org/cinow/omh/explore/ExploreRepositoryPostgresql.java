@@ -198,7 +198,6 @@ public class ExploreRepositoryPostgresql implements ExploreRepository {
 			paramMap.addValue("location_id", dataRequest.getFilters().getLocation());
 		}
 		sql += " order by iv.year_, lt.id_, l.id_ ";
-		System.out.println(sql);
 			
 		return this.namedParameterJdbcTemplate.query(sql, paramMap, new ResultSetExtractor<ExploreDataLocation<ExploreDataPoint>>() {
 			@Override

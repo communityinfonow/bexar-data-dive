@@ -505,10 +505,7 @@ export default new Vuex.Store({
     },
     addCustomLocation(context, location) {
       let postLocation = JSON.parse(JSON.stringify(location));
-      //postLocation.name_en = postLocation.name + ' (' + this.state.locationMenu.categories.find(c => c.id === location.geojson.features[0].properties.typeId).name_en + ')';
-      //postLocation.name_es = postLocation.name + ' (' + this.state.locationMenu.categories.find(c => c.id === location.geojson.features[0].properties.typeId).name_es + ')';
       postLocation.geojson = JSON.stringify(postLocation.geojson);
-      console.log(postLocation);
       return axios.post('/api/custom-locations', postLocation).then(() => {
         context.commit('ADD_CUSTOM_LOCATION', location);
         localStorage.setItem('cinow-custom-locations', JSON.stringify(this.state.customLocations));
