@@ -233,6 +233,7 @@ import { LMap, LTileLayer, LGeoJson } from 'vue2-leaflet'
 import { feature, featureCollection } from '@turf/helpers'
 
 export default {
+  //FIXME: find all places where "7" or "Custom..." is hard-coded and do it better.
   name: 'CustomLocationsView',
   components: {
     LMap,

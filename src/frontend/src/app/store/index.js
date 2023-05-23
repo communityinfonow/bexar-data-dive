@@ -340,7 +340,6 @@ export default new Vuex.Store({
       })
     },
     getExploreData(context) {
-      //FIXME: firing twice on page load and apply filters...
       if (!this.state.filterSelections) {
         return;
       }
@@ -400,7 +399,6 @@ export default new Vuex.Store({
       context.dispatch('getExploreData');
     },
     getTablesData(context, request) {
-      //TODO: need to manually add custom location filters here so we don't fetch all custom locations other users have created
       let filterQuery = {
         ...router.currentRoute.query
       }
@@ -443,6 +441,7 @@ export default new Vuex.Store({
       } else {
         delete filterQuery.incomes
       }
+      request.customLocationIds = this.state.customLocations.map(l => l.id);
       if (JSON.stringify(filterQuery) !== JSON.stringify(router.currentRoute.query)) {
         router.replace({
           query: filterQuery

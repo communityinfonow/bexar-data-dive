@@ -85,6 +85,8 @@ public class TablesDataRequest {
 	 */
 	private List<String> incomes;
 
+	private List<String> customLocationIds;
+
 	/**
 	 * Constructor initializes fields.
 	 */
@@ -218,4 +220,14 @@ public class TablesDataRequest {
 	public void setIncomes(List<String> incomes) {
 		this.incomes = incomes;
 	}
+
+	public List<String> getCustomLocationIds() {
+		return customLocationIds;
+	}
+
+	public void setCustomLocationIds(List<String> customLocationIds) {
+		this.customLocationIds = customLocationIds;
+	}
+
+	
 }
