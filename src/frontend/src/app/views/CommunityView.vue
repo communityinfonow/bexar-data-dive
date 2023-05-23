@@ -408,7 +408,6 @@ export default {
               .map(clf => clf.geometry)
               .reduce((acc, cur) => acc.concat(cur.coordinates), []),
               { id: response.data.id, typeId: "7", name: response.data['name_' + this.locale] });
-              console.log(this.communityGeojson);
           }
           
           this.refreshOptions = Math.random(); // force a refresh

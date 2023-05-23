@@ -357,7 +357,6 @@ export default {
   methods: {
     ...mapActions(['setCommunity', 'setToolRoute', 'addCustomLocation', 'deleteCustomLocation']),
     selectLocation(feature) {
-      console.log(feature)
       if (this.customLocationGeojson.features.find(f => f.id === feature.id)) {
         this.customLocationGeojson.features = this.customLocationGeojson.features.filter(f => f.id !== feature.id);
       } else {
