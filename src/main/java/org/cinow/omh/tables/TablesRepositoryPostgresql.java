@@ -35,7 +35,7 @@ public class TablesRepositoryPostgresql implements TablesRepository{
 		String sql = ""
 			+ " select * from ( "	
 			+ " select * from ( "
-			+ " select *, max(record_number) over () as total_rows from ( " //FIXME: total rows not shrinking from user text searches...but it may be fine once we're actually aggregating values in the service...
+			+ " select *, max(record_number) over () as total_rows from ( "
 			+ " select *, dense_rank() over(order by location_type_id, location_id, year_ desc, race_id nulls first, age_id nulls first, sex_id nulls first, edu_id nulls first, inc_id nulls first) as record_number from ( "
 			+ " select l.id_ as location_id, null as component_location_id, l.name_en as location_en, l.name_es as location_es, "
 			+	" 	 lt.id_ as location_type_id, lt.name_en as location_type_en, lt.name_es as location_type_es, "
@@ -80,6 +80,20 @@ public class TablesRepositoryPostgresql implements TablesRepository{
 		if (!request.getIncomes().isEmpty()) {
 			sql += " and (inc.id_::text in (:inc_ids) or (:include_all_incs and inc.id_ is null)) ";
 		}
+		if (StringUtils.hasText(request.getSearch())) {
+			sql += "   and (lower(lt.name_en) like lower(:search) or lower(lt.name_es) like lower(:search) ";
+			sql += "   or lower(l.name_en) like lower(:search) or lower(l.name_es) like lower(:search) ";
+			sql += "   or lower(year_) like lower(:search) ";
+			sql += "   or lower(race.name_en) like lower(:search) or lower(race.name_es) like lower(:search) ";
+			sql += "   or lower(age.name_en) like lower(:search) or lower(age.name_es) like lower(:search) ";
+			sql += "   or lower(sex.name_en) like lower(:search) or lower(sex.name_es) like lower(:search) ";
+			sql += "   or lower(edu.name_en) like lower(:search) or lower(edu.name_es) like lower(:search) ";
+			sql += "   or lower(inc.name_en) like lower(:search) or lower(inc.name_es) like lower(:search) ";
+			sql += "   or lower(indicator_value::text) like lower(:search) ";
+			sql += "   or lower(moe_low::text) like lower(:search) ";
+			sql += "   or lower(moe_high::text) like lower(:search) ";
+			sql += "   or lower(universe_value::text) like lower(:search)) ";
+		}
 		sql +=	"  union "
 			+	"  select cl.id_ as location_id, iv.location_id as component_location_id, cl.name_ as location_en, cl.name_ as location_es, "
 			+	" 	 7 as location_type_id, 'Custom' as location_type_en, 'Custom (es)' as location_type_es, "
@@ -91,7 +105,7 @@ public class TablesRepositoryPostgresql implements TablesRepository{
 			+	" 	 inc.id_ as inc_id, coalesce(inc.name_en, 'All') as inc_en, coalesce(inc.name_es, 'Todos') as inc_es, "
 			+	" 	 i.indicator_type_id "
 			+	"  from tbl_indicator_values iv "
-			+	" 	 join tbl_custom_locations cl ON cl.location_type_id = iv.location_type_id and cl.location_ids @> array[iv.location_id] "
+			+	" 	 join tbl_custom_locations cl ON cl.location_type_id = iv.location_type_id and cl.location_ids @> array[iv.location_id] and cl.id_ in (:custom_location_ids)"
 			+	" 	 left join tbl_filter_options race on race.id_ = iv.race_id "
 			+	" 	 left join tbl_filter_options age on age.id_ = iv.age_id "
 			+	" 	 left join tbl_filter_options sex on sex.id_ = iv.sex_id "
@@ -123,25 +137,24 @@ public class TablesRepositoryPostgresql implements TablesRepository{
 		if (!request.getIncomes().isEmpty()) {
 			sql += " and (inc.id_::text in (:inc_ids) or (:include_all_incs and inc.id_ is null)) ";
 		}
+		if (StringUtils.hasText(request.getSearch())) {
+			sql += "   and (lower('Custom') like lower(:search) or lower('Custom (es)') like lower(:search) ";
+			sql += "   or lower(cl.name_) like lower(:search) or lower(cl.name_) like lower(:search) ";
+			sql += "   or lower(year_) like lower(:search) ";
+			sql += "   or lower(race.name_en) like lower(:search) or lower(race.name_es) like lower(:search) ";
+			sql += "   or lower(age.name_en) like lower(:search) or lower(age.name_es) like lower(:search) ";
+			sql += "   or lower(sex.name_en) like lower(:search) or lower(sex.name_es) like lower(:search) ";
+			sql += "   or lower(edu.name_en) like lower(:search) or lower(edu.name_es) like lower(:search) ";
+			sql += "   or lower(inc.name_en) like lower(:search) or lower(inc.name_es) like lower(:search) ";
+			sql += "   or lower(indicator_value::text) like lower(:search) ";
+			sql += "   or lower(moe_low::text) like lower(:search) ";
+			sql += "   or lower(moe_high::text) like lower(:search) ";
+			sql += "   or lower(universe_value::text) like lower(:search)) ";
+		}
 		sql += " ) as filtered "
 			+	" ) as ranked "
 			+	" order by record_number "
 			+	" ) as ordered ";
-		if (StringUtils.hasText(request.getSearch())) {
-			sql += "   where lower(location_type_en) like lower(:search) or lower(location_type_es) like lower(:search) ";
-			sql += "   or lower(location_en) like lower(:search) or lower(location_es) like lower(:search) ";
-			sql += "   or lower(year_) like lower(:search) ";
-			sql += "   or lower(race_en) like lower(:search) or lower(race_es) like lower(:search) ";
-			sql += "   or lower(age_en) like lower(:search) or lower(age_es) like lower(:search) ";
-			sql += "   or lower(sex_en) like lower(:search) or lower(sex_es) like lower(:search) ";
-			sql += "   or lower(edu_en) like lower(:search) or lower(edu_es) like lower(:search) ";
-			sql += "   or lower(inc_en) like lower(:search) or lower(inc_es) like lower(:search) ";
-			sql += "   or lower(indicator_value::text) like lower(:search) ";
-			sql += "   or lower(moe_low::text) like lower(:search) ";
-			sql += "   or lower(moe_high::text) like lower(:search) ";
-			sql += "   or lower(universe_value::text) like lower(:search) ";
-
-		}
 		if (StringUtils.hasText(request.getSortBy())) {
 			sql += " order by " + this.getSortByColumn(request.getSortBy(), request.getLang())  + (request.isSortDesc() ? " desc nulls last " : " nulls first ");
 		}
@@ -150,10 +163,11 @@ public class TablesRepositoryPostgresql implements TablesRepository{
 
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
 		paramMap.addValue("indicator_id", request.getIndicator());
-		paramMap.addValue("start", request.getPage() - 1 * request.getPerPage() + 1);
+		paramMap.addValue("start", ((request.getPage() - 1) * request.getPerPage()) + 1);
 		paramMap.addValue("end", request.getPage() * request.getPerPage());
 		paramMap.addValue("location_type_ids", request.getLocationTypes());
 		paramMap.addValue("location_ids", request.getLocations());
+		paramMap.addValue("custom_location_ids", request.getCustomLocationIds());
 		paramMap.addValue("years", request.getYears());
 		paramMap.addValue("race_ids", request.getRaces());
 		paramMap.addValue("include_all_races", request.getRaces().contains(null));

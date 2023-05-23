@@ -235,8 +235,10 @@ export default {
 				}
 				this.compareWithSelectAll = true;
 			} else {
-				this.compareWithItems.find(i => i.id === 0).name_en = i18n.t('tools.tables.select_all');
-				this.compareWithItems.find(i => i.id === 0).name_es = i18n.t('tools.tables.select_all');
+				if (this.compareWithItems.find(i => i.id === 0)) {
+					this.compareWithItems.find(i => i.id === 0).name_en = i18n.t('tools.tables.select_all');
+					this.compareWithItems.find(i => i.id === 0).name_es = i18n.t('tools.tables.select_all');
+				}
 				this.compareWithSelectAll = false;
 			}
 		},
