@@ -114,11 +114,11 @@ public class CommunityRepositoryPostgresql implements CommunityRepository {
 						dataPoint.getRaceFilter().setName_es(rs.getString("race_filter_name_es"));
 						dataPoint.setSuppressed(rs.getBoolean("suppress"));
 						if (!dataPoint.isSuppressed()) {
-							dataPoint.setMoeHigh(rs.getDouble("moe_high"));
+							dataPoint.setMoeHigh(rs.getBigDecimal("moe_high"));
 							if (rs.wasNull()) {
 								dataPoint.setMoeHigh(null);
 							}
-							dataPoint.setMoeLow(rs.getDouble("moe_low"));
+							dataPoint.setMoeLow(rs.getBigDecimal("moe_low"));
 							if (rs.wasNull()) {
 								dataPoint.setMoeLow(null);
 							}
@@ -126,19 +126,19 @@ public class CommunityRepositoryPostgresql implements CommunityRepository {
 							if (rs.wasNull()) {
 								dataPoint.setValue(null);
 							}
-							dataPoint.setUniverseValue(rs.getDouble("universe_value"));
+							dataPoint.setUniverseValue(rs.getBigDecimal("universe_value"));
 							if (rs.wasNull()) {
 								dataPoint.setUniverseValue(null);
 							}
-							dataPoint.setCountValue(rs.getDouble("count_value"));
+							dataPoint.setCountValue(rs.getBigDecimal("count_value"));
 							if (rs.wasNull()) {
 								dataPoint.setCountValue(null);
 							}
-							dataPoint.setUniverseMoe(rs.getDouble("universe_moe"));
+							dataPoint.setUniverseMoe(rs.getBigDecimal("universe_moe"));
 							if (rs.wasNull()) {
 								dataPoint.setUniverseMoe(null);
 							}
-							dataPoint.setCountMoe(rs.getDouble("count_moe"));
+							dataPoint.setCountMoe(rs.getBigDecimal("count_moe"));
 							if (rs.wasNull()) {
 								dataPoint.setCountMoe(null);
 							}
@@ -245,19 +245,19 @@ public class CommunityRepositoryPostgresql implements CommunityRepository {
 							if (rs.wasNull()) {
 								dataPoint.getValues().put(rs.getString("location_id"), null);
 							}
-							dataPoint.getUniverseValues().put(rs.getString("location_id"), rs.getDouble("universe_value"));
+							dataPoint.getUniverseValues().put(rs.getString("location_id"), rs.getBigDecimal("universe_value"));
 							if (rs.wasNull()) {
 								dataPoint.getUniverseValues().put(rs.getString("location_id"), null);
 							}
-							dataPoint.getCountValues().put(rs.getString("location_id"), rs.getDouble("count_value"));
+							dataPoint.getCountValues().put(rs.getString("location_id"), rs.getBigDecimal("count_value"));
 							if (rs.wasNull()) {
 								dataPoint.getCountValues().put(rs.getString("location_id"), null);
 							}
-							dataPoint.getUniverseMoes().put(rs.getString("location_id"), rs.getDouble("universe_moe"));
+							dataPoint.getUniverseMoes().put(rs.getString("location_id"), rs.getBigDecimal("universe_moe"));
 							if (rs.wasNull()) {
 								dataPoint.getUniverseMoes().put(rs.getString("location_id"), null);
 							}
-							dataPoint.getCountMoes().put(rs.getString("location_id"), rs.getDouble("count_moe"));
+							dataPoint.getCountMoes().put(rs.getString("location_id"), rs.getBigDecimal("count_moe"));
 							if (rs.wasNull()) {
 								dataPoint.getCountMoes().put(rs.getString("location_id"), null);
 							}

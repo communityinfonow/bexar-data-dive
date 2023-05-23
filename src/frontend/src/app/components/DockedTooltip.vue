@@ -4,7 +4,7 @@
 			<v-card-title class="docked-tooltip-title white--text">
 				{{ $t('tools.explore.docked_tooltip.now_viewing')}}
 				<span v-if="activeTab === 0 && dockedTooltip">: {{ dockedTooltip.location }}</span>
-				<span v-else-if="activeTab !== 0">: {{ filteredLocation }}</span>
+				<span v-else-if="activeTab !== 0">: {{ filteredLocation }}</span><!--FIXME: should change on compare tab when comparing to another location -->
 			</v-card-title>
 			<v-card-text v-if="!dockedTooltip">
 				<div class="text-subtitle-1 pt-2">{{ helpMessage }}</div>

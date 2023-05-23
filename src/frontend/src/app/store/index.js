@@ -340,6 +340,7 @@ export default new Vuex.Store({
       })
     },
     getExploreData(context) {
+      //FIXME: firing twice on page load and apply filters...
       if (!this.state.filterSelections) {
         return;
       }

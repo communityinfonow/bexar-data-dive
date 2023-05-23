@@ -121,7 +121,7 @@ import { mapActions, mapState, mapGetters } from 'vuex'
 import i18n from '@/i18n'
 import { latLng } from 'leaflet'
 import { LMap, LTileLayer, LGeoJson, LControl } from 'vue2-leaflet'
-import { feature, featureCollection } from '@turf/helpers'
+import { feature, featureCollection, multiPolygon } from '@turf/helpers'
 import colorbrewer from 'colorbrewer'
 import { ckmeans } from 'simple-statistics'
 import ExploreToolsPanel from '@/app/components/ExploreToolsPanel'
@@ -278,7 +278,7 @@ export default {
 			this.setDefaultDockedTooltip();
 			this.geojson = featureCollection(this.exploreData.locationData
 				.filter(ld => !!ld.geojson)
-				.map(ld => feature(JSON.parse(ld.geojson), 
+				.map(ld => feature(this.getLocationDataGeojson(ld), 
 					{
 						locationName: ld.location['name_' + this.locale],
 						value: ld.yearData[this.exploreData.filters.yearFilter.options[0].id]?.value,
@@ -290,6 +290,16 @@ export default {
 					{ id: ld.location.id }))
 			)
 			this.refreshOptions = Math.random(); // force a refresh
+		},
+		getLocationDataGeojson(locationData) {
+			let geojson = JSON.parse(locationData.geojson);
+			if (geojson.type === 'FeatureCollection') {
+				geojson = multiPolygon(geojson.features
+						.map(clf => clf.geometry)
+						.reduce((acc, cur) => acc.concat(cur.coordinates), [])).geometry;
+			}
+
+			return geojson;
 		},
 		onEachFeature(feature, layer) {
 			let filteredFeature = feature.id === this.exploreData.filters.locationFilter.options[0]?.id;

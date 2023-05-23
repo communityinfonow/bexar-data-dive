@@ -34,4 +34,8 @@ public interface LocationRepository {
 	void saveCustomLocation(CustomLocation location);
 
 	Location findCustomLocation(String id);
+
+	String findCustomLocationType(String id);
+
+	List<String> findCustomLocationIds(String id);
 }
