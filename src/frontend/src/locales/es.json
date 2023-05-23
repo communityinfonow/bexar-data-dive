@@ -83,10 +83,10 @@
         "value": "Valor",
         "moe_low": " ME (bajo)",
         "moe_high": "ME (alto)",
-        "universe": "Universo",
-        "select_all": "Seleccionar todo",
-        "clear_selections": "Limpiar selecciones"
-      }
+        "universe": "Universo"
+      },
+      "select_all": "Seleccionar todo",
+      "clear_selections": "Limpiar selecciones"
     },
     "common": {
       "featured_indicators": "Indicadores Destacados",

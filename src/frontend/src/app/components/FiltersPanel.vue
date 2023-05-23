@@ -142,8 +142,8 @@ export default {
 				return {
 					...o,
 					disabled: this.selectedLocationType !== '7' 
-						? this.filters.locationTypeYears[this.selectedLocationType].indexOf(o.id) === -1
-						: this.filters.locationTypeYears[this.filters.locationFilter.options.find(l=> l.id === this.selectedLocation).typeId].indexOf(o.id) === -1
+						? this.filters?.locationTypeYears[this.selectedLocationType].indexOf(o.id) === -1
+						: this.filters?.locationTypeYears[this.filters.locationFilter.options.find(l=> l.id === this.selectedLocation).typeId].indexOf(o.id) === -1
 				}
 			})
 		}

@@ -4,7 +4,6 @@
 		<v-form v-if="filters" ref="compareForm" v-model="valid">
 			<v-row class="mt-2">
 				<v-col cols="3" xl="4">
-					<!-- TODO: try a custom v-item slot to allow for disabled items with tooltips rather than removing unavailable items -->
 					<v-select
 						v-if="showCompareOptions"
 						:label="$t('tools.explore.compare_by')"
@@ -30,10 +29,9 @@
 						:item-text="(item) => (item['name_' + locale]) + (item.filtered ? (' (' + $t('tools.explore.current_filter_setting') + ')') : '')"
 						:item-disabled="(item) => item.filtered"
 						v-model="compareWith"
-						:rules="[v => !!v.length || $t('tools.common.make_selection')]"
 						multiple
 						:search-input.sync="compareWithQuery"
-						@change="compareWithQuery = ''"
+						@change="selectCompareWith"
 					>
 					</v-autocomplete>
 				</v-col>
@@ -137,6 +135,7 @@ export default {
 			compareWithQuery: '',
 			compareWithItems: [],
 			compareWith: [],
+			compareWithSelectAll: false,
 			valid: true
 		}
 	},
@@ -156,6 +155,12 @@ export default {
 				this.compareWith = this.compareWithItems.filter(w => prev.includes(w.id));
 				this.applyComparison();
 			}
+		},
+		locale() {
+			if (this.compareWithItems?.find(i => i.id === 0)) {
+				this.compareWithItems.find(i => i.id === 0).name_en = i18n.t('tools.tables.select_all');
+				this.compareWithItems.find(i => i.id === 0).name_es = i18n.t('tools.tables.select_all');
+			}
 		}
 	},
 	
@@ -168,18 +173,21 @@ export default {
 				[].concat(router.currentRoute.query.compareWith).forEach(p => {
 					this.compareWith.push(this.compareWithItems.find(i => i.typeId == p.split("_")[0] && i.id == p.split("_")[1]));
 				});
+				this.selectCompareWith();
 			} else if (router.currentRoute.query.compareBy === 'y') {
 				this.compareBy = this.compareByItems[1];
 				this.selectCompareBy();
 				[].concat(router.currentRoute.query.compareWith).forEach(p => {
 					this.compareWith.push(this.compareWithItems.find(i => i.id == p));
 				});
+				this.selectCompareWith();
 			} else {
 				this.compareBy = this.compareByItems.find(i => i.id == router.currentRoute.query.compareBy);
 				this.selectCompareBy();
 				[].concat(router.currentRoute.query.compareWith).forEach(p => {
 					this.compareWith.push(this.compareWithItems.find(i => i.id == p));
 				});
+				this.selectCompareWith();
 			}
 			this.applyComparison();
 		}
@@ -197,19 +205,39 @@ export default {
 		selectCompareBy() {
 			this.compareWith = [];
 			this.compareWithItems = [];
+			this.compareWithSelectAll = false;
 			if (this.compareBy?.id === 'l') {
 				let typeIdsWithData = this.filters?.locationTypeFilter.options.map(o => o.id);
 				this.compareWithItems = this.filters?.locationFilter.options
 					.filter(o => typeIdsWithData.indexOf(o.typeId) !== -1) || [];
 				this.compareWithItems.forEach(i => i.filtered = (i.id === this.filterSelections?.location));
-			} else if (this.compareBy?.id === 'y') { 
-				this.compareWithItems = this.filters?.yearFilter.options
-					.filter(o => (Number(this.filterSelections?.year) - Number(o.id)) % this.exploreData.source.trendInterval === 0) || [];
+			} else if (this.compareBy?.id === 'y') {
+				this.compareWithItems = [{id: 0, name_en: i18n.t('tools.tables.select_all'), name_es: i18n.t('tools.tables.select_all')}].concat(this.filters?.yearFilter.options
+					.filter(o => (Number(this.filterSelections?.year) - Number(o.id)) % this.exploreData.source.trendInterval === 0) || []);
 				this.compareWithItems.forEach(i => i.filtered = (i.id === this.filterSelections?.year));
 			} else {
-				this.compareWithItems = this.filters?.indicatorFilters
-					.find(filter => filter.type.name_en === this.compareBy?.name_en)?.options || [];
+				this.compareWithItems = [{id: 0, name_en: i18n.t('tools.tables.select_all'), name_es: i18n.t('tools.tables.select_all')}].concat(this.filters?.indicatorFilters
+					.find(filter => filter.type.name_en === this.compareBy?.name_en)?.options || []);
 				this.compareWithItems.forEach(i => i.filtered = (i.id === this.filterSelections?.indicatorFilters[this.compareBy?.id]?.id));
+			}
+		},
+		selectCompareWith() {
+			this.compareWithQuery = '';
+			if (this.compareWith.find(i => i.id === 0) || this.compareWith.length === this.compareWithItems.length - 2) {
+				if (this.compareWithSelectAll) {
+					this.compareWith = [];
+					this.compareWithItems.find(i => i.id === 0).name_en = i18n.t('tools.tables.select_all');
+					this.compareWithItems.find(i => i.id === 0).name_es = i18n.t('tools.tables.select_all');
+				} else {
+					this.compareWith = this.compareWithItems.filter(i => i.id !== 0 && !i.filtered);
+					this.compareWithItems.find(i => i.id === 0).name_en = i18n.t('tools.tables.clear_selections');
+					this.compareWithItems.find(i => i.id === 0).name_es = i18n.t('tools.tables.clear_selections');
+				}
+				this.compareWithSelectAll = true;
+			} else {
+				this.compareWithItems.find(i => i.id === 0).name_en = i18n.t('tools.tables.select_all');
+				this.compareWithItems.find(i => i.id === 0).name_es = i18n.t('tools.tables.select_all');
+				this.compareWithSelectAll = false;
 			}
 		},
 		validateComparison() {
