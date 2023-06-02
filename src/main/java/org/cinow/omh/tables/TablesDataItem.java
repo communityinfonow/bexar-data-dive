@@ -64,8 +64,4 @@ public interface TablesDataItem {
 	boolean isSuppressed();
 
 	BigDecimal getCountValue();
-
-	BigDecimal getUniverseMoe();
-
-	BigDecimal getCountMoe();
 }

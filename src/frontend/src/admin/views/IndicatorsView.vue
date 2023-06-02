@@ -69,6 +69,7 @@
 							</v-select>
 							<v-switch label="Featured" v-model="ind.featured"></v-switch>
 							<v-switch label="Display" v-model="ind.display"></v-switch>
+							<v-switch label="Aggregable" v-model="ind.aggregable"></v-switch>
 						</v-card-text>
 						<v-card-actions>
 							<v-btn color="primary" @click="updateHandler(ind, idx)">
@@ -147,6 +148,7 @@
 							</v-select>
 							<v-switch label="Featured" v-model="newIndicator.featured"></v-switch>
 							<v-switch label="Display" v-model="newIndicator.display"></v-switch>
+							<v-switch label="Aggregable" v-model="newIndicator.aggregable"></v-switch>
 						</v-card-text>
 						<v-card-actions>
 							<v-btn type="submit" color="primary" @click.prevent="addHandler">

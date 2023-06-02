@@ -141,12 +141,13 @@ export default new Vuex.Store({
     filters: (state) => {
       let filters = JSON.parse(JSON.stringify(state.filters))
       if (filters && state.customLocations?.length > 0) {
+        //FIXME: need to disable this option if the indicator is not aggregable
         filters.locationTypeFilter.options.push({
           display: false, 
           id: '7',
           name_en: i18n.t('tools.custom_locations.name'),
           name_es: i18n.t('tools.custom_locations.name'),
-          disabled: !state.customLocations.some((location) => filters?.locationTypeFilter?.options?.some(locationType => locationType.id === location.typeId))
+          disabled: !state.indicator.aggregable || !state.customLocations.some((location) => filters?.locationTypeFilter?.options?.some(locationType => locationType.id === location.typeId))
         });
         filters.locationFilter.options = filters.locationFilter.options.concat(state.customLocations
           .map((location) => {

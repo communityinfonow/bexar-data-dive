@@ -336,6 +336,7 @@ export default {
 				this.setDefaultDockedTooltip()
 			});
 			layer.on('click', (e) => {
+				//FIXME: wrong location type when selecting from map when a custom location is filtered...
 				this.selectLocation(e.target.feature.id);
 			});
 		},

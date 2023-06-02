@@ -85,3 +85,5 @@ databaseChangeLog:
       file: /db/changelog/sql/changelog_43.sql
   - include:
       file: /db/changelog/sql/changelog_44.sql
+  - include:
+      file: /db/changelog/sql/changelog_45.sql

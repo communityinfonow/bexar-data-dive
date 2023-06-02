@@ -38,4 +38,6 @@ public interface LocationRepository {
 	String findCustomLocationType(String id);
 
 	List<String> findCustomLocationIds(String id);
+
+	String findCustomLocationGeojson(String id);
 }

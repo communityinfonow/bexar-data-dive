@@ -129,4 +129,17 @@ public class LocationRepositoryPostgresql implements LocationRepository {
 		
 		return this.namedParameterJdbcTemplate.queryForList(sql, paramMap, String.class);
 	}
+
+	@Override
+	public String findCustomLocationGeojson(String id) {
+		String sql = ""
+			+ " select geojson::text "
+			+ " from tbl_custom_locations "
+			+ " where id_ = :id ";
+
+		MapSqlParameterSource paramMap = new MapSqlParameterSource();
+		paramMap.addValue("id", id);
+
+		return this.namedParameterJdbcTemplate.queryForObject(sql, paramMap, String.class);
+	}
 }

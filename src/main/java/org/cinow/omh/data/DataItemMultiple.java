@@ -1,14 +1,19 @@
 package org.cinow.omh.data;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.Map.Entry;
 
 import org.cinow.omh.indicators.IndicatorType;
 
 public abstract class DataItemMultiple {
 	
+	//FIXME: need 'is_aggregatable' flag on indicators to determine whether to aggregate or not
 	/**
 	 * The indicator values.
 	 */
@@ -94,26 +99,89 @@ public abstract class DataItemMultiple {
 	 * @return the moeHigh
 	 */
 	public BigDecimal getMoeHigh() {
-		//TODO: needs calculated
-		return null;
+		try {
+			BigDecimal moeHigh = BigDecimal.ZERO.max(this.getValue().add(this.getMoe())).setScale(1, RoundingMode.HALF_UP);
+			if (IndicatorType.PERCENTAGE.equals(this.indicatorType.getId())) {
+				moeHigh = BigDecimal.valueOf(100).min(moeHigh);
+			}
+			return moeHigh;
+		} catch (NullPointerException e) {
+			return null;
+		}
 	}
 
 	/**
 	 * @return the moeLow
 	 */
 	public BigDecimal getMoeLow() {
-		//TODO: needs calculated
-		return null;
+		try {
+			return BigDecimal.ZERO.max(this.getValue().subtract(this.getMoe())).setScale(1, RoundingMode.HALF_UP);
+		} catch (NullPointerException e) {
+			return null;
+		}
 	}
 
-	public BigDecimal getCountMoe() {
-		//TODO: needs calculated
-		return null;
-	}
+	private BigDecimal getMoe() {
+		List<BigDecimal> moes = new ArrayList<>();
+		BigDecimal moe = null;
+		for (Entry<String, BigDecimal> countMoe : countMoes.entrySet()) {
+			switch (this.indicatorType.getId()) {
+				case IndicatorType.COUNT:
+					try {
+						moe = this.countMoes.get(countMoe.getKey());
+					} catch (NumberFormatException e) {
+						moe = null;
+					}
+					break;
+				case IndicatorType.PERCENTAGE:
+					try {
+						moe = countMoe.getValue().pow(2)
+							.subtract(this.values.get(countMoe.getKey()).multiply(BigDecimal.valueOf(.01)).pow(2)
+								.multiply(universeMoes.get(countMoe.getKey()).pow(2)))
+							.sqrt(new MathContext(4, RoundingMode.HALF_UP))
+							.divide(this.universeValues.get(countMoe.getKey()), 4, RoundingMode.HALF_UP)
+							.multiply(BigDecimal.valueOf(100));
+					} catch (ArithmeticException | NumberFormatException e) {
+						moe = null;
+					}
+					break;
+				case IndicatorType.RATE:
+					try {
+						moe = countMoe.getValue().pow(2)
+							.add(this.values.get(countMoe.getKey()).pow(2)
+								.multiply(universeMoes.get(countMoe.getKey()).pow(2)))
+							.sqrt(new MathContext(4, RoundingMode.HALF_UP))
+							.divide(this.universeValues.get(countMoe.getKey()), 4, RoundingMode.HALF_UP);
+					} catch (ArithmeticException | NumberFormatException e) {
+						moe = null;
+					}
+					break;
+				case IndicatorType.CURRENCY:
+					try {
+						moe = null; //TODO: need currency MOE calculation
+					} catch (ArithmeticException | NumberFormatException e) {
+						moe = null;
+					}
+					break;
+			}
 
-	public BigDecimal getUniverseMoe() {
-		//TODO: needs calculated
-		return null;
+			moes.add(moe);
+		}
+
+		moe = moes
+			.stream()
+			.map(m -> m.pow(2))
+			.reduce(BigDecimal.ZERO, (a, b) -> {
+				if (a == null) {
+					return b;
+				}
+				if (b == null) {
+					return a;
+				}
+				return a.add(b);
+			});
+
+		return moe.sqrt(new MathContext(1, RoundingMode.HALF_UP));
 	}
 
 	/**

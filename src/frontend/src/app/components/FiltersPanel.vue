@@ -26,7 +26,7 @@
 						<v-list-item-content>
 							<v-list-item-title 
 								v-html="parent.genFilteredText(item['name_' + locale])"
-								:title="item.disabled ? $t('tools.explore.no_data_custom_locations') : null"
+								:title="item.disabled ? !indicator.aggregable ? $t('data.not_aggregable') : $t('tools.explore.no_data_custom_locations') : null"
 							></v-list-item-title>
 						</v-list-item-content>
 					</template>
@@ -131,7 +131,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['locale', 'filterSelections']),
+		...mapState(['indicator', 'locale', 'filterSelections']),
 		...mapGetters(['filters']),
 		locationFilterOptions() {
 			return this.filters.locationFilter.options
