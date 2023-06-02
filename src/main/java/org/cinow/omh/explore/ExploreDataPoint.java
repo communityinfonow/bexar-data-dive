@@ -35,8 +35,4 @@ interface ExploreDataPoint {
 	boolean isSuppressed();
 
 	BigDecimal getCountValue();
-
-	BigDecimal getUniverseMoe();
-
-	BigDecimal getCountMoe();
 }

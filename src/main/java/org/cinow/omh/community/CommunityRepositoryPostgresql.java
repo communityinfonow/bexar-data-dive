@@ -43,7 +43,7 @@ public class CommunityRepositoryPostgresql implements CommunityRepository {
 			+ " from ( "
 			+ " select "
 			+ "   ic.id_ as category_id, ic.parent_category_id, ic.name_en as category_name_en, ic.name_es as category_name_es, "
-			+ "   i.id_ as indicator_id, i.name_en as indicator_name_en, i.name_es as indicator_name_es, i.description_en as indicator_description_en, i.description_es as indicator_description_es, i.rate_per, "
+			+ "   i.id_ as indicator_id, i.name_en as indicator_name_en, i.name_es as indicator_name_es, i.description_en as indicator_description_en, i.description_es as indicator_description_es, i.rate_per, i.is_aggregable, "
 			+ "   case when exists (select 1 from mv_indicator_metadata where indicator_id = i.id_ and has_data = true limit 1) then true else false end as has_data, "
 			+ "   it.id_ as indicator_type_id, it.name_ as indicator_type_name, "
 			+ "   iv.year_, round(iv.indicator_value, 1) as indicator_value, iv.suppress, round(iv.moe_low, 1) as moe_low, round(iv.moe_high, 1) as moe_high, round(iv.universe_value, 1) as universe_value, round(iv.count_value, 1) as count_value, round(iv.universe_moe, 1) as universe_moe, round(iv.count_moe, 1) as count_moe, "
@@ -95,6 +95,7 @@ public class CommunityRepositoryPostgresql implements CommunityRepository {
 						indicatorData.getIndicator().setDescription_es(rs.getString("indicator_description_es"));
 						indicatorData.getIndicator().setHasData(rs.getBoolean("has_data"));
 						indicatorData.getIndicator().setRatePer(rs.getInt("rate_per"));
+						indicatorData.getIndicator().setAggregable(rs.getBoolean("is_aggregable"));
 						indicatorData.setIndicatorType(new IndicatorType());
 						indicatorData.getIndicatorType().setId(rs.getString("indicator_type_id"));
 						indicatorData.getIndicatorType().setName(rs.getString("indicator_type_name"));
@@ -163,7 +164,7 @@ public class CommunityRepositoryPostgresql implements CommunityRepository {
 			+ " from ( "
 			+ " select "
 			+ "   ic.id_ as category_id, ic.parent_category_id, ic.name_en as category_name_en, ic.name_es as category_name_es, "
-			+ "   i.id_ as indicator_id, i.name_en as indicator_name_en, i.name_es as indicator_name_es, i.rate_per, "
+			+ "   i.id_ as indicator_id, i.name_en as indicator_name_en, i.name_es as indicator_name_es, i.rate_per, i.is_aggregable, "
 			+ "   case when exists (select 1 from mv_indicator_metadata where indicator_id = i.id_ and has_data = true limit 1) then true else false end as has_data, "
 			+ "   it.id_ as indicator_type_id, it.name_ as indicator_type_name, "
 			+ "   iv.location_id, iv.year_, round(iv.indicator_value, 1) as indicator_value, iv.suppress, round(iv.moe_low, 1) as moe_low, round(iv.moe_high, 1) as moe_high, round(iv.universe_value, 1) as universe_value, round(iv.count_value, 1) as count_value, round(iv.universe_moe, 1) as universe_moe, round(iv.count_moe, 1) as count_moe, "
@@ -213,6 +214,7 @@ public class CommunityRepositoryPostgresql implements CommunityRepository {
 						indicatorData.getIndicator().setName_es(rs.getString("indicator_name_es"));
 						indicatorData.getIndicator().setHasData(rs.getBoolean("has_data"));
 						indicatorData.getIndicator().setRatePer(rs.getInt("rate_per"));
+						indicatorData.getIndicator().setAggregable(rs.getBoolean("is_aggregable"));
 						indicatorData.setIndicatorType(new IndicatorType());
 						indicatorData.getIndicatorType().setId(rs.getString("indicator_type_id"));
 						indicatorData.getIndicatorType().setName(rs.getString("indicator_type_name"));

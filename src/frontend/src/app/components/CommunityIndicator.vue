@@ -1,7 +1,14 @@
 <template>
 	<div :id="'community_indicator_' + this.item.indicator.id" class="pl-4" :class="{ 'd-print-none': !item.year }">
 		<section class="mb-8">
-			<template v-if="item.indicator.hasData && item.year">
+			<template v-if="!item.indicator.aggregable && community.location.typeId === '7'">
+				<h3 class="text-h6">
+					<span v-if="parentName">{{ parentName }} - </span>
+					{{ item.indicator['name_' + locale]}}
+				</h3>
+				<p>{{ $t('data.not_aggregable') }}</p>
+			</template>
+			<template v-else-if="item.indicator.hasData && item.year">
 				<div class="d-flex justify-space-between">
 					<div>
 						<h3 class="text-h6">
@@ -36,12 +43,14 @@
 			</template>
 			<template v-else-if="item.indicator.hasData">
 				<h3 class="text-h6">
+					<span v-if="parentName">{{ parentName }} - </span>
 					{{ item.indicator['name_' + locale]}}
 				</h3>
 				<p>{{ $t('tools.community.no_data_geography') }}</p>
 			</template>
 			<template v-else>
 				<h3 class="text-h6">
+					<span v-if="parentName">{{ parentName }} - </span>
 					{{ item.indicator['name_' + locale]}}
 				</h3>
 				<p>{{ $t('tools.community.working_add_data') }}</p>

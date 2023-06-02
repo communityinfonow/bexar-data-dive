@@ -104,7 +104,6 @@
               </v-col>
               <v-col :md="6" :sm="12">
                 <span class="text-subtitle-2">{{ $t('tools.custom_locations.available_locations') }}</span>
-                <!-- TODO: message turns red after checking a box when it shouldn't until form submit -->
                 <p class="mt-2 mb-0 font-italic" :class="!selectionForm && customLocationGeojson.features.length < 2 ? 'error--text' : ''">{{ $t('tools.custom_locations.two_locations') }}</p>
                 <v-list v-if="selectionGeojson" style="overflow-y: auto;">
                   <v-list-item-group multiple v-model="customLocationGeojson.features">
@@ -115,7 +114,6 @@
                             <v-checkbox
                               color="accent"
                               :input-value="active"
-                              :rules="[rules.two_locations]"
                             ></v-checkbox>
                           </v-list-item-action>
                           <v-list-item-content>
@@ -193,7 +191,7 @@
               </v-list-item>
             </v-list-item-group>
           </v-list>
-          <v-file-input accept=".json" :label="$t('tools.custom_locations.load')" prepend-icon="mdi-upload" outlined v-model="customLocationFile"></v-file-input>
+          <v-file-input accept=".txt" :label="$t('tools.custom_locations.load')" prepend-icon="mdi-upload" outlined v-model="customLocationFile" :rules="[rules.customLocationFileValid]" @change="customLocationFileValid = true"></v-file-input>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -257,7 +255,8 @@ export default {
       selectedCategory: null,
       openDialog: false,
       message: false,
-      messageText: null
+      messageText: null,
+      customLocationFileValid: true
     }
   },
   computed: {
@@ -324,7 +323,8 @@ export default {
             .reduce((acc, curr) => acc.concat(curr), [])
             .map(l => l.name_es.toLowerCase()))
           .indexOf(this.customLocation.name?.toLowerCase()) === -1 || i18n.t('tools.custom_locations.custom_name'),
-        two_locations: this.customLocationGeojson.features.length > 1 || i18n.t('tools.custom_locations.two_locations')
+        two_locations: this.customLocationGeojson.features.length > 1 || i18n.t('tools.custom_locations.two_locations'),
+        customLocationFileValid: this.customLocationFileValid || i18n.t('tools.custom_locations.invalid_file')
       }
     }
   },
@@ -423,14 +423,22 @@ export default {
       } else {
         let reader = new FileReader();
         reader.addEventListener('load', () => {
-          this.customLocation = JSON.parse(reader.result);
-          this.loadCustomLocation();
+          this.customLocationFileValid = true;
+          axios.get('/api/custom-locations', { params: { 
+              id: reader.result.replace("\n", "").replace("\r", "")
+            }
+          }).then(response => {
+            this.customLocation = response.data;
+            this.loadCustomLocation();
+          }).catch(error => {
+            this.customLocationFileValid = false;
+            console.log(error);
+          })
         });
         reader.readAsText(this.customLocationFile);
       }
     },
     loadCustomLocation() {
-      //TODO: validate customLocationCode to ensure it is a valid custom location json object
       this.customLocationSelected = null;
       this.customLocationFile = null;
       this.selectedLayer = this.layers.find(l => l.id === this.customLocation.typeId);
@@ -438,13 +446,13 @@ export default {
         this.customLocationGeojson = featureCollection(this.selectionGeojson.features.filter(f => this.customLocation.ids.includes(f.id)));
         this.openDialog = false;
         this.$router.replace({
-        query: {
-          ...this.$router.currentRoute.query,
-          typeId: 7,
-          id: this.customLocation.id
+          query: {
+            ...this.$router.currentRoute.query,
+            typeId: 7,
+            id: this.customLocation.id
 
-        }
-      });
+          }
+        });
       });
     },
     saveCustomLocation() {
@@ -464,10 +472,19 @@ export default {
     },
     exportCustomLocation() {
       if (this.$refs.selectionForm.validate()) {
-        let downloadLink = document.createElement('a');
-        downloadLink.download = 'Dive Custom Location - ' + this.customLocation.name + '.json';
-        downloadLink.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(JSON.stringify(this.customLocation));
-        downloadLink.click();
+        this.customLocation.id = this.customLocation.id || crypto.randomUUID();
+        this.customLocation.ids = this.customLocationGeojson.features.map(f => f.id)
+        this.customLocation.geojson = this.customLocationGeojson;
+        let matchingCustomLocation = this.customLocations.find(l => this.customLocation.name && l.name === this.customLocation.name);
+        if (matchingCustomLocation) {
+          this.customLocation.id = matchingCustomLocation.id;
+        }
+        this.addCustomLocation(this.customLocation).then(() => {
+          let downloadLink = document.createElement('a');
+          downloadLink.download = 'Dive Custom Location - ' + this.customLocation.name + '.txt';
+          downloadLink.href = 'data:text/plain;charset=utf-8,' + this.customLocation.id;
+          downloadLink.click();
+        });
       }
     },
     removeCustomLocation(id) {
@@ -478,8 +495,8 @@ export default {
         name: 'community',
         query: {
           lang: this.locale,
-          typeId: 7,
-          id: customLocation.id
+          locationType: 7,
+          location: customLocation.id
         }
       });
     }

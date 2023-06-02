@@ -42,8 +42,4 @@ public interface CommunityDataPoint {
 	boolean isSuppressed();
 
 	BigDecimal getCountValue();
-
-	BigDecimal getUniverseMoe();
-
-	BigDecimal getCountMoe();
 }

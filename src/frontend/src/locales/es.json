@@ -146,7 +146,8 @@
       "deleted": "Custom location deleted (es)",
       "delete": "Delete (es)",
       "view_community": "View in My Community (es)",
-      "dismiss": "Dismiss (es)"
+      "dismiss": "Dismiss (es)",
+      "invalid_file": "The file selected does not contain a valid custom location. (es)"
     }
   },
   "home_view": {
@@ -179,7 +180,8 @@
     "high": "Alto",
     "suppressed": "Suprimido",
     "no_data": "No hay información",
-    "all": "Todo"
+    "all": "Todo",
+    "not_aggregable": "This indicator cannot be aggregated for custom locations (es)"
   },
   "featured_card": {
     "learn_more": "Saber Más",

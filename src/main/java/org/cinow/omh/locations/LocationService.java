@@ -63,4 +63,16 @@ public class LocationService {
 	public void saveCustomLocation(CustomLocation location) {
 		this.locationRepository.saveCustomLocation(location);
 	}
+
+	public CustomLocation getCustomLocation(String id) {
+		Location location = this.locationRepository.findCustomLocation(id);
+		CustomLocation customLocation = new CustomLocation();
+		customLocation.setId(id);
+		customLocation.setTypeId(this.locationRepository.findCustomLocationType(id));
+		customLocation.setName(location.getName_en());
+		customLocation.setIds(this.locationRepository.findCustomLocationIds(id));
+		customLocation.setGeojson(this.locationRepository.findCustomLocationGeojson(id));
+		
+		return customLocation;
+	}
 }
