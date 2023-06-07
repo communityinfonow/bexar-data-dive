@@ -131,6 +131,17 @@
               @change="skipToCategory"
             >
             </v-select>
+            <v-select
+              style="width: 200px;"
+              color="accent"
+              :label="$t('tools.community.compare_by')"
+              :items="filterTypes"
+              :item-text="'name_' + locale"
+              item-value="id"
+              v-model="selectedFilterType"
+              @change="applyFilter"
+            >
+            </v-select>
           </v-col>
         </v-row>
         <h2 v-if="noCommunityData" class="text-h4">{{ $t('tools.community.data_coming_soon')}}</h2>
@@ -199,11 +210,12 @@ export default {
       selectionGeojson: null,
       communityGeojson: null,
       refreshOptions: false,
-      selectedCategory: null
+      selectedCategory: null,
+      selectedFilterType: null
     }
   },
   computed: {
-    ...mapState(['locale', 'community', 'customLocations' ]),
+    ...mapState(['locale', 'community', 'customLocations', 'filterTypes' ]),
     ...mapGetters(['locationMenu']),
     showIntro() {
       return !this.community && !router.currentRoute.query.location;
@@ -284,6 +296,11 @@ export default {
 		},
     community() {
       this.drawCommunityMap();
+    },
+    filterTypes(newValue) {
+      if (!this.selectedFilterType && newValue.length) {
+        this.selectedFilterType = newValue[0].id;
+      }
     }
   },
   beforeRouteEnter(to, from, next) {
@@ -300,12 +317,14 @@ export default {
     next();
   },
   mounted () {
-    if (router.currentRoute.query.location && this.locationMenu) {
-      this.setCommunity(this.locationMenu.categories
+    if (router.currentRoute.query.location && this.locationMenu && router.currentRoute.query.filterType) {
+      this.selectedFilterType = router.currentRoute.query.filterType;
+      this.setCommunity({ community: this.locationMenu.categories
         .flatMap(category => category.items)
-        .find(item => item.id == router.currentRoute.query.location && item.categoryId == router.currentRoute.query.locationType))
+        .find(item => item.id == router.currentRoute.query.location && item.categoryId == router.currentRoute.query.locationType), filterType: router.query.filterType })
     } else {
-      this.setCommunity(null)
+      this.setCommunity(null);
+      this.selectedFilterType = this.filterTypes ? this.filterTypes[0]?.id : null;
     }
     setTimeout(() => { 
 			this.componentInitialized = true;
@@ -316,12 +335,13 @@ export default {
 		}, 100);
   },
   updated () {
-    if (router.currentRoute.query.location && this.locationMenu) {
+    if (router.currentRoute.query.location && this.locationMenu && router.currentRoute.query.filterType) {
+      this.selectedFilterType = router.currentRoute.query.filterType;
       let matchedCommunity = this.locationMenu.categories
         .flatMap(category => category.items)
         .find(item => item.id == router.currentRoute.query.location && item.categoryId == router.currentRoute.query.locationType)
-      if (matchedCommunity?.id !== this.community?.location.id || matchedCommunity?.categoryId !== this.community?.location.typeId) {
-        this.getCommunityData(matchedCommunity)
+      if ((matchedCommunity?.id !== this.community?.location.id || matchedCommunity?.categoryId !== this.community?.location.typeId)  && this.selectedFilterType) {
+        this.getCommunityData({ community: matchedCommunity, filterType: this.selectedFilterType })
       }
     } else {
       this.setCommunity(null)
@@ -331,12 +351,13 @@ export default {
     ...mapActions(['setCommunity', 'getCommunityData', 'setToolRoute']),
     selectItem(item) {
       if (item.id !== this.community?.id || item.categoryId !== this.community?.locationTypeId) {
-        this.getCommunityData(item)
+        this.getCommunityData({ community: item, filterType: this.selectedFilterType })
         router.replace({
           query: {
             ...router.currentRoute.query,
             location: item.id,
-            locationType: item.categoryId
+            locationType: item.categoryId,
+            filterType: this.selectedFilterType
           },
         });
       }
@@ -439,6 +460,15 @@ export default {
 		},
     skipToCategory(category) {
       goTo("#category_" + category)
+    },
+    applyFilter() {
+      router.replace({
+        query: {
+          ...router.currentRoute.query,
+          filterType: this.selectedFilterType
+        },
+      });
+      this.getCommunityData({ community: this.community.location, filterType: this.selectedFilterType });
     },
     downloadCommunityData() {
       let csv = [

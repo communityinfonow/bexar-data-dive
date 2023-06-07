@@ -7,7 +7,7 @@
 			</v-btn>
 		</sup>
 	</template>
-	<span v-html="indicator['description_' + locale].substring(3, indicator['description_' + locale].indexOf('</p>')) || $t('tools.community.coming_soon')"></span>
+	<span v-html="indicator['description_' + locale] && indicator['description_' + locale].substring(3, indicator['description_' + locale].indexOf('</p>')) || $t('tools.community.coming_soon')"></span>
 	</v-tooltip>
 </template>
 

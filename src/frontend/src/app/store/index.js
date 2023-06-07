@@ -21,6 +21,7 @@ export default new Vuex.Store({
     community: null,
     indicator: null,
     source: null,
+    filterTypes: null,
     filters: null,
     dockedTooltip: null,
     showMapLabels: false,
@@ -192,6 +193,9 @@ export default new Vuex.Store({
     SET_SOURCE(state, source) {
       state.source = source
     },
+    SET_FILTER_TYPES(state, filterTypes) {
+      state.filterTypes = filterTypes
+    },
     SET_FILTERS(state, filters) {
       state.filters = filters
     },
@@ -278,6 +282,7 @@ export default new Vuex.Store({
         }
         context.dispatch('getIndicatorMenu')
         context.dispatch('getLocationMenu')
+        context.dispatch('getFilterTypes')
       }
     },
     getIndicatorMenu(context) {
@@ -295,17 +300,18 @@ export default new Vuex.Store({
         context.commit('SET_FEATURED_INDICATORS', response.data)
       })
     },
-    setCommunity(context, community) {
+    setCommunity(context, community, filterType) {
       if (community !== null) {
-        context.dispatch('getCommunityData', community)
+        context.dispatch('getCommunityData', { community: community, filterType: filterType })
       } else {
         context.commit('SET_COMMUNITY', community)
       }
     },
-    getCommunityData(context, community) {
+    getCommunityData(context, data) {
       axios.get('/api/community-data', { params: { 
-          location: community.id, 
-          locationType: community.categoryId 
+          location: data.community.id, 
+          locationType: data.community.categoryId,
+          filterType: data.filterType
         }
       }).then(response => {
         context.commit('SET_COMMUNITY', response.data)
@@ -331,6 +337,11 @@ export default new Vuex.Store({
         indicator: indicator.id
       }}).then(response => {
         context.commit('SET_SOURCE', response.data)
+      })
+    },
+    getFilterTypes(context) {
+      return axios.get('/api/filter-types').then(response => {
+        context.commit('SET_FILTER_TYPES', response.data)
       })
     },
     getFilters(context, indicator) {
