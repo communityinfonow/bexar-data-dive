@@ -31,16 +31,17 @@ public class CommunityService {
 	 * 
 	 * @param location the location id
 	 * @param locationType the location type id
+	 * @param filterType the filter type id
 	 * @return the data for the community
 	 */
-	public CommunityData getCommunityData(String location, String locationType) {
+	public CommunityData getCommunityData(String location, String locationType, String filterType) {
 		CommunityData communityData = new CommunityData();
 		if (!"7".equals(locationType)) {
 			communityData.setLocation(this.locationRepository.findLocation(location, locationType));
-			communityData.setIndicatorData(this.communityRepository.getCommunityData(location, locationType));
+			communityData.setIndicatorData(this.communityRepository.getCommunityData(location, locationType, filterType));
 		} else {
 			communityData.setLocation(this.locationRepository.findCustomLocation(location));
-			communityData.setIndicatorData(this.communityRepository.getCustomCommunityData(location));
+			communityData.setIndicatorData(this.communityRepository.getCustomCommunityData(location, filterType));
 		}
 		communityData.getIndicatorData().stream().forEach(data -> {
 			if (data.getCategory().getParentCategoryId() != null) {
