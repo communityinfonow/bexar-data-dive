@@ -189,10 +189,24 @@ public class CommunityRepositoryPostgresql implements CommunityRepository {
 			+ "   join tbl_indicators i on i.indicator_category_id = ic.id_ and i.display = true "
 			+ "   join tbl_indicator_types it on it.id_ = i.indicator_type_id "
 			+ "   left join tbl_indicator_values iv on iv.indicator_id = i.id_ "
-			+ "     and iv.location_id = any(select unnest(location_ids) from tbl_custom_locations where id_ = :location_id) and iv.location_type_id = (select location_type_id from tbl_custom_locations where id_ = :location_id) "
-			+ "     and iv.age_id is null and iv.sex_id is null and iv.education_id is null and iv.income_id is null "
-			+ "   left join tbl_sources s on s.id_ = i.source_id "
-			+ "   left join tbl_filter_options fo on fo.id_ = iv.race_id "
+			+ "     and iv.location_id = any(select unnest(location_ids) from tbl_custom_locations where id_ = :location_id) and iv.location_type_id = (select location_type_id from tbl_custom_locations where id_ = :location_id) ";
+			if (StringUtils.equals(filterType, FilterTypes.RACE.getId())) {
+				sql += " and iv.age_id is null and iv.sex_id is null and iv.education_id is null and iv.income_id is null "
+					+ " left join tbl_filter_options fo on fo.id_ = iv.race_id ";
+			} else if (StringUtils.equals(filterType, FilterTypes.AGE.getId())) {
+				sql += " and iv.race_id is null and iv.sex_id is null and iv.education_id is null and iv.income_id is null "
+					+ " left join tbl_filter_options fo on fo.id_ = iv.age_id ";
+			} else if (StringUtils.equals(filterType, FilterTypes.SEX.getId())) {
+				sql += " and iv.race_id is null and iv.age_id is null and iv.education_id is null and iv.income_id is null "
+				+ " left join tbl_filter_options fo on fo.id_ = iv.sex_id ";
+			} else if (StringUtils.equals(filterType, FilterTypes.EDUCATION.getId())) {
+				sql += " and iv.race_id is null and iv.age_id is null and iv.sex_id is null and iv.income_id is null "
+				+ " left join tbl_filter_options fo on fo.id_ = iv.education_id ";
+			} else if (StringUtils.equals(filterType, FilterTypes.INCOME.getId())) {
+				sql += " and iv.race_id is null and iv.age_id is null and iv.sex_id is null and iv.education_id is null "
+				+ " left join tbl_filter_options fo on fo.id_ = iv.income_id ";
+			}
+			sql += "   left join tbl_sources s on s.id_ = i.source_id "
 			+ " order by ic.sort_order, i.id_, fo.sort_order nulls first, iv.location_id "
 			+ " ) ranked_data "
 			+ " where rank = 1 ";
