@@ -481,7 +481,7 @@ export default {
         }
         this.addCustomLocation(this.customLocation).then(() => {
           let downloadLink = document.createElement('a');
-          downloadLink.download = 'Dive Custom Location - ' + this.customLocation.name + '.txt';
+          downloadLink.download = 'Dive Custom Area - ' + this.customLocation.name + '.txt';
           downloadLink.href = 'data:text/plain;charset=utf-8,' + this.customLocation.id;
           downloadLink.click();
         });
