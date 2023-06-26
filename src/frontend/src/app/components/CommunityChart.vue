@@ -12,7 +12,7 @@ import { mapState } from 'vuex'
 import i18n from '@/i18n'
 import * as echarts from 'echarts/core';
 import { SVGRenderer } from 'echarts/renderers';
-import { AriaComponent, LegendComponent, GridComponent } from 'echarts/components';
+import { AriaComponent, LegendComponent, GridComponent, TitleComponent } from 'echarts/components';
 import { BarChart } from 'echarts/charts';
 import { format } from '@/formatter/formatter'
 
@@ -23,6 +23,9 @@ export default {
 			type: String
 		},
 		indicatorType: {
+			type: Object
+		},
+		indicatorName: {
 			type: String
 		},
 		data: {
@@ -30,6 +33,9 @@ export default {
 		},
 		maxDemographics: {
 			type: Number
+		},
+		filterType: {
+			type: Object
 		}
 	},
 	data() {
@@ -52,7 +58,7 @@ export default {
 		}
 	},
 	mounted () {
-		echarts.use([SVGRenderer, AriaComponent, LegendComponent, GridComponent, BarChart]);
+		echarts.use([SVGRenderer, AriaComponent, LegendComponent, GridComponent, BarChart, TitleComponent]);
 		this.chart = echarts.init(document.getElementById('chart_container_' + this.indicatorId), null, { renderer: 'svg'});
 		window.addEventListener('resize', () => {
 			this.chart.resize();
@@ -73,7 +79,7 @@ export default {
 				splitNumber: 1,
 				axisLabel: textStyle
 			};
-			let xAxisData = Array.from(new Set(this.data.map(d => '' + (d.raceFilter['name_' + this.locale] || i18n.t('data.all')))));
+			let xAxisData = Array.from(new Set(this.data.map(d => '' + (d.demographicFilter['name_' + this.locale] || i18n.t('data.all')))));
 			if (xAxisData.length < this.maxDemographics) {
 				xAxisData = xAxisData.concat(...Array.from(Array(this.maxDemographics - xAxisData.length))).map(d => d || '')
 			}
@@ -103,13 +109,13 @@ export default {
 						} else if (o.data.noData) {
 							return '{a|' + i18n.t('data.no_data') + '}';
 						}
-						let rows = ['{a|' + i18n.t('data.value') +': ' + format(this.indicatorType, o.data.value) + '}'];
+						let rows = ['{a|' + i18n.t('data.value') +': ' + format(this.indicatorType.id, o.data.value) + '}'];
 						if (o.data.moeLow || o.data.moeHigh) {
 							rows.push('{b|' + i18n.t('data.moe_range') 
 								+ ': ' 
-								+ format(this.indicatorType, o.data.moeLow)
+								+ format(this.indicatorType.id, o.data.moeLow)
 								+ " - "
-								+ format(this.indicatorType, o.data.moeHigh) + '}');
+								+ format(this.indicatorType.id, o.data.moeHigh) + '}');
 						}
 						return rows.join('\n');
 					},

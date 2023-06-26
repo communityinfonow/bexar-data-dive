@@ -24,7 +24,10 @@
       "coming_soon": "Próximamente",
       "data_coming_soon": "Próximamente Información",
       "working_add_data": "Estamos trabajando en agregar estos datos, pero aún no están disponibles",
-      "no_data_geography": "No hay datos disponibles para la geografía seleccionada"
+      "no_data_geography": "No hay datos disponibles para la geografía seleccionada",
+      "no_disaggregation": "This indicator cannot be disaggregated (es)",
+      "percentage_of": "Percentage of (es)",
+      "who_are": "who are these (es)"
     },
     "explore": {
       "name": "Exploración de Datos",

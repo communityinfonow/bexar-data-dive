@@ -11,21 +11,21 @@ import org.cinow.omh.filters.FilterOption;
 public class CommunityDataPointMultiple extends DataItemMultiple implements CommunityDataPoint {
 
 	/**
-	 * The race filter.
+	 * The demographic filter.
 	 */
-	private FilterOption raceFilter;
+	private FilterOption demographicFilter;
 
 	/**
-	 * @return the raceFilter
+	 * @return the demographicFilter
 	 */
-	public FilterOption getRaceFilter() {
-		return raceFilter;
+	public FilterOption getDemographicFilter() {
+		return demographicFilter;
 	}
 
 	/**
-	 * @param raceFilter the raceFilter to set
+	 * @param demographicFilter the demographicFilter to set
 	 */
-	public void setRaceFilter(FilterOption raceFilter) {
-		this.raceFilter = raceFilter;
+	public void setDemographicFilter(FilterOption demographicFilter) {
+		this.demographicFilter = demographicFilter;
 	}
 }

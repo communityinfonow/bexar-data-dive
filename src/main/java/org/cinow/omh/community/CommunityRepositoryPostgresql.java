@@ -48,7 +48,7 @@ public class CommunityRepositoryPostgresql implements CommunityRepository {
 			+ "   it.id_ as indicator_type_id, it.name_ as indicator_type_name, "
 			+ "   iv.year_, round(iv.indicator_value, 1) as indicator_value, iv.suppress, round(iv.moe_low, 1) as moe_low, round(iv.moe_high, 1) as moe_high, round(iv.universe_value, 1) as universe_value, round(iv.count_value, 1) as count_value, round(iv.universe_moe, 1) as universe_moe, round(iv.count_moe, 1) as count_moe, "
 			+ "   s.id_ as source_id, s.name_en as source_name_en, s.name_es as source_name_es, s.url_ as source_url, "
-			+ "   fo.id_ as race_filter_option_id, fo.name_en as race_filter_name_en, fo.name_es as race_filter_name_es, "
+			+ "   fo.id_ as demographic_filter_option_id, fo.name_en as demographic_filter_name_en, fo.name_es as demographic_filter_name_es, "
 			+ "   rank() over(partition by iv.indicator_id order by iv.year_ desc) "
 			+ " from tbl_indicator_categories ic "
 			+ "   join tbl_indicators i on i.indicator_category_id = ic.id_ and i.display = true "
@@ -122,11 +122,11 @@ public class CommunityRepositoryPostgresql implements CommunityRepository {
 					}
 					if (rs.getString("year_") != null) {
 						CommunityDataPointSingle dataPoint = new CommunityDataPointSingle();
-						dataPoint.setRaceFilter(new FilterOption());
-						dataPoint.getRaceFilter().setId(rs.getString("race_filter_option_id"));
-						dataPoint.getRaceFilter().setTypeId(FilterTypes.RACE.getId());
-						dataPoint.getRaceFilter().setName_en(rs.getString("race_filter_name_en"));
-						dataPoint.getRaceFilter().setName_es(rs.getString("race_filter_name_es"));
+						dataPoint.setDemographicFilter(new FilterOption());
+						dataPoint.getDemographicFilter().setId(rs.getString("demographic_filter_option_id"));
+						dataPoint.getDemographicFilter().setTypeId(FilterTypes.RACE.getId());
+						dataPoint.getDemographicFilter().setName_en(rs.getString("demographic_filter_name_en"));
+						dataPoint.getDemographicFilter().setName_es(rs.getString("demographic_filter_name_es"));
 						dataPoint.setSuppressed(rs.getBoolean("suppress"));
 						if (!dataPoint.isSuppressed()) {
 							dataPoint.setMoeHigh(rs.getBigDecimal("moe_high"));
@@ -183,7 +183,7 @@ public class CommunityRepositoryPostgresql implements CommunityRepository {
 			+ "   it.id_ as indicator_type_id, it.name_ as indicator_type_name, "
 			+ "   iv.location_id, iv.year_, round(iv.indicator_value, 1) as indicator_value, iv.suppress, round(iv.moe_low, 1) as moe_low, round(iv.moe_high, 1) as moe_high, round(iv.universe_value, 1) as universe_value, round(iv.count_value, 1) as count_value, round(iv.universe_moe, 1) as universe_moe, round(iv.count_moe, 1) as count_moe, "
 			+ "   s.id_ as source_id, s.name_en as source_name_en, s.name_es as source_name_es, s.url_ as source_url, "
-			+ "   fo.id_ as race_filter_option_id, fo.name_en as race_filter_name_en, fo.name_es as race_filter_name_es, "
+			+ "   fo.id_ as demographic_filter_option_id, fo.name_en as demographic_filter_name_en, fo.name_es as demographic_filter_name_es, "
 			+ "   rank() over(partition by iv.indicator_id order by iv.year_ desc) "
 			+ " from tbl_indicator_categories ic "
 			+ "   join tbl_indicators i on i.indicator_category_id = ic.id_ and i.display = true "
@@ -256,7 +256,7 @@ public class CommunityRepositoryPostgresql implements CommunityRepository {
 					if (rs.getString("year_") != null) {
 						if (indicatorData.getDemographicData().isEmpty() 
 							|| dataPoint == null 
-							|| !StringUtils.equals(rs.getString("race_filter_option_id"), dataPoint.getRaceFilter().getId())) {
+							|| !StringUtils.equals(rs.getString("demographic_filter_option_id"), dataPoint.getDemographicFilter().getId())) {
 							
 								dataPoint = new CommunityDataPointMultiple();
 								dataPoint.setIndicatorType(indicatorData.getIndicatorType());
@@ -264,11 +264,11 @@ public class CommunityRepositoryPostgresql implements CommunityRepository {
 								indicatorData.getDemographicData().add(dataPoint);
 						}
 						
-						dataPoint.setRaceFilter(new FilterOption());
-						dataPoint.getRaceFilter().setId(rs.getString("race_filter_option_id"));
-						dataPoint.getRaceFilter().setTypeId(FilterTypes.RACE.getId());
-						dataPoint.getRaceFilter().setName_en(rs.getString("race_filter_name_en"));
-						dataPoint.getRaceFilter().setName_es(rs.getString("race_filter_name_es"));
+						dataPoint.setDemographicFilter(new FilterOption());
+						dataPoint.getDemographicFilter().setId(rs.getString("demographic_filter_option_id"));
+						dataPoint.getDemographicFilter().setTypeId(FilterTypes.RACE.getId());
+						dataPoint.getDemographicFilter().setName_en(rs.getString("demographic_filter_name_en"));
+						dataPoint.getDemographicFilter().setName_es(rs.getString("demographic_filter_name_es"));
 						dataPoint.getSuppresseds().put(rs.getString("location_id"), rs.getBoolean("suppress"));
 						if (!dataPoint.getSuppresseds().get(rs.getString("location_id"))) {
 							dataPoint.getValues().put(rs.getString("location_id"), rs.getBigDecimal("indicator_value"));
