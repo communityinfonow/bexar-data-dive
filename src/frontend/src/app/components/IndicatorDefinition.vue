@@ -2,7 +2,7 @@
 	<v-tooltip :open-on-hover="false" bottom max-width="20%" color="accent" z-index="9999">
 	<template v-slot:activator="{ on, attrs}">
 		<sup v-on="on" v-bind="attrs">
-			<v-btn icon color="accent">
+			<v-btn icon color="accent" data-html2canvas-ignore>
 				<v-icon>mdi-book-information-variant</v-icon>
 			</v-btn>
 		</sup>

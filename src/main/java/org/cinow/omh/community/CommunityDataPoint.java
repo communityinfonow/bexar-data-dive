@@ -12,9 +12,9 @@ import org.cinow.omh.filters.FilterOption;
 public interface CommunityDataPoint {
 
 	/**
-	 * @return the raceFilter
+	 * @return the demographicFilter
 	 */
-	FilterOption getRaceFilter();
+	FilterOption getDemographicFilter();
 
 	/**
 	 * @return the value

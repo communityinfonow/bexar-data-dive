@@ -152,12 +152,12 @@
               <template v-if="item.indicators">
                 <div :key="'category_' + item.category.id">
                   <template v-for="subItem in item.indicators">
-                    <community-indicator :item="subItem" :parentName="item.category['name_' + locale]" :key="'sub_indicator_' + subItem.indicator.id" :maxDemographics="maxDemographics"></community-indicator>
+                    <community-indicator :item="subItem" :parentName="item.category['name_' + locale]" :key="'sub_indicator_' + subItem.indicator.id" :maxDemographics="maxDemographics" :filterType="filterTypes.find(ft => ft.id === selectedFilterType)"></community-indicator>
                   </template>
                 </div>
               </template>
               <template v-else>
-                <community-indicator :item="item" :key="'indicator_' + item.indicator.id" :maxDemographics="maxDemographics"></community-indicator>
+                <community-indicator :item="item" :key="'indicator_' + item.indicator.id" :maxDemographics="maxDemographics" :filterType="filterTypes.find(ft => ft.id === selectedFilterType)"></community-indicator>
               </template>
             </template>
           </div>
@@ -501,7 +501,7 @@ export default {
             + '"' + ind.source['name_' + this.locale] + '",'
             + '"' + this.community.location['name_' + this.locale] + '",'
             + ind.year + ','
-            + '"' + (data.raceFilter['name_' + this.locale] || i18n.t('data.all')) + '",'
+            + '"' + (data.demographicFilter['name_' + this.locale] || i18n.t('data.all')) + '",'
             + (data.suppressed ? i18n.t('data.suppressed') : data.value === null ? i18n.t('data.no_data') : data.value) + ','
             + (data.moeLow && data.moeHigh ? (data.moeLow + ' - ' + data.moeHigh) : '');
         });
