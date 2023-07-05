@@ -30,7 +30,9 @@
       "who_are": "for that",
       "race_ethnicity": "race/ethnicity",
       "age_group": "age group",
-      "sex": "sex"
+      "sex": "sex",
+      "education_level": "education level",
+      "income_level": "income level"
     },
     "explore": {
       "name": "Explore Data",

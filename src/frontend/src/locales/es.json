@@ -30,7 +30,9 @@
       "who_are": "who are these (es)",
       "race_ethnicity": "race/ethnicity (es)",
       "age_group": "age group (es)",
-      "sex": "sex (es)"
+      "sex": "sex (es)",
+      "education_level": "education level (es)",
+      "income_level": "income level (es)"
     },
     "explore": {
       "name": "Exploración de Datos",
