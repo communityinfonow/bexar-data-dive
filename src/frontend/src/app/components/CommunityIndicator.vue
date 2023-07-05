@@ -13,10 +13,10 @@
 					<div>
 						<h3 class="text-h6 d-flex">
 							<div>
-							<span v-if="parentName">{{ parentName }} - </span>
-							{{ item.indicator['name_' + locale]}}:
+							<span v-if="parentName">{{ parentName }}<span v-if="item.indicator['name_' + locale]"> - </span></span>
+							{{ item.indicator['name_' + locale]}}<span v-if="item.indicator['name_' + locale]">:</span>
 							</div>
-							<v-chip color="secondary" label class="ml-2">
+							<v-chip color="secondary" label class="ml-2" v-if="item.indicator['name_' + locale]">
 								<span v-if="item.demographicData[0].suppressed" class="text-h6 mb-0">{{ $t('data.suppressed') }}</span>
 								<span v-else-if="item.demographicData[0].value === null" class="text-h6 mb-0">{{ $t('data.no_data') }}</span>
 								<template v-else>
@@ -24,7 +24,7 @@
 									<div v-if="item.demographicData[0].moeLow && item.demographicData[0].moeHigh" class="ml-2">{{ $t('data.moe_range') }} {{ formatValue(item.indicatorType.id, item.demographicData[0].moeLow) }} - {{ formatValue(item.indicatorType.id, item.demographicData[0].moeHigh) }}</div> 
 								</template>
 							</v-chip>
-							<indicator-definition :indicator="item.indicator"></indicator-definition>
+							<indicator-definition v-if="item.indicator['name_' + locale]" :indicator="item.indicator"></indicator-definition>
 						</h3>
 						<p class="text-subtitle-1 mb-4">
 							{{ community.location['name_' + locale]}}, 
@@ -49,7 +49,7 @@
 							>
 							</community-chart>
 							<!-- echarts title option doesn't work with rich text formatting, so use html for below-chart title with mixed formatting -->
-							<p v-if="item.indicator.typeId === '3'" :id="'community_indicator_chart_title_' + item.indicator.id" class="text-center font-italic text-subtitle-1" style="margin-top: -2em">
+							<p v-if="item.indicator['name_' + locale] && item.indicator.typeId === '3'" :id="'community_indicator_chart_title_' + item.indicator.id" class="text-center font-italic text-subtitle-1" style="margin-top: -2em">
 								{{ $t('tools.community.percentage_of') }}
 								<span class="text-normal font-weight-bold">{{ (parentName ? parentName + ' - ' : '') + item.indicator['name_' + locale] }}</span>
 								{{ $t('tools.community.who_are') }}

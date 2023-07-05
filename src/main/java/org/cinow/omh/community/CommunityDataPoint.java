@@ -42,4 +42,6 @@ public interface CommunityDataPoint {
 	boolean isSuppressed();
 
 	BigDecimal getCountValue();
+
+	void setDemographicFilter(FilterOption filterOption);
 }
