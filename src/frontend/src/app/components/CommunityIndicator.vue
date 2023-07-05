@@ -56,6 +56,8 @@
 								<span v-if="filterType.id === '1'">{{ $t('tools.community.race_ethnicity') }}</span>
 								<span v-if="filterType.id === '2'">{{ $t('tools.community.age_group') }}</span>
 								<span v-if="filterType.id === '3'">{{ $t('tools.community.sex') }}</span>
+								<span v-if="filterType.id === '4'">{{ $t('tools.community.education_level') }}</span>
+								<span v-if="filterType.id === '5'">{{ $t('tools.community.income_level') }}</span>
 							</p>
 						</template>
 						<p v-else>{{ $t('tools.community.no_disaggregation')}}</p>
