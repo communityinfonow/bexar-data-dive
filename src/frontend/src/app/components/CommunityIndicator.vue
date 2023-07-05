@@ -52,7 +52,10 @@
 							<p v-if="item.indicator.typeId === '3'" :id="'community_indicator_chart_title_' + item.indicator.id" class="text-center font-italic text-subtitle-1" style="margin-top: -2em">
 								{{ $t('tools.community.percentage_of') }}
 								<span class="text-normal font-weight-bold">{{ (parentName ? parentName + ' - ' : '') + item.indicator['name_' + locale] }}</span>
-								{{ $t('tools.community.who_are') + ' ' + filterType['name_' + this.locale].toLowerCase() + ' populations' }}
+								{{ $t('tools.community.who_are') }}
+								<span v-if="filterType.id === '1'">{{ $t('tools.community.race_ethnicity') }}</span>
+								<span v-if="filterType.id === '2'">{{ $t('tools.community.age_group') }}</span>
+								<span v-if="filterType.id === '3'">{{ $t('tools.community.sex') }}</span>
 							</p>
 						</template>
 						<p v-else>{{ $t('tools.community.no_disaggregation')}}</p>
