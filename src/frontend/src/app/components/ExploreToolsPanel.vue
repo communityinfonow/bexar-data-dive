@@ -32,6 +32,7 @@
 						multiple
 						:search-input.sync="compareWithQuery"
 						@change="selectCompareWith"
+						:rules="[v => compareWith.length <= 10 || $t('tools.explore.compare_limit_exceeded')]"
 					>
 					</v-autocomplete>
 				</v-col>
@@ -136,6 +137,7 @@ export default {
 			compareWithItems: [],
 			compareWith: [],
 			compareWithSelectAll: false,
+			compareCounter: 0,
 			valid: true
 		}
 	},

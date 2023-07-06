@@ -72,7 +72,8 @@
       "apply_filters": "Aplicar Filtros",
       "compare_by": "Comparar por",
       "compare_with": "Comparar con",
-      "compare": "Comparar"
+      "compare": "Comparar",
+      "compare_limit_exceeded": "The number of comparisons selected exceeds the limit of 10. Please select fewer items to compare the data. (es)"
     },
     "tables": {
       "name": "Tablas y Descargas",
@@ -95,7 +96,8 @@
         "universe": "Universo"
       },
       "select_all": "Seleccionar todo",
-      "clear_selections": "Limpiar selecciones"
+      "clear_selections": "Limpiar selecciones",
+      "location_limit_exceeded": "The number of locations selected exceeds the limit of 50. Please select fewer locations to filter the data. (es)"
     },
     "common": {
       "featured_indicators": "Indicadores Destacados",

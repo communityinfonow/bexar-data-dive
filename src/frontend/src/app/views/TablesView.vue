@@ -49,7 +49,8 @@
             </div>
           </h1>
           <h2 class="text-subtitle-1 mb-2">{{ tablesData.source['name_' + locale] }}</h2>
-          <v-text-field v-model="search" :label="$t('tools.common.search')" hide-details @input="loadTablesData()">
+          <v-alert dense type="error" v-if="locationLimitExceeded">{{ $t('tools.tables.location_limit_exceeded') }}</v-alert>
+          <v-text-field v-model="search" :disabled="locationLimitExceeded" :label="$t('tools.common.search')" hide-details @input="loadTablesData()">
             <template v-slot:append><v-icon color="accent">mdi-magnify</v-icon></template>
           </v-text-field>
           <v-data-table
@@ -96,7 +97,7 @@
                     </v-list-item>
                   </v-list>
                   <v-card-actions>
-                    <v-btn block color="accent" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
+                    <v-btn block color="accent" :disabled="locationLimitExceeded" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-menu>
@@ -133,7 +134,7 @@
                     </v-list-item>
                   </v-list>
                   <v-card-actions>
-                    <v-btn block color="accent" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
+                    <v-btn block color="accent" :disabled="locationLimitExceeded" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-menu>
@@ -169,7 +170,7 @@
                     </v-list-item>
                   </v-list>
                   <v-card-actions>
-                    <v-btn block color="accent" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
+                    <v-btn block color="accent" :disabled="locationLimitExceeded" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-menu>
@@ -205,7 +206,7 @@
                     </v-list-item>
                   </v-list>
                   <v-card-actions>
-                    <v-btn block color="accent" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
+                    <v-btn block color="accent" :disabled="locationLimitExceeded" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-menu>
@@ -241,7 +242,7 @@
                     </v-list-item>
                   </v-list>
                   <v-card-actions>
-                    <v-btn block color="accent" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
+                    <v-btn block color="accent" :disabled="locationLimitExceeded" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-menu>
@@ -277,7 +278,7 @@
                     </v-list-item>
                   </v-list>
                   <v-card-actions>
-                    <v-btn block color="accent" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
+                    <v-btn block color="accent" :disabled="locationLimitExceeded" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-menu>
@@ -313,7 +314,7 @@
                     </v-list-item>
                   </v-list>
                   <v-card-actions>
-                    <v-btn block color="accent" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
+                    <v-btn block color="accent" :disabled="locationLimitExceeded" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-menu>
@@ -349,7 +350,7 @@
                     </v-list-item>
                   </v-list>
                   <v-card-actions>
-                    <v-btn block color="accent" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
+                    <v-btn block color="accent" :disabled="locationLimitExceeded" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-menu>
@@ -474,6 +475,9 @@ export default {
           ? undefined
           : this.filteredIncomes?.map(i => i.id)
       };
+    },
+    locationLimitExceeded() {
+      return !this.selections.selectAllLocations && this.selections.locations?.length > 50
     },
     xlsxColumns() {
       return this.headers.map(h => {
@@ -730,6 +734,9 @@ export default {
       }
     },
     loadTablesData() {
+      if (!this.selections.selectAllLocations && this.selections.locations?.length > 50) {
+        return;
+      }
       this.getTablesData(this.selections);
     },
     downloadTablesData() {
