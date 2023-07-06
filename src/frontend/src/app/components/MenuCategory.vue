@@ -93,4 +93,9 @@ export default {
 .menu-toolbar ::v-deep .v-toolbar__content {
   padding: 0;
 }
+@supports (-moz-appearance:none) {
+  .v-menu__content {
+    overflow-y: scroll;
+  }
+}
 </style>

@@ -40,6 +40,7 @@
             <span>
               <span v-if="tablesData.category.parentCategoryId">{{ tablesData.category['name_' + locale] }} - </span>
               {{ tablesData.indicator['name_' + locale] }}
+              <indicator-definition :indicator="indicator"></indicator-definition>
             </span>
             <div>
               <download-menu :downloadData="downloadTablesData"></download-menu>
@@ -367,6 +368,7 @@ import FeaturedCard from '@/app/components/FeaturedCard'
 import DownloadMenu from '@/app/components/DownloadMenu'
 import ShareMenu from '@/app/components/ShareMenu'
 import AboutMenu from '@/app/components/AboutMenu'
+import IndicatorDefinition from '../components/IndicatorDefinition.vue'
 import debounce from 'debounce'
 
 export default {
@@ -376,7 +378,8 @@ export default {
     FeaturedCard,
     DownloadMenu,
     ShareMenu,
-    AboutMenu
+    AboutMenu,
+    IndicatorDefinition
   },
   data() {
     return {

@@ -113,7 +113,7 @@ export default {
 			return this.filters.yearFilter.options.map(o => {
 				return {
 					...o,
-					disabled: this.filters.locationTypeYears[this.selectedLocationType].indexOf(o.id) === -1
+					disabled: this.filters?.locationTypeYears[this.selectedLocationType].indexOf(o.id) === -1
 				}
 			})
 		}
