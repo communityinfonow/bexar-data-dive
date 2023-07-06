@@ -83,12 +83,13 @@
                         <em v-else>{{ $t('tools.tables.select_all') }}</em>
                       </v-list-item-title>
                     </v-list-item>
-                    <v-list-item v-for="locationType in locationTypes" :key="locationType.name" @click.stop="">
+                    <v-list-item v-for="locationType in locationTypes" :key="locationType.name" @click.stop="" :title="locationType.id === '7' && !indicator.aggregable ? $t('data.not_aggregable') : ''">
                       <v-list-item-action>
                         <v-checkbox
                           v-model="locationType.selected"
                           color="primary"
                           hide-details
+                          :disabled="locationType.id === '7' && !indicator.aggregable"
                         ></v-checkbox>
                       </v-list-item-action>
                       <v-list-item-title>{{ locationType['name_' + locale] }}</v-list-item-title>
@@ -119,12 +120,13 @@
                         <em v-else>{{ $t('tools.tables.select_all') }}</em>
                       </v-list-item-title>
                     </v-list-item>
-                    <v-list-item v-for="location in locations" :key="location.name" @click.stop="">
+                    <v-list-item v-for="location in locations" :key="location.name" @click.stop="" :title="location.typeId === '7' && !indicator.aggregable ? $t('data.not_aggregable') : ''">
                       <v-list-item-action>
                         <v-checkbox
                           v-model="location.selected"
                           color="primary"
                           hide-details
+                          :disabled="location.typeId === '7' && !indicator.aggregable"
                         ></v-checkbox>
                       </v-list-item-action>
                       <v-list-item-title>{{ location['name_' + locale] }}</v-list-item-title>
@@ -359,7 +361,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapGetters } from 'vuex'
 import axios from 'axios'
 import i18n from '@/i18n'
 import router from '@/app/router/index'
@@ -410,7 +412,8 @@ export default {
     }
   },
   computed: {
-    ...mapState(['indicatorMenu', 'indicator', 'filters', 'tablesData', 'locale', 'featuredIndicators']),
+    ...mapState(['indicatorMenu', 'indicator', 'tablesData', 'locale', 'featuredIndicators']),
+    ...mapGetters(['filters']),
     showIntro() {
       return !this.indicator && !router.currentRoute.query.indicator;
     },
@@ -596,11 +599,11 @@ export default {
     }
   },
   watch: {
-		locale(newValue, oldValue) {
+    locale(newValue, oldValue) {
       if (oldValue) {
         this.loadTablesData();
       }
-		},
+    },
     page() {
       this.loadTablesData();
     },
@@ -620,11 +623,17 @@ export default {
               selected: !router.currentRoute.query.locationTypes || [].concat(router.currentRoute.query.locationTypes).find(q => q === o.id) 
             }, o)
           );
+        if (!this.indicator.aggregable) {
+          this.locationTypes.find(lt => lt.id === '7').selected = false;
+        }
         this.locations = newValue.locationFilter.options
           .map(o => Object.assign({ 
               selected: !router.currentRoute.query.locations || [].concat(router.currentRoute.query.locations).find(q => q === o.typeId + '_' + o.id) 
             }, o)
           );
+        if (!this.indicator.aggregable) {
+          this.locations.filter(l => l.typeId === '7').forEach(l => l.selected = false);
+        }
         this.years = newValue.yearFilter.options
           .map(o => Object.assign({ 
               selected: !router.currentRoute.query.years || [].concat(router.currentRoute.query.years).find(q => q == o.id)  
@@ -737,9 +746,15 @@ export default {
     },
     selectAllLocationTypesChange() {
       this.locationTypes.forEach(i => i.selected = this.selectAllLocationTypes);
+      if (!this.indicator.aggregable) {
+        this.locationTypes.find(lt => lt.id === '7').selected = false;
+      }
     },
     selectAllLocationsChange() {
       this.locations.forEach(i => i.selected = this.selectAllLocations);
+      if (!this.indicator.aggregable) {
+        this.locations.filter(l => l.typeId === '7').forEach(l => l.selected = false);
+      }
     },
     selectAllYearsChange() {
       this.years.forEach(i => i.selected = this.selectAllYears);

@@ -20,10 +20,19 @@
       "get_started": "Para empezar, navegue o busque un indicador utilizando el menú de arriba o seleccione una ubicación en el mapa de abajo.",
       "community_types": "Tipos de Comunidad",
       "skip": "Avanzar a",
+      "compare_by": "Comparar por",
       "coming_soon": "Próximamente",
       "data_coming_soon": "Próximamente Información",
       "working_add_data": "Estamos trabajando en agregar estos datos, pero aún no están disponibles",
-      "no_data_geography": "No hay datos disponibles para la geografía seleccionada"
+      "no_data_geography": "No hay datos disponibles para la geografía seleccionada",
+      "no_disaggregation": "This indicator cannot be disaggregated (es)",
+      "percentage_of": "Percentage of (es)",
+      "who_are": "who are these (es)",
+      "race_ethnicity": "race/ethnicity (es)",
+      "age_group": "age group (es)",
+      "sex": "sex (es)",
+      "education_level": "education level (es)",
+      "income_level": "income level (es)"
     },
     "explore": {
       "name": "Exploración de Datos",
@@ -31,6 +40,8 @@
       "long_description": "En la sección Exploración de Datos podrá profundizar en los indicadores de su comunidad a través de mapas y gráficos interactivos. Los indicadores pueden ser mapeados a través de las áreas geográficas, con tendencias en los gráficos para ver los datos en el tiempo, o en comparación con otras comunidades locales en un gráfico de barras. También tendrá la posibilidad de filtrar los resultados por ubicación, año, raza/etnia, sexo, nivel educativo o estado de pobreza, según lo que disponga la fuente de datos. Además, podrá descargar y guardar los gráficos que cree.",
       "get_started": "Para empezar, navegue o busque un indicador utilizando el menú de arriba o haga clic en uno de los indicadores destacados de abajo.",
       "no_data_location_year": "No hay datos disponibles para el tipo de ubicación seleccionado para este año",
+      "no_data_custom_locations": "No hay datos disponibles para áreas personalizadas para este indicador",
+      "no_data_custom_location": "No hay datos disponibles para esta área personalizada para este indicador",
       "current_filter_setting": "configuración del filtro actual",
       "tabs": {
         "map": {
@@ -116,6 +127,36 @@
           "range": "Rango"
         }
       }
+    },
+    "custom_locations": {
+      "name": "Crea Tu Propia Área",
+      "short_description": "TODO: short tool intro text (es)",
+      "long_description": "\"Crea Tu Propia Área\" es una herramienta que le permite construir sus propias geografías. Cree tantas áreas personalizadas como desee utilizando SSAs (Áreas Estadísticas Pequeñas), distritos de ayuntamiento, códigos postales y áreas de censo como los componentes fundamentales. Una vez creada(s), usuarios pueden explorar y visualizar datos para sus áreas personalizadas usando Bexar Data Dive. Las áreas personalizadas se pueden guardar en su navegador o descargar para uso futuro.",
+      "get_started": "Para comenzar, escriba un nombre para su nueva área personalizada. Luego, seleccione el tipo de geografía que le gustaría usar como componente fundamental para construir su área. Empiece a ensamblar simplemente haciendo clic en las geografías del mapa o seleccionándolas de la lista a la derecha.",
+      "or": "o",
+      "step_1": "Paso 1: Nombre el área",
+      "step_2": "Paso 2: Seleccione las ubicaciones",
+      "location_name": "Nombre del área",
+      "overwrite": "Un área personalizada con este nombre ya existe. Guardándola sobrescribirá el área existente.",
+      "name_required": "Requerido",
+      "custom_name": "Una ubicación real con este nombre ya existe. Por favor ingrese un nombre personalizado.",
+      "two_locations": "Seleccione dos o más ubicaciones",
+      "open": "Abrir área",
+      "create": "Crear un área nueva",
+      "available_locations": "Áreas disponibles",
+      "selected_locations": "Áreas seleccionadas",
+      "no_locations_selected": "Ninguna ubicación seleccionada",
+      "open_description": "Seleccione un área de la lista, o pegue el código del área en el cuadro a continuación",
+      "no_locations_saved": "Ningún área ha sido guardada",
+      "load": "Cargar archivo del área personalizado",
+      "save": "Guardar en el navegador",
+      "export": "Guardar como archivo",
+      "saved": "Área personalizada guardada",
+      "deleted": "Área personalizada borrada",
+      "delete": "Borrar",
+      "view_community": "Ver en Mi Comunidad",
+      "dismiss": "Descartar",
+      "invalid_file": "El archivo seleccionado no contiene un área personalizada válida."
     }
   },
   "home_view": {
@@ -148,7 +189,8 @@
     "high": "Alto",
     "suppressed": "Suprimido",
     "no_data": "No hay información",
-    "all": "Todo"
+    "all": "Todo",
+    "not_aggregable": "Este indicador no puede ser agrupado para áreas personalizadas"
   },
   "featured_card": {
     "learn_more": "Saber Más",

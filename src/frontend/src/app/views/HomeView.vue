@@ -29,6 +29,7 @@
     <section class="d-flex" :class="{ 'flex-row': $vuetify.breakpoint.mdAndUp, 'flex-column': $vuetify.breakpoint.smAndDown }">
       <template v-for="tool in tools">
         <featured-card 
+          v-if="tool.showOnHome"
           :key="tool.route" 
           :item="tool"
           :imagePath="tool.imagePath"

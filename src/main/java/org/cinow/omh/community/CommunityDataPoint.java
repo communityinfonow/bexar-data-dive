@@ -1,5 +1,7 @@
 package org.cinow.omh.community;
 
+import java.math.BigDecimal;
+
 import org.cinow.omh.filters.FilterOption;
 
 /**
@@ -7,119 +9,39 @@ import org.cinow.omh.filters.FilterOption;
  * 
  * @author brian
  */
-public class CommunityDataPoint {
+public interface CommunityDataPoint {
 
 	/**
-	 * The race filter.
+	 * @return the demographicFilter
 	 */
-	private FilterOption raceFilter;
-
-	/**
-	 * The indicator value.
-	 */
-	private Double value;
-
-	/**
-	 * The 'high' margin of error.
-	 */
-	private Double moeHigh;
-
-	/**
-	 * The 'low' margin of error.
-	 */
-	private Double moeLow;
-
-	/**
-	 * The indicator universe value.
-	 */
-	private Double universeValue;
-
-	/**
-	 * Whether the data value is suppressed.
-	 */
-	private boolean suppressed;
-
-	/**
-	 * @return the raceFilter
-	 */
-	public FilterOption getRaceFilter() {
-		return raceFilter;
-	}
-
-	/**
-	 * @param raceFilter the raceFilter to set
-	 */
-	public void setRaceFilter(FilterOption raceFilter) {
-		this.raceFilter = raceFilter;
-	}
+	FilterOption getDemographicFilter();
 
 	/**
 	 * @return the value
 	 */
-	public Double getValue() {
-		return value;
-	}
-
-	/**
-	 * @param value the value to set
-	 */
-	public void setValue(Double value) {
-		this.value = value;
-	}
+	BigDecimal getValue();
 
 	/**
 	 * @return the moeHigh
 	 */
-	public Double getMoeHigh() {
-		return moeHigh;
-	}
-
-	/**
-	 * @param moeHigh the moeHigh to set
-	 */
-	public void setMoeHigh(Double moeHigh) {
-		this.moeHigh = moeHigh;
-	}
+	BigDecimal getMoeHigh();
 
 	/**
 	 * @return the moeLow
 	 */
-	public Double getMoeLow() {
-		return moeLow;
-	}
-
-	/**
-	 * @param moeLow the moeLow to set
-	 */
-	public void setMoeLow(Double moeLow) {
-		this.moeLow = moeLow;
-	}
+	BigDecimal getMoeLow();
 
 	/**
 	 * @return the universeValue
 	 */
-	public Double getUniverseValue() {
-		return universeValue;
-	}
-
-	/**
-	 * @param universeValue the universeValue to set
-	 */
-	public void setUniverseValue(Double universeValue) {
-		this.universeValue = universeValue;
-	}
+	BigDecimal getUniverseValue();
 
 	/**
 	 * @return the suppressed
 	 */
-	public boolean isSuppressed() {
-		return suppressed;
-	}
+	boolean isSuppressed();
 
-	/**
-	 * @param suppressed the suppressed to set
-	 */
-	public void setSuppressed(boolean suppressed) {
-		this.suppressed = suppressed;
-	}
+	BigDecimal getCountValue();
+
+	void setDemographicFilter(FilterOption filterOption);
 }

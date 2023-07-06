@@ -39,6 +39,14 @@ new Vue({
     }
     this.$store.dispatch('setSurveySubmitted', storedSurveySubmitted)
 
+    let storedCustomLocations
+    try {
+      storedCustomLocations = JSON.parse(localStorage.getItem('cinow-custom-locations')) || []
+    } catch {
+      storedCustomLocations = []
+    }
+    this.$store.dispatch('setCustomLocations', storedCustomLocations)
+
     let requestCount = 0
     axios.interceptors.request.use(function(config) {
       if (requestCount === 0) {

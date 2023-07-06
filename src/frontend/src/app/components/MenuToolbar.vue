@@ -5,9 +5,9 @@
         <v-col cols="10">
           <v-slide-group show-arrows style="height: 100%;">
             <template v-for="category in sortedMenu.categories">
-              <v-slide-item :key="'category_' + category.id">
-              <MenuButton text v-if="category.items.length === 1 && flattenSingleItems" :item="category.items[0]" :selectItem="selectItem" :singleItem="true"></MenuButton>
-              <MenuCategory v-else :category="category" :selectItem="selectItem"></MenuCategory>
+              <v-slide-item :key="'category_' + category.id" v-if="category.items.length">
+                <MenuButton text v-if="category.items.length === 1 && flattenSingleItems" :item="category.items[0]" :selectItem="selectItem" :singleItem="true"></MenuButton>
+                <MenuCategory v-else :category="category" :selectItem="selectItem"></MenuCategory>
               </v-slide-item>
             </template>
           </v-slide-group>
