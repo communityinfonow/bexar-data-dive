@@ -85,7 +85,7 @@ export default {
 		AboutMenu
 	},
 	computed: {
-		...mapState(['filterSelections', 'locale', 'exploreData']),
+		...mapState(['filterSelections', 'locale', 'exploreData', 'indicator', 'indicatorMenu']),
 		...mapGetters(['filters']),
 		labels: {
 			get() { return this.showLabels },
@@ -96,6 +96,14 @@ export default {
 		},
 		availableCompareByItems() {
 			let items = [];
+			let subcategory = this.indicatorMenu.categories.find(c => c.id === '3').subcategories.find(sc => sc.id === this.indicator.categoryId);
+			if (subcategory) {
+				items.push({
+					id: "i",
+						name_en: "Indicator",
+						name_es: "Indicador"
+				});
+			}
 			items.push(this.filters?.locationFilter.type);
 			items.push(this.filters?.yearFilter.type);
 			this.filters?.indicatorFilters.forEach(filter => {
@@ -169,28 +177,26 @@ export default {
 	mounted () {
 		this.initializeCompareByItems();
 		if (router.currentRoute.query.compareBy) {
-			if (router.currentRoute.query.compareBy === 'l') {
-				this.compareBy = this.compareByItems[0];
-				this.selectCompareBy();
+			this.compareBy = this.compareByItems.find(i => i.id == router.currentRoute.query.compareBy);
+			this.selectCompareBy();
+			if (router.currentRoute.query.compareBy === 'i') {
+				[].concat(router.currentRoute.query.compareWith).forEach(p => {
+					this.compareWith.push(this.compareWithItems.find(i => i.id == p));
+				});
+			} else if (router.currentRoute.query.compareBy === 'l') {
 				[].concat(router.currentRoute.query.compareWith).forEach(p => {
 					this.compareWith.push(this.compareWithItems.find(i => i.typeId == p.split("_")[0] && i.id == p.split("_")[1]));
 				});
-				this.selectCompareWith();
 			} else if (router.currentRoute.query.compareBy === 'y') {
-				this.compareBy = this.compareByItems[1];
-				this.selectCompareBy();
 				[].concat(router.currentRoute.query.compareWith).forEach(p => {
 					this.compareWith.push(this.compareWithItems.find(i => i.id == p));
 				});
-				this.selectCompareWith();
 			} else {
-				this.compareBy = this.compareByItems.find(i => i.id == router.currentRoute.query.compareBy);
-				this.selectCompareBy();
 				[].concat(router.currentRoute.query.compareWith).forEach(p => {
 					this.compareWith.push(this.compareWithItems.find(i => i.id == p));
 				});
-				this.selectCompareWith();
 			}
+			this.selectCompareWith();
 			this.applyComparison();
 		}
 	},
@@ -198,6 +204,14 @@ export default {
 		...mapActions(['setCompareSelections', 'setLoading']),
 		initializeCompareByItems() {
 			this.compareByItems = [];
+			let subcategory = this.indicatorMenu.categories.find(c => c.id === '3').subcategories.find(sc => sc.id === this.indicator.categoryId);
+			if (subcategory) {
+				this.compareByItems.push({
+					id: "i",
+						name_en: "Indicator",
+						name_es: "Indicador"
+				});
+			}
 			this.compareByItems.push(this.filters?.locationFilter.type);
 			this.compareByItems.push(this.filters?.yearFilter.type);
 			this.filters?.indicatorFilters.forEach(filter => {
@@ -208,7 +222,13 @@ export default {
 			this.compareWith = [];
 			this.compareWithItems = [];
 			this.compareWithSelectAll = false;
-			if (this.compareBy?.id === 'l') {
+			if (this.compareBy?.id === 'i') {
+				this.compareWithItems = [{id: 0, name_en: i18n.t('tools.tables.select_all'), name_es: i18n.t('tools.tables.select_all')}]
+					.concat(this.indicatorMenu.categories
+						.find(c => c.id === '3').subcategories
+						.find(sc => sc.id === this.indicator.categoryId).items
+						.filter(i => i.id !== this.indicator.id));
+			} else if (this.compareBy?.id === 'l') {
 				let typeIdsWithData = this.filters?.locationTypeFilter.options.map(o => o.id);
 				this.compareWithItems = this.filters?.locationFilter.options
 					.filter(o => typeIdsWithData.indexOf(o.typeId) !== -1) || [];

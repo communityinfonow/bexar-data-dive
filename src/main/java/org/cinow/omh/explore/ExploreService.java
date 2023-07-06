@@ -88,7 +88,12 @@ public class ExploreService {
 		}
 		if (dataRequest.getComparisons() != null) {
 			exploreData.setCompareData(new ArrayList<>());
-			if (dataRequest.getComparisons().getType().getId().equals("l")) {
+			if (dataRequest.getComparisons().getType().getId().equals("i")) { 
+				for (FilterOption option : dataRequest.getComparisons().getOptions()) {
+					dataRequest.setIndicator(option.getId());
+					exploreData.getCompareData().addAll(this.exploreRepository.getExploreData(dataRequest, false));
+				}
+			} else if (dataRequest.getComparisons().getType().getId().equals("l")) {
 				for (FilterOption option : dataRequest.getComparisons().getOptions()) {
 					dataRequest.getFilters().setLocation(option.getId());
 					dataRequest.getFilters().setLocationType(option.getTypeId());
