@@ -25,4 +25,19 @@ public interface LocationRepository {
 	 * @return the location
 	 */
 	Location findLocation(String id, String typeId);
+
+	/**
+	 * Saves a custom location
+	 * 
+	 * @param location the custom location
+	 */
+	void saveCustomLocation(CustomLocation location);
+
+	Location findCustomLocation(String id);
+
+	String findCustomLocationType(String id);
+
+	List<String> findCustomLocationIds(String id);
+
+	String findCustomLocationGeojson(String id);
 }

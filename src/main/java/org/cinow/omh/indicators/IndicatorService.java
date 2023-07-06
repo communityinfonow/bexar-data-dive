@@ -42,6 +42,7 @@ public class IndicatorService {
 				item.setDescription_en(indicator.getDescription_en());
 				item.setDescription_es(indicator.getDescription_es());
 				item.setHasData(indicator.isHasData());
+				item.setAggregable(indicator.isAggregable());
 				menuCategory.getItems().add(item);
 			});
 			if (indicatorCategory.getParentCategoryId() == null) {

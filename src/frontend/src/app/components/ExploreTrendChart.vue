@@ -23,7 +23,7 @@
 
 <script>
 
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapGetters } from 'vuex'
 import i18n from '@/i18n'
 import * as echarts from 'echarts/core';
 import { SVGRenderer } from 'echarts/renderers';
@@ -48,7 +48,8 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['locale', 'exploreData', 'filters', 'showTrendLabels', 'exploreTab']),
+		...mapState(['locale', 'exploreData', 'showTrendLabels', 'exploreTab']),
+		...mapGetters(['filters']),
 	},
 	watch: {
 		locale() {

@@ -32,6 +32,7 @@
 						multiple
 						:search-input.sync="compareWithQuery"
 						@change="selectCompareWith"
+						:rules="[v => compareWith.length <= 10 || $t('tools.explore.compare_limit_exceeded')]"
 					>
 					</v-autocomplete>
 				</v-col>
@@ -69,7 +70,7 @@
 <script>
 
 import i18n from '@/i18n'
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapGetters } from 'vuex'
 import router from '@/app/router/index'
 import DownloadMenu from '@/app/components/DownloadMenu'
 import ShareMenu from '@/app/components/ShareMenu'
@@ -84,7 +85,8 @@ export default {
 		AboutMenu
 	},
 	computed: {
-		...mapState(['filters', 'filterSelections', 'locale', 'filters', 'exploreData', 'indicator', 'indicatorMenu']),
+		...mapState(['filterSelections', 'locale', 'exploreData', 'indicator', 'indicatorMenu']),
+		...mapGetters(['filters']),
 		labels: {
 			get() { return this.showLabels },
 			set(value) { this.setShowLabels(value) }
@@ -143,6 +145,7 @@ export default {
 			compareWithItems: [],
 			compareWith: [],
 			compareWithSelectAll: false,
+			compareCounter: 0,
 			valid: true
 		}
 	},
@@ -254,8 +257,10 @@ export default {
 				}
 				this.compareWithSelectAll = true;
 			} else {
-				this.compareWithItems.find(i => i.id === 0).name_en = i18n.t('tools.tables.select_all');
-				this.compareWithItems.find(i => i.id === 0).name_es = i18n.t('tools.tables.select_all');
+				if (this.compareWithItems.find(i => i.id === 0)) {
+					this.compareWithItems.find(i => i.id === 0).name_en = i18n.t('tools.tables.select_all');
+					this.compareWithItems.find(i => i.id === 0).name_es = i18n.t('tools.tables.select_all');
+				}
 				this.compareWithSelectAll = false;
 			}
 		},

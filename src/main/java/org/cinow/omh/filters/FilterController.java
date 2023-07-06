@@ -38,6 +38,15 @@ public class FilterController {
 	}
 
 	/**
+	 * @param indicator the indicator
+	 * @return the filters
+	 */
+	@GetMapping(path = "/api/filter-types", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<FilterType>> getFilterTypes() {
+		return ResponseEntity.ok(this.filterService.findFilterTypes());
+	}
+
+	/**
 	 * @return the filter types
 	 */
 	@GetMapping(path = "/api/admin/filter-types", produces = MediaType.APPLICATION_JSON_VALUE)

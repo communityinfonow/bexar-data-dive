@@ -26,13 +26,14 @@ public class CommunityController {
 	/**
 	 * @param location the location
 	 * @param locationType the locationType
+	 * @param filterType the filterType
 	 * @return the community data
 	 */
 	@GetMapping(path = "/api/community-data", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<CommunityData> getCommunityData(
-			@RequestParam String location, @RequestParam String locationType) {
+			@RequestParam String location, @RequestParam String locationType, String filterType) {
 		
-		return ResponseEntity.ok(this.communityService.getCommunityData(location, locationType));
+		return ResponseEntity.ok(this.communityService.getCommunityData(location, locationType, filterType));
 	}
 
 	/**
