@@ -107,7 +107,12 @@
           </v-col>
           <v-col cols="10">
             <div class="d-flex justify-space-between">
-              <h1 class="text-h3 mt-2 mb-4" id="community_name">{{ community.location['name_' + locale] }}</h1>
+              <h1 class="text-h3 mt-2 mb-4" id="community_name">
+                {{ community.location['name_' + locale] }}
+                <span v-if="community.location.typeId === '7'">
+                  ({{ locationMenu.categories.find(c => c.id === customLocations.find(cl => cl.id === community.location.id).typeId)['name_' + this.locale]}})
+                </span>
+              </h1>
               <div>
                 <download-menu :downloadData="downloadCommunityData"></download-menu>
                 <share-menu></share-menu>
@@ -126,6 +131,17 @@
               @change="skipToCategory"
             >
             </v-select>
+            <v-select
+              style="width: 200px;"
+              color="accent"
+              :label="$t('tools.community.compare_by')"
+              :items="filterTypes"
+              :item-text="'name_' + locale"
+              item-value="id"
+              v-model="selectedFilterType"
+              @change="applyFilter"
+            >
+            </v-select>
           </v-col>
         </v-row>
         <h2 v-if="noCommunityData" class="text-h4">{{ $t('tools.community.data_coming_soon')}}</h2>
@@ -136,12 +152,12 @@
               <template v-if="item.indicators">
                 <div :key="'category_' + item.category.id">
                   <template v-for="subItem in item.indicators">
-                    <community-indicator :item="subItem" :parentName="item.category['name_' + locale]" :key="'sub_indicator_' + subItem.indicator.id" :maxDemographics="maxDemographics"></community-indicator>
+                    <community-indicator :item="subItem" :parentName="item.category['name_' + locale]" :key="'sub_indicator_' + subItem.indicator.id" :maxDemographics="maxDemographics" :filterType="filterTypes.find(ft => ft.id === selectedFilterType)"></community-indicator>
                   </template>
                 </div>
               </template>
               <template v-else>
-                <community-indicator :item="item" :key="'indicator_' + item.indicator.id" :maxDemographics="maxDemographics"></community-indicator>
+                <community-indicator :item="item" :key="'indicator_' + item.indicator.id" :maxDemographics="maxDemographics" :filterType="filterTypes.find(ft => ft.id === selectedFilterType)"></community-indicator>
               </template>
             </template>
           </div>
@@ -154,13 +170,16 @@
 <script>
 import i18n from '@/i18n'
 import goTo from 'vuetify/lib/services/goto'
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapGetters } from 'vuex'
 import router from '@/app/router/index'
 import axios from 'axios'
 import L from 'leaflet'
 import { latLng } from 'leaflet'
 import { LMap, LTileLayer, LControl, LGeoJson } from 'vue2-leaflet'
-import { feature, featureCollection } from '@turf/helpers'
+import { feature, featureCollection, multiPolygon } from '@turf/helpers'
+//import combine from '@turf/combine'
+//import flatten from '@turf/flatten'
+//import dissolve from '@turf/dissolve'
 import MenuToolbar from '@/app/components/MenuToolbar'
 import CommunityIndicator from '@/app/components/CommunityIndicator'
 import DownloadMenu from '@/app/components/DownloadMenu'
@@ -191,11 +210,13 @@ export default {
       selectionGeojson: null,
       communityGeojson: null,
       refreshOptions: false,
-      selectedCategory: null
+      selectedCategory: null,
+      selectedFilterType: null
     }
   },
   computed: {
-    ...mapState(['locale', 'locationMenu', 'community' ]),
+    ...mapState(['locale', 'community', 'customLocations', 'filterTypes' ]),
+    ...mapGetters(['locationMenu']),
     showIntro() {
       return !this.community && !router.currentRoute.query.location;
     },
@@ -275,6 +296,11 @@ export default {
 		},
     community() {
       this.drawCommunityMap();
+    },
+    filterTypes(newValue) {
+      if (!this.selectedFilterType && newValue.length) {
+        this.selectedFilterType = newValue[0].id;
+      }
     }
   },
   beforeRouteEnter(to, from, next) {
@@ -291,12 +317,14 @@ export default {
     next();
   },
   mounted () {
-    if (router.currentRoute.query.location && this.locationMenu) {
-      this.setCommunity(this.locationMenu.categories
+    if (router.currentRoute.query.location && this.locationMenu && router.currentRoute.query.filterType) {
+      this.selectedFilterType = router.currentRoute.query.filterType;
+      this.setCommunity({ community: this.locationMenu.categories
         .flatMap(category => category.items)
-        .find(item => item.id == router.currentRoute.query.location && item.categoryId == router.currentRoute.query.locationType))
+        .find(item => item.id == router.currentRoute.query.location && item.categoryId == router.currentRoute.query.locationType), filterType: router.query.filterType })
     } else {
-      this.setCommunity(null)
+      this.setCommunity(null);
+      this.selectedFilterType = this.filterTypes ? this.filterTypes[0]?.id : null;
     }
     setTimeout(() => { 
 			this.componentInitialized = true;
@@ -307,12 +335,13 @@ export default {
 		}, 100);
   },
   updated () {
-    if (router.currentRoute.query.location && this.locationMenu) {
+    if (router.currentRoute.query.location && this.locationMenu && router.currentRoute.query.filterType) {
+      this.selectedFilterType = router.currentRoute.query.filterType;
       let matchedCommunity = this.locationMenu.categories
         .flatMap(category => category.items)
         .find(item => item.id == router.currentRoute.query.location && item.categoryId == router.currentRoute.query.locationType)
-      if (matchedCommunity?.id !== this.community?.location.id || matchedCommunity?.categoryId !== this.community?.location.typeId) {
-        this.getCommunityData(matchedCommunity)
+      if ((matchedCommunity?.id !== this.community?.location.id || matchedCommunity?.categoryId !== this.community?.location.typeId)  && this.selectedFilterType) {
+        this.getCommunityData({ community: matchedCommunity, filterType: this.selectedFilterType })
       }
     } else {
       this.setCommunity(null)
@@ -322,12 +351,13 @@ export default {
     ...mapActions(['setCommunity', 'getCommunityData', 'setToolRoute']),
     selectItem(item) {
       if (item.id !== this.community?.id || item.categoryId !== this.community?.locationTypeId) {
-        this.getCommunityData(item)
+        this.getCommunityData({ community: item, filterType: this.selectedFilterType })
         router.replace({
           query: {
             ...router.currentRoute.query,
             location: item.id,
-            locationType: item.categoryId
+            locationType: item.categoryId,
+            filterType: this.selectedFilterType
           },
         });
       }
@@ -346,6 +376,16 @@ export default {
 		},
     drawSelectionMap() {
       if (this.selectedLayer) {
+        if (this.selectedLayer.id === "7") {
+          this.selectionGeojson = featureCollection(
+            this.customLocations.map(cl => multiPolygon(cl.geojson.features
+                .map(clf => clf.geometry)
+                .reduce((acc, cur) => acc.concat(cur.coordinates), []),
+              { id: cl.id, typeId: "7", name: cl.name + ' (' + this.locationMenu.categories.find(c => c.id === cl.typeId)['name_' + this.locale] + ')'}))
+            );
+          this.refreshOptions = Math.random(); // force a refresh
+          return;
+        }
         axios.get('/api/community-locations', { params: { 
             locationType: this.selectedLayer.id
           }
@@ -373,7 +413,8 @@ export default {
             locationType: this.community.location.typeId
           }
         }).then(response => {
-          this.communityGeojson = feature(JSON.parse(response.data.geojson), 
+          if (response.data.typeId !== "7") {
+            this.communityGeojson = feature(JSON.parse(response.data.geojson), 
             {
               name: response.data['name_' + this.locale],
               id: response.data.id,
@@ -383,6 +424,13 @@ export default {
               id: response.data.id
             }
           );
+          } else {
+            this.communityGeojson = multiPolygon(JSON.parse(response.data.geojson).features
+              .map(clf => clf.geometry)
+              .reduce((acc, cur) => acc.concat(cur.coordinates), []),
+              { id: response.data.id, typeId: "7", name: response.data['name_' + this.locale] });
+          }
+          
           this.refreshOptions = Math.random(); // force a refresh
           this.$refs.communityMap?.mapObject.fitBounds(L.geoJSON(this.communityGeojson).getBounds());
         });
@@ -391,6 +439,18 @@ export default {
     onEachFeature(feature, layer) {
 			layer.bindTooltip(feature.properties.name);
       layer.options.color = '#3b5a98';
+      layer.on('mouseover', () => {
+        layer.setStyle({
+          color: '#f6921e',
+          weight: 4
+        });
+      });
+      layer.on('mouseout', () => {
+        layer.setStyle({
+          color: '#3b5a98',
+          weight: 3
+        });
+      });
       layer.on('click', () => {
         this.selectItem({
           id: feature.properties.id,
@@ -400,6 +460,15 @@ export default {
 		},
     skipToCategory(category) {
       goTo("#category_" + category)
+    },
+    applyFilter() {
+      router.replace({
+        query: {
+          ...router.currentRoute.query,
+          filterType: this.selectedFilterType
+        },
+      });
+      this.getCommunityData({ community: this.community.location, filterType: this.selectedFilterType });
     },
     downloadCommunityData() {
       let csv = [
@@ -432,7 +501,7 @@ export default {
             + '"' + ind.source['name_' + this.locale] + '",'
             + '"' + this.community.location['name_' + this.locale] + '",'
             + ind.year + ','
-            + '"' + (data.raceFilter['name_' + this.locale] || i18n.t('data.all')) + '",'
+            + '"' + (data.demographicFilter['name_' + this.locale] || i18n.t('data.all')) + '",'
             + (data.suppressed ? i18n.t('data.suppressed') : data.value === null ? i18n.t('data.no_data') : data.value) + ','
             + (data.moeLow && data.moeHigh ? (data.moeLow + ' - ' + data.moeHigh) : '');
         });

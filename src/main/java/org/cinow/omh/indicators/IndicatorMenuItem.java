@@ -41,6 +41,8 @@ public class IndicatorMenuItem implements Item {
 
 	private boolean hasData;
 
+	private boolean aggregable;
+
 	/**
 	 * @return the id
 	 */
@@ -141,5 +143,13 @@ public class IndicatorMenuItem implements Item {
 
 	public void setHasData(boolean hasData) {
 		this.hasData = hasData;
+	}
+
+	public boolean isAggregable() {
+		return aggregable;
+	}
+
+	public void setAggregable(boolean aggregable) {
+		this.aggregable = aggregable;
 	}
 }

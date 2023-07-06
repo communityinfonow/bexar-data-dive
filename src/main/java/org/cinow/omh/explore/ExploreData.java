@@ -37,12 +37,12 @@ public class ExploreData {
 	/**
 	 * The location data.
 	 */
-	private List<ExploreDataLocation> locationData;
+	private List<ExploreDataLocation<ExploreDataPoint>> locationData;
 
 	/**
 	 * The compare data.
 	 */
-	private List<ExploreDataLocation> compareData;
+	private List<ExploreDataLocation<ExploreDataPoint>> compareData;
 	
 	/**
 	 * @return the indicator
@@ -103,28 +103,28 @@ public class ExploreData {
 	/**
 	 * @return the locationData
 	 */
-	public List<ExploreDataLocation> getLocationData() {
+	public List<ExploreDataLocation<ExploreDataPoint>> getLocationData() {
 		return locationData;
 	}
 
 	/**
 	 * @param locationData the locationData to set
 	 */
-	public void setLocationData(List<ExploreDataLocation> locationData) {
+	public void setLocationData(List<ExploreDataLocation<ExploreDataPoint>> locationData) {
 		this.locationData = locationData;
 	}
 
 	/**
 	 * @return the compareData
 	 */
-	public List<ExploreDataLocation> getCompareData() {
+	public List<ExploreDataLocation<ExploreDataPoint>> getCompareData() {
 		return compareData;
 	}
 
 	/**
 	 * @param compareData the compareData to set
 	 */
-	public void setCompareData(List<ExploreDataLocation> compareData) {
+	public void setCompareData(List<ExploreDataLocation<ExploreDataPoint>> compareData) {
 		this.compareData = compareData;
 	}
 }

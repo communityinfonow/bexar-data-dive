@@ -16,7 +16,7 @@
         :aria-label="$t('tools.tools')"
       >
         <template v-for="(item, index) in navItems">
-          <v-list-item v-if="index < 4" :key="index" :to="item.route" role="option">
+          <v-list-item v-if="index < 5" :key="index" :to="item.route" role="option">
             <v-list-item-icon>
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-item-icon>
@@ -34,7 +34,7 @@
           active-class="primary--text text-accent-4"
         >
           <template v-for="(item, index) in navItems">
-            <v-list-item v-if="index >= 4" :key="index" :to="item.route">
+            <v-list-item v-if="index >= 5" :key="index" :to="item.route">
               <v-list-item-icon>
                 <v-icon :style="{ transform: item.icon_transform || '' }">{{ item.icon }}</v-icon>
               </v-list-item-icon>

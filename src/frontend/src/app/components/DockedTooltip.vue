@@ -3,7 +3,7 @@
 		<v-card outlined tile class="fill-height docked-tooltip">
 			<v-card-title class="docked-tooltip-title white--text">
 				{{ $t('tools.explore.docked_tooltip.now_viewing')}}
-				<span v-if="activeTab === 0 && dockedTooltip">: {{ dockedTooltip.location }}</span>
+				<span v-if="dockedTooltip">: {{ dockedTooltip.location }}</span>
 				<span v-else-if="activeTab !== 0">: {{ filteredLocation }}</span>
 			</v-card-title>
 			<v-card-text v-if="!dockedTooltip">

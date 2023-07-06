@@ -62,7 +62,7 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 	public List<Indicator> findIndicatorsByCategory(String categoryId) {
 		String sql = ""
 			+ " select id_, indicator_type_id, indicator_category_id, name_en, name_es, description_en, description_es, "
-			+ "   case when exists (select 1 from mv_indicator_metadata where indicator_id = id_ and has_data = true limit 1) then true else false end as has_data "
+			+ "   case when exists (select 1 from mv_indicator_metadata where indicator_id = id_ and has_data = true limit 1) then true else false end as has_data, is_aggregable "
 			+ " from tbl_indicators "
 			+ " where indicator_category_id = :indicator_category_id::numeric "
 			+ "   and display = true"
@@ -82,6 +82,7 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 				indicator.setDescription_en(rs.getString("description_en"));
 				indicator.setDescription_es(rs.getString("description_es"));
 				indicator.setHasData(rs.getBoolean("has_data"));
+				indicator.setAggregable(rs.getBoolean("is_aggregable"));
 
 				return indicator;
 			}
@@ -204,7 +205,7 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 	@Override
 	public List<Indicator> findIndicators() {
 		String sql = ""
-			+ " select id_, indicator_category_id, indicator_type_id, name_en, name_es, description_en, description_es, source_id, featured, display "
+			+ " select id_, indicator_category_id, indicator_type_id, name_en, name_es, description_en, description_es, source_id, featured, display, rate_per, is_aggregable "
 			+ " from tbl_indicators "
 			+ " order by id_";
 
@@ -222,6 +223,8 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 				indicator.setSourceId(rs.getString("source_id"));
 				indicator.setFeatured(rs.getBoolean("featured"));
 				indicator.setDisplay(rs.getBoolean("display"));
+				indicator.setRatePer(rs.getInt("rate_per"));
+				indicator.setAggregable(rs.getBoolean("is_aggregable"));
 
 				return indicator;
 			}
@@ -255,8 +258,8 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 	@Override
 	public void addIndicator(Indicator indicator, String username) {
 		String sql = ""
-			+ " insert into tbl_indicators (id_, indicator_category_id, indicator_type_id, name_en, name_es, description_en, description_es, source_id, featured, display, user_modified) "
-			+ " values (:id::numeric, :indicator_category_id::numeric, :indicator_type_id::numeric, :name_en, :name_es, :description_en, :description_es, :source_id::numeric, :featured, :display, :username) ";
+			+ " insert into tbl_indicators (id_, indicator_category_id, indicator_type_id, name_en, name_es, description_en, description_es, source_id, featured, display, user_modified, rate_per, is_aggregable) "
+			+ " values (:id::numeric, :indicator_category_id::numeric, :indicator_type_id::numeric, :name_en, :name_es, :description_en, :description_es, :source_id::numeric, :featured, :display, :username, :rate_per, :is_aggregable) ";
 
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
 		paramMap.addValue("id", indicator.getId());
@@ -270,6 +273,8 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 		paramMap.addValue("featured", indicator.isFeatured());
 		paramMap.addValue("display", indicator.isDisplay());
 		paramMap.addValue("username", username);
+		paramMap.addValue("rate_per", indicator.getRatePer());
+		paramMap.addValue("is_aggregable", indicator.isAggregable());
 
 		this.namedParameterJdbcTemplate.update(sql, paramMap);
 	}
@@ -291,7 +296,9 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 			+ "   featured = :featured, "
 			+ "   display = :display, "
 			+ "   user_modified = :username, "
-			+ "   date_modified = current_timestamp "
+			+ "   date_modified = current_timestamp, "
+			+ "   rate_per = :rate_per, "
+			+ "   is_aggregable = :is_aggregable "
 			+ " where id_ = :id::numeric ";
 
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
@@ -306,7 +313,9 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 		paramMap.addValue("display", indicator.isDisplay());
 		paramMap.addValue("username", username);
 		paramMap.addValue("id", indicator.getId());
+		paramMap.addValue("rate_per", indicator.getRatePer());
+		paramMap.addValue("is_aggregable", indicator.isAggregable());
 
 		this.namedParameterJdbcTemplate.update(sql, paramMap);
-	}	
+	}
 }

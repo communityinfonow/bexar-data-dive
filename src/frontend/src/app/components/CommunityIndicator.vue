@@ -1,16 +1,30 @@
 <template>
-	<div :id="'community_indicator_' + this.item.indicator.id" class="pl-4" :class="{ 'd-print-none': !item.year }">
-		<section class="mb-8">
-			<template v-if="item.indicator.hasData && item.year">
+	<div :id="'community_indicator_' + this.item.indicator.id" class="pl-4 pt-2 mb-6" :class="{ 'd-print-none': !item.year }">
+		<section>
+			<template v-if="!item.indicator.aggregable && community.location.typeId === '7'">
+				<h3 class="text-h6">
+					<span v-if="parentName">{{ parentName }} - </span>
+					{{ item.indicator['name_' + locale]}}
+				</h3>
+				<p>{{ $t('data.not_aggregable') }}</p>
+			</template>
+			<template v-else-if="item.indicator.hasData && item.year">
 				<div class="d-flex justify-space-between">
 					<div>
-						<h3 class="text-h6">
-							<span v-if="parentName">{{ parentName }} - </span>
-							{{ item.indicator['name_' + locale]}}:
-							<span v-if="item.demographicData[0].suppressed" class="text-h6 mb-0">{{ $t('data.suppressed') }}</span>
-							<span v-else-if="item.demographicData[0].value === null" class="text-h6 mb-0">{{ $t('data.no_data') }}</span>
-							<span v-else class="text-h6 mb-0">{{ formatValue(item.indicatorType.id, item.demographicData[0].value) }}</span>
-							<indicator-definition :indicator="item.indicator"></indicator-definition>
+						<h3 class="text-h6 d-flex">
+							<div>
+							<span v-if="parentName">{{ parentName }}<span v-if="item.indicator['name_' + locale]"> - </span></span>
+							{{ item.indicator['name_' + locale]}}<span v-if="item.indicator['name_' + locale]">:</span>
+							</div>
+							<v-chip color="secondary" label class="ml-2" v-if="item.indicator['name_' + locale]">
+								<span v-if="item.demographicData[0].suppressed" class="text-h6 mb-0">{{ $t('data.suppressed') }}</span>
+								<span v-else-if="item.demographicData[0].value === null" class="text-h6 mb-0">{{ $t('data.no_data') }}</span>
+								<template v-else>
+									<div class="text-h6 mb-0">{{ formatValue(item.indicatorType.id, item.demographicData[0].value) }}</div>
+									<div v-if="item.demographicData[0].moeLow && item.demographicData[0].moeHigh" class="ml-2">{{ $t('data.moe_range') }} {{ formatValue(item.indicatorType.id, item.demographicData[0].moeLow) }} - {{ formatValue(item.indicatorType.id, item.demographicData[0].moeHigh) }}</div> 
+								</template>
+							</v-chip>
+							<indicator-definition v-if="item.indicator['name_' + locale]" :indicator="item.indicator"></indicator-definition>
 						</h3>
 						<p class="text-subtitle-1 mb-4">
 							{{ community.location['name_' + locale]}}, 
@@ -24,24 +38,42 @@
 				</div>
 				<v-row>
 					<v-col cols="12">
-						<community-chart 
-							:indicatorId="item.indicator.id" 
-							:indicatorType=item.indicatorType.id 
-							:data="item.demographicData" 
-							:maxDemographics="maxDemographics" 
-						>
-						</community-chart>
+						<template v-if="item.demographicData.filter(i => i.demographicFilter.id !== null).length" >
+							<community-chart
+								:indicatorId="item.indicator.id" 
+								:indicatorType=item.indicatorType
+								:indicatorName="(parentName ? parentName + ' - ' : '') + item.indicator['name_' + locale]"
+								:data="item.demographicData.filter(i => i.demographicFilter.id !== null)" 
+								:maxDemographics="maxDemographics" 
+								:filterType="filterType"
+							>
+							</community-chart>
+							<!-- echarts title option doesn't work with rich text formatting, so use html for below-chart title with mixed formatting -->
+							<p v-if="item.indicator['name_' + locale] && item.indicator.typeId === '3'" :id="'community_indicator_chart_title_' + item.indicator.id" class="text-center font-italic text-subtitle-1" style="margin-top: -2em">
+								{{ $t('tools.community.percentage_of') }}
+								<span class="text-normal font-weight-bold">{{ (parentName ? parentName + ' - ' : '') + item.indicator['name_' + locale] }}</span>
+								{{ $t('tools.community.who_are') }}
+								<span v-if="filterType.id === '1'">{{ $t('tools.community.race_ethnicity') }}</span>
+								<span v-if="filterType.id === '2'">{{ $t('tools.community.age_group') }}</span>
+								<span v-if="filterType.id === '3'">{{ $t('tools.community.sex') }}</span>
+								<span v-if="filterType.id === '4'">{{ $t('tools.community.education_level') }}</span>
+								<span v-if="filterType.id === '5'">{{ $t('tools.community.income_level') }}</span>
+							</p>
+						</template>
+						<p v-else>{{ $t('tools.community.no_disaggregation')}}</p>
 					</v-col>
 				</v-row>
 			</template>
 			<template v-else-if="item.indicator.hasData">
 				<h3 class="text-h6">
+					<span v-if="parentName">{{ parentName }} - </span>
 					{{ item.indicator['name_' + locale]}}
 				</h3>
 				<p>{{ $t('tools.community.no_data_geography') }}</p>
 			</template>
 			<template v-else>
 				<h3 class="text-h6">
+					<span v-if="parentName">{{ parentName }} - </span>
 					{{ item.indicator['name_' + locale]}}
 				</h3>
 				<p>{{ $t('tools.community.working_add_data') }}</p>
@@ -77,6 +109,9 @@ export default {
 		},
 		maxDemographics: {
 			type: Number
+		},
+		filterType: {
+			type: Object
 		}
 	},
 	computed: {
@@ -102,7 +137,7 @@ export default {
 					+ '"' + this.item.source['name_' + this.locale] + '",'
 					+ '"' + this.community.location['name_' + this.locale] + '",'
 					+ this.item.year + ','
-					+ '"' + (data.raceFilter['name_' + this.locale] || i18n.t('data.all')) + '",'
+					+ '"' + (data.demographicFilter['name_' + this.locale] || i18n.t('data.all')) + '",'
 					+ (data.suppressed ? i18n.t('data.suppressed') : data.value === null ? i18n.t('data.no_data') : data.value) + ','
 					+ (data.moeLow && data.moeHigh ? (data.moeLow + ' - ' + data.moeHigh) : '');
 				});
@@ -142,5 +177,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-	
+	::v-deep .v-chip .v-chip__content {
+		align-items: baseline;
+		flex-direction: row;
+	}
 </style>

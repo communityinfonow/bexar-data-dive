@@ -10,7 +10,7 @@ import org.cinow.omh.locations.LocationType;
  * 
  * @author brian
  */
-public class ExploreDataLocation {
+public class ExploreDataLocation<T extends ExploreDataPoint> {
 	
 	/**
 	 * The location.
@@ -30,7 +30,7 @@ public class ExploreDataLocation {
 	/**
 	 * The year data.
 	 */
-	private Map<String, ExploreDataPoint> yearData;
+	private Map<String, T> yearData;
 	
 	/**
 	 * @return the location
@@ -77,14 +77,14 @@ public class ExploreDataLocation {
 	/**
 	 * @return the yearData
 	 */
-	public Map<String, ExploreDataPoint> getYearData() {
+	public Map<String, T> getYearData() {
 		return yearData;
 	}
 
 	/**
 	 * @param yearData the yearData to set
 	 */
-	public void setYearData(Map<String, ExploreDataPoint> yearData) {
+	public void setYearData(Map<String, T> yearData) {
 		this.yearData = yearData;
 	}
 }
