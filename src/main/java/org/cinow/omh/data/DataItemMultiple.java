@@ -13,7 +13,6 @@ import org.cinow.omh.indicators.IndicatorType;
 
 public abstract class DataItemMultiple {
 	
-	//FIXME: need 'is_aggregatable' flag on indicators to determine whether to aggregate or not
 	/**
 	 * The indicator values.
 	 */

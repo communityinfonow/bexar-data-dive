@@ -627,7 +627,7 @@ export default {
               selected: !router.currentRoute.query.locationTypes || [].concat(router.currentRoute.query.locationTypes).find(q => q === o.id) 
             }, o)
           );
-        if (!this.indicator.aggregable) {
+        if (!this.indicator.aggregable && this.locationTypes.find(lt => lt.id === '7')) {
           this.locationTypes.find(lt => lt.id === '7').selected = false;
         }
         this.locations = newValue.locationFilter.options
@@ -753,7 +753,7 @@ export default {
     },
     selectAllLocationTypesChange() {
       this.locationTypes.forEach(i => i.selected = this.selectAllLocationTypes);
-      if (!this.indicator.aggregable) {
+      if (!this.indicator.aggregable && this.locationTypes.find(lt => lt.id === '7')) {
         this.locationTypes.find(lt => lt.id === '7').selected = false;
       }
     },

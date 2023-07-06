@@ -167,7 +167,11 @@ public class TablesRepositoryPostgresql implements TablesRepository{
 		paramMap.addValue("end", request.getPage() * request.getPerPage());
 		paramMap.addValue("location_type_ids", request.getLocationTypes());
 		paramMap.addValue("location_ids", request.getLocations());
-		paramMap.addValue("custom_location_ids", request.getCustomLocationIds());
+		List<String> customLocationIds = request.getCustomLocationIds();
+		if (customLocationIds != null && customLocationIds.isEmpty()) {
+			customLocationIds = null;
+		}
+		paramMap.addValue("custom_location_ids", customLocationIds);
 		paramMap.addValue("years", request.getYears());
 		paramMap.addValue("race_ids", request.getRaces());
 		paramMap.addValue("include_all_races", request.getRaces().contains(null));

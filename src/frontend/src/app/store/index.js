@@ -124,7 +124,7 @@ export default new Vuex.Store({
     },
     locationMenu: (state) => {
       let menu = JSON.parse(JSON.stringify(state.locationMenu))
-      if (menu) {
+      if (menu && menu.categories.find(c => c.id === '7')) {
         menu.categories.find(c => c.id === '7').items = state.customLocations.map((location) => {
           return {
             categoryId: '7',
@@ -141,30 +141,31 @@ export default new Vuex.Store({
     },
     filters: (state) => {
       let filters = JSON.parse(JSON.stringify(state.filters))
-      if (filters && state.customLocations?.length > 0) {
-        //FIXME: need to disable this option if the indicator is not aggregable
-        filters.locationTypeFilter.options.push({
-          display: false, 
-          id: '7',
-          name_en: i18n.t('tools.custom_locations.name'),
-          name_es: i18n.t('tools.custom_locations.name'),
-          disabled: !state.indicator.aggregable || !state.customLocations.some((location) => filters?.locationTypeFilter?.options?.some(locationType => locationType.id === location.typeId))
-        });
-        filters.locationFilter.options = filters.locationFilter.options.concat(state.customLocations
-          .map((location) => {
-            return {
-              display: false,
-              id: location.id,
-              name_en: location.name + ' (' + state.locationMenu.categories.find(c => c.id === location.typeId)['name_en'] + ')',
-              name_es: location.name + ' (' + state.locationMenu.categories.find(c => c.id === location.typeId)['name_es'] + ')',
-              typeId: '7',
-              disabled: !filters?.locationTypeFilter?.options?.some(locationType => locationType.id === location.typeId)
-            };
-          })
-        );
-        filters.locationTypeYears[7] = Array.from(new Set(Object.values(filters.locationTypeYears).flat()));
+      if (state.locationMenu && state.locationMenu.categories.find(c => c.id === '7')) {
+        if (filters && state.customLocations?.length > 0) {
+          //FIXME: need to disable this option if the indicator is not aggregable
+          filters.locationTypeFilter.options.push({
+            display: false, 
+            id: '7',
+            name_en: i18n.t('tools.custom_locations.name'),
+            name_es: i18n.t('tools.custom_locations.name'),
+            disabled: !state.indicator.aggregable || !state.customLocations.some((location) => filters?.locationTypeFilter?.options?.some(locationType => locationType.id === location.typeId))
+          });
+          filters.locationFilter.options = filters.locationFilter.options.concat(state.customLocations
+            .map((location) => {
+              return {
+                display: false,
+                id: location.id,
+                name_en: location.name + ' (' + state.locationMenu.categories.find(c => c.id === location.typeId)['name_en'] + ')',
+                name_es: location.name + ' (' + state.locationMenu.categories.find(c => c.id === location.typeId)['name_es'] + ')',
+                typeId: '7',
+                disabled: !filters?.locationTypeFilter?.options?.some(locationType => locationType.id === location.typeId)
+              };
+            })
+          );
+          filters.locationTypeYears[7] = Array.from(new Set(Object.values(filters.locationTypeYears).flat()));
+        }
       }
-      
       return filters
     }
   },
@@ -292,7 +293,11 @@ export default new Vuex.Store({
     },
     getLocationMenu(context) {
       axios.get('/api/location-menu').then(response => {
-        context.commit('SET_LOCATION_MENU', response.data)
+        //TODO: commit resopnse.data instead of tempMenu once custom locations are ready
+        let tempMenu = {
+          categories: response.data.categories.filter(c => c.id !== '6' && c.id !== '7'),
+        }
+        context.commit('SET_LOCATION_MENU', tempMenu)
       })
     },
     getFeaturedIndicators(context) {
