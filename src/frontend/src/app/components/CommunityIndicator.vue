@@ -26,10 +26,20 @@
 							</v-chip>
 							<indicator-definition v-if="item.indicator['name_' + locale]" :indicator="item.indicator"></indicator-definition>
 						</h3>
-						<p class="text-subtitle-1 mb-4">
+						<p class="text-subtitle-1 mb-0">
 							{{ community.location['name_' + locale]}}, 
 							{{ item.source['name_' + locale] }} ({{ item.year }})
 						</p>
+						<p v-if="item.indicator['name_' + locale] && item.indicator.typeId === '3'" :id="'community_indicator_chart_title_' + item.indicator.id" class="font-italic text-subtitle-1 mb-4">
+								{{ $t('tools.community.percentage_of') }}
+								<span class="text-normal font-weight-bold">"{{ (parentName ? parentName + ' - ' : '') + item.indicator['name_' + locale] }}"</span>
+								{{ $t('tools.community.who_are') }}
+								<span v-if="filterType.id === '1'">{{ $t('tools.community.race_ethnicity') }}</span>
+								<span v-if="filterType.id === '2'">{{ $t('tools.community.age_group') }}</span>
+								<span v-if="filterType.id === '3'">{{ $t('tools.community.sex') }}</span>
+								<span v-if="filterType.id === '4'">{{ $t('tools.community.education_level') }}</span>
+								<span v-if="filterType.id === '5'">{{ $t('tools.community.income_level') }}</span>
+							</p>
 					</div>
 					<div>
 						<download-menu :downloadData="downloadData" :downloadImage="downloadImage"></download-menu>
@@ -48,17 +58,6 @@
 								:filterType="filterType"
 							>
 							</community-chart>
-							<!-- echarts title option doesn't work with rich text formatting, so use html for below-chart title with mixed formatting -->
-							<p v-if="item.indicator['name_' + locale] && item.indicator.typeId === '3'" :id="'community_indicator_chart_title_' + item.indicator.id" class="text-center font-italic text-subtitle-1" style="margin-top: -2em">
-								{{ $t('tools.community.percentage_of') }}
-								<span class="text-normal font-weight-bold">{{ (parentName ? parentName + ' - ' : '') + item.indicator['name_' + locale] }}</span>
-								{{ $t('tools.community.who_are') }}
-								<span v-if="filterType.id === '1'">{{ $t('tools.community.race_ethnicity') }}</span>
-								<span v-if="filterType.id === '2'">{{ $t('tools.community.age_group') }}</span>
-								<span v-if="filterType.id === '3'">{{ $t('tools.community.sex') }}</span>
-								<span v-if="filterType.id === '4'">{{ $t('tools.community.education_level') }}</span>
-								<span v-if="filterType.id === '5'">{{ $t('tools.community.income_level') }}</span>
-							</p>
 						</template>
 						<p v-else>{{ $t('tools.community.no_disaggregation')}}</p>
 					</v-col>
