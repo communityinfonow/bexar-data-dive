@@ -36,7 +36,18 @@
       <v-card>
         <v-card-title>{{ $t('about_data_view.source_citation') }}</v-card-title>
         <v-card-text>
-          <v-select v-if="filters" v-model="citationYear" :items="yearOptions" :label="filters.yearFilter.type['name_' + locale]" outlined dense></v-select>
+          <v-select 
+            v-if="filters" 
+            multiple 
+            v-model="citationYears" 
+            :items="yearOptions" 
+            :label="filters.yearFilter.type['name_' + locale] + '(s)'" 
+            outlined 
+            dense
+            :menu-props="{
+              maxHeight: '180px'
+            }"
+            ></v-select>
           <p>{{ $t('about_data_view.click_copy') }}</p>
           <v-sheet rounded class="pa-2 d-flex align-center citation-content cursor-pointer" @click="copyCitation">
             <span ref="citationEl" v-html="citation"></span>
@@ -77,7 +88,7 @@ export default {
     return {
       citationDialog: false,
       citationMessage: '',
-      citationYear: '',
+      citationYears: [],
       item: null,
       filters: null,
       yearOptions: []
@@ -130,11 +141,11 @@ export default {
 			return i18n.t('about_data_view.click_copy');
 		},
     citation() {
-      if (!this.item || !this.citationYear) {
+      if (!this.item || !this.citationYears.length) {
         return;
       }
       return this.item.source['name_' + this.locale] + '. '
-                + ' (' + this.citationYear + '). '
+                + ' (' + this.citationYears.slice(0).sort().join(', ') + '). '
                 + '<em>' + this.item.indicator['name_' + this.locale] + '</em>. '
                 + i18n.t('about_data_view.processed_published') + ' '
                 + new Date().getDate() + ' ' + new Date().toLocaleString(this.locale, { month: 'long' }) + ' ' + new Date().getFullYear() + '. '
@@ -176,8 +187,8 @@ export default {
         indicator: item.indicator.id
       }}).then(response => { 
         this.filters = response.data;
-        this.yearOptions = response.data.yearFilter.options.map(o => o.id);
-        this.citationYear = this.yearOptions[0];
+        this.yearOptions = response.data.yearFilter.options.map(o => o.id).reverse();
+        this.citationYears = [this.yearOptions[this.yearOptions.length - 1]];
         this.citationDialog = true;
       });
     },
