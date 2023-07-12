@@ -4,6 +4,9 @@
 			<explore-tools-panel 
 				v-if="filters"
 				:draw="drawMap"
+				:showHighlightFilteredLocation="true"
+				:highlightFilteredLocation="highlightFilteredLocation"
+				:setHighlightFilteredLocation="setHighlightFilteredLocation"
 				:showLabels="showMapLabels"
 				:setShowLabels="setShowMapLabels"
 				dataVisualElementId="explore_map"
@@ -35,6 +38,13 @@
 						v-if="geojson"
 						:geojson="geojson"
 						:options="options"
+						:options-style="style"
+					></l-geo-json>
+					<l-geo-json
+						v-if="highlightFilteredLocation"
+						ref="filteredLocation"
+						:geojson="filteredLocationGeojson"
+						:options="filteredLocationOptions"
 						:options-style="style"
 					></l-geo-json>
 					<l-control
@@ -143,12 +153,13 @@ export default {
 			zoom: 10,
 			center: latLng(29.43445, -98.473562383),
 			geojson: null,
+			filteredLocationGeojson: null,
 			refreshOptions: false,
-			selectedLocationType: null
+			selectedLocationType: null,
 		}
 	},
 	computed: {
-		...mapState(['exploreData', 'locale', 'filterSelections', 'showMapLabels', 'exploreTab']),
+		...mapState(['exploreData', 'locale', 'filterSelections', 'showMapLabels', 'highlightFilteredLocation', 'exploreTab']),
 		...mapGetters(['locationMenu', 'filters']),
 		layers() {
 			return this.filters?.locationTypeFilter?.options?.map(option => {
@@ -163,6 +174,12 @@ export default {
 			this.refreshOptions;
 			return {
 				onEachFeature: this.onEachFeature
+			}
+		},
+		filteredLocationOptions() {
+			this.refreshOptions;
+			return {
+				onEachFeature: this.onEachFilteredLocationFeature
 			}
 		},
 		style() {
@@ -235,6 +252,9 @@ export default {
 		},
 		showMapLabels() {
 			this.drawMap();
+		},
+		highlightFilteredLocation() {
+			this.drawMap();
 		}
 	},
 	mounted () {
@@ -249,8 +269,13 @@ export default {
 		}, 100);
 		
 	},
+	updated() {
+		this.$nextTick(() => {
+			this.$refs.filteredLocation.mapObject.bringToFront();
+		});
+	},
 	methods: {
-		...mapActions(['setDockedTooltip', 'setFilterSelections', 'setShowMapLabels']),
+		...mapActions(['setDockedTooltip', 'setFilterSelections', 'setShowMapLabels', 'setHighlightFilteredLocation']),
 		initializeMap() {
 			this.mapInitialized = true;
 			if (this.exploreData) {
@@ -289,6 +314,7 @@ export default {
 					}, 
 					{ id: ld.location.id }))
 			)
+			this.filteredLocationGeojson = this.geojson.features.find(f => f.id === this.exploreData.filters.locationFilter.options[0]?.id);
 			this.refreshOptions = Math.random(); // force a refresh
 		},
 		getLocationDataGeojson(locationData) {
@@ -302,12 +328,43 @@ export default {
 			return geojson;
 		},
 		onEachFeature(feature, layer) {
-			let filteredFeature = feature.id === this.exploreData.filters.locationFilter.options[0]?.id;
-			if (filteredFeature) {
-				layer.options.weight = 4;
-				layer.options.color = 'orange';
-			}
 			layer.options.fillColor = this.getLayerShadingColor(feature);
+			if (this.showMapLabels) {
+				layer.bindTooltip(layer.feature.properties.locationName.replace('Zip Code', 'Zip').replace('Census Tract', 'Tract') 
+						+ '<br>' 
+						+ (layer.feature.properties.suppressed ? i18n.t('data.suppressed') : format(this.exploreData.indicator.typeId, layer.feature.properties.value)), 
+					{
+						className: 'location-label',
+						permanent: true, 
+						direction: 'center'
+					}
+				);
+			}
+
+			layer.on('mouseover', (layer) => {
+				this.setDockedTooltip({
+					value: layer.target.feature.properties.value,
+					suppressed: layer.target.feature.properties.suppressed,
+					noData: layer.target.feature.properties.noData,
+					moeLow: layer.target.feature.properties.moeLow,
+					moeHigh: layer.target.feature.properties.moeHigh,
+					location: layer.target.feature.properties.locationName,
+					year: this.exploreData.filters.yearFilter.options[0].id,
+					indicatorFilters: this.exploreData.filters.indicatorFilters
+				});
+			});
+			layer.on('mouseout', () => {
+				this.setDefaultDockedTooltip()
+			});
+			layer.on('click', (e) => {
+				//FIXME: wrong location type when selecting from map when a custom location is filtered...
+				this.selectLocation(e.target.feature.id);
+			});
+		},
+		onEachFilteredLocationFeature(feature, layer) {
+			layer.options.weight = 4;
+			layer.options.color = 'orange';
+			layer.options.fillColor = 'transparent';
 			if (this.showMapLabels) {
 				layer.bindTooltip(layer.feature.properties.locationName.replace('Zip Code', 'Zip').replace('Census Tract', 'Tract') 
 						+ '<br>' 

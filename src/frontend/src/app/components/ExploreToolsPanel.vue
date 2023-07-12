@@ -2,10 +2,10 @@
 	<!-- max-height to fix odd extra space below the col that started showing up after the icon button menus were added -->
 	<v-col cols="auto" style="max-height: 72px;">
 		<v-form v-if="filters" ref="compareForm" v-model="valid">
-			<v-row class="mt-2">
+			<v-row class="mt-2 justify-end">
+				<template v-if="showCompareOptions">
 				<v-col cols="3" xl="4">
 					<v-select
-						v-if="showCompareOptions"
 						:label="$t('tools.explore.compare_by')"
 						dense
 						flat
@@ -20,7 +20,6 @@
 				</v-col>
 				<v-col cols="3" xl="4">
 					<v-autocomplete
-						v-if="showCompareOptions"
 						:label="$t('tools.explore.compare_with')"
 						dense
 						flat
@@ -38,7 +37,6 @@
 				</v-col>
 				<v-col cols="2" xl="1">
 					<v-btn
-						v-if="showCompareOptions"
 						color="primary"
 						tile
 						@click="applyComparison"
@@ -46,8 +44,18 @@
 						{{ $t('tools.explore.compare') }}
 					</v-btn>
 				</v-col>
-				<v-col cols="4" xl="3">
+				</template>
+				<v-col :cols="!showCompareOptions ? 12 : 4" :xl="!showCompareOptions ? 12 : 3">
 					<div class="d-flex justify-end">
+					<v-switch
+						v-if="showHighlightFilteredLocation"
+						inset
+						:label="$t('tools.common.highlight_location')"
+						style="margin-top: 2px;"
+						v-model="highlight"
+						hide-details
+						class="mr-6"
+					></v-switch>
 					<v-switch
 						inset
 						:label="$t('tools.common.labels')"
@@ -87,6 +95,10 @@ export default {
 	computed: {
 		...mapState(['filterSelections', 'locale', 'exploreData', 'indicator', 'indicatorMenu']),
 		...mapGetters(['filters']),
+		highlight: {
+			get() { return this.highlightFilteredLocation },
+			set(value) { this.setHighlightFilteredLocation(value) }
+		},
 		labels: {
 			get() { return this.showLabels },
 			set(value) { this.setShowLabels(value) }
@@ -123,6 +135,15 @@ export default {
 		showCompareOptions: {
 			type: Boolean,
 			default: false
+		},
+		showHighlightFilteredLocation: {
+			type: Boolean
+		},
+		highlightFilteredLocation: {
+			type: Boolean
+		},
+		setHighlightFilteredLocation: {
+			type: Function
 		},
 		showLabels: {
 			type: Boolean
