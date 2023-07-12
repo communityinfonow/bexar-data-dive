@@ -30,7 +30,7 @@
 							{{ community.location['name_' + locale]}}, 
 							{{ item.source['name_' + locale] }} ({{ item.year }})
 						</p>
-						<p v-if="item.indicator['name_' + locale] && item.indicator.typeId === '3'" :id="'community_indicator_chart_title_' + item.indicator.id" class="font-italic text-subtitle-1 mb-4">
+						<p v-if="item.indicator['name_' + locale] && item.demographicData.filter(i => i.demographicFilter.id !== null).length" :id="'community_indicator_chart_title_' + item.indicator.id" class="font-italic text-subtitle-1 mb-4">
 								{{ $t('tools.community.percentage_of') }}
 								<span class="text-normal font-weight-bold">"{{ (parentName ? parentName + ' - ' : '') + item.indicator['name_' + locale] }}"</span>
 								{{ $t('tools.community.who_are') }}
@@ -48,7 +48,7 @@
 				</div>
 				<v-row>
 					<v-col cols="12">
-						<template v-if="item.demographicData.filter(i => i.demographicFilter.id !== null).length" >
+						<template v-if="item.demographicData.filter(i => i.demographicFilter.id !== null).length">
 							<community-chart
 								:indicatorId="item.indicator.id" 
 								:indicatorType=item.indicatorType
