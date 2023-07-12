@@ -7,6 +7,7 @@
           :menu="locationMenu"
           :selectItem="selectItem"
           :flattenSingleItems="true"
+          :searchType="$t('tools.common.locations')"
         ></MenuToolbar>
       </v-col>
       <v-col cols="auto">
