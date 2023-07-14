@@ -14,12 +14,14 @@ export default new Vuex.Store({
     communityRoute: 'community',
     exploreRoute: 'explore',
     tablesRoute: 'tables',
+    customLocationsRoute: 'custom-locations',
     locationMenu: null,
     indicatorMenu: null,
     featuredIndicators: null,
     community: null,
     indicator: null,
     source: null,
+    filterTypes: null,
     filters: null,
     dockedTooltip: null,
     showMapLabels: false,
@@ -33,7 +35,8 @@ export default new Vuex.Store({
     aboutData: null,
     faqs: null,
     announcements: null,
-    surveySubmitted: false
+    surveySubmitted: false,
+    customLocations: []
   },
   getters: {
     tools: (state) => {
@@ -46,6 +49,7 @@ export default new Vuex.Store({
           icon: 'mdi-map',
           shortDescription: i18n.t('tools.community.short_description'),
           fullDescription: i18n.t('tools.community.long_description'),
+          showOnHome: true
         },
         {
           key: 'explore',
@@ -55,6 +59,7 @@ export default new Vuex.Store({
           icon: 'mdi-view-dashboard',
           shortDescription: i18n.t('tools.explore.short_description'),
           fullDescription: i18n.t('tools.explore.long_description'),
+          showOnHome: true,
           subTools: [
             {
               name: i18n.t('tools.explore.tabs.map.name'),
@@ -78,7 +83,18 @@ export default new Vuex.Store({
           icon: 'mdi-grid',
           shortDescription: i18n.t('tools.tables.short_description'),
           fullDescription: i18n.t('tools.tables.long_description'),
+          showOnHome: true
         },
+        {
+          key: 'custom-locations',
+          name: i18n.t('tools.custom_locations.name'),
+          imagePath: "/img/custom_locations_tables_" + i18n.locale + ".png",
+          route: state.customLocationsRoute,
+          icon: 'mdi-map-plus',
+          shortDescription: i18n.t('tools.custom_locations.short_description'),
+          fullDescription: i18n.t('tools.custom_locations.long_description'),
+          showOnHome: false
+        }
       ]
     },
     about_views: () => {
@@ -105,6 +121,52 @@ export default new Vuex.Store({
           icon: 'mdi-help-circle' 
         }
       ]
+    },
+    locationMenu: (state) => {
+      let menu = JSON.parse(JSON.stringify(state.locationMenu))
+      if (menu && menu.categories.find(c => c.id === '7')) {
+        menu.categories.find(c => c.id === '7').items = state.customLocations.map((location) => {
+          return {
+            categoryId: '7',
+            description_en: null,
+            description_es: null,
+            hasData: true,
+            id: location.id,
+            name_en: location.name + ' (' + state.locationMenu.categories.find(c => c.id === location.typeId)['name_' + state.locale] + ')',
+            name_es: location.name + ' (' + state.locationMenu.categories.find(c => c.id === location.typeId)['name_' + state.locale] + ')',
+          }
+        });
+      }
+      return menu
+    },
+    filters: (state) => {
+      let filters = JSON.parse(JSON.stringify(state.filters))
+      if (state.locationMenu && state.locationMenu.categories.find(c => c.id === '7')) {
+        if (filters && state.customLocations?.length > 0) {
+          //FIXME: need to disable this option if the indicator is not aggregable
+          filters.locationTypeFilter.options.push({
+            display: false, 
+            id: '7',
+            name_en: i18n.t('tools.custom_locations.name'),
+            name_es: i18n.t('tools.custom_locations.name'),
+            disabled: !state.indicator.aggregable || !state.customLocations.some((location) => filters?.locationTypeFilter?.options?.some(locationType => locationType.id === location.typeId))
+          });
+          filters.locationFilter.options = filters.locationFilter.options.concat(state.customLocations
+            .map((location) => {
+              return {
+                display: false,
+                id: location.id,
+                name_en: location.name + ' (' + state.locationMenu.categories.find(c => c.id === location.typeId)['name_en'] + ')',
+                name_es: location.name + ' (' + state.locationMenu.categories.find(c => c.id === location.typeId)['name_es'] + ')',
+                typeId: '7',
+                disabled: !filters?.locationTypeFilter?.options?.some(locationType => locationType.id === location.typeId)
+              };
+            })
+          );
+          filters.locationTypeYears[7] = Array.from(new Set(Object.values(filters.locationTypeYears).flat()));
+        }
+      }
+      return filters
     }
   },
   mutations: {
@@ -131,6 +193,9 @@ export default new Vuex.Store({
     },
     SET_SOURCE(state, source) {
       state.source = source
+    },
+    SET_FILTER_TYPES(state, filterTypes) {
+      state.filterTypes = filterTypes
     },
     SET_FILTERS(state, filters) {
       state.filters = filters
@@ -176,6 +241,26 @@ export default new Vuex.Store({
     },
     SET_SURVEY_SUBMITTED(state, surveySubmitted) {
       state.surveySubmitted = surveySubmitted
+    },
+    SET_CUSTOM_LOCATIONS(state, locations) {
+      state.customLocations = locations
+    },
+    ADD_CUSTOM_LOCATION(state, location) {
+      if (state.customLocations.find(l => l.id === location.id)) {
+        state.customLocations = state.customLocations.map(l => {
+          if (l.id === location.id) {
+            return location
+          } else {
+            return l
+          }
+        });
+      } else {
+        state.customLocations.push(location);
+      }
+    },
+    DELETE_CUSTOM_LOCATION(state, location) {
+      state.customLocations = state.customLocations.filter(l => l.id !== location);
+      localStorage.setItem('cinow-custom-locations', JSON.stringify(state.customLocations));
     }
   },
   actions: {
@@ -198,6 +283,7 @@ export default new Vuex.Store({
         }
         context.dispatch('getIndicatorMenu')
         context.dispatch('getLocationMenu')
+        context.dispatch('getFilterTypes')
       }
     },
     getIndicatorMenu(context) {
@@ -207,7 +293,11 @@ export default new Vuex.Store({
     },
     getLocationMenu(context) {
       axios.get('/api/location-menu').then(response => {
-        context.commit('SET_LOCATION_MENU', response.data)
+        //TODO: commit resopnse.data instead of tempMenu once custom locations are ready
+        let tempMenu = {
+          categories: response.data.categories.filter(c => c.id !== '6' && c.id !== '7'),
+        }
+        context.commit('SET_LOCATION_MENU', tempMenu)
       })
     },
     getFeaturedIndicators(context) {
@@ -215,17 +305,18 @@ export default new Vuex.Store({
         context.commit('SET_FEATURED_INDICATORS', response.data)
       })
     },
-    setCommunity(context, community) {
+    setCommunity(context, community, filterType) {
       if (community !== null) {
-        context.dispatch('getCommunityData', community)
+        context.dispatch('getCommunityData', { community: community, filterType: filterType })
       } else {
         context.commit('SET_COMMUNITY', community)
       }
     },
-    getCommunityData(context, community) {
+    getCommunityData(context, data) {
       axios.get('/api/community-data', { params: { 
-          location: community.id, 
-          locationType: community.categoryId 
+          location: data.community.id, 
+          locationType: data.community.categoryId,
+          filterType: data.filterType
         }
       }).then(response => {
         context.commit('SET_COMMUNITY', response.data)
@@ -251,6 +342,11 @@ export default new Vuex.Store({
         indicator: indicator.id
       }}).then(response => {
         context.commit('SET_SOURCE', response.data)
+      })
+    },
+    getFilterTypes(context) {
+      return axios.get('/api/filter-types').then(response => {
+        context.commit('SET_FILTER_TYPES', response.data)
       })
     },
     getFilters(context, indicator) {
@@ -362,6 +458,7 @@ export default new Vuex.Store({
       } else {
         delete filterQuery.incomes
       }
+      request.customLocationIds = this.state.customLocations.map(l => l.id);
       if (JSON.stringify(filterQuery) !== JSON.stringify(router.currentRoute.query)) {
         router.replace({
           query: filterQuery
@@ -418,6 +515,28 @@ export default new Vuex.Store({
     setSurveySubmitted(context, surveySubmitted) {
       sessionStorage.setItem('cinow-survey-submitted', surveySubmitted)
       context.commit('SET_SURVEY_SUBMITTED', surveySubmitted)
+    },
+    setCustomLocations(context, locations) {
+      context.commit('SET_CUSTOM_LOCATIONS', locations)
+    },
+    addCustomLocation(context, location) {
+      let postLocation = JSON.parse(JSON.stringify(location));
+      postLocation.geojson = JSON.stringify(postLocation.geojson);
+      return axios.post('/api/custom-locations', postLocation).then(() => {
+        context.commit('ADD_CUSTOM_LOCATION', location);
+        localStorage.setItem('cinow-custom-locations', JSON.stringify(this.state.customLocations));
+        router.replace({
+          query: {
+            ...router.currentRoute.query,
+            typeId: location.typeId,
+            id: location.id
+  
+          }
+        });
+      });
+    },
+    deleteCustomLocation(context, location) {
+      context.commit('DELETE_CUSTOM_LOCATION', location)
     }
   },
   modules: {},

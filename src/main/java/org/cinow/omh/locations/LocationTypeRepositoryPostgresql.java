@@ -7,6 +7,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -20,6 +22,12 @@ public class LocationTypeRepositoryPostgresql implements LocationTypeRepository 
 	 */
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
+
+	/**
+	 * The JDBC template.
+	 */
+	@Autowired
+	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 	/**
 	 * {@inheritDoc}

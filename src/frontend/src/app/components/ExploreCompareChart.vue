@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapGetters } from 'vuex'
 import i18n from '@/i18n'
 import * as echarts from 'echarts/core';
 import { SVGRenderer } from 'echarts/renderers';
@@ -43,7 +43,8 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['locale', 'filters', 'exploreData', 'compareSelections', 'showCompareLabels', 'exploreTab']),
+		...mapState(['locale', 'exploreData', 'compareSelections', 'showCompareLabels', 'exploreTab', 'indicator']),
+		...mapGetters(['filters']),
 		smallScreen() {
 			return document.body.clientWidth <= 1440;
 		}
@@ -120,7 +121,9 @@ export default {
 			};
 			let xAxisData = [];
 			if (this.exploreData.compareData) {
-				if (this.compareSelections.type.id === 'l') {
+				if (this.compareSelections.type.id === 'i') {
+					xAxisData.push(this.indicator['name_' + this.locale]);
+				} else if (this.compareSelections.type.id === 'l') {
 					xAxisData.push(this.exploreData.filters.locationFilter.options[0]['name_' + this.locale]);
 				} else if (this.compareSelections.type.id === 'y') {
 					xAxisData.push(this.exploreData.filters.yearFilter.options[0]['name_' + this.locale]);
@@ -138,7 +141,7 @@ export default {
 				axisLabel: { 
 					...textStyle, 
 					interval: 0, 
-					width: '80', 
+					width: '100', 
 					overflow: 'break', 
 					lineHeight: 16, 
 					rotate: this.smallScreen ? 45 : 0,

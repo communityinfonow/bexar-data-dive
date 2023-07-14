@@ -15,12 +15,22 @@
 					:items="filters.locationTypeFilter.options"
 					:item-text="'name_' + locale"
 					item-value="id"
+					item-disabled="disabled"
 					hide-no-data
 					flat
 					dense
 					:rules="[v => !!v || $t('tools.common.make_selection')]"
 					@change="selectLocationType"
-				></v-autocomplete>
+				>
+					<template v-slot:item="{parent, item}">
+						<v-list-item-content>
+							<v-list-item-title 
+								v-html="parent.genFilteredText(item['name_' + locale])"
+								:title="item.disabled ? !indicator.aggregable ? $t('data.not_aggregable') : $t('tools.explore.no_data_custom_locations') : null"
+							></v-list-item-title>
+						</v-list-item-content>
+					</template>
+				</v-autocomplete>
 				<v-autocomplete
 					:label="filters.locationFilter.type['name_' + locale]"
 					:placeholder="filters.locationFilter.type['name_' + locale]"
@@ -28,12 +38,22 @@
 					:items="locationFilterOptions"
 					:item-text="'name_' + locale"
 					item-value="id"
+					item-disabled="disabled"
 					hide-no-data
 					flat
 					dense
 					:rules="[v => !!v || $t('tools.common.make_selection')]"
 					@change="requestApply"
-				></v-autocomplete>
+				>
+					<template v-slot:item="{parent, item}">
+						<v-list-item-content>
+							<v-list-item-title 
+								v-html="parent.genFilteredText(item['name_' + locale])"
+								:title="item.disabled ? $t('tools.explore.no_data_custom_location') : null"
+							></v-list-item-title>
+						</v-list-item-content>
+					</template>
+				</v-autocomplete>
 				<v-autocomplete
 					:label="filters.yearFilter.type['name_' + locale]"
 					:placeholder="filters.yearFilter.type['name_' + locale]"
@@ -72,9 +92,16 @@
 						:rules="[v => !!v || $t('tools.common.make_selection')]"
 						@change="selectIndicatorFilter"
 						:disabled="!availableFilterCombos[filter.type.id]"
-						:readonly="!availableFilterCombos[filter.type.id]"
-						:title="!availableFilterCombos[filter.type.id] ? $t('tools.common.filter_unavailable') : ''"
-					></v-autocomplete>
+					>
+						<template v-slot:item="{parent, item}">
+						<v-list-item-content>
+							<v-list-item-title 
+								v-html="parent.genFilteredText(item['name_' + locale])"
+								:title="!availableFilterCombos[filter.type.id] ? $t('tools.common.filter_unavailable') : null"
+							></v-list-item-title>
+						</v-list-item-content>
+					</template>
+					</v-autocomplete>
 				</template>
 			</v-card-text>
 			<v-card-actions class="d-flex justify-end">
@@ -87,7 +114,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapGetters } from 'vuex'
 import router from '@/app/router/index'
 
 export default {
@@ -104,7 +131,8 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['filters', 'locale', 'filterSelections']),
+		...mapState(['indicator', 'locale', 'filterSelections']),
+		...mapGetters(['filters']),
 		locationFilterOptions() {
 			return this.filters.locationFilter.options
 				.filter(option => option.typeId === this.selectedLocationType)
@@ -113,7 +141,9 @@ export default {
 			return this.filters.yearFilter.options.map(o => {
 				return {
 					...o,
-					disabled: this.filters?.locationTypeYears[this.selectedLocationType].indexOf(o.id) === -1
+					disabled: this.selectedLocationType !== '7' 
+						? this.filters?.locationTypeYears[this.selectedLocationType].indexOf(o.id) === -1
+						: this.filters?.locationTypeYears[this.filters.locationFilter.options.find(l=> l.id === this.selectedLocation).typeId].indexOf(o.id) === -1
 				}
 			})
 		}

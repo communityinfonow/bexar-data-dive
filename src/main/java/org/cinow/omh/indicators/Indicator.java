@@ -63,6 +63,16 @@ public class Indicator {
 	private boolean display;
 
 	/**
+	 * The rate per (for rate indicator types).
+	 */
+	private int ratePer;
+
+	/**
+	 * Whether the indicator may be aggregated.
+	 */
+	private boolean aggregable;
+
+	/**
 	 * @return the id
 	 */
 	public String getId() {
@@ -214,5 +224,33 @@ public class Indicator {
 	 */
 	public void setDisplay(boolean display) {
 		this.display = display;
-	}	
+	}
+
+	/**
+	 * @return the ratePer
+	 */
+	public int getRatePer() {
+		return ratePer;
+	}
+
+	/**
+	 * @param ratePer the ratePer to set
+	 */
+	public void setRatePer(int ratePer) {
+		this.ratePer = ratePer;
+	}
+
+	/**
+	 * @return the aggregable
+	 */
+	public boolean isAggregable() {
+		return aggregable;
+	}
+
+	/**
+	 * @param aggregable the aggregable to set
+	 */
+	public void setAggregable(boolean aggregable) {
+		this.aggregable = aggregable;
+	}
 }
