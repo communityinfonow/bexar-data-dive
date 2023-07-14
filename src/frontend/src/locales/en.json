@@ -102,6 +102,8 @@
     "common": {
       "featured_indicators": "Featured Indicators",
       "search": "Search",
+      "locations": "locations",
+      "indicators": "indicators",
       "highlight_location": "Highlight filtered location",
       "labels": "Labels",
       "click_copy": "Click below to copy the link",

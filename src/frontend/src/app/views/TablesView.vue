@@ -7,6 +7,7 @@
           :menu="indicatorMenu"
           :selectItem="selectItem"
           :flattenSingleItems="false"
+          :searchType="$t('tools.common.indicators')"
         ></MenuToolbar>
       </v-col>
       <v-col cols="auto">
