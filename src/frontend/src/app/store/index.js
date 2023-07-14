@@ -148,8 +148,8 @@ export default new Vuex.Store({
           filters.locationTypeFilter.options.push({
             display: false, 
             id: '7',
-            name_en: i18n.t('tools.custom_locations.name'),
-            name_es: i18n.t('tools.custom_locations.name'),
+            name_en: state.locationMenu.categories.find(c => c.id === '7')['name_en'],
+            name_es: state.locationMenu.categories.find(c => c.id === '7')['name_es'],
             disabled: !state.indicator.aggregable || !state.customLocations.some((location) => filters?.locationTypeFilter?.options?.some(locationType => locationType.id === location.typeId))
           });
           filters.locationFilter.options = filters.locationFilter.options.concat(state.customLocations
@@ -297,11 +297,7 @@ export default new Vuex.Store({
     },
     getLocationMenu(context) {
       axios.get('/api/location-menu').then(response => {
-        //TODO: commit resopnse.data instead of tempMenu once custom locations are ready
-        let tempMenu = {
-          categories: response.data.categories.filter(c => c.id !== '6' && c.id !== '7'),
-        }
-        context.commit('SET_LOCATION_MENU', tempMenu)
+        context.commit('SET_LOCATION_MENU', response.data)
       })
     },
     getFeaturedIndicators(context) {
@@ -309,11 +305,11 @@ export default new Vuex.Store({
         context.commit('SET_FEATURED_INDICATORS', response.data)
       })
     },
-    setCommunity(context, community, filterType) {
-      if (community !== null) {
-        context.dispatch('getCommunityData', { community: community, filterType: filterType })
+    setCommunity(context, data) {
+      if (data !== null) {
+        context.dispatch('getCommunityData', { community: data.community, filterType: data.filterType })
       } else {
-        context.commit('SET_COMMUNITY', community)
+        context.commit('SET_COMMUNITY', data)
       }
     },
     getCommunityData(context, data) {
