@@ -171,7 +171,10 @@
   "about_data_view": {
     "name": "Sobre la Información",
     "indicators": "Indicadores",
-    "visit_source": "Ir a la fuente"
+    "visit_source": "Ir a la fuente",
+    "source_citation": "Cite source (es)",
+    "click_copy": "Click below to copy the citation (es)",
+    "processed_published": "Processed and published by Community Information Now for Bexar Data Dive. (es)"
   },
   "about_tools_view": {
     "name": "Sobre las Herramientas"
