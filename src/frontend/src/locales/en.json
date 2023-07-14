@@ -104,6 +104,7 @@
       "search": "Search",
       "locations": "locations",
       "indicators": "indicators",
+      "highlight_location": "Highlight filtered location",
       "labels": "Labels",
       "click_copy": "Click below to copy the link",
       "copy_success": "Copied to clipboard!",
@@ -172,7 +173,10 @@
   "about_data_view": {
     "name": "About the Data",
     "indicators": "Indicators",
-    "visit_source": "Go to source"
+    "visit_source": "Go to source",
+    "source_citation": "Cite Source",
+    "click_copy": "Click below to copy the citation",
+    "processed_published": "Processed and published by Community Information Now for Bexar Data Dive."
   },
   "about_tools_view": {
     "name": "About the Tools"
