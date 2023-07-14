@@ -24,6 +24,7 @@ export default new Vuex.Store({
     filterTypes: null,
     filters: null,
     dockedTooltip: null,
+    highlightFilteredLocation: true,
     showMapLabels: false,
     showTrendLabels: true,
     showCompareLabels: true,
@@ -229,6 +230,9 @@ export default new Vuex.Store({
     },
     SET_TOOL_ROUTE(state, params) {
       state[params.key + 'Route'] = params.route
+    },
+    SET_HIGHLIGHT_FILTERED_LOCATION(state, highlight) {
+      state.highlightFilteredLocation = highlight
     },
     SET_SHOW_MAP_LABELS(state, showLabels) {
       state.showMapLabels = showLabels
@@ -502,6 +506,9 @@ export default new Vuex.Store({
     },
     setToolRoute(context, params) {
       context.commit('SET_TOOL_ROUTE', params);
+    },
+    setHighlightFilteredLocation(context, highlightFilteredLocation) {
+      context.commit('SET_HIGHLIGHT_FILTERED_LOCATION', highlightFilteredLocation);
     },
     setShowMapLabels(context, showLabels) {
       context.commit('SET_SHOW_MAP_LABELS', showLabels)
