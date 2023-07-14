@@ -500,9 +500,9 @@ export default {
         name: 'community',
         query: {
           lang: this.locale,
-          locationType: 7,
+          locationType: '7',
           location: customLocation.id,
-          filterType: 1
+          filterType: '1'
         }
       });
     }
