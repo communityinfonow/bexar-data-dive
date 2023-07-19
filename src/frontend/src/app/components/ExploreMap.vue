@@ -159,7 +159,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['exploreData', 'locale', 'filterSelections', 'showMapLabels', 'highlightFilteredLocation', 'exploreTab']),
+		...mapState(['exploreData', 'locale', 'filterSelections', 'showMapLabels', 'highlightFilteredLocation', 'exploreTab', 'customLocations']),
 		...mapGetters(['locationMenu', 'filters']),
 		layers() {
 			return this.filters?.locationTypeFilter?.options?.map(option => {
@@ -271,7 +271,9 @@ export default {
 	},
 	updated() {
 		this.$nextTick(() => {
-			this.$refs.filteredLocation.mapObject.bringToFront();
+			if (this.$refs.filteredLocation) {
+				this.$refs.filteredLocation.mapObject.bringToFront();
+			}
 		});
 	},
 	methods: {
@@ -296,6 +298,9 @@ export default {
 		selectLocation(location) {
 			let newFilterSelections = JSON.parse(JSON.stringify(this.filterSelections));
 			newFilterSelections.locationType = this.selectedLocationType.id;
+			if (this.selectedLocationType.id === '7') {
+				newFilterSelections.locationType = this.customLocations.find(cl => cl.id === this.filterSelections.location).typeId;
+			}
 			newFilterSelections.location = location;
 			this.setFilterSelections(newFilterSelections);
 		},
@@ -357,7 +362,6 @@ export default {
 				this.setDefaultDockedTooltip()
 			});
 			layer.on('click', (e) => {
-				//FIXME: wrong location type when selecting from map when a custom location is filtered...
 				this.selectLocation(e.target.feature.id);
 			});
 		},
@@ -393,7 +397,6 @@ export default {
 				this.setDefaultDockedTooltip()
 			});
 			layer.on('click', (e) => {
-				//FIXME: wrong location type when selecting from map when a custom location is filtered...
 				this.selectLocation(e.target.feature.id);
 			});
 		},

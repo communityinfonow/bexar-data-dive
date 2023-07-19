@@ -144,7 +144,6 @@ export default new Vuex.Store({
       let filters = JSON.parse(JSON.stringify(state.filters))
       if (state.locationMenu && state.locationMenu.categories.find(c => c.id === '7')) {
         if (filters && state.customLocations?.length > 0) {
-          //FIXME: need to disable this option if the indicator is not aggregable
           filters.locationTypeFilter.options.push({
             display: false, 
             id: '7',
