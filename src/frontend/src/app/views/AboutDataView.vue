@@ -49,10 +49,10 @@
             }"
             ></v-select>
           <p>{{ $t('about_data_view.click_copy') }}</p>
-          <v-sheet rounded class="pa-2 d-flex align-center citation-content cursor-pointer" @click="copyCitation">
+          <v-sheet rounded class="pa-2 d-flex align-center citation-content" :class="{ 'cursor-pointer': clipboardWritable }" @click="clipboardWritable ? copyCitation() : null">
             <span ref="citationEl" v-html="citation"></span>
             <v-spacer></v-spacer>
-            <v-btn class="ml-2" color="primary" icon @click="copyCitation">
+            <v-btn class="ml-2" color="primary" icon :disabled="!clipboardWritable" @click="clipboardWritable ? copyCitation() : null">
               <v-icon>mdi-content-copy</v-icon>
             </v-btn>
           </v-sheet>
@@ -89,6 +89,7 @@ export default {
       citationDialog: false,
       citationMessage: '',
       citationYears: [],
+      clipboardWritable: false,
       item: null,
       filters: null,
       yearOptions: []
@@ -137,9 +138,6 @@ export default {
 
         return sortedAboutData;
     },
-		copyMessage() {
-			return i18n.t('about_data_view.click_copy');
-		},
     citation() {
       if (!this.item || !this.citationYears.length) {
         return;
@@ -161,12 +159,26 @@ export default {
           });
         };
       }
+    },
+    citationDialog() {
+      window.setTimeout(() => {
+        window.getSelection().selectAllChildren(this.$refs.citationEl);
+      }, 250);
     }
   },
   mounted () {
     if (this.aboutData && router.currentRoute.query.indicator) {
       this.scrollToItem({ id: router.currentRoute.query.indicator })
     };
+    navigator.permissions.query({ name: 'clipboard-write' })
+      .then(result => {
+        if (result.state === 'granted' || result.state === 'prompt') {
+          this.clipboardWritable = true;
+        }
+      })
+      .catch(() => {
+        // do nothing
+      })
   },
   methods: {
     ...mapActions(['getAboutData']),
