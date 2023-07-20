@@ -158,8 +158,10 @@ public class TablesRepositoryPostgresql implements TablesRepository{
 		if (StringUtils.hasText(request.getSortBy())) {
 			sql += " order by " + this.getSortByColumn(request.getSortBy(), request.getLang())  + (request.isSortDesc() ? " desc nulls last " : " nulls first ");
 		}
-		sql += " ) user_searched_sorted "
-			+	" where record_number between :start and :end ";
+		sql += " ) user_searched_sorted ";
+		if (request.getPerPage() > 0) {
+			sql +=	" where record_number between :start and :end ";
+		}
 
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
 		paramMap.addValue("indicator_id", request.getIndicator());
