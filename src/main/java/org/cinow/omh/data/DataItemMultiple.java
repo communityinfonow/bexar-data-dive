@@ -75,19 +75,7 @@ public abstract class DataItemMultiple {
 				}
 				break;
 			case IndicatorType.CURRENCY:
-				try {
-					value = this.getValues().values().stream().reduce(BigDecimal.ZERO, (a, b) -> {
-						if (a == null) {
-							return b;
-						}
-						if (b == null) {
-							return a;
-						}
-						return a.add(b);
-					}).divide(BigDecimal.valueOf(this.getValues().values().size()), 4, RoundingMode.HALF_UP).setScale(1, RoundingMode.HALF_UP);
-				} catch (ArithmeticException | NumberFormatException e) {
-					value = null;
-				}
+				value = null; // no aggregation for currency indicators
 				break;
 		}
 
@@ -156,11 +144,7 @@ public abstract class DataItemMultiple {
 					}
 					break;
 				case IndicatorType.CURRENCY:
-					try {
-						moe = null; //TODO: need currency MOE calculation
-					} catch (ArithmeticException | NumberFormatException e) {
-						moe = null;
-					}
+					moe = null; // no aggregation for currency indicators
 					break;
 			}
 
