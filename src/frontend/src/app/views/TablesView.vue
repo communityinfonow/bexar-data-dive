@@ -478,7 +478,11 @@ export default {
       };
     },
     locationLimitExceeded() {
-      return !this.selections.selectAllLocations && this.selections.locations?.length > 50
+      let availableLocationCount = !this.indicator.aggregable
+        ? this.locations.filter(l => l.typeId !== '7').length
+        : this.locations.length;
+      return this.selections.locations?.length !== availableLocationCount
+         && this.selections.locations?.length > 50
     },
     xlsxColumns() {
       return this.headers.map(h => {
@@ -735,7 +739,7 @@ export default {
       }
     },
     loadTablesData() {
-      if (!this.selections.selectAllLocations && this.selections.locations?.length > 50) {
+      if (!this.selectAllLocations && this.selections.locations?.length > 50) {
         return;
       }
       this.getTablesData(this.selections);
