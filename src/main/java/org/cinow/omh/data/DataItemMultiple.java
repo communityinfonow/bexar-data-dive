@@ -11,6 +11,8 @@ import java.util.Map.Entry;
 
 import org.cinow.omh.indicators.IndicatorType;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public abstract class DataItemMultiple {
 	
 	/**
@@ -171,7 +173,18 @@ public abstract class DataItemMultiple {
 	 * @return the suppressed
 	 */
 	public boolean isSuppressed() {
-		return this.suppresseds.values().stream().anyMatch(s -> s);
+		boolean suppressed = false;
+		// suppress if only one value is suppressed
+		if (this.suppresseds.values().stream().filter(s -> s).count() == 1) {
+			suppressed = true;
+		// or suppress if more than one value is suppressed and all suppressed values are equal to 1
+		} else if (this.suppresseds.values().stream().filter(s -> s).count() > 1) {
+			suppressed = this.suppresseds.entrySet().stream().filter(e -> e.getValue()).allMatch(e -> {
+				return this.getValues().get(e.getKey()) != null && BigDecimal.ONE.compareTo(this.getValues().get(e.getKey())) == 0;
+			});
+		}
+
+		return suppressed;
 	}
 
 	/**
@@ -201,7 +214,7 @@ public abstract class DataItemMultiple {
 		});
 	}
 
-
+	@JsonIgnore
 	public Map<String, BigDecimal> getValues() {
 		return values;
 	}
@@ -210,6 +223,7 @@ public abstract class DataItemMultiple {
 		this.values = values;
 	}
 
+	@JsonIgnore
 	public Map<String, BigDecimal> getUniverseValues() {
 		return universeValues;
 	}
@@ -218,6 +232,7 @@ public abstract class DataItemMultiple {
 		this.universeValues = universeValues;
 	}
 
+	@JsonIgnore
 	public Map<String, Boolean> getSuppresseds() {
 		return suppresseds;
 	}
@@ -226,6 +241,7 @@ public abstract class DataItemMultiple {
 		this.suppresseds = suppresseds;
 	}
 
+	@JsonIgnore
 	public Map<String, BigDecimal> getCountValues() {
 		return countValues;
 	}
@@ -234,6 +250,7 @@ public abstract class DataItemMultiple {
 		this.countValues = countValues;
 	}
 
+	@JsonIgnore
 	public Map<String, BigDecimal> getUniverseMoes() {
 		return universeMoes;
 	}
@@ -242,6 +259,7 @@ public abstract class DataItemMultiple {
 		this.universeMoes = universeMoes;
 	}
 
+	@JsonIgnore
 	public Map<String, BigDecimal> getCountMoes() {
 		return countMoes;
 	}
@@ -250,6 +268,7 @@ public abstract class DataItemMultiple {
 		this.countMoes = countMoes;
 	}
 
+	@JsonIgnore
 	public IndicatorType getIndicatorType() {
 		return indicatorType;
 	}
@@ -258,6 +277,7 @@ public abstract class DataItemMultiple {
 		this.indicatorType = indicatorType;
 	}
 
+	@JsonIgnore
 	public int getRatePer() {
 		return ratePer;
 	}

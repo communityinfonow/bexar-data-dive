@@ -36,15 +36,11 @@ public class ExploreDataPointSingle implements ExploreDataPoint {
 
 	private BigDecimal countValue;
 
-	private BigDecimal universeMoe;
-
-	private BigDecimal countMoe;
-
 	/**
 	 * @return the value
 	 */
 	public BigDecimal getValue() {
-		return value;
+		return this.suppressed ? null : value;
 	}
 
 	/**
@@ -117,22 +113,4 @@ public class ExploreDataPointSingle implements ExploreDataPoint {
 	public void setCountValue(BigDecimal countValue) {
 		this.countValue = countValue;
 	}
-
-	public BigDecimal getUniverseMoe() {
-		return universeMoe;
-	}
-
-	public void setUniverseMoe(BigDecimal universeMoe) {
-		this.universeMoe = universeMoe;
-	}
-
-	public BigDecimal getCountMoe() {
-		return countMoe;
-	}
-
-	public void setCountMoe(BigDecimal countMoe) {
-		this.countMoe = countMoe;
-	}
-	
-	
 }
