@@ -451,9 +451,11 @@ export default {
         sortDesc: this.sortDesc,
         lang: this.locale,
         locationTypes: this.locationTypes.length === this.filteredLocationTypes.length 
+            || !this.indicator.aggregable && this.filteredLocationTypes.length === this.locationTypes.length - 1 && !this.filteredLocationTypes.find(lt => lt.id === '7')
           ? undefined 
           : this.filteredLocationTypes.map(i => i.id),
         locations: this.locations.length === this.filteredLocations.length
+            || !this.indicator.aggregable && this.filteredLocations.length === this.locations.filter(l => l.typeId !== '7').length && !this.filteredLocations.find(l => l.typeId === '7')
           ? undefined
           : this.filteredLocations.map(i => i.typeId + '_' + i.id),
         years: this.years.length === this.filteredYears.length
