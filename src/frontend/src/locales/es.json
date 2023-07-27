@@ -104,7 +104,7 @@
       "search": "Buscar",
       "locations": "ubicaciones",
       "indicators": "indicadores",
-      "highlight_location": "Highlight filtered location (es)",
+      "highlight_location": "Resaltar ubicación filtrada",
       "labels": "Etiquetas",
       "click_copy": "Haz clic debajo para copiar el enlace",
       "copy_success": "¡Copiado al portapapeles!",
@@ -175,9 +175,9 @@
     "name": "Sobre la Información",
     "indicators": "Indicadores",
     "visit_source": "Ir a la fuente",
-    "source_citation": "Cite source (es)",
-    "click_copy": "Copy the citation below (es)",
-    "processed_published": "Processed and published by Community Information Now for Bexar Data Dive. (es)"
+    "source_citation": "Citar fuente",
+    "click_copy": "Copiar la cita de abajo",
+    "processed_published": "Procesado y publicado por Community Information Now para Data Dive de Bexar."
   },
   "about_tools_view": {
     "name": "Sobre las Herramientas"
