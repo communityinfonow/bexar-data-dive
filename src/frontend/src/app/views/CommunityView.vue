@@ -7,6 +7,7 @@
           :menu="locationMenu"
           :selectItem="selectItem"
           :flattenSingleItems="true"
+          :searchType="$t('tools.common.locations')"
         ></MenuToolbar>
       </v-col>
       <v-col cols="auto">
@@ -332,7 +333,7 @@ export default {
       this.selectedFilterType = router.currentRoute.query.filterType;
       this.setCommunity({ community: this.locationMenu.categories
         .flatMap(category => category.items)
-        .find(item => item.id == router.currentRoute.query.location && item.categoryId == router.currentRoute.query.locationType), filterType: router.query.filterType })
+        .find(item => item.id == router.currentRoute.query.location && item.categoryId == router.currentRoute.query.locationType), filterType: this.selectedFilterType })
     } else {
       this.setCommunity(null);
       this.selectedFilterType = this.filterTypes ? this.filterTypes[0]?.id : null;

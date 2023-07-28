@@ -149,14 +149,6 @@ public class CommunityRepositoryPostgresql implements CommunityRepository {
 							if (rs.wasNull()) {
 								dataPoint.setCountValue(null);
 							}
-							dataPoint.setUniverseMoe(rs.getBigDecimal("universe_moe"));
-							if (rs.wasNull()) {
-								dataPoint.setUniverseMoe(null);
-							}
-							dataPoint.setCountMoe(rs.getBigDecimal("count_moe"));
-							if (rs.wasNull()) {
-								dataPoint.setCountMoe(null);
-							}
 							
 						}
 						indicatorData.getDemographicData().add(dataPoint);

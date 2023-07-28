@@ -15,8 +15,8 @@
         <v-col cols="2">
           <v-autocomplete
             color="accent"
-            :label="$t('tools.common.search')"
-            :placeholder="$t('tools.common.search')"
+            :label="$t('tools.common.search') + ' ' + searchType"
+            :placeholder="$t('tools.common.search') + ' ' + searchType"
             v-model="selectedItem"
             :items="searchItems"
             :item-text="(item) => { return item['name_' + locale] + (item.hasData ? '' : ' (' + $t('tools.community.coming_soon') + ')') }"
@@ -56,6 +56,9 @@ export default {
     },
     flattenSingleItems: {
       type: Boolean
+    },
+    searchType: {
+      type: String
     }
   },
   data() {
