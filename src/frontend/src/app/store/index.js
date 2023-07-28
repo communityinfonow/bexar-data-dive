@@ -24,6 +24,7 @@ export default new Vuex.Store({
     filterTypes: null,
     filters: null,
     dockedTooltip: null,
+    highlightFilteredLocation: true,
     showMapLabels: false,
     showTrendLabels: true,
     showCompareLabels: true,
@@ -143,12 +144,11 @@ export default new Vuex.Store({
       let filters = JSON.parse(JSON.stringify(state.filters))
       if (state.locationMenu && state.locationMenu.categories.find(c => c.id === '7')) {
         if (filters && state.customLocations?.length > 0) {
-          //FIXME: need to disable this option if the indicator is not aggregable
           filters.locationTypeFilter.options.push({
             display: false, 
             id: '7',
-            name_en: i18n.t('tools.custom_locations.name'),
-            name_es: i18n.t('tools.custom_locations.name'),
+            name_en: state.locationMenu.categories.find(c => c.id === '7')['name_en'],
+            name_es: state.locationMenu.categories.find(c => c.id === '7')['name_es'],
             disabled: !state.indicator.aggregable || !state.customLocations.some((location) => filters?.locationTypeFilter?.options?.some(locationType => locationType.id === location.typeId))
           });
           filters.locationFilter.options = filters.locationFilter.options.concat(state.customLocations
@@ -230,6 +230,9 @@ export default new Vuex.Store({
     SET_TOOL_ROUTE(state, params) {
       state[params.key + 'Route'] = params.route
     },
+    SET_HIGHLIGHT_FILTERED_LOCATION(state, highlight) {
+      state.highlightFilteredLocation = highlight
+    },
     SET_SHOW_MAP_LABELS(state, showLabels) {
       state.showMapLabels = showLabels
     },
@@ -305,11 +308,11 @@ export default new Vuex.Store({
         context.commit('SET_FEATURED_INDICATORS', response.data)
       })
     },
-    setCommunity(context, community, filterType) {
-      if (community !== null) {
-        context.dispatch('getCommunityData', { community: community, filterType: filterType })
+    setCommunity(context, data) {
+      if (data !== null) {
+        context.dispatch('getCommunityData', { community: data.community, filterType: data.filterType })
       } else {
-        context.commit('SET_COMMUNITY', community)
+        context.commit('SET_COMMUNITY', data)
       }
     },
     getCommunityData(context, data) {
@@ -502,6 +505,9 @@ export default new Vuex.Store({
     },
     setToolRoute(context, params) {
       context.commit('SET_TOOL_ROUTE', params);
+    },
+    setHighlightFilteredLocation(context, highlightFilteredLocation) {
+      context.commit('SET_HIGHLIGHT_FILTERED_LOCATION', highlightFilteredLocation);
     },
     setShowMapLabels(context, showLabels) {
       context.commit('SET_SHOW_MAP_LABELS', showLabels)

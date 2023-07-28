@@ -12,7 +12,8 @@
                 <h4 class="mb-1 text-h6" :id="'indicator_' + subItem.indicator.id">{{ subItem.indicator['name_' + locale] }}</h4>
                 <section v-if="subItem.indicator['description_' + locale] !== ''" v-html="subItem.indicator['description_' + locale]"></section>
                 <p v-if="subItem.indicator['description_' + locale] === ''">{{ $t('tools.community.coming_soon') }}</p>
-                <p><a target="_blank" :href="subItem.source.url">{{ $t('about_data_view.visit_source') }} <sup><v-icon x-small color="primary">mdi-open-in-new</v-icon></sup></a></p>
+                <v-btn v-if="subItem.indicator.hasData" text color="primary" @click.stop="openCitationDialog(subItem)">{{ $t('about_data_view.source_citation') }}</v-btn>
+                <v-btn text link color="primary" target="_blank" :href="subItem.source.url">{{ $t('about_data_view.visit_source') }} <sup><v-icon x-small color="primary">mdi-open-in-new</v-icon></sup></v-btn>
               </section>
             </template>
             <template v-else>
@@ -20,7 +21,8 @@
               <section class="mb-8">
                 <section v-if="!item.items && item.indicator['description_' + locale] !== ''" v-html="item.indicator['description_' + locale]"></section>
                 <p v-if="item.indicator['description_' + locale] === ''">{{ $t('tools.community.coming_soon') }}</p>
-                <p><a target="_blank" :href="item.source.url">{{ $t('about_data_view.visit_source') }} <sup><v-icon x-small color="primary">mdi-open-in-new</v-icon></sup></a></p>
+                <v-btn v-if="item.indicator.hasData" text color="primary" @click.stop="openCitationDialog(item)">{{ $t('about_data_view.source_citation') }}</v-btn>
+                <v-btn text link color="primary" target="_blank" :href="item.source.url">{{ $t('about_data_view.visit_source') }} <sup><v-icon x-small color="primary">mdi-open-in-new</v-icon></sup></v-btn>
               </section>
             </template>
           </section>
@@ -30,6 +32,37 @@
         <side-menu :title="$t('about_data_view.indicators')" :menu="sortedMenu" :selectItem="scrollToItem"></side-menu>
       </v-col>
     </v-row>
+    <v-dialog v-model="citationDialog" width="40%">
+      <v-card>
+        <v-card-title>{{ $t('about_data_view.source_citation') }}</v-card-title>
+        <v-card-text>
+          <v-select 
+            v-if="filters" 
+            multiple 
+            v-model="citationYears" 
+            :items="yearOptions" 
+            :label="filters.yearFilter.type['name_' + locale] + '(s)'" 
+            outlined 
+            dense
+            :menu-props="{
+              maxHeight: '180px'
+            }"
+            ></v-select>
+          <p>{{ $t('about_data_view.click_copy') }}</p>
+          <v-sheet rounded class="pa-2 d-flex align-center citation-content" :class="{ 'cursor-pointer': clipboardWritable }" @click="clipboardWritable ? copyCitation() : null">
+            <span ref="citationEl" v-html="citation"></span>
+            <v-spacer></v-spacer>
+            <v-btn class="ml-2" color="primary" icon :disabled="!clipboardWritable" @click="clipboardWritable ? copyCitation() : null">
+              <v-icon>mdi-content-copy</v-icon>
+            </v-btn>
+          </v-sheet>
+          <p>{{ citationMessage }}</p>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn text @click="citationDialog = false">{{ $t('survey.close') }}</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -38,6 +71,8 @@ import goTo from 'vuetify/lib/services/goto'
 import { mapActions, mapState } from 'vuex'
 import router from '@/app/router/index'
 import SideMenu from '@/app/components/SideMenu'
+import i18n from '@/i18n'
+import axios from 'axios'
 
 export default {
   name: 'AboutDataView',
@@ -50,7 +85,15 @@ export default {
     }
   },
   data() {
-    return {}
+    return {
+      citationDialog: false,
+      citationMessage: '',
+      citationYears: [],
+      clipboardWritable: false,
+      item: null,
+      filters: null,
+      yearOptions: []
+    }
   },
   computed: {
     ...mapState(['indicatorMenu', 'aboutData', 'locale']),
@@ -94,6 +137,17 @@ export default {
         });
 
         return sortedAboutData;
+    },
+    citation() {
+      if (!this.item || !this.citationYears.length) {
+        return;
+      }
+      return this.item.source['name_' + this.locale] + '. '
+                + ' (' + this.citationYears.slice(0).sort().join(', ') + '). '
+                + '<em>' + this.item.indicator['name_' + this.locale] + '</em>. '
+                + i18n.t('about_data_view.processed_published') + ' '
+                + new Date().getDate() + ' ' + new Date().toLocaleString(this.locale, { month: 'long' }) + ' ' + new Date().getFullYear() + '. '
+                + window.location.href + '.';
     }
   },
   watch: {
@@ -105,12 +159,26 @@ export default {
           });
         };
       }
+    },
+    citationDialog() {
+      window.setTimeout(() => {
+        window.getSelection().selectAllChildren(this.$refs.citationEl);
+      }, 250);
     }
   },
   mounted () {
     if (this.aboutData && router.currentRoute.query.indicator) {
       this.scrollToItem({ id: router.currentRoute.query.indicator })
     };
+    navigator.permissions.query({ name: 'clipboard-write' })
+      .then(result => {
+        if (result.state === 'granted' || result.state === 'prompt') {
+          this.clipboardWritable = true;
+        }
+      })
+      .catch(() => {
+        // do nothing
+      })
   },
   methods: {
     ...mapActions(['getAboutData']),
@@ -124,9 +192,41 @@ export default {
             },
           })
       }
-    }
+    },
+    openCitationDialog(item) {
+      this.item = item;
+      axios.get('/api/filters', { params: {
+        indicator: item.indicator.id
+      }}).then(response => { 
+        this.filters = response.data;
+        this.yearOptions = response.data.yearFilter.options.map(o => o.id).reverse();
+        this.citationYears = [this.yearOptions[this.yearOptions.length - 1]];
+        this.citationDialog = true;
+      });
+    },
+    copyCitation() {
+			navigator.permissions.query({ name: 'clipboard-write' }).then(result => {
+				if (result.state === 'granted' || result.state === 'prompt') {
+					window.navigator.clipboard
+						.write([new window.ClipboardItem({ "text/html": new Blob([this.$refs.citationEl.innerHTML], { type: "text/html"}) })])
+						.then((self = this) => {
+							self.citationMessage = i18n.t('tools.common.copy_success')
+							window.setTimeout(() => (self.citationMessage = ''), 2000)
+						});
+				} else {
+					this.citationMessage = i18n.t('tools.common.copy_failure');
+				}
+			});
+		}
   },
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.citation-content {
+  border: 1px solid $color-primary;
+}
+.cursor-pointer {
+  cursor: pointer;
+}
+</style>

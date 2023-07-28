@@ -46,20 +46,23 @@ export default {
 	},
 	methods: {
 		copyShareUrl() {
-			navigator.permissions.query({ name: 'clipboard-write' }).then(result => {
-				if (result.state === 'granted' || result.state === 'prompt') {
-					window.navigator.clipboard
-						.writeText(this.shareUrl)
-						.then((self = this) => {
-							self.shareMessages = [i18n.t('tools.common.copy_success')]
-							window.setTimeout(() => (self.shareMessages = []), 2000)
-						});
-				} else {
-					this.shareMessages = [
-						i18n.t('tools.common.copy_failure')
-					];
-				}
-			});
+			try {
+				window.navigator.clipboard
+					.writeText(this.shareUrl)
+					.then((self = this) => {
+						self.shareMessages = [i18n.t('tools.common.copy_success')]
+						window.setTimeout(() => (self.shareMessages = []), 2000)
+					})
+					.catch(() => {
+						this.shareMessages = [
+							i18n.t('tools.common.copy_failure')
+						];
+					});
+			} catch (e) {
+				this.shareMessages = [
+					i18n.t('tools.common.copy_failure')
+				];
+			}
 		}
 	},
 }

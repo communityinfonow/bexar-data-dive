@@ -148,7 +148,7 @@
               </v-col>
             </v-row>
             <v-spacer></v-spacer>
-            <div class="d-flex">
+            <div v-if="!message" class="d-flex">
               <v-btn
                 color="primary"
                 class="mt-4 mr-2 flex-grow-1"
@@ -163,6 +163,32 @@
               >
                 {{ $t('tools.custom_locations.export') }}
               </v-btn>
+            </div>
+            <div v-else>
+              <v-alert type="success" outlined :icon="false" class="d-flex">
+                <v-row align="center">
+                  <v-col class="grow">
+                    {{ messageText }}
+                  </v-col>
+                  <v-col class="shrink d-flex">
+                    <v-btn
+                      small
+                      text
+                      color="primary"
+                      @click="viewCommunity(customLocation)"
+                    >
+                      {{ $t('tools.custom_locations.view_community') }}
+                    </v-btn>
+                    <v-btn
+                      small
+                      text
+                      @click="message = false"
+                    >
+                      {{ $t('tools.custom_locations.dismiss') }}
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </v-alert>
             </div>
           </v-form>
         </v-col>
@@ -199,26 +225,6 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-snackbar v-model="message" light multiLine timeout="-1" class="mb-8">
-			{{ messageText }}
-       <template v-slot:action="{ attrs }">
-        <v-btn
-          text
-          color="primary"
-          v-bind="attrs"
-          @click="viewCommunity(customLocation)"
-        >
-          {{ $t('tools.custom_locations.view_community') }}
-        </v-btn>
-        <v-btn
-          text
-          v-bind="attrs"
-          @click="message = false"
-        >
-          {{ $t('tools.custom_locations.dismiss') }}
-        </v-btn>
-      </template>
-		</v-snackbar>
   </v-container>
 </template>
 
@@ -231,7 +237,6 @@ import { LMap, LTileLayer, LGeoJson } from 'vue2-leaflet'
 import { feature, featureCollection } from '@turf/helpers'
 
 export default {
-  //FIXME: find all places where "7" or "Custom..." is hard-coded and do it better.
   name: 'CustomLocationsView',
   components: {
     LMap,
@@ -495,8 +500,9 @@ export default {
         name: 'community',
         query: {
           lang: this.locale,
-          locationType: 7,
-          location: customLocation.id
+          locationType: '7',
+          location: customLocation.id,
+          filterType: '1'
         }
       });
     }

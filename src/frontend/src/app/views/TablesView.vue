@@ -7,6 +7,7 @@
           :menu="indicatorMenu"
           :selectItem="selectItem"
           :flattenSingleItems="false"
+          :searchType="$t('tools.common.indicators')"
         ></MenuToolbar>
       </v-col>
       <v-col cols="auto">
@@ -451,9 +452,11 @@ export default {
         sortDesc: this.sortDesc,
         lang: this.locale,
         locationTypes: this.locationTypes.length === this.filteredLocationTypes.length 
+            || !this.indicator.aggregable && this.filteredLocationTypes.length === this.locationTypes.length - 1 && !this.filteredLocationTypes.find(lt => lt.id === '7')
           ? undefined 
           : this.filteredLocationTypes.map(i => i.id),
         locations: this.locations.length === this.filteredLocations.length
+            || !this.indicator.aggregable && this.filteredLocations.length === this.locations.filter(l => l.typeId !== '7').length && !this.filteredLocations.find(l => l.typeId === '7')
           ? undefined
           : this.filteredLocations.map(i => i.typeId + '_' + i.id),
         years: this.years.length === this.filteredYears.length
@@ -477,7 +480,11 @@ export default {
       };
     },
     locationLimitExceeded() {
-      return !this.selections.selectAllLocations && this.selections.locations?.length > 50
+      let availableLocationCount = !this.indicator.aggregable
+        ? this.locations.filter(l => l.typeId !== '7').length
+        : this.locations.length;
+      return this.selections.locations?.length !== availableLocationCount
+         && this.selections.locations?.length > 50
     },
     xlsxColumns() {
       return this.headers.map(h => {
@@ -734,7 +741,7 @@ export default {
       }
     },
     loadTablesData() {
-      if (!this.selections.selectAllLocations && this.selections.locations?.length > 50) {
+      if (!this.selectAllLocations && this.selections.locations?.length > 50) {
         return;
       }
       this.getTablesData(this.selections);
