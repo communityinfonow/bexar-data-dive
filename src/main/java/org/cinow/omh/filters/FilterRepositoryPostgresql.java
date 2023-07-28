@@ -44,6 +44,7 @@ public class FilterRepositoryPostgresql implements FilterRepository {
 			+ " select id_, name_en, name_es "
 			+ " from tbl_location_types "
 			+ " where exists (select 1 from tbl_indicator_values where indicator_id = :indicator_id::numeric and location_type_id = id_) "
+			+ "   and id_ not in (6, 7) "
 			+ " order by sort_order ";
 
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
@@ -77,6 +78,7 @@ public class FilterRepositoryPostgresql implements FilterRepository {
 			+ " select l.id_, l.location_type_id, l.name_en, l.name_es "
 			+ " from tbl_locations l "
 			+ " 	join tbl_location_types lt on lt.id_ = l.location_type_id "
+			+ " where lt.id_ not in (6, 7) "
 			+ " order by lt.sort_order, l.id_::numeric ";
 
 		return this.jdbcTemplate.query(sql, new ResultSetExtractor<Filter>() {

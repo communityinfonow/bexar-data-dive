@@ -296,7 +296,11 @@ export default new Vuex.Store({
     },
     getLocationMenu(context) {
       axios.get('/api/location-menu').then(response => {
-        context.commit('SET_LOCATION_MENU', response.data)
+        //TODO: commit resopnse.data instead of tempMenu once custom locations are ready
+        let tempMenu = {
+          categories: response.data.categories.filter(c => c.id !== '6' && c.id !== '7'),
+        }
+        context.commit('SET_LOCATION_MENU', tempMenu)
       })
     },
     getFeaturedIndicators(context) {

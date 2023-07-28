@@ -16,7 +16,8 @@
         :aria-label="$t('tools.tools')"
       >
         <template v-for="(item, index) in navItems">
-          <v-list-item v-if="index < 5" :key="index" :to="item.route" role="option">
+          <!-- TODO: change to index < 5 to show custom locations once ready -->
+          <v-list-item v-if="index < 4" :key="index" :to="item.route" role="option">
             <v-list-item-icon>
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-item-icon>
