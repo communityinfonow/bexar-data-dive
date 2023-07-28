@@ -128,7 +128,10 @@
           "value": "Valor",
           "range": "Rango"
         }
-      }
+      },
+      "chart_options": "Chart options (es)",
+      "chart_options_labels": "Show labels (es)",
+      "chart_options_lines": "Show error lines (es)"
     },
     "custom_locations": {
       "name": "Crea Tu Propia Área",

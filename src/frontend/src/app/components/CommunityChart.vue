@@ -36,6 +36,9 @@ export default {
 		},
 		filterType: {
 			type: Object
+		},
+		labelsOrLines: {
+			type: String
 		}
 	},
 	data() {
@@ -102,7 +105,7 @@ export default {
 					},
 					barWidth: '120px',
 					label: { 
-						show: true, 
+						show: this.labelsOrLines === 'labels', 
 						position: 'top',
 						formatter: (o) => {
 							if (o.data.suppressed) {
@@ -135,69 +138,72 @@ export default {
 							}
 						}
 					}
-				},
-				{
-					type: 'custom',
-					name: 'error',
-					itemStyle: {
-						borderWidth: 1.5
-					},
-					renderItem: function(params, api) {
-						let xValue = api.value(0);
-						let highPoint = api.coord([xValue, api.value(1)]) || 0;
-						let lowPoint = api.coord([xValue, api.value(2)]) || 0;
-						console.log(api.value(0) + ' (' + api.value(1) + '-' + api.value(2) + ')')
-						let halfWidth = api.size([1, 0])[0] * 0.1;
-						let style = api.style({
-							stroke: '#3aa38f',
-							fill: null
-						});
-						return {
-							type: 'group',
-							children: [
-								{
-									type: 'line',
-									transition: ['shape'],
-									shape: {
-										x1: highPoint[0] - halfWidth,
-										y1: highPoint[1],
-										x2: highPoint[0] + halfWidth,
-										y2: highPoint[1]
-									},
-									style: style
-								},
-								{
-									type: 'line',
-									transition: ['shape'],
-									shape: {
-										x1: highPoint[0],
-										y1: highPoint[1],
-										x2: lowPoint[0],
-										y2: lowPoint[1]
-									},
-									style: style
-								},
-								{
-									type: 'line',
-									transition: ['shape'],
-									shape: {
-										x1: lowPoint[0] - halfWidth,
-										y1: lowPoint[1],
-										x2: lowPoint[0] + halfWidth,
-										y2: lowPoint[1]
-									},
-									style: style
-								}
-							]
-						}
-					},
-					encode: {
-						x: 0,
-						y: [1, 2]
-					},
-					z: 100
 				}
 			];
+			if (this.labelsOrLines === 'lines') {
+				series.push(
+					{
+						type: 'custom',
+						name: 'error',
+						itemStyle: {
+							borderWidth: 2
+						},
+						renderItem: function(params, api) {
+							let xValue = api.value(0);
+							let highPoint = api.coord([xValue, api.value(1)]) || 0;
+							let lowPoint = api.coord([xValue, api.value(2)]) || 0;
+							let halfWidth = api.size([1, 0])[0] * 0.1;
+							let style = {
+								stroke: '#3aa38f',
+								fill: null
+							};
+							return {
+								type: 'group',
+								children: [
+									{
+										type: 'line',
+										transition: ['shape'],
+										shape: {
+											x1: highPoint[0] - halfWidth,
+											y1: highPoint[1],
+											x2: highPoint[0] + halfWidth,
+											y2: highPoint[1]
+										},
+										style: style
+									},
+									{
+										type: 'line',
+										transition: ['shape'],
+										shape: {
+											x1: highPoint[0],
+											y1: highPoint[1],
+											x2: lowPoint[0],
+											y2: lowPoint[1]
+										},
+										style: style
+									},
+									{
+										type: 'line',
+										transition: ['shape'],
+										shape: {
+											x1: lowPoint[0] - halfWidth,
+											y1: lowPoint[1],
+											x2: lowPoint[0] + halfWidth,
+											y2: lowPoint[1]
+										},
+										style: style
+									}
+								]
+							}
+						},
+						encode: {
+							x: 0,
+							y: [1, 2]
+						},
+						z: 100
+					}
+				);
+			}
 			
 			let seriesData = this.data
 				.map(dataPoint => { 
@@ -210,7 +216,9 @@ export default {
 					}; 
 				});
 			series[0].data = seriesData;
-			series[1].data = seriesData.map((d, i) => [xAxisData[i], d.moeHigh, d.moeLow]);
+			if (this.labelsOrLines === 'lines') {
+				series[1].data = seriesData.map((d, i) => [xAxisData[i], d.moeHigh, d.moeLow]);
+			}
 			option.series = series;
 			option.aria = { enabled: true };
 			let maxValue = Math.max(...option.series[0].data.map(d => d.value));

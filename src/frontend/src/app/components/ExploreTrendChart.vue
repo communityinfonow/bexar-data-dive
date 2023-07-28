@@ -28,7 +28,7 @@ import i18n from '@/i18n'
 import * as echarts from 'echarts/core';
 import { SVGRenderer } from 'echarts/renderers';
 import { AriaComponent, LegendComponent, GridComponent } from 'echarts/components';
-import { LineChart, BarChart } from 'echarts/charts';
+import { LineChart, BarChart, CustomChart } from 'echarts/charts';
 import ExploreToolsPanel from '@/app/components/ExploreToolsPanel'
 import { format } from '@/formatter/formatter'
 
@@ -71,7 +71,7 @@ export default {
 	},
 	mounted () {
 		setTimeout(() => { 
-			echarts.use([SVGRenderer, AriaComponent, LegendComponent, GridComponent, LineChart, BarChart]);
+			echarts.use([SVGRenderer, AriaComponent, LegendComponent, GridComponent, LineChart, BarChart, CustomChart]);
 			this.chart = echarts.init(document.getElementById('trend_chart_container'), null, { renderer: 'svg'});
 			this.chart.on('mouseover', (params) => {
 				if (params.componentType === 'series') {
@@ -212,6 +212,73 @@ export default {
 						return o.data.suppressed ? i18n.t('data.suppressed') : (!o.data.value ? i18n.t('data.no_data') : o.data.value)
 					}
 				}
+			}
+			,{
+				// third series for moe lines
+				data: trendYears
+					.map(ty => {
+						let yd = yearData[ty]; 
+						return [ty, yd?.moeLow, yd?.moeHigh]; 
+					}),
+				type: 'custom',
+				name: 'error',
+				itemStyle: {
+					borderWidth: 2
+				},
+				renderItem: function(params, api) {
+					let xValue = api.value(0);
+					let highPoint = api.coord([xValue, api.value(1)]) || 0;
+					let lowPoint = api.coord([xValue, api.value(2)]) || 0;
+					console.log(api.value(0) + ' (' + api.value(1) + '-' + api.value(2) + ')')
+					let halfWidth = api.size([1, 0])[0] * 0.05;
+					let style = {
+						stroke: '#3aa38f',
+						fill: null
+					};
+					return {
+						type: 'group',
+						children: [
+							{
+								type: 'line',
+								transition: ['shape'],
+								shape: {
+									x1: highPoint[0] - halfWidth,
+									y1: highPoint[1],
+									x2: highPoint[0] + halfWidth,
+									y2: highPoint[1]
+								},
+								style: style
+							},
+							{
+								type: 'line',
+								transition: ['shape'],
+								shape: {
+									x1: highPoint[0],
+									y1: highPoint[1],
+									x2: lowPoint[0],
+									y2: lowPoint[1]
+								},
+								style: style
+							},
+							{
+								type: 'line',
+								transition: ['shape'],
+								shape: {
+									x1: lowPoint[0] - halfWidth,
+									y1: lowPoint[1],
+									x2: lowPoint[0] + halfWidth,
+									y2: lowPoint[1]
+								},
+								style: style
+							}
+						]
+					}
+				},
+				encode: {
+					x: 0,
+					y: [1, 2]
+				},
+				z: 100
 			}];
 			option.aria = { enabled: true };
 

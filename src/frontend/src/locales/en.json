@@ -128,7 +128,10 @@
           "value": "Value",
           "range": "Range"
         }
-      }
+      },
+      "chart_options": "Chart options",
+      "chart_options_labels": "Show labels",
+      "chart_options_lines": "Show error lines"
     },
     "custom_locations": {
       "name": "Create Your Own Area",

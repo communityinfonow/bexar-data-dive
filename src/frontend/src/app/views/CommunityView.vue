@@ -84,7 +84,7 @@
               :zoom="zoom"
               :center="center"
               :options="{ zoomControl: false, preferCanvas: true }"
-              :style="{ height: '200px' }"
+              :style="{ height: '260px' }"
               v-resize:debounce.100="resizeHandler"
               @ready="initializeCommunityMap"
             >
@@ -142,6 +142,16 @@
               @change="applyFilter"
             >
             </v-select>
+            <v-select
+              style="width: 200px;"
+              color="accent"
+              :label="$t('tools.common.chart_options')"
+              :items="[['labels', $t('tools.common.chart_options_labels')], ['lines', $t('tools.common.chart_options_lines')]]"
+              :item-text="(item) => { return item[1] }"
+              :item-value="(item) => { return item[0] }"
+              v-model="labelsOrLines"
+            >
+            </v-select>
           </v-col>
         </v-row>
         <h2 v-if="noCommunityData" class="text-h4">{{ $t('tools.community.data_coming_soon')}}</h2>
@@ -152,12 +162,12 @@
               <template v-if="item.indicators">
                 <div :key="'category_' + item.category.id">
                   <template v-for="subItem in item.indicators">
-                    <community-indicator :item="subItem" :parentName="item.category['name_' + locale]" :key="'sub_indicator_' + subItem.indicator.id" :maxDemographics="maxDemographics" :filterType="filterTypes.find(ft => ft.id === selectedFilterType)"></community-indicator>
+                    <community-indicator :item="subItem" :parentName="item.category['name_' + locale]" :key="'sub_indicator_' + subItem.indicator.id" :maxDemographics="maxDemographics" :filterType="filterTypes.find(ft => ft.id === selectedFilterType)" :labelsOrLines="labelsOrLines"></community-indicator>
                   </template>
                 </div>
               </template>
               <template v-else>
-                <community-indicator :item="item" :key="'indicator_' + item.indicator.id" :maxDemographics="maxDemographics" :filterType="filterTypes.find(ft => ft.id === selectedFilterType)"></community-indicator>
+                <community-indicator :item="item" :key="'indicator_' + item.indicator.id" :maxDemographics="maxDemographics" :filterType="filterTypes.find(ft => ft.id === selectedFilterType)" :labelsOrLines="labelsOrLines"></community-indicator>
               </template>
             </template>
           </div>
@@ -211,7 +221,8 @@ export default {
       communityGeojson: null,
       refreshOptions: false,
       selectedCategory: null,
-      selectedFilterType: null
+      selectedFilterType: null,
+      labelsOrLines: 'labels'
     }
   },
   computed: {
