@@ -32,6 +32,7 @@
 						:search-input.sync="compareWithQuery"
 						@change="selectCompareWith"
 						:rules="[v => compareWith.length <= 10 || $t('tools.explore.compare_limit_exceeded')]"
+						height="24px"
 					>
 					</v-autocomplete>
 				</v-col>
@@ -464,5 +465,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+::v-deep .v-select__selections {
+	position: absolute;
+	top: 0;
+	left: 0;
+	max-height: 24px;
+	overflow: hidden;
+}
 </style>

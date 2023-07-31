@@ -222,9 +222,6 @@ export default {
 					}),
 				type: 'custom',
 				name: 'error',
-				itemStyle: {
-					borderWidth: 2
-				},
 				renderItem: function(params, api) {
 					let xValue = api.value(0);
 					let highPoint = api.coord([xValue, api.value(1)]) || 0;
@@ -233,7 +230,8 @@ export default {
 					let halfWidth = api.size([1, 0])[0] * 0.05;
 					let style = {
 						stroke: '#3aa38f',
-						fill: null
+						fill: null,
+						lineWidth: 2
 					};
 					return {
 						type: 'group',

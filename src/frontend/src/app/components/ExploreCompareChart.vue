@@ -28,7 +28,7 @@ import i18n from '@/i18n'
 import * as echarts from 'echarts/core';
 import { SVGRenderer } from 'echarts/renderers';
 import { AriaComponent, LegendComponent, GridComponent } from 'echarts/components';
-import { BarChart } from 'echarts/charts';
+import { BarChart, CustomChart } from 'echarts/charts';
 import ExploreToolsPanel from '@/app/components/ExploreToolsPanel'
 import { format } from '@/formatter/formatter'
 
@@ -69,7 +69,7 @@ export default {
 	},
 	mounted () {
 		setTimeout(() => { 
-			echarts.use([SVGRenderer, AriaComponent, LegendComponent, GridComponent, BarChart]);
+			echarts.use([SVGRenderer, AriaComponent, LegendComponent, GridComponent, BarChart, CustomChart]);
 			this.chart = echarts.init(document.getElementById('compare_chart_container'), null, { renderer: 'svg'});
 			this.chart.on('mouseover', (params) => {
 				if (params.componentType === 'series') {
@@ -185,7 +185,68 @@ export default {
 					};
 			 	}))
 			}
-			option.series = {
+			option.series = [];
+			let errorSeriesData = seriesData.map((d, i) => [xAxisData[i], d.moeHigh, d.moeLow]);
+			option.series.push({
+				data: errorSeriesData,
+				type: 'custom',
+				name: 'error',
+				renderItem: function(params, api) {
+					let xValue = api.value(0);
+					let highPoint = api.coord([xValue, api.value(1)]) || 0;
+					let lowPoint = api.coord([xValue, api.value(2)]) || 0;
+					let halfWidth = api.size([1, 0])[0] * 0.1;
+					let style = {
+						stroke: '#3aa38f',
+						fill: null,
+						lineWidth: 2
+					};
+					return {
+						type: 'group',
+						children: [
+							{
+								type: 'line',
+								transition: ['shape'],
+								shape: {
+									x1: highPoint[0] - halfWidth,
+									y1: highPoint[1],
+									x2: highPoint[0] + halfWidth,
+									y2: highPoint[1]
+								},
+								style: style
+							},
+							{
+								type: 'line',
+								transition: ['shape'],
+								shape: {
+									x1: highPoint[0],
+									y1: highPoint[1],
+									x2: lowPoint[0],
+									y2: lowPoint[1]
+								},
+								style: style
+							},
+							{
+								type: 'line',
+								transition: ['shape'],
+								shape: {
+									x1: lowPoint[0] - halfWidth,
+									y1: lowPoint[1],
+									x2: lowPoint[0] + halfWidth,
+									y2: lowPoint[1]
+								},
+								style: style
+							}
+						]
+					}
+				},
+				encode: {
+					x: 0,
+					y: [1, 2]
+				},
+				z: 100
+			});
+			option.series.push({
 				data: seriesData,
 				type: 'bar',
 				cursor: 'default',
@@ -228,7 +289,7 @@ export default {
 						}
 					}
 				}
-			};
+			});
 			option.aria = { enabled: true };
 
 			this.chart.setOption(option);
