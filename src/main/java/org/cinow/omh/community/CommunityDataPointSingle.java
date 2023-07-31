@@ -47,16 +47,6 @@ public class CommunityDataPointSingle implements CommunityDataPoint {
 	private BigDecimal countValue;
 
 	/**
-	 * The indicator universe margin of error.
-	 */
-	private BigDecimal universeMoe;
-
-	/**
-	 * The indicator count margin of error.
-	 */
-	private BigDecimal countMoe;
-
-	/**
 	 * @return the demographicFilter
 	 */
 	public FilterOption getDemographicFilter() {
@@ -74,7 +64,7 @@ public class CommunityDataPointSingle implements CommunityDataPoint {
 	 * @return the value
 	 */
 	public BigDecimal getValue() {
-		return value;
+		return this.suppressed ? null : value;
 	}
 
 	/**
@@ -146,21 +136,5 @@ public class CommunityDataPointSingle implements CommunityDataPoint {
 
 	public void setCountValue(BigDecimal countValue) {
 		this.countValue = countValue;
-	}
-
-	public BigDecimal getUniverseMoe() {
-		return universeMoe;
-	}
-
-	public void setUniverseMoe(BigDecimal universeMoe) {
-		this.universeMoe = universeMoe;
-	}
-
-	public BigDecimal getCountMoe() {
-		return countMoe;
-	}
-
-	public void setCountMoe(BigDecimal countMoe) {
-		this.countMoe = countMoe;
 	}
 }
