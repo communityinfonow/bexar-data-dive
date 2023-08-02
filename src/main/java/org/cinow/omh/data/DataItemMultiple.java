@@ -174,8 +174,11 @@ public abstract class DataItemMultiple {
 	 */
 	public boolean isSuppressed() {
 		boolean suppressed = false;
+		// suppress if any suppressed value is null
+		if (this.suppresseds.entrySet().stream().filter(s -> s.getValue()).map(s -> s.getKey()).anyMatch(k -> this.getValues().get(k) == null)) {
+			suppressed = true;
 		// suppress if only one value is suppressed
-		if (this.suppresseds.values().stream().filter(s -> s).count() == 1) {
+		} else if (this.suppresseds.values().stream().filter(s -> s).count() == 1) {
 			suppressed = true;
 		// or suppress if more than one value is suppressed and all suppressed values are equal to 1
 		} else if (this.suppresseds.values().stream().filter(s -> s).count() > 1) {
