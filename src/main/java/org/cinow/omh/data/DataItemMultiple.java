@@ -53,11 +53,15 @@ public abstract class DataItemMultiple {
 	 * @return the value
 	 */
 	public BigDecimal getValue() {
+		if (this.isSuppressed()) {
+			return null;
+		}
+
 		BigDecimal value = null;
 		switch (this.indicatorType.getId()) {
 			case IndicatorType.COUNT:
 				try {
-					value = this.getCountValue().setScale(0, RoundingMode.HALF_UP);
+					value = this.getValueSum().setScale(0, RoundingMode.HALF_UP);
 				} catch (NumberFormatException e) {
 					value = null;
 				}
@@ -88,6 +92,10 @@ public abstract class DataItemMultiple {
 	 * @return the moeHigh
 	 */
 	public BigDecimal getMoeHigh() {
+		if (this.isSuppressed()) {
+			return null;
+		}
+
 		try {
 			BigDecimal moeHigh = BigDecimal.ZERO.max(this.getValue().add(this.getMoe())).setScale(1, RoundingMode.HALF_UP);
 			if (IndicatorType.PERCENTAGE.equals(this.indicatorType.getId())) {
@@ -103,6 +111,10 @@ public abstract class DataItemMultiple {
 	 * @return the moeLow
 	 */
 	public BigDecimal getMoeLow() {
+		if (this.isSuppressed()) {
+			return null;
+		}
+
 		try {
 			return BigDecimal.ZERO.max(this.getValue().subtract(this.getMoe())).setScale(1, RoundingMode.HALF_UP);
 		} catch (NullPointerException e) {
@@ -174,16 +186,16 @@ public abstract class DataItemMultiple {
 	 */
 	public boolean isSuppressed() {
 		boolean suppressed = false;
-		// suppress if any suppressed value is null
-		if (this.suppresseds.entrySet().stream().filter(s -> s.getValue()).map(s -> s.getKey()).anyMatch(k -> this.getValues().get(k) == null)) {
+		// suppress if any suppressed count value is null
+		if (this.suppresseds.entrySet().stream().filter(s -> s.getValue()).map(s -> s.getKey()).anyMatch(k -> this.getCountValues().get(k) == null)) {
 			suppressed = true;
 		// suppress if only one value is suppressed
 		} else if (this.suppresseds.values().stream().filter(s -> s).count() == 1) {
 			suppressed = true;
-		// or suppress if more than one value is suppressed and all suppressed values are equal to 1
+		// or suppress if more than one value is suppressed and all suppressed counts are equal to 1
 		} else if (this.suppresseds.values().stream().filter(s -> s).count() > 1) {
 			suppressed = this.suppresseds.entrySet().stream().filter(e -> e.getValue()).allMatch(e -> {
-				return this.getValues().get(e.getKey()) != null && BigDecimal.ONE.compareTo(this.getValues().get(e.getKey())) == 0;
+				return this.getCountValues().get(e.getKey()) != null && BigDecimal.ONE.compareTo(this.getCountValues().get(e.getKey())) == 0;
 			});
 		}
 
@@ -194,6 +206,10 @@ public abstract class DataItemMultiple {
 	 * @return the universeValue
 	 */
 	public BigDecimal getUniverseValue() {
+		if (this.isSuppressed()) {
+			return null;
+		}
+
 		return this.universeValues.values().stream().reduce(BigDecimal.ZERO, (a, b) -> {
 			if (a == null) {
 				return b;
@@ -206,7 +222,24 @@ public abstract class DataItemMultiple {
 	}
 
 	public BigDecimal getCountValue() {
+		if (this.isSuppressed()) {
+			return null;
+		}
+		
 		return this.countValues.values().stream().reduce(BigDecimal.ZERO, (a, b) -> {
+			if (a == null) {
+				return b;
+			}
+			if (b == null) {
+				return a;
+			}
+			return a.add(b);
+		});
+	}
+
+	@JsonIgnore
+	public BigDecimal getValueSum() {
+		return this.values.values().stream().reduce(BigDecimal.ZERO, (a, b) -> {
 			if (a == null) {
 				return b;
 			}
