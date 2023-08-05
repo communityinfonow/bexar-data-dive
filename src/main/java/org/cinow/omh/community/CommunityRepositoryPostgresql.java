@@ -252,6 +252,7 @@ public class CommunityRepositoryPostgresql implements CommunityRepository {
 							
 								dataPoint = new CommunityDataPointMultiple();
 								dataPoint.setIndicatorType(indicatorData.getIndicatorType());
+								dataPoint.setAggregable(indicatorData.getIndicator().isAggregable());
 								dataPoint.setRatePer(indicatorData.getIndicator().getRatePer());
 								indicatorData.getDemographicData().add(dataPoint);
 						}

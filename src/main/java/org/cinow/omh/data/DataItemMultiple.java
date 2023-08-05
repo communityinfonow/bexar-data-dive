@@ -49,11 +49,13 @@ public abstract class DataItemMultiple {
 
 	private int ratePer;
 
+	private boolean aggregable;
+
 	/**
 	 * @return the value
 	 */
 	public BigDecimal getValue() {
-		if (this.isSuppressed()) {
+		if (this.isSuppressed() || !this.aggregable) {
 			return null;
 		}
 
@@ -92,7 +94,7 @@ public abstract class DataItemMultiple {
 	 * @return the moeHigh
 	 */
 	public BigDecimal getMoeHigh() {
-		if (this.isSuppressed()) {
+		if (this.isSuppressed() || !this.aggregable) {
 			return null;
 		}
 
@@ -111,7 +113,7 @@ public abstract class DataItemMultiple {
 	 * @return the moeLow
 	 */
 	public BigDecimal getMoeLow() {
-		if (this.isSuppressed()) {
+		if (this.isSuppressed() || !this.aggregable) {
 			return null;
 		}
 
@@ -206,7 +208,7 @@ public abstract class DataItemMultiple {
 	 * @return the universeValue
 	 */
 	public BigDecimal getUniverseValue() {
-		if (this.isSuppressed()) {
+		if (this.isSuppressed() || !this.aggregable) {
 			return null;
 		}
 
@@ -222,7 +224,7 @@ public abstract class DataItemMultiple {
 	}
 
 	public BigDecimal getCountValue() {
-		if (this.isSuppressed()) {
+		if (this.isSuppressed() || !this.aggregable) {
 			return null;
 		}
 		
@@ -322,4 +324,12 @@ public abstract class DataItemMultiple {
 		this.ratePer = ratePer;
 	}
 
+	@JsonIgnore
+	public boolean isAggregable() {
+		return aggregable;
+	}
+
+	public void setAggregable(boolean aggregable) {
+		this.aggregable = aggregable;
+	}
 }
