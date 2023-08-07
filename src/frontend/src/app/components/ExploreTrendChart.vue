@@ -3,8 +3,8 @@
 		<v-row class="no-gutters flex-wrap flex-column fill-height">
 			<explore-tools-panel 
 				v-if="filters"
-				:showLabels="showTrendLabels"
-				:setShowLabels="setShowTrendLabels"
+				:labelsOrLinesOption="trendLabelsOrLines"
+				:setLabelsOrLinesOption="setTrendLabelsOrLines"
 				dataVisualElementId="trend_chart_container"
 				dataVisualName="trend_chart"
 			>
@@ -48,11 +48,14 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['locale', 'exploreData', 'showTrendLabels', 'exploreTab']),
+		...mapState(['locale', 'exploreData', 'trendLabelsOrLines', 'exploreTab']),
 		...mapGetters(['filters']),
 	},
 	watch: {
 		locale() {
+			this.drawChart()
+		},
+		trendLabelsOrLines() {
 			this.drawChart()
 		},
 		exploreTab(newValue) {
@@ -73,6 +76,24 @@ export default {
 		setTimeout(() => { 
 			echarts.use([SVGRenderer, AriaComponent, LegendComponent, GridComponent, LineChart, BarChart, CustomChart]);
 			this.chart = echarts.init(document.getElementById('trend_chart_container'), null, { renderer: 'svg'});
+			window.addEventListener('resize', () => {
+				if (this.exploreTab === 'trend') {
+					this.chart.resize();
+				}
+			});
+			if (this.exploreData) {
+				this.drawChart();
+			}
+		}, 100);
+		
+	},
+	methods: {
+		...mapActions(['setDockedTooltip', 'setTrendLabelsOrLines']),
+		drawChart() {
+			if (this.chart) {
+				this.chart.dispose();
+			}
+			this.chart = echarts.init(document.getElementById('trend_chart_container'), null, { renderer: 'svg'});
 			this.chart.on('mouseover', (params) => {
 				if (params.componentType === 'series') {
 					this.setDockedTooltip({
@@ -92,20 +113,6 @@ export default {
 					this.setDockedTooltip(null);
 				}
 			});
-			window.addEventListener('resize', () => {
-				if (this.exploreTab === 'trend') {
-					this.chart.resize();
-				}
-			});
-			if (this.exploreData) {
-				this.drawChart();
-			}
-		}, 100);
-		
-	},
-	methods: {
-		...mapActions(['setDockedTooltip', 'setShowTrendLabels']),
-		drawChart() {
 			let textStyle = {
 				fontFamily: '"Roboto", sans-serif !important',
 				fontSize: '16px'
@@ -150,14 +157,14 @@ export default {
 				symbol: 'circle',
 				symbolSize: 12,
 				label: {
-					show: this.showTrendLabels,
+					show: this.trendLabelsOrLines === 'labels',
 					position: 'top',
 					formatter: (o) => {
 						if (o.data.suppressed) {
 							return '';
 						} else if (o.data.noData) {
 							return '';
-						} else if (this.showTrendLabels) {
+						} else if (this.trendLabelsOrLines === 'labels') {
 							let rows = ['{a|' + i18n.t('data.value') +': ' + format(this.exploreData.indicator.typeId, o.data.value) + '}'];
 							if (o.data.moeLow || o.data.moeHigh) {
 								rows.push('{b|' + i18n.t('data.moe_range') 
@@ -212,72 +219,74 @@ export default {
 						return o.data.suppressed ? i18n.t('data.suppressed') : (!o.data.value ? i18n.t('data.no_data') : o.data.value)
 					}
 				}
-			}
-			,{
-				// third series for moe lines
-				data: trendYears
-					.map(ty => {
-						let yd = yearData[ty]; 
-						return [ty, yd?.moeLow, yd?.moeHigh]; 
-					}),
-				type: 'custom',
-				name: 'error',
-				renderItem: function(params, api) {
-					let xValue = api.value(0);
-					let highPoint = api.coord([xValue, api.value(1)]) || 0;
-					let lowPoint = api.coord([xValue, api.value(2)]) || 0;
-					console.log(api.value(0) + ' (' + api.value(1) + '-' + api.value(2) + ')')
-					let halfWidth = api.size([1, 0])[0] * 0.05;
-					let style = {
-						stroke: '#3aa38f',
-						fill: null,
-						lineWidth: 2
-					};
-					return {
-						type: 'group',
-						children: [
-							{
-								type: 'line',
-								transition: ['shape'],
-								shape: {
-									x1: highPoint[0] - halfWidth,
-									y1: highPoint[1],
-									x2: highPoint[0] + halfWidth,
-									y2: highPoint[1]
-								},
-								style: style
-							},
-							{
-								type: 'line',
-								transition: ['shape'],
-								shape: {
-									x1: highPoint[0],
-									y1: highPoint[1],
-									x2: lowPoint[0],
-									y2: lowPoint[1]
-								},
-								style: style
-							},
-							{
-								type: 'line',
-								transition: ['shape'],
-								shape: {
-									x1: lowPoint[0] - halfWidth,
-									y1: lowPoint[1],
-									x2: lowPoint[0] + halfWidth,
-									y2: lowPoint[1]
-								},
-								style: style
-							}
-						]
-					}
-				},
-				encode: {
-					x: 0,
-					y: [1, 2]
-				},
-				z: 100
 			}];
+			if (this.trendLabelsOrLines === 'lines') {
+				option.series.push({
+					// third series for moe lines
+					data: trendYears
+						.map(ty => {
+							let yd = yearData[ty]; 
+							return [ty, yd?.moeLow, yd?.moeHigh]; 
+						}),
+					type: 'custom',
+					name: 'error',
+					renderItem: function(params, api) {
+						let xValue = api.value(0);
+						let highPoint = api.coord([xValue, api.value(1)]) || 0;
+						let lowPoint = api.coord([xValue, api.value(2)]) || 0;
+						console.log(api.value(0) + ' (' + api.value(1) + '-' + api.value(2) + ')')
+						let halfWidth = api.size([1, 0])[0] * 0.05;
+						let style = {
+							stroke: '#3aa38f',
+							fill: null,
+							lineWidth: 2
+						};
+						return {
+							type: 'group',
+							children: [
+								{
+									type: 'line',
+									transition: ['shape'],
+									shape: {
+										x1: highPoint[0] - halfWidth,
+										y1: highPoint[1],
+										x2: highPoint[0] + halfWidth,
+										y2: highPoint[1]
+									},
+									style: style
+								},
+								{
+									type: 'line',
+									transition: ['shape'],
+									shape: {
+										x1: highPoint[0],
+										y1: highPoint[1],
+										x2: lowPoint[0],
+										y2: lowPoint[1]
+									},
+									style: style
+								},
+								{
+									type: 'line',
+									transition: ['shape'],
+									shape: {
+										x1: lowPoint[0] - halfWidth,
+										y1: lowPoint[1],
+										x2: lowPoint[0] + halfWidth,
+										y2: lowPoint[1]
+									},
+									style: style
+								}
+							]
+						}
+					},
+					encode: {
+						x: 0,
+						y: [1, 2]
+					},
+					z: 100
+				});
+			}
 			option.aria = { enabled: true };
 
 			this.chart.setOption(option);

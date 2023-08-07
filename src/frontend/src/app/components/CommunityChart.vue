@@ -58,11 +58,13 @@ export default {
 		},
 		data() {
 			this.drawChart()
+		},
+		labelsOrLines() {
+			this.drawChart()
 		}
 	},
 	mounted () {
 		echarts.use([SVGRenderer, AriaComponent, LegendComponent, GridComponent, BarChart, CustomChart, TitleComponent]);
-		this.chart = echarts.init(document.getElementById('chart_container_' + this.indicatorId), null, { renderer: 'svg'});
 		window.addEventListener('resize', () => {
 			this.chart.resize();
 		});
@@ -70,6 +72,10 @@ export default {
 	},
 	methods: {
 		drawChart() {
+			if (this.chart) {
+				this.chart.dispose();
+			}
+			this.chart = echarts.init(document.getElementById('chart_container_' + this.indicatorId), null, { renderer: 'svg'});
 			let textStyle = {
 				fontFamily: '"Roboto", sans-serif !important',
 				fontSize: this.smallScreen ? '14px' : '16px'

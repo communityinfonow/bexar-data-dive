@@ -147,7 +147,7 @@
               style="width: 200px;"
               color="accent"
               :label="$t('tools.common.chart_options')"
-              :items="[['labels', $t('tools.common.chart_options_labels')], ['lines', $t('tools.common.chart_options_lines')]]"
+              :items="[['labels', $t('tools.common.chart_options_labels')], ['lines', $t('tools.common.chart_options_lines')], ['none', $t('tools.common.chart_options_none')]]"
               :item-text="(item) => { return item[1] }"
               :item-value="(item) => { return item[0] }"
               v-model="labelsOrLines"

@@ -4,7 +4,7 @@
 		<v-form v-if="filters" ref="compareForm" v-model="valid">
 			<v-row class="mt-2 justify-end">
 				<template v-if="showCompareOptions">
-				<v-col cols="3" xl="4">
+				<v-col cols="2" xl="3">
 					<v-select
 						:label="$t('tools.explore.compare_by')"
 						dense
@@ -46,29 +46,39 @@
 					</v-btn>
 				</v-col>
 				</template>
-				<v-col :cols="!showCompareOptions ? 12 : 4" :xl="!showCompareOptions ? 12 : 3">
-					<div class="d-flex justify-end">
-					<v-switch
-						v-if="showHighlightFilteredLocation"
-						inset
-						:label="$t('tools.common.highlight_location')"
-						style="margin-top: 2px;"
-						v-model="highlight"
-						hide-details
-						class="mr-6"
-					></v-switch>
-					<v-switch
-						inset
-						:label="$t('tools.common.labels')"
-						style="margin-top: 2px;"
-						v-model="labels"
-						hide-details
-					></v-switch>
+				<v-col :cols="!showCompareOptions ? 12 : 5" :xl="!showCompareOptions ? 12 : 4" class="d-flex justify-end">
+					<template v-if="showHighlightFilteredLocation">
+						<v-switch
+							inset
+							:label="$t('tools.common.highlight_location')"
+							v-model="highlight"
+							hide-details
+							style="margin-top: 2px;"
+							class="mr-6"
+						></v-switch>
+						<v-switch
+							inset
+							:label="$t('tools.common.labels')"
+							style="margin-top: 2px;"
+							v-model="labelsOrLines"
+							hide-details
+						></v-switch>
+					</template>
+					<v-select
+						v-else
+						color="primary"
+						:label="$t('tools.common.chart_options')"
+						:items="[['labels', $t('tools.common.chart_options_labels')], ['lines', $t('tools.common.chart_options_lines')], ['none', $t('tools.common.chart_options_none')]]"
+						:item-text="(item) => { return item[1] }"
+						:item-value="(item) => { return item[0] }"
+						v-model="labelsOrLines"
+						dense
+					>
+					</v-select>
 					<div>
 						<download-menu :downloadData="downloadData" :downloadImage="downloadImage"></download-menu>
 						<share-menu></share-menu>
 						<about-menu indicator tool :indicatorId="indicatorId"></about-menu>
-					</div>
 					</div>
 				</v-col>
 			</v-row>
@@ -100,9 +110,9 @@ export default {
 			get() { return this.highlightFilteredLocation },
 			set(value) { this.setHighlightFilteredLocation(value) }
 		},
-		labels: {
-			get() { return this.showLabels },
-			set(value) { this.setShowLabels(value) }
+		labelsOrLines: {
+			get() { return this.labelsOrLinesOption },
+			set(value) { this.setLabelsOrLinesOption(value) }
 		},
 		indicatorId() {
 			return this.exploreData?.indicator?.id
@@ -146,10 +156,10 @@ export default {
 		setHighlightFilteredLocation: {
 			type: Function
 		},
-		showLabels: {
-			type: Boolean
+		labelsOrLinesOption: {
+			type: String
 		},
-		setShowLabels: {
+		setLabelsOrLinesOption: {
 			type: Function
 		},
 		dataVisualElementId: {

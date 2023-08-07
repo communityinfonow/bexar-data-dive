@@ -133,8 +133,9 @@
         }
       },
       "chart_options": "Chart options (es)",
-      "chart_options_labels": "Show labels (es)",
-      "chart_options_lines": "Show error lines (es)"
+      "chart_options_labels": "Labels (es)",
+      "chart_options_lines": "MOE lines (es)",
+      "chart_options_none": "None (es)"
     },
     "custom_locations": {
       "name": "Crea Tu Propia Área",

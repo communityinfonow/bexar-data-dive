@@ -133,8 +133,9 @@
         }
       },
       "chart_options": "Chart options",
-      "chart_options_labels": "Show labels",
-      "chart_options_lines": "Show error lines"
+      "chart_options_labels": "Labels",
+      "chart_options_lines": "MOE lines",
+      "chart_options_none": "None"
     },
     "custom_locations": {
       "name": "Create Your Own Area",

@@ -3,9 +3,8 @@
 		<v-row class="no-gutters flex-wrap flex-column fill-height">
 			<explore-tools-panel 
 				v-if="filters && exploreData"
-				:showCompareOptions="true"
-				:showLabels="showCompareLabels"
-				:setShowLabels="setShowCompareLabels"
+				:labelsOrLinesOption="compareLabelsOrLines"
+				:setLabelsOrLinesOption="setCompareLabelsOrLines"
 				dataVisualElementId="compare_chart_container"
 				dataVisualName="compare_chart"
 			>
@@ -43,7 +42,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['locale', 'exploreData', 'compareSelections', 'showCompareLabels', 'exploreTab', 'indicator']),
+		...mapState(['locale', 'exploreData', 'compareSelections', 'compareLabelsOrLines', 'exploreTab', 'indicator']),
 		...mapGetters(['filters']),
 		smallScreen() {
 			return document.body.clientWidth <= 1440;
@@ -51,6 +50,9 @@ export default {
 	},
 	watch: {
 		locale() {
+			this.drawChart()
+		},
+		compareLabelsOrLines() {
 			this.drawChart()
 		},
 		exploreTab(newValue) {
@@ -70,6 +72,25 @@ export default {
 	mounted () {
 		setTimeout(() => { 
 			echarts.use([SVGRenderer, AriaComponent, LegendComponent, GridComponent, BarChart, CustomChart]);
+			this.chart = echarts.init(document.getElementById('compare_chart_container'), null, { renderer: 'svg'});
+			window.addEventListener('resize', () => {
+				if (this.exploreTab === 'compare') {
+					this.chart.resize();
+				}
+			});
+			if (this.exploreData) {
+				this.drawChart();
+			}
+		}, 100);
+	},
+	methods: {
+		...mapActions(['setDockedTooltip', 'setCompareLabelsOrLines']),
+		drawChart() {
+			if (!this.chart) {
+				return;
+			} else {
+				this.chart.dispose();
+			}
 			this.chart = echarts.init(document.getElementById('compare_chart_container'), null, { renderer: 'svg'});
 			this.chart.on('mouseover', (params) => {
 				if (params.componentType === 'series') {
@@ -91,22 +112,6 @@ export default {
 					this.setDockedTooltip(null);
 				}
 			});
-			window.addEventListener('resize', () => {
-				if (this.exploreTab === 'compare') {
-					this.chart.resize();
-				}
-			});
-			if (this.exploreData) {
-				this.drawChart();
-			}
-		}, 100);
-	},
-	methods: {
-		...mapActions(['setDockedTooltip', 'setShowCompareLabels']),
-		drawChart() {
-			if (!this.chart) {
-				return;
-			}
 			let textStyle = {
 				fontFamily: '"Roboto", sans-serif !important',
 				fontSize: this.smallScreen ? '14px' : '16px'
@@ -186,66 +191,68 @@ export default {
 			 	}))
 			}
 			option.series = [];
-			let errorSeriesData = seriesData.map((d, i) => [xAxisData[i], d.moeHigh, d.moeLow]);
-			option.series.push({
-				data: errorSeriesData,
-				type: 'custom',
-				name: 'error',
-				renderItem: function(params, api) {
-					let xValue = api.value(0);
-					let highPoint = api.coord([xValue, api.value(1)]) || 0;
-					let lowPoint = api.coord([xValue, api.value(2)]) || 0;
-					let halfWidth = api.size([1, 0])[0] * 0.1;
-					let style = {
-						stroke: '#3aa38f',
-						fill: null,
-						lineWidth: 2
-					};
-					return {
-						type: 'group',
-						children: [
-							{
-								type: 'line',
-								transition: ['shape'],
-								shape: {
-									x1: highPoint[0] - halfWidth,
-									y1: highPoint[1],
-									x2: highPoint[0] + halfWidth,
-									y2: highPoint[1]
+			if (this.compareLabelsOrLines === 'lines') {
+				let errorSeriesData = seriesData.map((d, i) => [xAxisData[i], d.moeHigh, d.moeLow]);
+				option.series.push({
+					data: errorSeriesData,
+					type: 'custom',
+					name: 'error',
+					renderItem: function(params, api) {
+						let xValue = api.value(0);
+						let highPoint = api.coord([xValue, api.value(1)]) || 0;
+						let lowPoint = api.coord([xValue, api.value(2)]) || 0;
+						let halfWidth = api.size([1, 0])[0] * 0.1;
+						let style = {
+							stroke: '#3aa38f',
+							fill: null,
+							lineWidth: 2
+						};
+						return {
+							type: 'group',
+							children: [
+								{
+									type: 'line',
+									transition: ['shape'],
+									shape: {
+										x1: highPoint[0] - halfWidth,
+										y1: highPoint[1],
+										x2: highPoint[0] + halfWidth,
+										y2: highPoint[1]
+									},
+									style: style
 								},
-								style: style
-							},
-							{
-								type: 'line',
-								transition: ['shape'],
-								shape: {
-									x1: highPoint[0],
-									y1: highPoint[1],
-									x2: lowPoint[0],
-									y2: lowPoint[1]
+								{
+									type: 'line',
+									transition: ['shape'],
+									shape: {
+										x1: highPoint[0],
+										y1: highPoint[1],
+										x2: lowPoint[0],
+										y2: lowPoint[1]
+									},
+									style: style
 								},
-								style: style
-							},
-							{
-								type: 'line',
-								transition: ['shape'],
-								shape: {
-									x1: lowPoint[0] - halfWidth,
-									y1: lowPoint[1],
-									x2: lowPoint[0] + halfWidth,
-									y2: lowPoint[1]
-								},
-								style: style
-							}
-						]
-					}
-				},
-				encode: {
-					x: 0,
-					y: [1, 2]
-				},
-				z: 100
-			});
+								{
+									type: 'line',
+									transition: ['shape'],
+									shape: {
+										x1: lowPoint[0] - halfWidth,
+										y1: lowPoint[1],
+										x2: lowPoint[0] + halfWidth,
+										y2: lowPoint[1]
+									},
+									style: style
+								}
+							]
+						}
+					},
+					encode: {
+						x: 0,
+						y: [1, 2]
+					},
+					z: 100
+				});
+			}
 			option.series.push({
 				data: seriesData,
 				type: 'bar',
@@ -254,14 +261,14 @@ export default {
 					disabled: true
 				},
 				label: { 
-					show: true, 
+					show: this.compareLabelsOrLines === 'labels', 
 					position: 'top',
 					formatter: (o) => {
 						if (o.data.suppressed) {
 							return '{a|' + i18n.t('data.suppressed') + '}';
 						} else if (o.data.noData) {
 							return '{a|' + i18n.t('data.no_data') + '}';
-						} else if (this.showCompareLabels) {
+						} else if (this.compareLabelsOrLines === 'labels') {
 							let rows = ['{a|' + i18n.t('data.value') +': ' + format(this.exploreData.indicator.typeId, o.data.value) + '}'];
 							if (o.data.moeLow || o.data.moeHigh) {
 								rows.push('{b|' + (this.smallScreen ? '' : (i18n.t('data.moe_range') + ': ') )
@@ -293,7 +300,6 @@ export default {
 			option.aria = { enabled: true };
 
 			this.chart.setOption(option);
-			
 		}
 	}
 }
