@@ -55,7 +55,7 @@ public abstract class DataItemMultiple {
 	 * @return the value
 	 */
 	public BigDecimal getValue() {
-		if (this.isSuppressed() || !this.aggregable) {
+		if (this.isSuppressed() || !this.aggregable || BigDecimal.ZERO.equals(this.getUniverseValue())) {
 			return null;
 		}
 
@@ -70,14 +70,14 @@ public abstract class DataItemMultiple {
 				break;
 			case IndicatorType.PERCENTAGE:
 				try {
-					value = this.getCountValue().divide(this.getUniverseValue(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(1, RoundingMode.HALF_UP);
+					value = this.getCountValue().divide(this.getUniverseValue(), 8, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100)).setScale(1, RoundingMode.HALF_UP);
 				} catch (ArithmeticException | NumberFormatException e) {
 					value = null;
 				}
 				break;
 			case IndicatorType.RATE:
 				try {
-					value = this.getCountValue().divide(this.getUniverseValue(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(this.ratePer)).setScale(1, RoundingMode.HALF_UP);
+					value = this.getCountValue().divide(this.getUniverseValue(), 8, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(this.ratePer)).setScale(1, RoundingMode.HALF_UP);
 				} catch (ArithmeticException | NumberFormatException e) {
 					value = null;
 				}
@@ -94,7 +94,7 @@ public abstract class DataItemMultiple {
 	 * @return the moeHigh
 	 */
 	public BigDecimal getMoeHigh() {
-		if (this.isSuppressed() || !this.aggregable) {
+		if (this.isSuppressed() || !this.aggregable  || BigDecimal.ZERO.equals(this.getUniverseValue())) {
 			return null;
 		}
 
@@ -113,7 +113,7 @@ public abstract class DataItemMultiple {
 	 * @return the moeLow
 	 */
 	public BigDecimal getMoeLow() {
-		if (this.isSuppressed() || !this.aggregable) {
+		if (this.isSuppressed() || !this.aggregable  || BigDecimal.ZERO.equals(this.getUniverseValue())) {
 			return null;
 		}
 
@@ -141,8 +141,8 @@ public abstract class DataItemMultiple {
 						moe = countMoe.getValue().pow(2)
 							.subtract(this.values.get(countMoe.getKey()).multiply(BigDecimal.valueOf(.01)).pow(2)
 								.multiply(universeMoes.get(countMoe.getKey()).pow(2)))
-							.sqrt(new MathContext(4, RoundingMode.HALF_UP))
-							.divide(this.universeValues.get(countMoe.getKey()), 4, RoundingMode.HALF_UP)
+							.sqrt(new MathContext(8, RoundingMode.HALF_UP))
+							.divide(this.universeValues.get(countMoe.getKey()), 8, RoundingMode.HALF_UP)
 							.multiply(BigDecimal.valueOf(100));
 					} catch (ArithmeticException | NumberFormatException e) {
 						moe = null;
@@ -153,8 +153,8 @@ public abstract class DataItemMultiple {
 						moe = countMoe.getValue().pow(2)
 							.add(this.values.get(countMoe.getKey()).pow(2)
 								.multiply(universeMoes.get(countMoe.getKey()).pow(2)))
-							.sqrt(new MathContext(4, RoundingMode.HALF_UP))
-							.divide(this.universeValues.get(countMoe.getKey()), 4, RoundingMode.HALF_UP);
+							.sqrt(new MathContext(8, RoundingMode.HALF_UP))
+							.divide(this.universeValues.get(countMoe.getKey()), 8, RoundingMode.HALF_UP);
 					} catch (ArithmeticException | NumberFormatException e) {
 						moe = null;
 					}
@@ -180,7 +180,7 @@ public abstract class DataItemMultiple {
 				return a.add(b);
 			});
 
-		return moe.sqrt(new MathContext(1, RoundingMode.HALF_UP));
+		return moe.sqrt(new MathContext(8, RoundingMode.HALF_UP)).setScale(1, RoundingMode.HALF_UP);
 	}
 
 	/**
@@ -189,7 +189,7 @@ public abstract class DataItemMultiple {
 	public boolean isSuppressed() {
 		boolean suppressed = false;
 		// suppress if any suppressed count value is null
-		if (this.suppresseds.entrySet().stream().filter(s -> s.getValue()).map(s -> s.getKey()).anyMatch(k -> this.getCountValues().get(k) == null)) {
+		if (this.suppresseds.entrySet().stream().filter(s -> s.getValue()).map(s -> s.getKey()).anyMatch(k -> this.countValues.get(k) == null)) {
 			suppressed = true;
 		// suppress if only one value is suppressed
 		} else if (this.suppresseds.values().stream().filter(s -> s).count() == 1) {
@@ -197,7 +197,7 @@ public abstract class DataItemMultiple {
 		// or suppress if more than one value is suppressed and all suppressed counts are equal to 1
 		} else if (this.suppresseds.values().stream().filter(s -> s).count() > 1) {
 			suppressed = this.suppresseds.entrySet().stream().filter(e -> e.getValue()).allMatch(e -> {
-				return this.getCountValues().get(e.getKey()) != null && BigDecimal.ONE.compareTo(this.getCountValues().get(e.getKey())) == 0;
+				return this.countValues.get(e.getKey()) != null && BigDecimal.ONE.compareTo(this.countValues.get(e.getKey())) == 0;
 			});
 		}
 

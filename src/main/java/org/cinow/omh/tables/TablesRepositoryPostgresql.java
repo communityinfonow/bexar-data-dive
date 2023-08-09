@@ -52,6 +52,8 @@ public class TablesRepositoryPostgresql implements TablesRepository{
 						}
 						customLocationItem.setIndicatorType(new IndicatorType());
 						customLocationItem.getIndicatorType().setId(rs.getString("indicator_type_id"));
+						customLocationItem.setAggregable(rs.getBoolean("sql_aggregable"));
+						customLocationItem.setRatePer(rs.getInt("rate_per"));
 						customLocationItem.setLocationTypeId(rs.getString("location_type_id"));
 						customLocationItem.setLocationType_en(rs.getString("location_type_en"));
 						customLocationItem.setLocationType_es(rs.getString("location_type_es"));
@@ -269,7 +271,7 @@ public class TablesRepositoryPostgresql implements TablesRepository{
 			+	" 	 sex.id_ as sex_id, coalesce(sex.name_en, 'All') as sex_en, coalesce(sex.name_es, 'Todos') as sex_es, "
 			+	" 	 edu.id_ as edu_id, coalesce(edu.name_en, 'All') as edu_en, coalesce(edu.name_es, 'Todos') as edu_es, "
 			+	" 	 inc.id_ as inc_id, coalesce(inc.name_en, 'All') as inc_en, coalesce(inc.name_es, 'Todos') as inc_es, "
-			+	" 	 i.indicator_type_id "
+			+	" 	 i.indicator_type_id, i.is_aggregable, i.rate_per "
 			+	"  from tbl_indicator_values iv "
 			+	" 	 join tbl_locations l on iv.location_id = l.id_ and iv.location_type_id = l.location_type_id "
 			+	" 	 join tbl_location_types lt on l.location_type_id = lt.id_ "
@@ -327,7 +329,7 @@ public class TablesRepositoryPostgresql implements TablesRepository{
 			+	" 	 sex.id_ as sex_id, coalesce(sex.name_en, 'All') as sex_en, coalesce(sex.name_es, 'Todos') as sex_es, "
 			+	" 	 edu.id_ as edu_id, coalesce(edu.name_en, 'All') as edu_en, coalesce(edu.name_es, 'Todos') as edu_es, "
 			+	" 	 inc.id_ as inc_id, coalesce(inc.name_en, 'All') as inc_en, coalesce(inc.name_es, 'Todos') as inc_es, "
-			+	" 	 i.indicator_type_id "
+			+	" 	 i.indicator_type_id, i.is_aggregable, i.rate_per "
 			+	"  from tbl_indicator_values iv "
 			+	" 	 join tbl_custom_locations cl ON cl.location_type_id = iv.location_type_id and cl.location_ids @> array[iv.location_id] and cl.id_ in (:custom_location_ids)"
 			+	" 	 left join tbl_filter_options race on race.id_ = iv.race_id "
