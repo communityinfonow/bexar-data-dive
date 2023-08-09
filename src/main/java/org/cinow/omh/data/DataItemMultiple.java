@@ -55,7 +55,7 @@ public abstract class DataItemMultiple {
 	 * @return the value
 	 */
 	public BigDecimal getValue() {
-		if (this.isSuppressed() || !this.aggregable || BigDecimal.ZERO.equals(this.getUniverseValue())) {
+		if (this.isSuppressed() || !this.aggregable || (BigDecimal.ZERO.equals(this.getUniverseValue()) && !this.indicatorType.getId().equals(IndicatorType.COUNT))) {
 			return null;
 		}
 
@@ -94,7 +94,7 @@ public abstract class DataItemMultiple {
 	 * @return the moeHigh
 	 */
 	public BigDecimal getMoeHigh() {
-		if (this.isSuppressed() || !this.aggregable  || BigDecimal.ZERO.equals(this.getUniverseValue())) {
+		if (this.isSuppressed() || !this.aggregable  || (BigDecimal.ZERO.equals(this.getUniverseValue()) && !this.indicatorType.getId().equals(IndicatorType.COUNT))) {
 			return null;
 		}
 
@@ -113,7 +113,7 @@ public abstract class DataItemMultiple {
 	 * @return the moeLow
 	 */
 	public BigDecimal getMoeLow() {
-		if (this.isSuppressed() || !this.aggregable  || BigDecimal.ZERO.equals(this.getUniverseValue())) {
+		if (this.isSuppressed() || !this.aggregable  || (BigDecimal.ZERO.equals(this.getUniverseValue()) && !this.indicatorType.getId().equals(IndicatorType.COUNT))) {
 			return null;
 		}
 
@@ -125,50 +125,8 @@ public abstract class DataItemMultiple {
 	}
 
 	private BigDecimal getMoe() {
-		List<BigDecimal> moes = new ArrayList<>();
 		BigDecimal moe = null;
-		for (Entry<String, BigDecimal> countMoe : countMoes.entrySet()) {
-			switch (this.indicatorType.getId()) {
-				case IndicatorType.COUNT:
-					try {
-						moe = this.countMoes.get(countMoe.getKey());
-					} catch (NumberFormatException e) {
-						moe = null;
-					}
-					break;
-				case IndicatorType.PERCENTAGE:
-					try {
-						moe = countMoe.getValue().pow(2)
-							.subtract(this.values.get(countMoe.getKey()).multiply(BigDecimal.valueOf(.01)).pow(2)
-								.multiply(universeMoes.get(countMoe.getKey()).pow(2)))
-							.sqrt(new MathContext(8, RoundingMode.HALF_UP))
-							.divide(this.universeValues.get(countMoe.getKey()), 8, RoundingMode.HALF_UP)
-							.multiply(BigDecimal.valueOf(100));
-					} catch (ArithmeticException | NumberFormatException e) {
-						moe = null;
-					}
-					break;
-				case IndicatorType.RATE:
-					try {
-						moe = countMoe.getValue().pow(2)
-							.add(this.values.get(countMoe.getKey()).pow(2)
-								.multiply(universeMoes.get(countMoe.getKey()).pow(2)))
-							.sqrt(new MathContext(8, RoundingMode.HALF_UP))
-							.divide(this.universeValues.get(countMoe.getKey()), 8, RoundingMode.HALF_UP);
-					} catch (ArithmeticException | NumberFormatException e) {
-						moe = null;
-					}
-					break;
-				case IndicatorType.CURRENCY:
-					moe = null; // no aggregation for currency indicators
-					break;
-			}
-
-			moes.add(moe);
-		}
-
-		moe = moes
-			.stream()
+		BigDecimal numeratorMoe = this.countMoes.values().stream()
 			.map(m -> m.pow(2))
 			.reduce(BigDecimal.ZERO, (a, b) -> {
 				if (a == null) {
@@ -178,9 +136,49 @@ public abstract class DataItemMultiple {
 					return a;
 				}
 				return a.add(b);
-			});
-
-		return moe.sqrt(new MathContext(8, RoundingMode.HALF_UP)).setScale(1, RoundingMode.HALF_UP);
+			})
+			.sqrt(new MathContext(8, RoundingMode.HALF_UP)).setScale(1, RoundingMode.HALF_UP);
+		BigDecimal denominatorMoe = this.universeMoes.values().stream()
+			.map(m -> m.pow(2))
+			.reduce(BigDecimal.ZERO, (a, b) -> {
+				if (a == null) {
+					return b;
+				}
+				if (b == null) {
+					return a;
+				}
+				return a.add(b);
+			})
+			.sqrt(new MathContext(8, RoundingMode.HALF_UP)).setScale(1, RoundingMode.HALF_UP);
+		switch (this.indicatorType.getId()) {
+			case IndicatorType.COUNT:
+				//TODO: need to get the value MOEs for counts and return the sum of squares
+				break;
+			case IndicatorType.PERCENTAGE:
+				moe = numeratorMoe.pow(2)
+					.subtract(this.getValue().multiply(BigDecimal.valueOf(.01)).pow(2)
+						.multiply(denominatorMoe.pow(2)))
+					.sqrt(new MathContext(8, RoundingMode.HALF_UP))
+					.divide(this.getUniverseValue(), 8, RoundingMode.HALF_UP)
+					.multiply(BigDecimal.valueOf(100))
+					//.setScale(1, RoundingMode.HALF_UP)
+					;
+				break;
+			case IndicatorType.RATE:
+				moe = numeratorMoe.pow(2)
+					.add(this.getValue().pow(2)
+						.multiply(denominatorMoe.pow(2)))
+					.sqrt(new MathContext(8, RoundingMode.HALF_UP))
+					.divide(this.getUniverseValue(), 8, RoundingMode.HALF_UP)
+					//.setScale(1, RoundingMode.HALF_UP);
+					;
+				break;
+			case IndicatorType.CURRENCY:
+				moe = null; // no aggregation for currency indicators for now
+				break;
+		}
+		
+		return moe;
 	}
 
 	/**

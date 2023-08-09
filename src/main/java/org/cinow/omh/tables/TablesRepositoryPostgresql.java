@@ -52,7 +52,7 @@ public class TablesRepositoryPostgresql implements TablesRepository{
 						}
 						customLocationItem.setIndicatorType(new IndicatorType());
 						customLocationItem.getIndicatorType().setId(rs.getString("indicator_type_id"));
-						customLocationItem.setAggregable(rs.getBoolean("sql_aggregable"));
+						customLocationItem.setAggregable(rs.getBoolean("is_aggregable"));
 						customLocationItem.setRatePer(rs.getInt("rate_per"));
 						customLocationItem.setLocationTypeId(rs.getString("location_type_id"));
 						customLocationItem.setLocationType_en(rs.getString("location_type_en"));
