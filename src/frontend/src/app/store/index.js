@@ -141,6 +141,9 @@ export default new Vuex.Store({
       return menu
     },
     filters: (state) => {
+      if (!state.filters) {
+        return null;
+      }
       let filters = JSON.parse(JSON.stringify(state.filters))
       if (state.locationMenu && state.locationMenu.categories.find(c => c.id === '7')) {
         if (filters && state.customLocations?.length > 0) {
@@ -323,14 +326,13 @@ export default new Vuex.Store({
     },
     setIndicator(context, indicator) {
       context.commit('SET_INDICATOR', indicator)
-      if (indicator == null) {
-        context.commit('SET_SOURCE', null)
+      context.commit('SET_SOURCE', null)
         context.commit('SET_FILTERS', null)
         context.commit('SET_FILTER_SELECTIONS', null)
         context.commit('SET_COMPARE_SELECTIONS', null)
+      if (indicator == null) {
         return Promise.resolve();
       } else {
-        context.commit('SET_COMPARE_SELECTIONS', null)
         return context.dispatch('getSource', indicator).then(() => {
           return context.dispatch('getFilters', indicator)
         });

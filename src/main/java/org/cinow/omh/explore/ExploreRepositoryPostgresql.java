@@ -1,5 +1,6 @@
 package org.cinow.omh.explore;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -255,6 +256,13 @@ public class ExploreRepositoryPostgresql implements ExploreRepository {
 						dataPoint.getCountMoes().put(rs.getString("l_id"), rs.getBigDecimal("iv_count_moe"));
 						if (rs.wasNull()) {
 							dataPoint.getCountMoes().put(rs.getString("l_id"), null);
+						}
+						BigDecimal value = dataPoint.getValues().get(rs.getString("l_id"));
+						BigDecimal moeHigh = rs.getBigDecimal("iv_moe_high");
+						if (value != null && !rs.wasNull()) {
+							dataPoint.getValueMoes().put(rs.getString("l_id"), moeHigh.subtract(value));
+						} else {
+							dataPoint.getValueMoes().put(rs.getString("l_id"), null);
 						}
 					}
 				}

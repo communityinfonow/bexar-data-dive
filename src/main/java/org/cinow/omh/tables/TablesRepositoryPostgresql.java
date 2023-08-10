@@ -86,6 +86,7 @@ public class TablesRepositoryPostgresql implements TablesRepository{
 						if (rs.wasNull()) {
 							universeValue = null;
 						}
+						customLocationItem.getUniverseValues().put(rs.getString("component_location_id"), universeValue);
 						customLocationItem.getCountMoes().put(rs.getString("component_location_id"), rs.getBigDecimal("count_moe"));
 						if (rs.wasNull()) {
 							customLocationItem.getCountMoes().put(rs.getString("component_location_id"), null);
@@ -94,8 +95,13 @@ public class TablesRepositoryPostgresql implements TablesRepository{
 						if (rs.wasNull()) {
 							customLocationItem.getUniverseMoes().put(rs.getString("component_location_id"), null);
 						}
-						customLocationItem.getUniverseValues().put(rs.getString("component_location_id"), universeValue);
 						customLocationItem.getSuppresseds().put(rs.getString("component_location_id"), rs.getBoolean("suppress"));
+						BigDecimal moeHigh = rs.getBigDecimal("moe_high");
+						if (value != null && !rs.wasNull()) {
+							customLocationItem.getValueMoes().put(rs.getString("location_id"), moeHigh.subtract(value));
+						} else {
+							customLocationItem.getValueMoes().put(rs.getString("location_id"), null);
+						}
 					} else {
 						TablesDataItemSingle item = new TablesDataItemSingle();
 						item.setLocationTypeId(rs.getString("location_type_id"));
@@ -169,6 +175,7 @@ public class TablesRepositoryPostgresql implements TablesRepository{
 						}
 						customLocationItem.setIndicatorType(new IndicatorType());
 						customLocationItem.getIndicatorType().setId(rs.getString("indicator_type_id"));
+						customLocationItem.setAggregable(rs.getBoolean("is_aggregable"));
 						customLocationItem.setLocationTypeId(rs.getString("location_type_id"));
 						customLocationItem.setLocationType_en(rs.getString("location_type_en"));
 						customLocationItem.setLocationType_es(rs.getString("location_type_es"));
@@ -201,6 +208,7 @@ public class TablesRepositoryPostgresql implements TablesRepository{
 						if (rs.wasNull()) {
 							universeValue = null;
 						}
+						customLocationItem.getUniverseValues().put(rs.getString("component_location_id"), universeValue);
 						customLocationItem.getCountMoes().put(rs.getString("component_location_id"), rs.getBigDecimal("count_moe"));
 						if (rs.wasNull()) {
 							customLocationItem.getCountMoes().put(rs.getString("component_location_id"), null);
@@ -209,8 +217,13 @@ public class TablesRepositoryPostgresql implements TablesRepository{
 						if (rs.wasNull()) {
 							customLocationItem.getUniverseMoes().put(rs.getString("component_location_id"), null);
 						}
-						customLocationItem.getUniverseValues().put(rs.getString("component_location_id"), universeValue);
 						customLocationItem.getSuppresseds().put(rs.getString("component_location_id"), rs.getBoolean("suppress"));
+						BigDecimal moeHigh = rs.getBigDecimal("moe_high");
+						if (value != null && !rs.wasNull()) {
+							customLocationItem.getValueMoes().put(rs.getString("location_id"), moeHigh.subtract(value));
+						} else {
+							customLocationItem.getValueMoes().put(rs.getString("location_id"), null);
+						}
 					} else {
 						item = new TablesDataItemSingle();
 						item.setLocationTypeId(rs.getString("location_type_id"));

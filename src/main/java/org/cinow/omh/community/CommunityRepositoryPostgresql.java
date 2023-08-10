@@ -1,5 +1,6 @@
 package org.cinow.omh.community;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -283,6 +284,13 @@ public class CommunityRepositoryPostgresql implements CommunityRepository {
 						dataPoint.getCountMoes().put(rs.getString("location_id"), rs.getBigDecimal("count_moe"));
 						if (rs.wasNull()) {
 							dataPoint.getCountMoes().put(rs.getString("location_id"), null);
+						}
+						BigDecimal value = dataPoint.getValues().get(rs.getString("location_id"));
+						BigDecimal moeHigh = rs.getBigDecimal("moe_high");
+						if (value != null && !rs.wasNull()) {
+							dataPoint.getValueMoes().put(rs.getString("location_id"), moeHigh.subtract(value));
+						} else {
+							dataPoint.getValueMoes().put(rs.getString("location_id"), null);
 						}
 					}
 				}
