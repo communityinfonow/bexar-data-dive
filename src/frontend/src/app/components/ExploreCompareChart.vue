@@ -3,6 +3,7 @@
 		<v-row class="no-gutters flex-wrap flex-column fill-height">
 			<explore-tools-panel 
 				v-if="filters && exploreData"
+				:showCompareOptions="true"
 				:labelsOrLinesOption="compareLabelsOrLines"
 				:setLabelsOrLinesOption="setCompareLabelsOrLines"
 				dataVisualElementId="compare_chart_container"
@@ -117,7 +118,7 @@ export default {
 				fontSize: this.smallScreen ? '14px' : '16px'
 			};
 			let option = {};
-			option.grid = { left: 20, right: 20, containLabel: true };
+			option.grid = { left: 40, right: 20, containLabel: true };
 			option.yAxis = { 
 				type: 'value', 
 				splitLine: { show: false },
@@ -297,6 +298,24 @@ export default {
 					}
 				}
 			});
+			let allValues = seriesData.map(d => d.value);
+			if (this.labelsOrLines === 'lines') {
+				allValues = allValues.concat(...seriesData.map(d => d.moeHigh || 0));
+				allValues = allValues.concat(...seriesData.map(d => d.moeLow || 0));
+			}
+			let maxValue = Math.max(...allValues);
+			let minValue = Math.min(0, ...allValues);
+			let rounder = 1;
+			for (let i = 1; i < Math.floor(maxValue).toString().length; i++) {
+				rounder = rounder * 10;
+			}
+			let axisMax = Math.ceil(maxValue / rounder) * rounder;
+			let axisMin = Math.floor(minValue / rounder) * rounder;
+			console.log(axisMin)
+			console.log(axisMax)
+			option.yAxis.interval = axisMax;
+			option.yAxis.max = axisMax;
+			option.yAxis.min = axisMin;
 			option.aria = { enabled: true };
 
 			this.chart.setOption(option);

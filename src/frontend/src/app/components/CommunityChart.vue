@@ -81,7 +81,7 @@ export default {
 				fontSize: this.smallScreen ? '14px' : '16px'
 			};
 			let option = {};
-			option.grid = { left: 20, right: 20, containLabel: true };
+			option.grid = { left: 40, right: 20, containLabel: true };
 			option.yAxis = { 
 				type: 'value', 
 				splitLine: { show: false },
@@ -225,14 +225,22 @@ export default {
 			}
 			option.series = series;
 			option.aria = { enabled: true };
-			let maxValue = Math.max(...option.series[0].data.map(d => d.value));
+			let allValues = option.series[0].data.map(d => d.value);
+			if (this.labelsOrLines === 'lines') {
+				allValues = allValues.concat(...option.series[0].data.map(d => d.moeHigh || 0));
+				allValues = allValues.concat(...option.series[0].data.map(d => d.moeLow || 0));
+			}
+			let maxValue = Math.max(...allValues);
+			let minValue = Math.min(0, ...allValues);
 			let rounder = 1;
 			for (let i = 1; i < Math.floor(maxValue).toString().length; i++) {
 				rounder = rounder * 10;
 			}
 			let axisMax = Math.ceil(maxValue / rounder) * rounder;
+			let axisMin = Math.floor(minValue / rounder) * rounder;
 			option.yAxis.interval = axisMax;
 			option.yAxis.max = axisMax;
+			option.yAxis.min = axisMin;
 			this.chart.setOption(option);
 		}
 	},

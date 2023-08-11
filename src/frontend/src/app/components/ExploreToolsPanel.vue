@@ -3,8 +3,7 @@
 	<v-col cols="auto" style="max-height: 72px;">
 		<v-form v-if="filters" ref="compareForm" v-model="valid">
 			<v-row class="mt-2 justify-end">
-				<template v-if="showCompareOptions">
-				<v-col cols="2" xl="3">
+				<v-col cols="2" v-if="showCompareOptions">
 					<v-select
 						:label="$t('tools.explore.compare_by')"
 						dense
@@ -18,7 +17,7 @@
 					>
 					</v-select>
 				</v-col>
-				<v-col cols="3" xl="4">
+				<v-col cols="4" v-if="showCompareOptions">
 					<v-autocomplete
 						:label="$t('tools.explore.compare_with')"
 						dense
@@ -36,7 +35,7 @@
 					>
 					</v-autocomplete>
 				</v-col>
-				<v-col cols="2" xl="1">
+				<v-col cols="2" v-if="showCompareOptions">
 					<v-btn
 						color="primary"
 						tile
@@ -45,8 +44,25 @@
 						{{ $t('tools.explore.compare') }}
 					</v-btn>
 				</v-col>
-				</template>
-				<v-col :cols="!showCompareOptions ? 12 : 5" :xl="!showCompareOptions ? 12 : 4" class="d-flex justify-end">
+				<v-col cols="4" v-if="!showHighlightFilteredLocation">
+					<div class="d-flex justify-end">
+						<v-select
+							color="primary"
+							:label="$t('tools.common.chart_options')"
+							:items="[['labels', $t('tools.common.chart_options_labels')], ['lines', $t('tools.common.chart_options_lines')], ['none', $t('tools.common.chart_options_none')]]"
+							:item-text="(item) => { return item[1] }"
+							:item-value="(item) => { return item[0] }"
+							v-model="labelsOrLines"
+							dense
+							class="grow"
+						>
+						</v-select>
+						<download-menu :downloadData="downloadData" :downloadImage="downloadImage"></download-menu>
+						<share-menu></share-menu>
+						<about-menu indicator tool :indicatorId="indicatorId"></about-menu>
+					</div>
+				</v-col>
+				<v-col v-if="showHighlightFilteredLocation" cols="auto" class="d-flex justify-end">
 					<template v-if="showHighlightFilteredLocation">
 						<v-switch
 							inset
@@ -64,22 +80,9 @@
 							hide-details
 						></v-switch>
 					</template>
-					<v-select
-						v-else
-						color="primary"
-						:label="$t('tools.common.chart_options')"
-						:items="[['labels', $t('tools.common.chart_options_labels')], ['lines', $t('tools.common.chart_options_lines')], ['none', $t('tools.common.chart_options_none')]]"
-						:item-text="(item) => { return item[1] }"
-						:item-value="(item) => { return item[0] }"
-						v-model="labelsOrLines"
-						dense
-					>
-					</v-select>
-					<div>
-						<download-menu :downloadData="downloadData" :downloadImage="downloadImage"></download-menu>
-						<share-menu></share-menu>
-						<about-menu indicator tool :indicatorId="indicatorId"></about-menu>
-					</div>
+					<download-menu :downloadData="downloadData" :downloadImage="downloadImage"></download-menu>
+					<share-menu></share-menu>
+					<about-menu indicator tool :indicatorId="indicatorId"></about-menu>
 				</v-col>
 			</v-row>
 		</v-form>
