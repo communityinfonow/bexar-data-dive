@@ -77,7 +77,7 @@ public class CommunityService {
 			
 			CommunityDataIndicator mergedIndicator = new CommunityDataIndicator();
 			mergedIndicator.setIndicator(new Indicator());
-			mergedIndicator.getIndicator().setAggregable(true);
+			mergedIndicator.getIndicator().setAggregable(filterCategory.getIndicators().get(0).getIndicator().isAggregable());
 			mergedIndicator.getIndicator().setCategoryId(filterCategory.getCategory().getId());
 			mergedIndicator.getIndicator().setDisplay(filterCategory.getIndicators().get(0).getIndicator().isDisplay());
 			mergedIndicator.getIndicator().setFeatured(false);

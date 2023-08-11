@@ -134,10 +134,16 @@ export default {
 		...mapState(['indicator', 'locale', 'filterSelections']),
 		...mapGetters(['filters']),
 		locationFilterOptions() {
+			if (!this.filters) {
+				return [];
+			}
 			return this.filters.locationFilter.options
 				.filter(option => option.typeId === this.selectedLocationType)
 		},
 		yearOptions() {
+			if (!this.filters) {
+				return [];
+			}
 			return this.filters.yearFilter.options.map(o => {
 				return {
 					...o,
@@ -178,7 +184,7 @@ export default {
 			});
 		},
 		requestApply() {
-			if (this.yearOptions.find(y => y.id === this.selectedYear).disabled) {
+			if (this.yearOptions.find(y => y.id === this.selectedYear)?.disabled) {
 				this.selectedYear = this.yearOptions.find(y => !y.disabled).id;
 			}
 			this.applyNeeded = true;

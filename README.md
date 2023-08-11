@@ -22,7 +22,7 @@ yarn install
 Run the following command to create a PostgreSQL image with Docker. Replace any bracketed text as needed.
 ```
 sudo docker create --name {name} -p 5432:5432 -e POSTGRES_USER={user} -e POSTGRES_PASS={password} -e 
-POSTGRES_DBNAME={database name} -t kartoza/postgis
+POSTGRES_DBNAME={database name} -t kartoza/postgis:14-3.1
 ```
 
 ## Running Locally
