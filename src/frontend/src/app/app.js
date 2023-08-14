@@ -5,6 +5,7 @@ import store from '@/app/store'
 import vuetify from '@/plugins/vuetify'
 import i18n from '@/i18n'
 import axios from 'axios'
+import axiosRetry from 'axios-retry';
 import 'leaflet/dist/leaflet.css'
 
 Vue.config.productionTip = false
@@ -16,6 +17,35 @@ new Vue({
   i18n,
   render: (h) => h(App),
   created: function () {
+    let requestCount = 0
+    axios.interceptors.request.use(function(config) {
+      if (requestCount === 0) {
+        store.dispatch('setLoading', true);
+      }
+      requestCount++;
+
+      return config;
+    });
+    axios.interceptors.response.use(response => {
+      requestCount--;
+      if (requestCount === 0) {
+        store.dispatch('setLoading', false);
+      }
+
+      return response;
+    }, error => {
+      requestCount--;
+      if (requestCount === 0) {
+        store.dispatch('setLoading', false);
+      }
+
+      return Promise.reject(error);
+    });
+    axiosRetry(axios, { retries: 1, retryCondition: (error) => {
+      return error.response.status === 503 && error.response.data === 'please try again'
+     }
+    });
+
     let queryLocale = router.currentRoute.query.lang
     let storedLocale
     try {
@@ -46,31 +76,6 @@ new Vue({
       storedCustomLocations = []
     }
     this.$store.dispatch('setCustomLocations', storedCustomLocations)
-
-    let requestCount = 0
-    axios.interceptors.request.use(function(config) {
-      if (requestCount === 0) {
-        store.dispatch('setLoading', true);
-      }
-      requestCount++;
-
-      return config;
-    });
-    axios.interceptors.response.use(response => {
-      requestCount--;
-      if (requestCount === 0) {
-        store.dispatch('setLoading', false);
-      }
-
-      return response;
-    }, error => {
-      requestCount--;
-      if (requestCount === 0) {
-        store.dispatch('setLoading', false);
-      }
-
-      return Promise.reject(error);
-    });
   },
   mounted: function () {
     
