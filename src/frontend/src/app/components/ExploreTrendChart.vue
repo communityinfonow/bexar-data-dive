@@ -303,8 +303,8 @@ export default {
 			option.yAxis.max = axisMax;
 			option.yAxis.min = axisMin;
 			option.aria = { enabled: true };
-			option.yAxis.axisLabel.interval = (index, value) => {
-				return value === axisMin || value === axisMax || value === 0;
+			option.yAxis.axisLabel.formatter = (value) => {
+				return value === axisMin || value === axisMax || value === 0 ? value : ''	;
 			};
 
 			this.chart.setOption(option);

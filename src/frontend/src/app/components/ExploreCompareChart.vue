@@ -313,8 +313,8 @@ export default {
 			let axisMin = Math.floor(minValue / rounder) * rounder;
 			option.yAxis.max = axisMax;
 			option.yAxis.min = axisMin;
-			option.yAxis.axisLabel.interval = (index, value) => {
-				return value === axisMin || value === axisMax || value === 0;
+			option.yAxis.axisLabel.formatter = (value) => {
+				return value === axisMin || value === axisMax || value === 0 ? value : ''	;
 			};
 			option.aria = { enabled: true };
 
