@@ -1,5 +1,6 @@
 package org.cinow.omh.explore;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -153,7 +154,7 @@ public class ExploreRepositoryPostgresql implements ExploreRepository {
 			+ " select l.id_ as l_id, l.name_en as l_name_en, l.name_es as l_name_es, "
 			+ "   7 as lt_id, 'Custom' as lt_name_en, 'Custom (es)' as lt_name_es, "
 			+ "   cl.id_ as cl_id, cl.name_ as cl_name, cl.geojson as lg_geojson, "
-			+ "   i.indicator_type_id as it_id, "
+			+ "   i.indicator_type_id as it_id, i.is_aggregable, i.rate_per, "
 			+ "   iv.year_ as iv_year, round(iv.indicator_value, 1) as iv_indicator_value, iv.suppress as iv_suppressed, round(iv.moe_low, 1) as iv_moe_low, round(iv.moe_high, 1) as iv_moe_high, round(iv.universe_value, 1) as iv_universe_value, iv.count_value as iv_count_value, iv.universe_moe as iv_universe_moe, iv.count_moe as iv_count_moe "
 			+ " from tbl_custom_locations cl "
 			+ "   join tbl_locations l on cl.location_ids @> array[l.id_] "
@@ -223,37 +224,45 @@ public class ExploreRepositoryPostgresql implements ExploreRepository {
 						locationData.setGeojson(rs.getString("lg_geojson"));
 						locationData.setYearData(new LinkedHashMap<>());
 					}
-					if (!currentYear.equals(rs.getString("iv_year"))) {
+					if (rs.getString("iv_year") != null && !currentYear.equals(rs.getString("iv_year"))) {
 						currentYear = rs.getString("iv_year");
 						dataPoint = new ExploreDataPointMultiple();
 						IndicatorType indicatorType = new IndicatorType();
 						indicatorType.setId(rs.getString("it_id"));
 						dataPoint.setIndicatorType(indicatorType);
+						dataPoint.setAggregable(rs.getBoolean("is_aggregable"));
+						dataPoint.setRatePer(rs.getInt("rate_per"));
 						locationData.getYearData().put(rs.getString("iv_year"), dataPoint);
 					}
 					if (rs.getString("iv_year") != null) {
 						dataPoint.getSuppresseds().put(rs.getString("l_id"), rs.getBoolean("iv_suppressed"));
-						if (!dataPoint.getSuppresseds().get(rs.getString("l_id"))) {
-							dataPoint.getValues().put(rs.getString("l_id"), rs.getBigDecimal("iv_indicator_value"));
-							if (rs.wasNull()) {
-								dataPoint.getValues().put(rs.getString("l_id"), null);
-							}
-							dataPoint.getUniverseValues().put(rs.getString("l_id"), rs.getBigDecimal("iv_universe_value"));
-							if (rs.wasNull()) {
-								dataPoint.getUniverseValues().put(rs.getString("l_id"), null);
-							}
-							dataPoint.getCountValues().put(rs.getString("l_id"), rs.getBigDecimal("iv_count_value"));
-							if (rs.wasNull()) {
-								dataPoint.getCountValues().put(rs.getString("l_id"), null);
-							}
-							dataPoint.getUniverseMoes().put(rs.getString("l_id"), rs.getBigDecimal("iv_universe_moe"));
-							if (rs.wasNull()) {
-								dataPoint.getUniverseMoes().put(rs.getString("l_id"), null);
-							}
-							dataPoint.getCountMoes().put(rs.getString("l_id"), rs.getBigDecimal("iv_count_moe"));
-							if (rs.wasNull()) {
-								dataPoint.getCountMoes().put(rs.getString("l_id"), null);
-							}
+						
+						dataPoint.getValues().put(rs.getString("l_id"), rs.getBigDecimal("iv_indicator_value"));
+						if (rs.wasNull()) {
+							dataPoint.getValues().put(rs.getString("l_id"), null);
+						}
+						dataPoint.getUniverseValues().put(rs.getString("l_id"), rs.getBigDecimal("iv_universe_value"));
+						if (rs.wasNull()) {
+							dataPoint.getUniverseValues().put(rs.getString("l_id"), null);
+						}
+						dataPoint.getCountValues().put(rs.getString("l_id"), rs.getBigDecimal("iv_count_value"));
+						if (rs.wasNull()) {
+							dataPoint.getCountValues().put(rs.getString("l_id"), null);
+						}
+						dataPoint.getUniverseMoes().put(rs.getString("l_id"), rs.getBigDecimal("iv_universe_moe"));
+						if (rs.wasNull()) {
+							dataPoint.getUniverseMoes().put(rs.getString("l_id"), null);
+						}
+						dataPoint.getCountMoes().put(rs.getString("l_id"), rs.getBigDecimal("iv_count_moe"));
+						if (rs.wasNull()) {
+							dataPoint.getCountMoes().put(rs.getString("l_id"), null);
+						}
+						BigDecimal value = dataPoint.getValues().get(rs.getString("l_id"));
+						BigDecimal moeHigh = rs.getBigDecimal("iv_moe_high");
+						if (value != null && !rs.wasNull()) {
+							dataPoint.getValueMoes().put(rs.getString("l_id"), moeHigh.subtract(value));
+						} else {
+							dataPoint.getValueMoes().put(rs.getString("l_id"), null);
 						}
 					}
 				}

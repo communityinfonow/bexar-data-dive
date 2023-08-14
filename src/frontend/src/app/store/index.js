@@ -141,6 +141,9 @@ export default new Vuex.Store({
       return menu
     },
     filters: (state) => {
+      if (!state.filters) {
+        return null;
+      }
       let filters = JSON.parse(JSON.stringify(state.filters))
       if (state.locationMenu && state.locationMenu.categories.find(c => c.id === '7')) {
         if (filters && state.customLocations?.length > 0) {
@@ -296,11 +299,7 @@ export default new Vuex.Store({
     },
     getLocationMenu(context) {
       axios.get('/api/location-menu').then(response => {
-        //TODO: commit resopnse.data instead of tempMenu once custom locations are ready
-        let tempMenu = {
-          categories: response.data.categories.filter(c => c.id !== '6' && c.id !== '7'),
-        }
-        context.commit('SET_LOCATION_MENU', tempMenu)
+        context.commit('SET_LOCATION_MENU', response.data)
       })
     },
     getFeaturedIndicators(context) {
@@ -327,14 +326,13 @@ export default new Vuex.Store({
     },
     setIndicator(context, indicator) {
       context.commit('SET_INDICATOR', indicator)
-      if (indicator == null) {
-        context.commit('SET_SOURCE', null)
+      context.commit('SET_SOURCE', null)
         context.commit('SET_FILTERS', null)
         context.commit('SET_FILTER_SELECTIONS', null)
         context.commit('SET_COMPARE_SELECTIONS', null)
+      if (indicator == null) {
         return Promise.resolve();
       } else {
-        context.commit('SET_COMPARE_SELECTIONS', null)
         return context.dispatch('getSource', indicator).then(() => {
           return context.dispatch('getFilters', indicator)
         });
