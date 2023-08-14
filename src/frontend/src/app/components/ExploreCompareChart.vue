@@ -299,7 +299,7 @@ export default {
 				}
 			});
 			let allValues = seriesData.map(d => d.value);
-			if (this.labelsOrLines === 'lines') {
+			if (this.compareLabelsOrLines === 'lines') {
 				allValues = allValues.concat(...seriesData.map(d => d.moeHigh || 0));
 				allValues = allValues.concat(...seriesData.map(d => d.moeLow || 0));
 			}
@@ -311,11 +311,11 @@ export default {
 			}
 			let axisMax = Math.ceil(maxValue / rounder) * rounder;
 			let axisMin = Math.floor(minValue / rounder) * rounder;
-			console.log(axisMin)
-			console.log(axisMax)
-			option.yAxis.interval = axisMax;
 			option.yAxis.max = axisMax;
 			option.yAxis.min = axisMin;
+			option.yAxis.axisLabel.interval = (index, value) => {
+				return value === axisMin || value === axisMax || value === 0;
+			};
 			option.aria = { enabled: true };
 
 			this.chart.setOption(option);

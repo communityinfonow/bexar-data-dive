@@ -238,9 +238,11 @@ export default {
 			}
 			let axisMax = Math.ceil(maxValue / rounder) * rounder;
 			let axisMin = Math.floor(minValue / rounder) * rounder;
-			option.yAxis.interval = axisMax;
 			option.yAxis.max = axisMax;
 			option.yAxis.min = axisMin;
+			option.yAxis.axisLabel.interval = (index, value) => {
+				return value === axisMin || value === axisMax || value === 0;
+			};
 			this.chart.setOption(option);
 		}
 	},

@@ -235,7 +235,6 @@ export default {
 						let xValue = api.value(0);
 						let highPoint = api.coord([xValue, api.value(1)]) || 0;
 						let lowPoint = api.coord([xValue, api.value(2)]) || 0;
-						console.log(api.value(0) + ' (' + api.value(1) + '-' + api.value(2) + ')')
 						let halfWidth = api.size([1, 0])[0] * 0.05;
 						let style = {
 							stroke: '#3aa38f',
@@ -289,7 +288,7 @@ export default {
 				});
 			}
 			let allValues = option.series[0].data.map(d => d.value);
-			if (this.labelsOrLines === 'lines') {
+			if (this.trendLabelsOrLines === 'lines') {
 				allValues = allValues.concat(...option.series[0].data.map(d => d.moeHigh || 0));
 				allValues = allValues.concat(...option.series[0].data.map(d => d.moeLow || 0));
 			}
@@ -301,10 +300,12 @@ export default {
 			}
 			let axisMax = Math.ceil(maxValue / rounder) * rounder;
 			let axisMin = Math.floor(minValue / rounder) * rounder;
-			option.yAxis.interval = axisMax;
 			option.yAxis.max = axisMax;
 			option.yAxis.min = axisMin;
 			option.aria = { enabled: true };
+			option.yAxis.axisLabel.interval = (index, value) => {
+				return value === axisMin || value === axisMax || value === 0;
+			};
 
 			this.chart.setOption(option);
 		}
