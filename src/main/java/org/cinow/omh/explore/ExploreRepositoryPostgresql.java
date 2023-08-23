@@ -262,4 +262,49 @@ public class ExploreRepositoryPostgresql implements ExploreRepository {
 			}
 		});
 	}
+
+	@Override
+	public List<PointCollection> getPoints() {
+		String sql = ""
+			+ " select pt.id_ as pt_id, pt.name_en as pt_name_en, pt.name_es as pt_name_es, pt.color as pt_color, "
+			+ "   p.id_ as p_id, p.year_ as p_year, p.geojson as p_geojson, p.value_ as p_value "
+			+ " from tbl_point_types pt "
+			+ "   join tbl_points p on p.point_type_id = pt.id_ "
+			+ " where p.year_ = (select max(year_) from tbl_points where point_type_id = pt.id_) "
+			+ " order by pt.sort_order ";
+
+		return this.namedParameterJdbcTemplate.query(sql, new ResultSetExtractor<List<PointCollection>>() {
+			@Override
+			public List<PointCollection> extractData(ResultSet rs) throws SQLException, DataAccessException {
+				List<PointCollection> pointCollections = new ArrayList<>();
+				PointCollection currentPointCollection = null;
+				PointType currentPointType = null;
+				List<Point> currentPoints = null;
+				while (rs.next()) {
+					if (currentPointType == null || currentPointType.getId() != rs.getInt("pt_id")) {
+						currentPointCollection = new PointCollection();
+						currentPointType = new PointType();
+						currentPointType.setId(rs.getInt("pt_id"));
+						currentPointType.setName_en(rs.getString("pt_name_en"));
+						currentPointType.setName_es(rs.getString("pt_name_es"));
+						currentPointType.setColor(rs.getString("pt_color"));
+						currentPoints = new ArrayList<>();
+						currentPointCollection.setPointType(currentPointType);
+						currentPointCollection.setPoints(currentPoints);
+						pointCollections.add(currentPointCollection);
+					}
+					if (rs.getString("p_geojson") != null) {
+						Point point = new Point();
+						point.setId(rs.getString("p_id"));
+						point.setYear(rs.getString("p_year"));
+						point.setGeojson(rs.getString("p_geojson"));
+						point.setValue(rs.getInt("p_value"));
+						currentPoints.add(point);
+					}
+				}
+
+				return pointCollections;
+			}
+		});
+	}
 }

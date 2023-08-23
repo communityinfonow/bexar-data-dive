@@ -19,6 +19,7 @@
     "axios-retry": "^3.6.0",
     "colorbrewer": "^1.5.2",
     "core-js": "^3.8.3",
+    "d3-scale": "^4.0.2",
     "debounce": "^1.2.1",
     "echarts": "^5.4.2",
     "html2canvas": "^1.4.1",

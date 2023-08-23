@@ -47,6 +47,12 @@
 						:options="filteredLocationOptions"
 						:options-style="style"
 					></l-geo-json>
+					<l-geo-json
+						v-if="pointsGeojson"
+						:geojson="pointsGeojson"
+						:options="pointsOptions"
+					>
+					</l-geo-json>
 					<l-control
 						position="bottomleft"
 						class="legend-control"
@@ -96,11 +102,38 @@
 						class="layer-control"
 						v-if="layers && layers.length"
 					>
-						<v-expansion-panels data-html2canvas-ignore>
+						<v-expansion-panels data-html2canvas-ignore accordion>
+							<v-expansion-panel v-if="indicator.showPoints">
+								<v-expansion-panel-header class="text--primary">
+									<div>
+										<v-icon color="accent">mdi-circle</v-icon>
+										<span class="mx-2">{{ $t('tools.explore.locations') }} (TODO: year)</span>
+									</div>
+								</v-expansion-panel-header>
+								<v-expansion-panel-content>
+									<v-checkbox 
+										color="accent"
+										v-for="pointType in pointTypes" 
+										:key="pointType.id" 
+										:value="pointType" 
+										:label="pointType['name_' + locale]"
+										v-model="selectedPointTypes"
+										@change="togglePointType(pointType.id)"
+										hide-details
+										class="mt-0"
+									>
+										<template v-slot:append>
+											<v-icon :color="pointType.color">mdi-circle</v-icon>
+										</template>
+									</v-checkbox>
+								</v-expansion-panel-content>
+							</v-expansion-panel>
 							<v-expansion-panel>
 								<v-expansion-panel-header class="text--primary">
-									<v-icon color="accent">mdi-layers</v-icon>
-									<span class="mx-2">{{ $t('tools.community.community_types') }}</span>
+									<div>
+										<v-icon color="accent">mdi-layers</v-icon>
+										<span class="mx-2">{{ $t('tools.community.community_types') }}</span>
+									</div>
 								</v-expansion-panel-header>
 								<v-expansion-panel-content>
 									<v-radio-group
@@ -129,11 +162,14 @@
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex'
 import i18n from '@/i18n'
+import axios from 'axios'
+import L from 'leaflet'
 import { latLng } from 'leaflet'
 import { LMap, LTileLayer, LGeoJson, LControl } from 'vue2-leaflet'
 import { feature, featureCollection, multiPolygon } from '@turf/helpers'
 import colorbrewer from 'colorbrewer'
 import { ckmeans } from 'simple-statistics'
+import {scaleLinear} from 'd3-scale'
 import ExploreToolsPanel from '@/app/components/ExploreToolsPanel'
 import { format } from '@/formatter/formatter'
 
@@ -156,10 +192,13 @@ export default {
 			filteredLocationGeojson: null,
 			refreshOptions: false,
 			selectedLocationType: null,
+			pointCollections: [],
+			selectedPointTypes: [],
+			pointsGeojson: featureCollection([])
 		}
 	},
 	computed: {
-		...mapState(['exploreData', 'locale', 'filterSelections', 'showMapLabels', 'highlightFilteredLocation', 'exploreTab', 'customLocations']),
+		...mapState(['exploreData', 'locale', 'filterSelections', 'showMapLabels', 'highlightFilteredLocation', 'exploreTab', 'customLocations', 'indicator']),
 		...mapGetters(['locationMenu', 'filters']),
 		layers() {
 			return this.filters?.locationTypeFilter?.options?.map(option => {
@@ -174,6 +213,12 @@ export default {
 			this.refreshOptions;
 			return {
 				onEachFeature: this.onEachFeature
+			}
+		},
+		pointsOptions() {
+			//this.refreshOptions;
+			return {
+				pointToLayer: this.pointToLayer
 			}
 		},
 		filteredLocationOptions() {
@@ -226,6 +271,23 @@ export default {
 					return [{ value: range[0], label: format(this.exploreData.indicator.typeId, range[0]) },
 					 { value: range[1], label: format(this.exploreData.indicator.typeId, range[1]) }];
 				});
+		},
+		pointTypes() {
+			return this.pointCollections?.map(pc => pc.pointType)
+		},
+		pointScales() {
+			return this.pointCollections?.map(pc => {
+				let values = pc.points.map(p => p.value);
+				let min = Math.min(...values);
+				let max = Math.max(...values);
+				let scale = scaleLinear()
+					.domain([min, max])
+					.range(min === max ? [8, 8] : [8, 80]);
+				return {
+					pointType: pc.pointType,
+					scale: scale
+				}
+			})
 		}
 	},
 	watch: {
@@ -255,6 +317,11 @@ export default {
 		},
 		highlightFilteredLocation() {
 			this.drawMap();
+		},
+		indicator(newValue, oldValue) {
+			if (newValue.id !== oldValue?.id && newValue.showPoints) {
+				this.getPoints()
+			}
 		}
 	},
 	mounted () {
@@ -265,6 +332,9 @@ export default {
 			}
 			if (this.mapInitialized && this.exploreData) {
 				this.drawMap();
+			}
+			if (this.indicator?.showPoints) {
+				this.getPoints()
 			}
 		}, 100);
 		
@@ -294,6 +364,27 @@ export default {
 			newFilterSelections.locationType = this.selectedLocationType.id;
 			newFilterSelections.location = this.filters.locationFilter.options.filter(o => o.typeId === this.selectedLocationType.id)[0].id;
 			this.setFilterSelections(newFilterSelections);
+		},
+		togglePointType(pointType) {
+			if (!this.selectedPointTypes.some(pt => pt.id === pointType)) {
+				this.pointsGeojson.features = this.pointsGeojson.features.filter(f => f.properties.typeId !== pointType);
+			} else {
+				this.pointsGeojson.features = this.pointsGeojson.features.concat(this.pointCollections
+					.find(pc => pc.pointType.id === pointType)
+					.points
+					.map(p => {
+						return {
+							type: 'Feature',
+							geometry: JSON.parse(p.geojson),
+							properties: {
+								id: p.id,
+								typeId: pointType,
+								value: p.value
+							}
+						}
+					})
+				);
+			}
 		},
 		selectLocation(location) {
 			let newFilterSelections = JSON.parse(JSON.stringify(this.filterSelections));
@@ -400,6 +491,17 @@ export default {
 				this.selectLocation(e.target.feature.id);
 			});
 		},
+		pointToLayer(feature, latlng) {
+			let size = this.pointScales.find(ps => ps.pointType.id === feature.properties.typeId).scale(feature.properties.value);
+			console.log(size)
+			return L.marker(latlng, {
+				//TODO: graduated symbols
+				icon: L.divIcon({
+					className: 'dive-point',
+					html: '<div class="dive-point-icon" style="opacity: 0.5; background-color: ' + this.pointTypes.find(pt => pt.id === feature.properties.typeId).color  + '; width: ' + size + 'px; height: ' + size + 'px; border-radius: 50%;"></div>'
+				})
+			});
+		},
 		getLayerShadingColor(feature) {
 			if (!feature.properties.value || feature.properties.suppressed) {
 				return 'transparent'
@@ -421,6 +523,11 @@ export default {
 					year: this.exploreData.filters.yearFilter.options[0].id,
 					indicatorFilters: this.exploreData.filters.indicatorFilters
 				});
+		},
+		getPoints() {
+			axios.get('/api/points').then(response => {
+				this.pointCollections = response.data
+			})
 		}
 	},
 }
@@ -437,5 +544,9 @@ export default {
 		font-size: 14px;
 		text-shadow: -2px -2px 2px #fff, 2px -2px 2px #fff, -2px 2px 2px #fff, 2px 2px 2px #fff;
 		text-align: center;
+	}
+
+	::v-deep .v-expansion-panels {
+		flex-direction: column;
 	}
 </style>

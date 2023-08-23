@@ -176,4 +176,8 @@ public class ExploreService {
 
 		return filters;
 	}
+
+	public List<PointCollection> getPoints() {
+		return this.exploreRepository.getPoints();
+	}
 }

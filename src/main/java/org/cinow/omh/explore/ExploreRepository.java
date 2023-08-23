@@ -24,4 +24,11 @@ public interface ExploreRepository {
 	 * @return the data
 	 */
 	ExploreDataLocation<ExploreDataPoint> getCustomExploreData(ExploreDataRequest dataRequest, boolean allLocations);
+
+	/**
+	 * Gets the map points.
+	 * 
+	 * @return the map points
+	 */
+	List<PointCollection> getPoints();
 }

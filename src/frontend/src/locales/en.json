@@ -73,7 +73,8 @@
       "compare_by": "Compare by",
       "compare_with": "Compare with",
       "compare": "Compare",
-      "compare_limit_exceeded": "The number of comparisons selected exceeds the limit of 10. Please select fewer items to compare the data."
+      "compare_limit_exceeded": "The number of comparisons selected exceeds the limit of 10. Please select fewer items to compare the data.",
+      "locations": "Locations"
     },
     "tables": {
       "name": "Tables & Downloads",

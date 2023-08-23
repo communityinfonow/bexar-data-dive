@@ -1,7 +1,5 @@
 package org.cinow.omh.tables;
 
-import java.util.List;
-
 import org.cinow.omh.indicators.Indicator;
 import org.cinow.omh.indicators.IndicatorCategory;
 import org.cinow.omh.sources.Source;
