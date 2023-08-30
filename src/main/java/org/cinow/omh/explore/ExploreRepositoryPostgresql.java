@@ -267,7 +267,7 @@ public class ExploreRepositoryPostgresql implements ExploreRepository {
 	public List<PointCollection> getPoints() {
 		String sql = ""
 			+ " select pt.id_ as pt_id, pt.name_en as pt_name_en, pt.name_es as pt_name_es, pt.color as pt_color, "
-			+ "   p.id_ as p_id, p.year_ as p_year, p.geojson as p_geojson, p.value_ as p_value "
+			+ "   p.id_ as p_id, p.name_ as p_name, p.address_1 as p_address_1, p.address_2 as p_address_2, p.year_ as p_year, p.value_ as p_value, p.geojson as p_geojson "
 			+ " from tbl_point_types pt "
 			+ "   join tbl_points p on p.point_type_id = pt.id_ "
 			+ " where p.year_ = (select max(year_) from tbl_points where point_type_id = pt.id_) "
@@ -296,9 +296,12 @@ public class ExploreRepositoryPostgresql implements ExploreRepository {
 					if (rs.getString("p_geojson") != null) {
 						Point point = new Point();
 						point.setId(rs.getString("p_id"));
+						point.setName(rs.getString("p_name"));
+						point.setAddress1(rs.getString("p_address_1"));
+						point.setAddress2(rs.getString("p_address_2"));
 						point.setYear(rs.getString("p_year"));
-						point.setGeojson(rs.getString("p_geojson"));
 						point.setValue(rs.getInt("p_value"));
+						point.setGeojson(rs.getString("p_geojson"));
 						currentPoints.add(point);
 					}
 				}

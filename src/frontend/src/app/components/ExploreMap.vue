@@ -111,21 +111,50 @@
 									</div>
 								</v-expansion-panel-header>
 								<v-expansion-panel-content>
-									<v-checkbox 
-										color="accent"
-										v-for="pointType in pointTypes" 
-										:key="pointType.id" 
-										:value="pointType" 
-										:label="pointType['name_' + locale]"
-										v-model="selectedPointTypes"
-										@change="togglePointType(pointType.id)"
-										hide-details
-										class="mt-0"
-									>
-										<template v-slot:append>
-											<v-icon :color="pointType.color">mdi-circle</v-icon>
-										</template>
-									</v-checkbox>
+									<div v-for="pointType in pointTypes" :key="pointType.id">
+										<v-checkbox 
+											color="accent"
+											:value="pointType" 
+											:label="pointType['name_' + locale]"
+											v-model="selectedPointTypes"
+											@change="togglePointType(pointType.id)"
+											hide-details
+											class="mt-0"
+										>
+											<template v-slot:append>
+												<v-icon :color="pointType.color">mdi-circle</v-icon>
+											</template>
+										</v-checkbox>
+										<div 
+											v-if="selectedPointTypes.some(pt => pt.id === pointType.id)
+												&& pointScales 
+												&& pointScales.find(ps => ps.pointType.id === pointType.id)
+												&& pointScales.find(ps => ps.pointType.id === pointType.id).min 
+													!== pointScales.find(ps => ps.pointType.id === pointType.id).max"
+											class="d-flex align-center justify-space-between px-10 text-center"
+											
+										>
+											<div
+												v-for="(value, index) in [
+													pointScales.find(ps => ps.pointType.id === pointType.id).min, 
+													pointScales.find(ps => ps.pointType.id === pointType.id).mid, 
+													pointScales.find(ps => ps.pointType.id === pointType.id).max
+												]"
+												:key="'range_' + index"
+											>
+												<v-icon
+													:size="pointScales.find(ps => ps.pointType.id === pointType.id).scale(value)"
+													:color="pointType.color"
+												>
+													mdi-circle
+												</v-icon>
+												<br>
+												<span>
+													{{ value }}
+												</span>
+											</div>
+										</div>
+									</div>
 								</v-expansion-panel-content>
 							</v-expansion-panel>
 							<v-expansion-panel>
@@ -216,7 +245,7 @@ export default {
 			}
 		},
 		pointsOptions() {
-			//this.refreshOptions;
+			this.refreshOptions;
 			return {
 				pointToLayer: this.pointToLayer
 			}
@@ -285,7 +314,10 @@ export default {
 					.range(min === max ? [8, 8] : [8, 80]);
 				return {
 					pointType: pc.pointType,
-					scale: scale
+					scale: scale,
+					min: min,
+					max: max,
+					mid: Math.floor((min + max) / 2)
 				}
 			})
 		}
@@ -379,6 +411,9 @@ export default {
 							properties: {
 								id: p.id,
 								typeId: pointType,
+								name: p.name,
+								address1: p.address1,
+								address2: p.address2,
 								value: p.value
 							}
 						}
@@ -493,14 +528,16 @@ export default {
 		},
 		pointToLayer(feature, latlng) {
 			let size = this.pointScales.find(ps => ps.pointType.id === feature.properties.typeId).scale(feature.properties.value);
-			console.log(size)
 			return L.marker(latlng, {
-				//TODO: graduated symbols
 				icon: L.divIcon({
 					className: 'dive-point',
-					html: '<div class="dive-point-icon" style="opacity: 0.5; background-color: ' + this.pointTypes.find(pt => pt.id === feature.properties.typeId).color  + '; width: ' + size + 'px; height: ' + size + 'px; border-radius: 50%;"></div>'
+					html: '<div class="dive-point-icon" style="opacity: 0.8; background-color: ' + this.pointTypes.find(pt => pt.id === feature.properties.typeId).color  + '; width: ' + size + 'px; height: ' + size + 'px; border-radius: 50%;"></div>'
 				})
-			});
+			}).bindTooltip(feature.properties.name
+				+ (feature.properties.address1 ? '<br>' + feature.properties.address1 : '')
+				+ (feature.properties.address2 ? '<br>' + feature.properties.address2 : '')
+				+ (feature.properties.value ? '<br>' + i18n.t('data.value') + ':' + feature.properties.value : '')
+			);
 		},
 		getLayerShadingColor(feature) {
 			if (!feature.properties.value || feature.properties.suppressed) {
@@ -548,5 +585,9 @@ export default {
 
 	::v-deep .v-expansion-panels {
 		flex-direction: column;
+	}
+
+	::v-deep .layer-control {
+		width: 360px;
 	}
 </style>
