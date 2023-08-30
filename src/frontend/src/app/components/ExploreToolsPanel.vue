@@ -46,17 +46,20 @@
 				</v-col>
 				<v-col cols="4" v-if="!showHighlightFilteredLocation">
 					<div class="d-flex justify-end">
-						<v-select
-							color="primary"
-							:label="$t('tools.common.chart_options')"
-							:items="[['labels', $t('tools.common.chart_options_labels')], ['lines', $t('tools.common.chart_options_lines')], ['none', $t('tools.common.chart_options_none')]]"
-							:item-text="(item) => { return item[1] }"
-							:item-value="(item) => { return item[0] }"
-							v-model="labelsOrLines"
-							dense
-							class="grow"
-						>
-						</v-select>
+						<div class="v-input v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select pt-1 flex-grow-0 flex-shrink-1">
+							<label aria-label id="labelsOrLinesLabel" class="v-label v-label--active theme--light" style="left: 0px; right: auto; position: absolute;">{{ $t('tools.common.chart_options') }}</label>
+							<v-btn-toggle v-model="labelsOrLines" id="labelsOrLines" aria-labelledby="labelsOrLinesLabel">
+								<v-btn 
+									v-for="item in [['labels', $t('tools.common.chart_options_labels')], ['lines', $t('tools.common.chart_options_lines')]]" 
+									:key="item[0]" 
+									:value="item[0]" 
+									color="accent"
+									small
+								>
+									{{ item[1] }}
+								</v-btn>
+							</v-btn-toggle>
+						</div>
 						<download-menu :downloadData="downloadData" :downloadImage="downloadImage"></download-menu>
 						<share-menu></share-menu>
 						<about-menu indicator tool :indicatorId="indicatorId"></about-menu>
