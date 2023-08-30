@@ -41,18 +41,18 @@
 						:options-style="style"
 					></l-geo-json>
 					<l-geo-json
+						v-if="pointsGeojson"
+						:geojson="pointsGeojson"
+						:options="pointsOptions"
+					>
+					</l-geo-json>
+					<l-geo-json
 						v-if="highlightFilteredLocation"
 						ref="filteredLocation"
 						:geojson="filteredLocationGeojson"
 						:options="filteredLocationOptions"
 						:options-style="style"
 					></l-geo-json>
-					<l-geo-json
-						v-if="pointsGeojson"
-						:geojson="pointsGeojson"
-						:options="pointsOptions"
-					>
-					</l-geo-json>
 					<l-control
 						position="bottomleft"
 						class="legend-control"
@@ -98,8 +98,34 @@
 						</v-card>
 					</l-control>
 					<l-control
+						position="topright"
+						class="report-control"
+						:style="{ height: reportHeight }"
+						v-if="reportData"
+					>
+						<v-card class="fill-height">
+							<v-card-title class="text--primary">
+								{{ reportData.location.properties.locationName }}
+								<v-spacer></v-spacer>
+								<v-btn icon @click="reportData = null">
+									<v-icon>mdi-close</v-icon>
+								</v-btn>
+							</v-card-title>
+							<v-card-text>
+								<v-simple-table>
+									<tbody>
+										<tr v-for="(value, key) in reportData.data" :key="key">
+											<td>{{ key }}</td>
+											<td class="text-end">{{ value }}</td>
+										</tr>
+									</tbody>
+								</v-simple-table>
+							</v-card-text>
+						</v-card>
+					</l-control>
+					<l-control
 						position="bottomright"
-						class="layer-control"
+						class="layer-control d-flex flex-column"
 						v-if="layers && layers.length"
 					>
 						<v-expansion-panels data-html2canvas-ignore accordion>
@@ -200,7 +226,9 @@ import colorbrewer from 'colorbrewer'
 import { ckmeans } from 'simple-statistics'
 import {scaleLinear} from 'd3-scale'
 import ExploreToolsPanel from '@/app/components/ExploreToolsPanel'
+import ExploreMapPopup from '@/app/components/ExploreMapPopup'
 import { format } from '@/formatter/formatter'
+import Vue from 'vue'
 
 export default {
 	name: 'ExploreMap',
@@ -223,7 +251,8 @@ export default {
 			selectedLocationType: null,
 			pointCollections: [],
 			selectedPointTypes: [],
-			pointsGeojson: featureCollection([])
+			pointsGeojson: featureCollection([]),
+			reportData: null
 		}
 	},
 	computed: {
@@ -247,7 +276,7 @@ export default {
 		pointsOptions() {
 			this.refreshOptions;
 			return {
-				pointToLayer: this.pointToLayer
+				pointToLayer: this.pointToLayer,
 			}
 		},
 		filteredLocationOptions() {
@@ -320,6 +349,9 @@ export default {
 					mid: Math.floor((min + max) / 2)
 				}
 			})
+		},
+		reportHeight() {
+			return this.$refs.exploreMap?.$el?.offsetHeight - 32 + 'px';
 		}
 	},
 	watch: {
@@ -471,40 +503,8 @@ export default {
 					}
 				);
 			}
-
-			layer.on('mouseover', (layer) => {
-				this.setDockedTooltip({
-					value: layer.target.feature.properties.value,
-					suppressed: layer.target.feature.properties.suppressed,
-					noData: layer.target.feature.properties.noData,
-					moeLow: layer.target.feature.properties.moeLow,
-					moeHigh: layer.target.feature.properties.moeHigh,
-					location: layer.target.feature.properties.locationName,
-					year: this.exploreData.filters.yearFilter.options[0].id,
-					indicatorFilters: this.exploreData.filters.indicatorFilters
-				});
-			});
-			layer.on('mouseout', () => {
-				this.setDefaultDockedTooltip()
-			});
-			layer.on('click', (e) => {
-				this.selectLocation(e.target.feature.id);
-			});
-		},
-		onEachFilteredLocationFeature(feature, layer) {
-			layer.options.weight = 4;
-			layer.options.color = 'orange';
-			layer.options.fillColor = 'transparent';
-			if (this.showMapLabels) {
-				layer.bindTooltip(layer.feature.properties.locationName.replace('Zip Code', 'Zip').replace('Census Tract', 'Tract') 
-						+ '<br>' 
-						+ (layer.feature.properties.suppressed ? i18n.t('data.suppressed') : format(this.exploreData.indicator.typeId, layer.feature.properties.value)), 
-					{
-						className: 'location-label',
-						permanent: true, 
-						direction: 'center'
-					}
-				);
+			if (this.indicator.showReport) {
+				layer.bindPopup(this.buildPopupComponent(layer));
 			}
 
 			layer.on('mouseover', (layer) => {
@@ -523,7 +523,50 @@ export default {
 				this.setDefaultDockedTooltip()
 			});
 			layer.on('click', (e) => {
-				this.selectLocation(e.target.feature.id);
+				if (!this.indicator.showReport) {
+					this.selectLocation(e.target.feature.id);
+				}
+			});
+		},
+		onEachFilteredLocationFeature(feature, layer) {
+			layer.options.weight = 4;
+			layer.options.color = 'orange';
+			layer.options.fillColor = 'transparent';
+			if (this.showMapLabels) {
+				layer.bindTooltip(layer.feature.properties.locationName.replace('Zip Code', 'Zip').replace('Census Tract', 'Tract') 
+						+ '<br>' 
+						+ (layer.feature.properties.suppressed ? i18n.t('data.suppressed') : format(this.exploreData.indicator.typeId, layer.feature.properties.value)), 
+					{
+						className: 'location-label',
+						permanent: true, 
+						direction: 'center'
+					}
+				);
+			}
+
+			if (this.indicator.showReport) {
+				layer.bindPopup(this.buildPopupComponent(layer));
+			}
+
+			layer.on('mouseover', (layer) => {
+				this.setDockedTooltip({
+					value: layer.target.feature.properties.value,
+					suppressed: layer.target.feature.properties.suppressed,
+					noData: layer.target.feature.properties.noData,
+					moeLow: layer.target.feature.properties.moeLow,
+					moeHigh: layer.target.feature.properties.moeHigh,
+					location: layer.target.feature.properties.locationName,
+					year: this.exploreData.filters.yearFilter.options[0].id,
+					indicatorFilters: this.exploreData.filters.indicatorFilters
+				});
+			});
+			layer.on('mouseout', () => {
+				this.setDefaultDockedTooltip()
+			});
+			layer.on('click', (e) => {
+				if (!this.indicator.showReport) {
+					this.selectLocation(e.target.feature.id);
+				}
 			});
 		},
 		pointToLayer(feature, latlng) {
@@ -531,12 +574,14 @@ export default {
 			return L.marker(latlng, {
 				icon: L.divIcon({
 					className: 'dive-point',
-					html: '<div class="dive-point-icon" style="opacity: 0.8; background-color: ' + this.pointTypes.find(pt => pt.id === feature.properties.typeId).color  + '; width: ' + size + 'px; height: ' + size + 'px; border-radius: 50%;"></div>'
+					html: '<div class="dive-point-icon" style="opacity: 0.8; background-color: ' + this.pointTypes.find(pt => pt.id === feature.properties.typeId).color  + '; width: ' + size + 'px; height: ' + size + 'px; border-radius: 50%;"></div>',
+					tooltipAnchor: [size/2, size/2]
 				})
 			}).bindTooltip(feature.properties.name
 				+ (feature.properties.address1 ? '<br>' + feature.properties.address1 : '')
 				+ (feature.properties.address2 ? '<br>' + feature.properties.address2 : '')
-				+ (feature.properties.value ? '<br>' + i18n.t('data.value') + ':' + feature.properties.value : '')
+				+ (feature.properties.value ? '<br>' + i18n.t('data.value') + ':' + feature.properties.value : ''),
+				
 			);
 		},
 		getLayerShadingColor(feature) {
@@ -565,6 +610,20 @@ export default {
 			axios.get('/api/points').then(response => {
 				this.pointCollections = response.data
 			})
+		},
+		buildPopupComponent(layer) {
+			let component = Vue.extend(ExploreMapPopup)
+			let vm = new component({
+				propsData: {
+					feature: layer.feature,
+					applyFilter: () => this.selectLocation(layer.feature.id),
+					viewReport: () => {
+						this.reportData = { location: layer.feature, data: { "Median age": 34, "White": '20%' } };
+						layer.closePopup();
+					}
+				}
+			}).$mount();
+			return vm.$el;
 		}
 	},
 }
@@ -589,5 +648,10 @@ export default {
 
 	::v-deep .layer-control {
 		width: 360px;
+	}
+	::v-deep .leaflet-top.leaflet-right,
+	::v-deep .report-control {
+		width: 360px;
+		z-index: 1001;
 	}
 </style>
