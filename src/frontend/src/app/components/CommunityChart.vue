@@ -151,60 +151,11 @@ export default {
 					{
 						type: 'custom',
 						name: 'error',
-						renderItem: function(params, api) {
-							let xValue = api.value(0);
-							let highPoint = api.coord([xValue, api.value(1)]) || 0;
-							let lowPoint = api.coord([xValue, api.value(2)]) || 0;
-							let halfWidth = api.size([1, 0])[0] * 0.1;
-							let style = {
-								stroke: '#3aa38f',
-								fill: null,
-								lineWidth: 2
-							};
+						renderItem: function() {
 							return {
-								type: 'group',
-								children: [
-									{
-										type: 'line',
-										transition: ['shape'],
-										shape: {
-											x1: highPoint[0] - halfWidth,
-											y1: highPoint[1],
-											x2: highPoint[0] + halfWidth,
-											y2: highPoint[1]
-										},
-										style: style
-									},
-									{
-										type: 'line',
-										transition: ['shape'],
-										shape: {
-											x1: highPoint[0],
-											y1: highPoint[1],
-											x2: lowPoint[0],
-											y2: lowPoint[1]
-										},
-										style: style
-									},
-									{
-										type: 'line',
-										transition: ['shape'],
-										shape: {
-											x1: lowPoint[0] - halfWidth,
-											y1: lowPoint[1],
-											x2: lowPoint[0] + halfWidth,
-											y2: lowPoint[1]
-										},
-										style: style
-									}
-								]
+								type: 'group'
 							}
-						},
-						encode: {
-							x: 0,
-							y: [1, 2]
-						},
-						z: 100
+						}
 					}
 				);
 			}
@@ -244,6 +195,72 @@ export default {
 				return value === axisMin || value === axisMax || value === 0 ? value : ''	;
 			};
 			this.chart.setOption(option);
+
+			if (this.labelsOrLines === 'lines') {
+				window.setTimeout(() => {
+					this.chart.setOption({
+						series: [
+							{
+								name: 'error',
+								renderItem: function(params, api) {
+									let xValue = api.value(0);
+									let highPoint = api.coord([xValue, api.value(1)]) || 0;
+									let lowPoint = api.coord([xValue, api.value(2)]) || 0;
+									let halfWidth = api.size([1, 0])[0] * 0.1;
+									let style = {
+										stroke: '#3aa38f',
+										fill: null,
+										lineWidth: 2
+									};
+									return {
+										type: 'group',
+										children: [
+											{
+												type: 'line',
+												transition: ['shape'],
+												shape: {
+													x1: highPoint[0] - halfWidth,
+													y1: highPoint[1],
+													x2: highPoint[0] + halfWidth,
+													y2: highPoint[1]
+												},
+												style: style
+											},
+											{
+												type: 'line',
+												transition: ['shape'],
+												shape: {
+													x1: highPoint[0],
+													y1: highPoint[1],
+													x2: lowPoint[0],
+													y2: lowPoint[1]
+												},
+												style: style
+											},
+											{
+												type: 'line',
+												transition: ['shape'],
+												shape: {
+													x1: lowPoint[0] - halfWidth,
+													y1: lowPoint[1],
+													x2: lowPoint[0] + halfWidth,
+													y2: lowPoint[1]
+												},
+												style: style
+											}
+										]
+									}
+								},
+								encode: {
+									x: 0,
+									y: [1, 2]
+								},
+								z: 100
+							}
+						]
+					});
+				}, 1000);
+			}
 		}
 	},
 }

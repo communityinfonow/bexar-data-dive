@@ -257,7 +257,7 @@ export default {
 					stack: 'moe',
 					lineStyle: { opacity: 0 },
 					itemStyle: { opacity: 0 },
-					areaStyle: { opacity: 0.25 }
+					areaStyle: { opacity: 0.25, color: '#3aa38f' }
 				});
 			}
 			let allValues = option.series[0].data.map(d => d.value);

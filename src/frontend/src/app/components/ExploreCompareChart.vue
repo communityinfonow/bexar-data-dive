@@ -136,7 +136,7 @@ export default {
 				} else {
 					xAxisData.push(this.exploreData.filters.indicatorFilters.find(f => f.type.id === this.compareSelections.type.id).options[0]['name_' + this.locale])
 				}
-				xAxisData.push(...this.compareSelections.options.map(o => o['name_' + this.locale]))
+				xAxisData.push(...this.compareSelections.options.filter(o => !!o).map(o => o['name_' + this.locale]))
 			} else {
 				xAxisData.push('')
 			}
@@ -193,65 +193,15 @@ export default {
 			}
 			option.series = [];
 			if (this.compareLabelsOrLines === 'lines') {
-				let errorSeriesData = seriesData.map((d, i) => [xAxisData[i], d.moeHigh, d.moeLow]);
+				// animation delays are not working for custom series, so add it empty and populate it after the chart is drawn
 				option.series.push({
-					data: errorSeriesData,
 					type: 'custom',
 					name: 'error',
-					renderItem: function(params, api) {
-						let xValue = api.value(0);
-						let highPoint = api.coord([xValue, api.value(1)]) || 0;
-						let lowPoint = api.coord([xValue, api.value(2)]) || 0;
-						let halfWidth = api.size([1, 0])[0] * 0.1;
-						let style = {
-							stroke: '#3aa38f',
-							fill: null,
-							lineWidth: 2
-						};
+					renderItem: function() {
 						return {
 							type: 'group',
-							children: [
-								{
-									type: 'line',
-									transition: ['shape'],
-									shape: {
-										x1: highPoint[0] - halfWidth,
-										y1: highPoint[1],
-										x2: highPoint[0] + halfWidth,
-										y2: highPoint[1]
-									},
-									style: style
-								},
-								{
-									type: 'line',
-									transition: ['shape'],
-									shape: {
-										x1: highPoint[0],
-										y1: highPoint[1],
-										x2: lowPoint[0],
-										y2: lowPoint[1]
-									},
-									style: style
-								},
-								{
-									type: 'line',
-									transition: ['shape'],
-									shape: {
-										x1: lowPoint[0] - halfWidth,
-										y1: lowPoint[1],
-										x2: lowPoint[0] + halfWidth,
-										y2: lowPoint[1]
-									},
-									style: style
-								}
-							]
 						}
-					},
-					encode: {
-						x: 0,
-						y: [1, 2]
-					},
-					z: 100
+					}
 				});
 			}
 			option.series.push({
@@ -319,6 +269,73 @@ export default {
 			option.aria = { enabled: true };
 
 			this.chart.setOption(option);
+			if (this.compareLabelsOrLines === 'lines') {
+				window.setTimeout(() => {
+					let errorSeriesData = seriesData.map((d, i) => [xAxisData[i], d.moeHigh, d.moeLow]);
+					this.chart.setOption({
+						series: [
+							{
+								name: 'error',
+								data: errorSeriesData,
+								renderItem: function(params, api) {
+									let xValue = api.value(0);
+									let highPoint = api.coord([xValue, api.value(1)]) || 0;
+									let lowPoint = api.coord([xValue, api.value(2)]) || 0;
+									let halfWidth = api.size([1, 0])[0] * 0.1;
+									let style = {
+										stroke: '#3aa38f',
+										fill: null,
+										lineWidth: 2
+									};
+									return {
+										type: 'group',
+										children: [
+											{
+												type: 'line',
+												transition: ['shape'],
+												shape: {
+													x1: highPoint[0] - halfWidth,
+													y1: highPoint[1],
+													x2: highPoint[0] + halfWidth,
+													y2: highPoint[1]
+												},
+												style: style
+											},
+											{
+												type: 'line',
+												transition: ['shape'],
+												shape: {
+													x1: highPoint[0],
+													y1: highPoint[1],
+													x2: lowPoint[0],
+													y2: lowPoint[1]
+												},
+												style: style
+											},
+											{
+												type: 'line',
+												transition: ['shape'],
+												shape: {
+													x1: lowPoint[0] - halfWidth,
+													y1: lowPoint[1],
+													x2: lowPoint[0] + halfWidth,
+													y2: lowPoint[1]
+												},
+												style: style
+											}
+										]
+									}
+								},
+								encode: {
+									x: 0,
+									y: [1, 2]
+								},
+								z: 100
+							}
+						]
+					});
+				}, 1000);
+			}
 		}
 	}
 }

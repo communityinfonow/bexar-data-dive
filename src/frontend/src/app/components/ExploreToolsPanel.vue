@@ -283,7 +283,7 @@ export default {
 		},
 		selectCompareWith() {
 			this.compareWithQuery = '';
-			if (this.compareWith.find(i => i.id === 0) || this.compareWith.length === this.compareWithItems.length - 2) {
+			if (this.compareWith.find(i => i?.id === 0) || this.compareWith.length === this.compareWithItems.length - 2) {
 				if (this.compareWithSelectAll) {
 					this.compareWith = [];
 					this.compareWithItems.find(i => i.id === 0).name_en = i18n.t('tools.tables.select_all');
