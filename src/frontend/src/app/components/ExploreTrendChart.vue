@@ -123,7 +123,7 @@ export default {
 				type: 'value', 
 				splitLine: { show: false },
 				splitNumber: 1,
-				axisLabel: textStyle
+				axisLabel: Object.assign({}, textStyle)
 			};
 			let trendYears = Array.from(new Set([...this.exploreData.locationData.flatMap(ld => Object.keys(ld.yearData))]));
 			trendYears.sort();
@@ -131,12 +131,12 @@ export default {
 				type: 'category', 
 				data: trendYears,
 				axisTick: { show: false },
-				axisLabel: textStyle
+				axisLabel: Object.assign({}, textStyle)
 			};
 			option.color = '#3b5a98';
 			let yearData = this.exploreData.locationData.find(ld => 
 						ld.location.id === this.exploreData.filters.locationFilter.options[0].id && 
-						ld.location.typeId === this.exploreData.filters.locationTypeFilter.options[0].id).yearData;
+						ld.location.typeId === this.exploreData.filters.locationTypeFilter.options[0].id)?.yearData;
 			option.series = [{
 				// first series for valid values
 				data: trendYears
@@ -257,7 +257,7 @@ export default {
 					stack: 'moe',
 					lineStyle: { opacity: 0 },
 					itemStyle: { opacity: 0 },
-					areaStyle: { opacity: 0.25, color: '#3aa38f' }
+					areaStyle: { opacity: 0.25 } // color: '#3aa38f'
 				});
 			}
 			let allValues = option.series[0].data.map(d => d.value);
@@ -277,7 +277,7 @@ export default {
 			option.yAxis.min = axisMin;
 			option.aria = { enabled: true };
 			option.yAxis.axisLabel.formatter = (value) => {
-				return value === axisMin || value === axisMax || value === 0 ? value : ''	;
+				return value === axisMin || value === axisMax || value === 0 ? Number(value).toLocaleString() : '';
 			};
 
 			this.chart.setOption(option);

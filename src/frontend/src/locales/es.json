@@ -135,7 +135,8 @@
       "chart_options": "Chart options (es)",
       "chart_options_labels": "Labels (es)",
       "chart_options_lines": "MOE lines (es)",
-      "chart_options_none": "None (es)"
+      "chart_options_none": "None (es)",
+      "chart_options_no_moe": "No MOE is available for this indicator (es)"
     },
     "custom_locations": {
       "name": "Crea Tu Propia Área",

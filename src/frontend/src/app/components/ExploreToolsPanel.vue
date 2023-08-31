@@ -55,6 +55,8 @@
 									:value="item[0]" 
 									color="accent"
 									small
+									:disabled="item[0] == 'lines' && exploreData && !exploreData.indicator.hasMoe"
+									:title="item[0] == 'lines' && exploreData && !exploreData.indicator.hasMoe ? $t('tools.common.chart_options_no_moe') : ''"
 								>
 									{{ item[1] }}
 								</v-btn>
