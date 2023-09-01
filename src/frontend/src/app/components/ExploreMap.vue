@@ -106,6 +106,9 @@
 						<v-card class="fill-height">
 							<v-card-title class="text--primary">
 								{{ reportData.location.properties.locationName }}
+								<v-btn icon color="accent" class="ml-2" @click="downloadReport">
+									<v-icon>mdi-download</v-icon>
+								</v-btn>
 								<v-spacer></v-spacer>
 								<v-btn icon @click="reportData = null">
 									<v-icon>mdi-close</v-icon>
@@ -128,15 +131,15 @@
 						class="layer-control d-flex flex-column"
 						v-if="layers && layers.length"
 					>
-						<v-expansion-panels data-html2canvas-ignore accordion>
+						<v-expansion-panels accordion>
 							<v-expansion-panel v-if="indicator.showPoints">
-								<v-expansion-panel-header class="text--primary">
+								<v-expansion-panel-header class="text--primary" data-html2canvas-ignore>
 									<div>
 										<v-icon color="accent">mdi-circle</v-icon>
-										<span class="mx-2">{{ $t('tools.explore.locations') }} (TODO: year)</span>
+										<span class="mx-2">{{ $t('tools.explore.locations') }}</span>
 									</div>
 								</v-expansion-panel-header>
-								<v-expansion-panel-content>
+								<v-expansion-panel-content class="location-options">
 									<div v-for="pointType in pointTypes" :key="pointType.id">
 										<v-checkbox 
 											color="accent"
@@ -183,7 +186,7 @@
 									</div>
 								</v-expansion-panel-content>
 							</v-expansion-panel>
-							<v-expansion-panel>
+							<v-expansion-panel data-html2canvas-ignore>
 								<v-expansion-panel-header class="text--primary">
 									<div>
 										<v-icon color="accent">mdi-layers</v-icon>
@@ -624,6 +627,14 @@ export default {
 				}
 			}).$mount();
 			return vm.$el;
+		},
+		downloadReport() {
+			let fileName = this.reportData.location.properties.locationName + '.csv';
+			let csv = Object.entries(this.reportData.data).map(([key, value]) => key + ',' + value).join('\n');
+			let downloadLink = document.createElement('a');
+			downloadLink.download = fileName;
+			downloadLink.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+			downloadLink.click();
 		}
 	},
 }
