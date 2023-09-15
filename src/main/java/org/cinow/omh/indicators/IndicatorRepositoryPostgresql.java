@@ -62,7 +62,9 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 	public List<Indicator> findIndicatorsByCategory(String categoryId) {
 		String sql = ""
 			+ " select id_, indicator_type_id, indicator_category_id, name_en, name_es, description_en, description_es, "
-			+ "   case when exists (select 1 from mv_indicator_metadata where indicator_id = id_ and has_data = true limit 1) then true else false end as has_data, is_aggregable, show_points, show_report "
+			+ "   case when exists (select 1 from mv_indicator_metadata where indicator_id = id_ and has_data = true limit 1) then true else false end as has_data, "
+			+ "   case when exists (select 1 from mv_indicator_metadata where indicator_id = id_ and has_moe = true limit 1) then true else false end as has_moe, "
+			+ "   is_aggregable, show_points, show_report "
 			+ " from tbl_indicators "
 			+ " where indicator_category_id = :indicator_category_id::numeric "
 			+ "   and display = true"
@@ -82,6 +84,7 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 				indicator.setDescription_en(rs.getString("description_en"));
 				indicator.setDescription_es(rs.getString("description_es"));
 				indicator.setHasData(rs.getBoolean("has_data"));
+				indicator.setHasMoe(rs.getBoolean("has_moe"));
 				indicator.setAggregable(rs.getBoolean("is_aggregable"));
 				indicator.setShowPoints(rs.getBoolean("show_points"));
 				indicator.setShowReport(rs.getBoolean("show_report"));
@@ -98,7 +101,10 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 	public Indicator getIndicator(String id) {
 		String sql = ""
 			+ " select indicator_category_id, indicator_type_id, "
-			+ "   name_en, name_es, description_en, description_es, show_points, show_report "
+			+ "   name_en, name_es, description_en, description_es, show_points, show_report, "
+			+ "   case when exists (select 1 from mv_indicator_metadata where indicator_id = id_ and has_data = true limit 1) then true else false end as has_data, "
+			+ "   case when exists (select 1 from mv_indicator_metadata where indicator_id = id_ and has_moe = true limit 1) then true else false end as has_moe, "
+			+ "   is_aggregable "
 			+ " from tbl_indicators "
 			+ " where id_ = :id::numeric "
 			+ "   and display = true ";
@@ -118,6 +124,9 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 				indicator.setDescription_es(rs.getString("description_es"));
 				indicator.setShowPoints(rs.getBoolean("show_points"));
 				indicator.setShowReport(rs.getBoolean("show_report"));
+				indicator.setHasData(rs.getBoolean("has_data"));
+				indicator.setHasMoe(rs.getBoolean("has_moe"));
+				indicator.setAggregable(rs.getBoolean("is_aggregable"));
 
 				return indicator;
 			}

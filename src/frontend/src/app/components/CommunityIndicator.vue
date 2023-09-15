@@ -56,6 +56,7 @@
 								:data="item.demographicData.filter(i => i.demographicFilter.id !== null)" 
 								:maxDemographics="maxDemographics" 
 								:filterType="filterType"
+								:labelsOrLines="labelsOrLines"
 							>
 							</community-chart>
 						</template>
@@ -111,6 +112,9 @@ export default {
 		},
 		filterType: {
 			type: Object
+		},
+		labelsOrLines: {
+			type: String
 		}
 	},
 	computed: {

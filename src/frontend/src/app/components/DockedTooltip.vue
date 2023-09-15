@@ -15,7 +15,7 @@
 					{{ exploreData.indicator['name_' + locale] }}: <span v-if="dockedTooltip.location">{{ valueFormatted }}</span>
 				</div>
 				<ul class="text-body-1">
-					<li v-if="!dockedTooltip.noData">{{ $t('tools.explore.docked_tooltip.range')}}: <span v-if="dockedTooltip.location">{{ rangeFormatted }}</span></li>
+					<li v-if="!dockedTooltip.noData && rangeFormatted">{{ $t('tools.explore.docked_tooltip.range')}}: <span v-if="dockedTooltip.location">{{ rangeFormatted }}</span></li>
 					<li>{{ $t('tools.explore.docked_tooltip.source') }}: {{ exploreData.source['name_' + locale] }}</li>
 					<li>{{ $t('tools.explore.docked_tooltip.year') }}: {{ dockedTooltip.year }}</li>
 					<template v-for="filter in dockedTooltip.indicatorFilters">
@@ -59,6 +59,9 @@ export default {
 			return format(this.exploreData.indicator.typeId, this.dockedTooltip.value);
 		},
 		rangeFormatted() {
+			if (this.dockedTooltip.moeLow === null || this.dockedTooltip.moeHigh === null) {
+				return null;
+			}
 			return format(this.exploreData.indicator.typeId, this.dockedTooltip.moeLow)
 				+ " - "
 				+ format(this.exploreData.indicator.typeId, this.dockedTooltip.moeHigh);

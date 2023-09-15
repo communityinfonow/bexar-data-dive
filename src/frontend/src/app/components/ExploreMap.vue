@@ -8,7 +8,7 @@
 				:highlightFilteredLocation="highlightFilteredLocation"
 				:setHighlightFilteredLocation="setHighlightFilteredLocation"
 				:showLabels="showMapLabels"
-				:setShowLabels="setShowMapLabels"
+				:setLabelsOrLinesOption="setShowMapLabels"
 				dataVisualElementId="explore_map"
 				dataVisualName="map"
 			>
@@ -47,7 +47,7 @@
 					>
 					</l-geo-json>
 					<l-geo-json
-						v-if="highlightFilteredLocation"
+						v-if="highlightFilteredLocation && filteredLocationGeojson"
 						ref="filteredLocation"
 						:geojson="filteredLocationGeojson"
 						:options="filteredLocationOptions"
@@ -374,10 +374,14 @@ export default {
 			}
 		},
 		layers(newValue) {
-			this.selectedLocationType = newValue[0];
+			if (newValue && newValue.length) {
+				this.selectedLocationType = newValue[0];
+			} else {
+				this.selectedLocationType = null;
+			}
 		},
 		filterSelections(newValue) {
-			this.selectedLocationType = this.layers.find(l => l.id === newValue.locationType);
+			this.selectedLocationType = this.layers?.find(l => l.id === newValue.locationType);
 		},
 		showMapLabels() {
 			this.drawMap();
@@ -466,6 +470,11 @@ export default {
 			this.setFilterSelections(newFilterSelections);
 		},
 		drawMap() {
+			if (!this.exploreData) {
+				this.geojson = null;
+				this.filteredLocationGeojson = null;
+				return;
+			}
 			this.setDefaultDockedTooltip();
 			this.geojson = featureCollection(this.exploreData.locationData
 				.filter(ld => !!ld.geojson)
@@ -605,7 +614,7 @@ export default {
 					moeLow: null,
 					moeHigh: null,
 					location: null,
-					year: this.exploreData.filters.yearFilter.options[0].id,
+					year: this.exploreData.filters.yearFilter.options[0]?.id,
 					indicatorFilters: this.exploreData.filters.indicatorFilters
 				});
 		},

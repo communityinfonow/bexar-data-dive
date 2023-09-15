@@ -52,6 +52,8 @@ public class TablesRepositoryPostgresql implements TablesRepository{
 						}
 						customLocationItem.setIndicatorType(new IndicatorType());
 						customLocationItem.getIndicatorType().setId(rs.getString("indicator_type_id"));
+						customLocationItem.setAggregable(rs.getBoolean("is_aggregable"));
+						customLocationItem.setRatePer(rs.getInt("rate_per"));
 						customLocationItem.setLocationTypeId(rs.getString("location_type_id"));
 						customLocationItem.setLocationType_en(rs.getString("location_type_en"));
 						customLocationItem.setLocationType_es(rs.getString("location_type_es"));
@@ -84,6 +86,7 @@ public class TablesRepositoryPostgresql implements TablesRepository{
 						if (rs.wasNull()) {
 							universeValue = null;
 						}
+						customLocationItem.getUniverseValues().put(rs.getString("component_location_id"), universeValue);
 						customLocationItem.getCountMoes().put(rs.getString("component_location_id"), rs.getBigDecimal("count_moe"));
 						if (rs.wasNull()) {
 							customLocationItem.getCountMoes().put(rs.getString("component_location_id"), null);
@@ -92,8 +95,13 @@ public class TablesRepositoryPostgresql implements TablesRepository{
 						if (rs.wasNull()) {
 							customLocationItem.getUniverseMoes().put(rs.getString("component_location_id"), null);
 						}
-						customLocationItem.getUniverseValues().put(rs.getString("component_location_id"), universeValue);
 						customLocationItem.getSuppresseds().put(rs.getString("component_location_id"), rs.getBoolean("suppress"));
+						BigDecimal moeHigh = rs.getBigDecimal("moe_high");
+						if (value != null && !rs.wasNull()) {
+							customLocationItem.getValueMoes().put(rs.getString("location_id"), moeHigh.subtract(value));
+						} else {
+							customLocationItem.getValueMoes().put(rs.getString("location_id"), null);
+						}
 					} else {
 						TablesDataItemSingle item = new TablesDataItemSingle();
 						item.setLocationTypeId(rs.getString("location_type_id"));
@@ -167,6 +175,7 @@ public class TablesRepositoryPostgresql implements TablesRepository{
 						}
 						customLocationItem.setIndicatorType(new IndicatorType());
 						customLocationItem.getIndicatorType().setId(rs.getString("indicator_type_id"));
+						customLocationItem.setAggregable(rs.getBoolean("is_aggregable"));
 						customLocationItem.setLocationTypeId(rs.getString("location_type_id"));
 						customLocationItem.setLocationType_en(rs.getString("location_type_en"));
 						customLocationItem.setLocationType_es(rs.getString("location_type_es"));
@@ -199,6 +208,7 @@ public class TablesRepositoryPostgresql implements TablesRepository{
 						if (rs.wasNull()) {
 							universeValue = null;
 						}
+						customLocationItem.getUniverseValues().put(rs.getString("component_location_id"), universeValue);
 						customLocationItem.getCountMoes().put(rs.getString("component_location_id"), rs.getBigDecimal("count_moe"));
 						if (rs.wasNull()) {
 							customLocationItem.getCountMoes().put(rs.getString("component_location_id"), null);
@@ -207,8 +217,13 @@ public class TablesRepositoryPostgresql implements TablesRepository{
 						if (rs.wasNull()) {
 							customLocationItem.getUniverseMoes().put(rs.getString("component_location_id"), null);
 						}
-						customLocationItem.getUniverseValues().put(rs.getString("component_location_id"), universeValue);
 						customLocationItem.getSuppresseds().put(rs.getString("component_location_id"), rs.getBoolean("suppress"));
+						BigDecimal moeHigh = rs.getBigDecimal("moe_high");
+						if (value != null && !rs.wasNull()) {
+							customLocationItem.getValueMoes().put(rs.getString("location_id"), moeHigh.subtract(value));
+						} else {
+							customLocationItem.getValueMoes().put(rs.getString("location_id"), null);
+						}
 					} else {
 						item = new TablesDataItemSingle();
 						item.setLocationTypeId(rs.getString("location_type_id"));
@@ -269,7 +284,7 @@ public class TablesRepositoryPostgresql implements TablesRepository{
 			+	" 	 sex.id_ as sex_id, coalesce(sex.name_en, 'All') as sex_en, coalesce(sex.name_es, 'Todos') as sex_es, "
 			+	" 	 edu.id_ as edu_id, coalesce(edu.name_en, 'All') as edu_en, coalesce(edu.name_es, 'Todos') as edu_es, "
 			+	" 	 inc.id_ as inc_id, coalesce(inc.name_en, 'All') as inc_en, coalesce(inc.name_es, 'Todos') as inc_es, "
-			+	" 	 i.indicator_type_id "
+			+	" 	 i.indicator_type_id, i.is_aggregable, i.rate_per "
 			+	"  from tbl_indicator_values iv "
 			+	" 	 join tbl_locations l on iv.location_id = l.id_ and iv.location_type_id = l.location_type_id "
 			+	" 	 join tbl_location_types lt on l.location_type_id = lt.id_ "
@@ -327,7 +342,7 @@ public class TablesRepositoryPostgresql implements TablesRepository{
 			+	" 	 sex.id_ as sex_id, coalesce(sex.name_en, 'All') as sex_en, coalesce(sex.name_es, 'Todos') as sex_es, "
 			+	" 	 edu.id_ as edu_id, coalesce(edu.name_en, 'All') as edu_en, coalesce(edu.name_es, 'Todos') as edu_es, "
 			+	" 	 inc.id_ as inc_id, coalesce(inc.name_en, 'All') as inc_en, coalesce(inc.name_es, 'Todos') as inc_es, "
-			+	" 	 i.indicator_type_id "
+			+	" 	 i.indicator_type_id, i.is_aggregable, i.rate_per "
 			+	"  from tbl_indicator_values iv "
 			+	" 	 join tbl_custom_locations cl ON cl.location_type_id = iv.location_type_id and cl.location_ids @> array[iv.location_id] and cl.id_ in (:custom_location_ids)"
 			+	" 	 left join tbl_filter_options race on race.id_ = iv.race_id "

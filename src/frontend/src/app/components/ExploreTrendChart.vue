@@ -3,8 +3,8 @@
 		<v-row class="no-gutters flex-wrap flex-column fill-height">
 			<explore-tools-panel 
 				v-if="filters"
-				:showLabels="showTrendLabels"
-				:setShowLabels="setShowTrendLabels"
+				:labelsOrLinesOption="trendLabelsOrLines"
+				:setLabelsOrLinesOption="setTrendLabelsOrLines"
 				dataVisualElementId="trend_chart_container"
 				dataVisualName="trend_chart"
 			>
@@ -28,7 +28,7 @@ import i18n from '@/i18n'
 import * as echarts from 'echarts/core';
 import { SVGRenderer } from 'echarts/renderers';
 import { AriaComponent, LegendComponent, GridComponent } from 'echarts/components';
-import { LineChart, BarChart } from 'echarts/charts';
+import { LineChart, BarChart, CustomChart } from 'echarts/charts';
 import ExploreToolsPanel from '@/app/components/ExploreToolsPanel'
 import { format } from '@/formatter/formatter'
 
@@ -48,11 +48,14 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['locale', 'exploreData', 'showTrendLabels', 'exploreTab']),
+		...mapState(['locale', 'exploreData', 'trendLabelsOrLines', 'exploreTab']),
 		...mapGetters(['filters']),
 	},
 	watch: {
 		locale() {
+			this.drawChart()
+		},
+		trendLabelsOrLines() {
 			this.drawChart()
 		},
 		exploreTab(newValue) {
@@ -71,7 +74,25 @@ export default {
 	},
 	mounted () {
 		setTimeout(() => { 
-			echarts.use([SVGRenderer, AriaComponent, LegendComponent, GridComponent, LineChart, BarChart]);
+			echarts.use([SVGRenderer, AriaComponent, LegendComponent, GridComponent, LineChart, BarChart, CustomChart]);
+			this.chart = echarts.init(document.getElementById('trend_chart_container'), null, { renderer: 'svg'});
+			window.addEventListener('resize', () => {
+				if (this.exploreTab === 'trend') {
+					this.chart.resize();
+				}
+			});
+			if (this.exploreData) {
+				this.drawChart();
+			}
+		}, 100);
+		
+	},
+	methods: {
+		...mapActions(['setDockedTooltip', 'setTrendLabelsOrLines']),
+		drawChart() {
+			if (this.chart) {
+				this.chart.dispose();
+			}
 			this.chart = echarts.init(document.getElementById('trend_chart_container'), null, { renderer: 'svg'});
 			this.chart.on('mouseover', (params) => {
 				if (params.componentType === 'series') {
@@ -92,30 +113,17 @@ export default {
 					this.setDockedTooltip(null);
 				}
 			});
-			window.addEventListener('resize', () => {
-				if (this.exploreTab === 'trend') {
-					this.chart.resize();
-				}
-			});
-			if (this.exploreData) {
-				this.drawChart();
-			}
-		}, 100);
-		
-	},
-	methods: {
-		...mapActions(['setDockedTooltip', 'setShowTrendLabels']),
-		drawChart() {
 			let textStyle = {
 				fontFamily: '"Roboto", sans-serif !important',
 				fontSize: '16px'
 			};
 			let option = {};
+			option.grid = { left: 40, right: 20, containLabel: true };
 			option.yAxis = { 
 				type: 'value', 
 				splitLine: { show: false },
 				splitNumber: 1,
-				axisLabel: textStyle
+				axisLabel: Object.assign({}, textStyle)
 			};
 			let trendYears = Array.from(new Set([...this.exploreData.locationData.flatMap(ld => Object.keys(ld.yearData))]));
 			trendYears.sort();
@@ -123,12 +131,12 @@ export default {
 				type: 'category', 
 				data: trendYears,
 				axisTick: { show: false },
-				axisLabel: textStyle
+				axisLabel: Object.assign({}, textStyle)
 			};
 			option.color = '#3b5a98';
 			let yearData = this.exploreData.locationData.find(ld => 
 						ld.location.id === this.exploreData.filters.locationFilter.options[0].id && 
-						ld.location.typeId === this.exploreData.filters.locationTypeFilter.options[0].id).yearData;
+						ld.location.typeId === this.exploreData.filters.locationTypeFilter.options[0].id)?.yearData;
 			option.series = [{
 				// first series for valid values
 				data: trendYears
@@ -150,14 +158,14 @@ export default {
 				symbol: 'circle',
 				symbolSize: 12,
 				label: {
-					show: this.showTrendLabels,
+					show: this.trendLabelsOrLines === 'labels',
 					position: 'top',
 					formatter: (o) => {
 						if (o.data.suppressed) {
 							return '';
 						} else if (o.data.noData) {
 							return '';
-						} else if (this.showTrendLabels) {
+						} else if (this.trendLabelsOrLines === 'labels') {
 							let rows = ['{a|' + i18n.t('data.value') +': ' + format(this.exploreData.indicator.typeId, o.data.value) + '}'];
 							if (o.data.moeLow || o.data.moeHigh) {
 								rows.push('{b|' + i18n.t('data.moe_range') 
@@ -213,7 +221,65 @@ export default {
 					}
 				}
 			}];
+			if (this.trendLabelsOrLines === 'lines') {
+				option.series.push({
+					data: trendYears
+						.map(ty => {
+							let yd = yearData[ty]; 
+							return { 
+								value: yd?.moeLow, 
+								noData: yd?.value === null,
+								suppressed: yd?.suppressed,
+								moeLow: yd?.moeLow, 
+								moeHigh: yd?.moeHigh
+							};
+						}),
+					type: 'line',
+					stack: 'moe',
+					lineStyle: { opacity: 0 },
+					itemStyle: { opacity: 0 },
+					areaStyle: { opacity: 0 }
+
+				});
+				option.series.push({
+					data: trendYears
+						.map(ty => {
+							let yd = yearData[ty]; 
+							return { 
+								value: yd?.moeHigh - yd?.moeLow, 
+								noData: yd?.value === null,
+								suppressed: yd?.suppressed,
+								moeLow: yd?.moeLow, 
+								moeHigh: yd?.moeHigh
+							};
+						}),
+					type: 'line',
+					stack: 'moe',
+					lineStyle: { opacity: 0 },
+					itemStyle: { opacity: 0 },
+					areaStyle: { opacity: 0.25 },
+					color: '#3aa38f'
+				});
+			}
+			let allValues = option.series[0].data.map(d => d.value);
+			if (this.trendLabelsOrLines === 'lines') {
+				allValues = allValues.concat(...option.series[0].data.map(d => d.moeHigh || 0));
+				allValues = allValues.concat(...option.series[0].data.map(d => d.moeLow || 0));
+			}
+			let maxValue = Math.max(...allValues);
+			let minValue = Math.min(0, ...allValues);
+			let rounder = 1;
+			for (let i = 1; i < Math.floor(maxValue).toString().length; i++) {
+				rounder = rounder * 10;
+			}
+			let axisMax = Math.ceil(maxValue / rounder) * rounder;
+			let axisMin = Math.floor(minValue / rounder) * rounder;
+			option.yAxis.max = axisMax;
+			option.yAxis.min = axisMin;
 			option.aria = { enabled: true };
+			option.yAxis.axisLabel.formatter = (value) => {
+				return value === axisMin || value === axisMax || value === 0 ? Number(value).toLocaleString() : '';
+			};
 
 			this.chart.setOption(option);
 		}
