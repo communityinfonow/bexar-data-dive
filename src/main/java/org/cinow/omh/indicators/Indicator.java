@@ -48,6 +48,11 @@ public class Indicator {
 	private boolean hasData;
 
 	/**
+	 * Whether the indicator has MOEs.
+	 */
+	private boolean hasMoe;
+
+	/**
 	 * The source id.
 	 */
 	private String sourceId;
@@ -168,6 +173,20 @@ public class Indicator {
 	 */
 	public void setDescription_es(String description_es) {
 		this.description_es = description_es;
+	}
+
+	/**
+	 * @return the hasMoe
+	 */
+	public boolean isHasMoe() {
+		return hasMoe;
+	}
+
+	/**
+	 * @param hasMoe the hasMoe to set
+	 */
+	public void setHasMoe(boolean hasMoe) {
+		this.hasMoe = hasMoe;
 	}
 
 	/**

@@ -8,7 +8,7 @@
 				:highlightFilteredLocation="highlightFilteredLocation"
 				:setHighlightFilteredLocation="setHighlightFilteredLocation"
 				:showLabels="showMapLabels"
-				:setShowLabels="setShowMapLabels"
+				:setLabelsOrLinesOption="setShowMapLabels"
 				dataVisualElementId="explore_map"
 				dataVisualName="map"
 			>

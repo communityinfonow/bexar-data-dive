@@ -3,8 +3,7 @@
 	<v-col cols="auto" style="max-height: 72px;">
 		<v-form v-if="filters" ref="compareForm" v-model="valid">
 			<v-row class="mt-2 justify-end">
-				<template v-if="showCompareOptions">
-				<v-col cols="3" xl="4">
+				<v-col cols="2" v-if="showCompareOptions">
 					<v-select
 						:label="$t('tools.explore.compare_by')"
 						dense
@@ -18,7 +17,7 @@
 					>
 					</v-select>
 				</v-col>
-				<v-col cols="3" xl="4">
+				<v-col cols="4" v-if="showCompareOptions">
 					<v-autocomplete
 						:label="$t('tools.explore.compare_with')"
 						dense
@@ -32,10 +31,11 @@
 						:search-input.sync="compareWithQuery"
 						@change="selectCompareWith"
 						:rules="[v => compareWith.length <= 10 || $t('tools.explore.compare_limit_exceeded')]"
+						height="24px"
 					>
 					</v-autocomplete>
 				</v-col>
-				<v-col cols="2" xl="1">
+				<v-col cols="2" v-if="showCompareOptions">
 					<v-btn
 						color="primary"
 						tile
@@ -44,31 +44,50 @@
 						{{ $t('tools.explore.compare') }}
 					</v-btn>
 				</v-col>
-				</template>
-				<v-col :cols="!showCompareOptions ? 12 : 4" :xl="!showCompareOptions ? 12 : 3">
+				<v-col cols="4" v-if="!showHighlightFilteredLocation">
 					<div class="d-flex justify-end">
-					<v-switch
-						v-if="showHighlightFilteredLocation"
-						inset
-						:label="$t('tools.common.highlight_location')"
-						style="margin-top: 2px;"
-						v-model="highlight"
-						hide-details
-						class="mr-6"
-					></v-switch>
-					<v-switch
-						inset
-						:label="$t('tools.common.labels')"
-						style="margin-top: 2px;"
-						v-model="labels"
-						hide-details
-					></v-switch>
-					<div>
+						<div class="v-input v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select pt-1 flex-grow-0 flex-shrink-1">
+							<label aria-label id="labelsOrLinesLabel" class="v-label v-label--active theme--light" style="left: 0px; right: auto; position: absolute;">{{ $t('tools.common.chart_options') }}</label>
+							<v-btn-toggle v-model="labelsOrLines" id="labelsOrLines" aria-labelledby="labelsOrLinesLabel">
+								<v-btn 
+									v-for="item in [['labels', $t('tools.common.chart_options_labels')], ['lines', $t('tools.common.chart_options_lines')]]" 
+									:key="item[0]" 
+									:value="item[0]" 
+									color="accent"
+									small
+									:disabled="item[0] == 'lines' && exploreData && !exploreData.indicator.hasMoe"
+									:title="item[0] == 'lines' && exploreData && !exploreData.indicator.hasMoe ? $t('tools.common.chart_options_no_moe') : ''"
+								>
+									{{ item[1] }}
+								</v-btn>
+							</v-btn-toggle>
+						</div>
 						<download-menu :downloadData="downloadData" :downloadImage="downloadImage"></download-menu>
 						<share-menu></share-menu>
 						<about-menu indicator tool :indicatorId="indicatorId"></about-menu>
 					</div>
-					</div>
+				</v-col>
+				<v-col v-if="showHighlightFilteredLocation" cols="auto" class="d-flex justify-end">
+					<template v-if="showHighlightFilteredLocation">
+						<v-switch
+							inset
+							:label="$t('tools.common.highlight_location')"
+							v-model="highlight"
+							hide-details
+							style="margin-top: 2px;"
+							class="mr-6"
+						></v-switch>
+						<v-switch
+							inset
+							:label="$t('tools.common.labels')"
+							style="margin-top: 2px;"
+							v-model="labelsOrLines"
+							hide-details
+						></v-switch>
+					</template>
+					<download-menu :downloadData="downloadData" :downloadImage="downloadImage"></download-menu>
+					<share-menu></share-menu>
+					<about-menu indicator tool :indicatorId="indicatorId"></about-menu>
 				</v-col>
 			</v-row>
 		</v-form>
@@ -99,9 +118,9 @@ export default {
 			get() { return this.highlightFilteredLocation },
 			set(value) { this.setHighlightFilteredLocation(value) }
 		},
-		labels: {
-			get() { return this.showLabels },
-			set(value) { this.setShowLabels(value) }
+		labelsOrLines: {
+			get() { return this.labelsOrLinesOption },
+			set(value) { this.setLabelsOrLinesOption(value) }
 		},
 		indicatorId() {
 			return this.exploreData?.indicator?.id
@@ -145,10 +164,10 @@ export default {
 		setHighlightFilteredLocation: {
 			type: Function
 		},
-		showLabels: {
-			type: Boolean
+		labelsOrLinesOption: {
+			type: String
 		},
-		setShowLabels: {
+		setLabelsOrLinesOption: {
 			type: Function
 		},
 		dataVisualElementId: {
@@ -266,7 +285,7 @@ export default {
 		},
 		selectCompareWith() {
 			this.compareWithQuery = '';
-			if (this.compareWith.find(i => i.id === 0) || this.compareWith.length === this.compareWithItems.length - 2) {
+			if (this.compareWith.find(i => i?.id === 0) || this.compareWith.length === this.compareWithItems.length - 2) {
 				if (this.compareWithSelectAll) {
 					this.compareWith = [];
 					this.compareWithItems.find(i => i.id === 0).name_en = i18n.t('tools.tables.select_all');
@@ -464,5 +483,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+::v-deep .v-select__selections {
+	position: absolute;
+	top: 0;
+	left: 0;
+	max-height: 24px;
+	overflow: hidden;
+}
 </style>

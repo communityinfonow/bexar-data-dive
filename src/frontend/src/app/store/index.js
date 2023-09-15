@@ -26,8 +26,8 @@ export default new Vuex.Store({
     dockedTooltip: null,
     highlightFilteredLocation: true,
     showMapLabels: false,
-    showTrendLabels: true,
-    showCompareLabels: true,
+    trendLabelsOrLines: 'labels',
+    compareLabelsOrLines: 'labels',
     exploreData: null,
     exploreTab: null,
     filterSelections: null,
@@ -239,11 +239,11 @@ export default new Vuex.Store({
     SET_SHOW_MAP_LABELS(state, showLabels) {
       state.showMapLabels = showLabels
     },
-    SET_SHOW_TREND_LABELS(state, showLabels) {
-      state.showTrendLabels = showLabels
+    SET_TREND_LABELS_OR_LINES(state, labelsOrLines) {
+      state.trendLabelsOrLines = labelsOrLines
     },
-    SET_SHOW_COMPARE_LABELS(state, showLabels) {
-      state.showCompareLabels = showLabels
+    SET_COMPARE_LABELS_OR_LINES(state, labelsOrLines) {
+      state.compareLabelsOrLines = labelsOrLines
     },
     SET_SURVEY_SUBMITTED(state, surveySubmitted) {
       state.surveySubmitted = surveySubmitted
@@ -399,7 +399,7 @@ export default new Vuex.Store({
     },
     setCompareSelections(context, selections) {
       context.commit('SET_COMPARE_SELECTIONS', selections);
-      let compareWiths = selections.options.map(o => (o.typeId ? o.typeId + "_" : "") + o.id)
+      let compareWiths = selections.options.filter(o => !!o).map(o => (o.typeId ? o.typeId + "_" : "") + o.id)
       if (compareWiths.length === 1) {
         compareWiths = compareWiths[0]
       }
@@ -510,11 +510,11 @@ export default new Vuex.Store({
     setShowMapLabels(context, showLabels) {
       context.commit('SET_SHOW_MAP_LABELS', showLabels)
     },
-    setShowTrendLabels(context, showLabels) {
-      context.commit('SET_SHOW_TREND_LABELS', showLabels)
+    setTrendLabelsOrLines(context, labelsOrLines) {
+      context.commit('SET_TREND_LABELS_OR_LINES', labelsOrLines)
     },
-    setShowCompareLabels(context, showLabels) {
-      context.commit('SET_SHOW_COMPARE_LABELS', showLabels)
+    setCompareLabelsOrLines(context, labelsOrLines) {
+      context.commit('SET_COMPARE_LABELS_OR_LINES', labelsOrLines)
     },
     setSurveySubmitted(context, surveySubmitted) {
       sessionStorage.setItem('cinow-survey-submitted', surveySubmitted)
