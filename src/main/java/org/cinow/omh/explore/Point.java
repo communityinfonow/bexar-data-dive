@@ -3,11 +3,9 @@ package org.cinow.omh.explore;
 public class Point {
 
 	private String id;
-	private String name;
-	private String address1;
-	private String address2;
-	private String year;
 	private int value;
+	private String featureProperties_en;
+	private String featureProperties_es;
 	private String geojson;
 	
 	public String getId() {
@@ -15,30 +13,6 @@ public class Point {
 	}
 	public void setId(String id) {
 		this.id = id;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public String getAddress1() {
-		return address1;
-	}
-	public void setAddress1(String address1) {
-		this.address1 = address1;
-	}
-	public String getAddress2() {
-		return address2;
-	}
-	public void setAddress2(String address2) {
-		this.address2 = address2;
-	}
-	public String getYear() {
-		return year;
-	}
-	public void setYear(String string) {
-		this.year = string;
 	}
 	public int getValue() {
 		return value;
@@ -52,4 +26,17 @@ public class Point {
 	public void setGeojson(String geojson) {
 		this.geojson = geojson;
 	}
+	public String getFeatureProperties_en() {
+		return featureProperties_en;
+	}
+	public void setFeatureProperties_en(String featureProperties_en) {
+		this.featureProperties_en = featureProperties_en;
+	}
+	public String getFeatureProperties_es() {
+		return featureProperties_es;
+	}
+	public void setFeatureProperties_es(String featureProperties_es) {
+		this.featureProperties_es = featureProperties_es;
+	}
+	
 }

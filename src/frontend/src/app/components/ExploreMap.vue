@@ -151,7 +151,7 @@
 											class="mt-0"
 										>
 											<template v-slot:append>
-												<v-icon :color="pointType.color">mdi-circle</v-icon>
+												<v-icon :style="{ 'color':pointType.color }">mdi-circle</v-icon>
 											</template>
 										</v-checkbox>
 										<div 
@@ -173,7 +173,7 @@
 											>
 												<v-icon
 													:size="pointScales.find(ps => ps.pointType.id === pointType.id).scale(value)"
-													:color="pointType.color"
+													:style="{ 'color': pointType.color }"
 												>
 													mdi-circle
 												</v-icon>
@@ -337,21 +337,22 @@ export default {
 			return this.pointCollections?.map(pc => pc.pointType)
 		},
 		pointScales() {
-			return this.pointCollections?.map(pc => {
-				let values = pc.points.map(p => p.value);
-				let min = Math.min(...values);
-				let max = Math.max(...values);
-				let scale = scaleLinear()
-					.domain([min, max])
-					.range(min === max ? [8, 8] : [8, 80]);
-				return {
-					pointType: pc.pointType,
-					scale: scale,
-					min: min,
-					max: max,
-					mid: Math.floor((min + max) / 2)
-				}
-			})
+			return this.pointCollections?.filter(pc => pc.points.some(p => p.value))
+				.map(pc => {
+					let values = pc.points.map(p => p.value);
+					let min = Math.min(...values);
+					let max = Math.max(...values);
+					let scale = scaleLinear()
+						.domain([min, max])
+						.range(min === max ? [8, 8] : [8, 80]);
+					return {
+						pointType: pc.pointType,
+						scale: scale,
+						min: min,
+						max: max,
+						mid: Math.floor((min + max) / 2)
+					}
+				})
 		},
 		reportHeight() {
 			return this.$refs.exploreMap?.$el?.offsetHeight - 32 + 'px';
@@ -365,6 +366,10 @@ export default {
 		},
     	locale() {
 			this.drawMap()
+			this.pointsGeojson = featureCollection([])
+			this.pointTypes.forEach(pt => {
+				this.togglePointType(pt.id)
+			})
 		},
 		exploreTab(newValue) {
 			if (newValue === 'map') {
@@ -448,11 +453,9 @@ export default {
 							type: 'Feature',
 							geometry: JSON.parse(p.geojson),
 							properties: {
+								...JSON.parse(p['featureProperties_' + this.locale]),
 								id: p.id,
 								typeId: pointType,
-								name: p.name,
-								address1: p.address1,
-								address2: p.address2,
 								value: p.value
 							}
 						}
@@ -582,17 +585,19 @@ export default {
 			});
 		},
 		pointToLayer(feature, latlng) {
-			let size = this.pointScales.find(ps => ps.pointType.id === feature.properties.typeId).scale(feature.properties.value);
+			let size = 8;
+			if (this.pointScales.find(ps => ps.pointType.id === feature.properties.typeId)) {
+				size = this.pointScales.find(ps => ps.pointType.id === feature.properties.typeId).scale(feature.properties.value);
+			}
 			return L.marker(latlng, {
 				icon: L.divIcon({
 					className: 'dive-point',
 					html: '<div class="dive-point-icon" style="opacity: 0.8; background-color: ' + this.pointTypes.find(pt => pt.id === feature.properties.typeId).color  + '; width: ' + size + 'px; height: ' + size + 'px; border-radius: 50%;"></div>',
 					tooltipAnchor: [size/2, size/2]
 				})
-			}).bindTooltip(feature.properties.name
-				+ (feature.properties.address1 ? '<br>' + feature.properties.address1 : '')
-				+ (feature.properties.address2 ? '<br>' + feature.properties.address2 : '')
-				+ (feature.properties.value ? '<br>' + i18n.t('data.value') + ':' + feature.properties.value : ''),
+			}).bindTooltip(
+				Object.entries(feature.properties).filter(([key]) => key !== 'id' && key !== 'typeId' && key !== 'value').map(([key, value]) => key + ': ' + value).join('<br>')
+				+ (feature.properties.value ? '<br>' + i18n.t('data.value') + ':' + Number(feature.properties.value).toLocaleString() : ''),
 				
 			);
 		},
