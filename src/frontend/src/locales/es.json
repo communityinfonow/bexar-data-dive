@@ -133,11 +133,11 @@
           "range": "Rango"
         }
       },
-      "chart_options": "Chart options (es)",
-      "chart_options_labels": "Labels (es)",
-      "chart_options_lines": "MOE lines (es)",
-      "chart_options_none": "None (es)",
-      "chart_options_no_moe": "No MOE is available for this indicator (es)"
+      "chart_options": "Opciones del gráfico",
+      "chart_options_labels": "Etiquetas",
+      "chart_options_lines": "Márgenes de error",
+      "chart_options_none": "Nada",
+      "chart_options_no_moe": "No hay márgenes de error disponibles para este indicador"
     },
     "custom_locations": {
       "name": "Crea Tu Propia Área",
