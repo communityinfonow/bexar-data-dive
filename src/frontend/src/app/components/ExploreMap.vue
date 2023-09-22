@@ -103,8 +103,8 @@
 						:style="{ height: reportHeight }"
 						v-if="reportData"
 					>
-						<v-card class="fill-height">
-							<v-card-title class="text--primary">
+						<v-card class="fill-height" style="overflow: hidden; display: flex; flex-direction: column;">
+							<v-card-title class="teimary">
 								{{ reportData.location.properties.locationName }}
 								<v-btn icon color="accent" class="ml-2" @click="downloadReport">
 									<v-icon>mdi-download</v-icon>
@@ -114,12 +114,41 @@
 									<v-icon>mdi-close</v-icon>
 								</v-btn>
 							</v-card-title>
-							<v-card-text>
+							<v-card-text style="overflow: auto; flex-grow-1;">
 								<v-simple-table>
+									<thead>
+										<tr>
+											<th>{{ $t('tools.common.download.headers.category') }}</th>
+											<th>{{ $t('tools.common.download.headers.indicator') }}</th>
+											<th>{{ $t('tools.common.download.headers.year') }}</th>
+											<th class="text-end">{{ $t('data.value') }}</th>
+											<th class="text-end">{{ $t('data.moe') }}</th>
+										</tr>
+									</thead>
 									<tbody>
-										<tr v-for="(value, key) in reportData.data" :key="key">
-											<td>{{ key }}</td>
-											<td class="text-end">{{ value }}</td>
+										<tr v-for="(entry, idx) in reportData.data" :key="idx">
+											<td>{{ entry['category_' + locale] }}</td>
+											<td>{{ entry['indicatorName_' + locale] }}</td>
+											<td>{{ entry.year_ }}</td>
+											<td class="text-end">
+												<span v-if="entry.indicatorValue && entry.indicatorName_en === 'Median Household Income'">
+													{{ '$' + entry.indicatorValue.toLocaleString() }}
+												</span>
+												<span v-else-if="entry.indicatorValue">
+													{{ entry.indicatorValue.toFixed(1).toLocaleString() + '%' }}
+												</span>
+												<span v-else>
+													{{ $t('data.no_data') }}
+												</span>
+											</td>
+											<td>
+												<span v-if="entry.moe && entry.indicatorName_en === 'Median Household Income'">
+													{{ '$' + entry.moe.toLocaleString() }}
+												</span>
+												<span v-else-if="entry.moe">
+													{{ entry.moe.toFixed(1).toLocaleString() + '%' }}
+												</span>
+											</td>
 										</tr>
 									</tbody>
 								</v-simple-table>
@@ -183,6 +212,7 @@
 												</span>
 											</div>
 										</div>
+										<div v-if="selectedPointTypes.some(pt => pt.id === pointType.id) && pointCollections.find(pc => pc.pointType.id === pointType.id).points[0]['valueLabel_' + locale]" class="text-center mb-2">{{ pointCollections.find(pc => pc.pointType.id === pointType.id).points[0]['valueLabel_' + locale] }}</div>
 									</div>
 								</v-expansion-panel-content>
 							</v-expansion-panel>
@@ -456,6 +486,8 @@ export default {
 								...JSON.parse(p['featureProperties_' + this.locale]),
 								id: p.id,
 								typeId: pointType,
+								valueLabel_en: p.valueLabel_en,
+								valueLabel_es: p.valueLabel_es,
 								value: p.value
 							}
 						}
@@ -466,7 +498,8 @@ export default {
 		selectLocation(location) {
 			let newFilterSelections = JSON.parse(JSON.stringify(this.filterSelections));
 			newFilterSelections.locationType = this.selectedLocationType.id;
-			if (this.selectedLocationType.id === '7') {
+			// swap to the location type the custom location is built from if selecting a standard location while the currently filtered location is custom
+			if (this.selectedLocationType.id === '7' && !isNaN(Number(location))) {
 				newFilterSelections.locationType = this.customLocations.find(cl => cl.id === this.filterSelections.location).typeId;
 			}
 			newFilterSelections.location = location;
@@ -596,8 +629,8 @@ export default {
 					tooltipAnchor: [size/2, size/2]
 				})
 			}).bindTooltip(
-				Object.entries(feature.properties).filter(([key]) => key !== 'id' && key !== 'typeId' && key !== 'value').map(([key, value]) => key + ': ' + value).join('<br>')
-				+ (feature.properties.value ? '<br>' + i18n.t('data.value') + ':' + Number(feature.properties.value).toLocaleString() : ''),
+				Object.entries(feature.properties).filter(([key]) => key !== 'id' && key !== 'typeId' && key !== 'valueLabel_en' && key !== 'valueLabel_es' && key !== 'value').map(([key, value]) => key + ': ' + (!isNaN(Number(value)) ? Number(value).toLocaleString() : value)).join('<br>')
+				+ (feature.properties.value ? '<br>' + feature.properties['valueLabel_' + this.locale] + ': ' + Number(feature.properties.value).toLocaleString() : ''),
 				
 			);
 		},
@@ -633,9 +666,13 @@ export default {
 			let vm = new component({
 				propsData: {
 					feature: layer.feature,
+					selectedLocationType: this.selectedLocationType,
 					applyFilter: () => this.selectLocation(layer.feature.id),
-					viewReport: () => {
-						this.reportData = { location: layer.feature, data: { "Median age": 34, "White": '20%' } };
+					viewReport: () => {						
+						axios.get('/api/location-report', { params: { locationTypeId: this.selectedLocationType.id, locationId: layer.feature.id } }).then(response => {
+							this.reportData = { location: layer.feature, data: null };
+							this.reportData.data = response.data;
+						});
 						layer.closePopup();
 					}
 				}
@@ -644,7 +681,22 @@ export default {
 		},
 		downloadReport() {
 			let fileName = this.reportData.location.properties.locationName + '.csv';
-			let csv = Object.entries(this.reportData.data).map(([key, value]) => key + ',' + value).join('\n');
+			let csv = [i18n.t('tools.common.download.headers.category'), i18n.t('tools.common.download.headers.indicator'), i18n.t('tools.common.download.headers.year'), i18n.t('data.value'), i18n.t('data.moe')].join(',') + '\n'
+				+ Object.entries(this.reportData.data).map(i => i[1]).map(i => {
+						let value = '';
+						let moe = '';
+						if (i.indicatorValue && i.indicatorName_en === 'Median Household Income') {
+							value = '"$' + i.indicatorValue.toLocaleString() + '"';
+						} else if (i.indicatorValue) {
+							value = '"' + i.indicatorValue.toFixed(1).toLocaleString() + '%' + '"';
+						}
+						if (i.moe && i.indicatorName_en === 'Median Household Income') {
+							moe = '"' + '$' + i.moe.toLocaleString() + '"';
+						} else if (i.moe) {
+							moe = '"' + i.moe.toFixed(1).toLocaleString() + '%' + '"';
+						}
+						return [i['category_' + this.locale], i['indicatorName_' + this.locale], i.year_, value, moe].join(',');
+					}).join('\n');
 			let downloadLink = document.createElement('a');
 			downloadLink.download = fileName;
 			downloadLink.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
@@ -676,7 +728,7 @@ export default {
 	}
 	::v-deep .leaflet-top.leaflet-right,
 	::v-deep .report-control {
-		width: 360px;
+		width: 480px;
 		z-index: 1001;
 	}
 </style>

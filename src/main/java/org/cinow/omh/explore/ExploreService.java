@@ -180,4 +180,8 @@ public class ExploreService {
 	public List<PointCollection> getPoints() {
 		return this.exploreRepository.getPoints();
 	}
+
+	public List<ExploreLocationReportItem> getLocationReport(int locationTypeId, String locationId) {
+		return this.exploreRepository.getLocationReport(locationTypeId, locationId);
+	}
 }

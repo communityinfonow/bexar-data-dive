@@ -3,6 +3,8 @@ package org.cinow.omh.explore;
 public class Point {
 
 	private String id;
+	private String valueLabel_en;
+	private String valueLabel_es;
 	private int value;
 	private String featureProperties_en;
 	private String featureProperties_es;
@@ -37,6 +39,18 @@ public class Point {
 	}
 	public void setFeatureProperties_es(String featureProperties_es) {
 		this.featureProperties_es = featureProperties_es;
+	}
+	public String getValueLabel_en() {
+		return valueLabel_en;
+	}
+	public void setValueLabel_en(String valueLabel_en) {
+		this.valueLabel_en = valueLabel_en;
+	}
+	public String getValueLabel_es() {
+		return valueLabel_es;
+	}
+	public void setValueLabel_es(String valueLabel_es) {
+		this.valueLabel_es = valueLabel_es;
 	}
 	
 }

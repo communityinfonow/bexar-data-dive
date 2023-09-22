@@ -14,6 +14,7 @@ import org.cinow.omh.locations.LocationType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -276,7 +277,7 @@ public class ExploreRepositoryPostgresql implements ExploreRepository {
 	public List<PointCollection> getPoints() {
 		String sql = ""
 			+ " select pt.id_ as pt_id, pt.name_en as pt_name_en, pt.name_es as pt_name_es, pt.color as pt_color, "
-			+ "   p.id_ as p_id, p.year_ as p_year, p.value_ as p_value, p.feature_properties_en as p_feature_properties_en, p.feature_properties_es as p_feature_properties_es, p.geojson as p_geojson "
+			+ "   p.id_ as p_id, p.year_ as p_year, p.value_label_en as p_value_label_en, p.value_label_es as p_value_label_es, p.value_ as p_value, p.feature_properties_en as p_feature_properties_en, p.feature_properties_es as p_feature_properties_es, p.geojson as p_geojson "
 			+ " from tbl_point_types pt "
 			+ "   left join tbl_points p on p.point_type_id = pt.id_ and p.year_ = (select max(year_) from tbl_points where point_type_id = pt.id_) "
 			+ " order by pt.sort_order ";
@@ -306,6 +307,8 @@ public class ExploreRepositoryPostgresql implements ExploreRepository {
 						point.setId(rs.getString("p_id"));
 						point.setFeatureProperties_en(rs.getString("p_feature_properties_en"));
 						point.setFeatureProperties_es(rs.getString("p_feature_properties_es"));
+						point.setValueLabel_en(rs.getString("p_value_label_en"));
+						point.setValueLabel_es(rs.getString("p_value_label_es"));
 						point.setValue(rs.getInt("p_value"));
 						point.setGeojson(rs.getString("p_geojson"));
 						currentPoints.add(point);
@@ -313,6 +316,42 @@ public class ExploreRepositoryPostgresql implements ExploreRepository {
 				}
 
 				return pointCollections;
+			}
+		});
+	}
+
+	@Override
+	public List<ExploreLocationReportItem> getLocationReport(int locationTypeId, String locationId) {
+		String sql = ""
+			+ " select * from ("
+			+ " select indicator_name_en, indicator_name_es, year_, location_id, location_type_id, indicator_value, moe, sort, category_en, category_es, "
+			+ "   dense_rank() over (partition by indicator_name_en, year_ order by year_ desc) as ranking "
+			+ " from tbl_location_report "
+			+ " where location_type_id = :location_type_id::numeric "
+			+ "   and location_id = :location_id "
+			+ " order by sort "
+			+ " ) as ranked where ranking = 1 ";
+
+		MapSqlParameterSource paramMap = new MapSqlParameterSource();
+		paramMap.addValue("location_type_id", locationTypeId);
+		paramMap.addValue("location_id", locationId);
+
+		return this.namedParameterJdbcTemplate.query(sql, paramMap, new RowMapper<ExploreLocationReportItem>() {
+			@Override
+			public ExploreLocationReportItem mapRow(ResultSet rs, int rowNum) throws SQLException {
+				ExploreLocationReportItem item = new ExploreLocationReportItem();
+				item.setIndicatorName_en(rs.getString("indicator_name_en"));
+				item.setIndicatorName_es(rs.getString("indicator_name_es"));
+				item.setYear_(rs.getString("year_"));
+				item.setLocationId(rs.getString("location_id"));
+				item.setLocationTypeId(rs.getString("location_type_id"));
+				item.setIndicatorValue(rs.getBigDecimal("indicator_value"));
+				item.setMoe(rs.getBigDecimal("moe"));
+				item.setSort(rs.getInt("sort"));
+				item.setCategory_en(rs.getString("category_en"));
+				item.setCategory_es(rs.getString("category_es"));
+				
+				return item;
 			}
 		});
 	}

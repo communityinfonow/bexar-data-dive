@@ -31,4 +31,11 @@ public interface ExploreRepository {
 	 * @return the map points
 	 */
 	List<PointCollection> getPoints();
+
+	/**
+	 * Gets the location report.
+	 * 
+	 * @return the location report
+	 */
+	List<ExploreLocationReportItem> getLocationReport(int locationTypeId, String locationId);
 }
