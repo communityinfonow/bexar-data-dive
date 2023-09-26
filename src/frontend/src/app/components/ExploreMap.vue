@@ -98,69 +98,60 @@
 						</v-card>
 					</l-control>
 					<l-control
-						position="topright"
-						class="report-control"
-						:style="{ height: reportHeight }"
-						v-if="reportData"
-					>
-						<v-card class="fill-height" style="overflow: hidden; display: flex; flex-direction: column;">
-							<v-card-title class="teimary">
-								{{ reportData.location.properties.locationName }}
-								<v-btn icon color="accent" class="ml-2" @click="downloadReport">
-									<v-icon>mdi-download</v-icon>
-								</v-btn>
-								<v-spacer></v-spacer>
-								<v-btn icon @click="reportData = null">
-									<v-icon>mdi-close</v-icon>
-								</v-btn>
-							</v-card-title>
-							<v-card-text style="overflow: auto; flex-grow-1;">
-								<v-simple-table>
-									<thead>
-										<tr>
-											<th>{{ $t('tools.common.download.headers.category') }}</th>
-											<th>{{ $t('tools.common.download.headers.indicator') }}</th>
-											<th>{{ $t('tools.common.download.headers.year') }}</th>
-											<th class="text-end">{{ $t('data.value') }}</th>
-											<th class="text-end">{{ $t('data.moe') }}</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr v-for="(entry, idx) in reportData.data" :key="idx">
-											<td>{{ entry['category_' + locale] }}</td>
-											<td>{{ entry['indicatorName_' + locale] }}</td>
-											<td>{{ entry.year_ }}</td>
-											<td class="text-end">
-												<span v-if="entry.indicatorValue && entry.indicatorName_en === 'Median Household Income'">
-													{{ '$' + entry.indicatorValue.toLocaleString() }}
-												</span>
-												<span v-else-if="entry.indicatorValue">
-													{{ entry.indicatorValue.toFixed(1).toLocaleString() + '%' }}
-												</span>
-												<span v-else>
-													{{ $t('data.no_data') }}
-												</span>
-											</td>
-											<td>
-												<span v-if="entry.moe && entry.indicatorName_en === 'Median Household Income'">
-													{{ '$' + entry.moe.toLocaleString() }}
-												</span>
-												<span v-else-if="entry.moe">
-													{{ entry.moe.toFixed(1).toLocaleString() + '%' }}
-												</span>
-											</td>
-										</tr>
-									</tbody>
-								</v-simple-table>
-							</v-card-text>
-						</v-card>
-					</l-control>
-					<l-control
 						position="bottomright"
 						class="layer-control d-flex flex-column"
 						v-if="layers && layers.length"
 					>
-						<v-expansion-panels accordion>
+						<v-expansion-panels accordion class="report-control">
+							<v-expansion-panel v-if="indicator.showReport">
+								<v-expansion-panel-header class="text--primary" data-html2canvas-ignore>
+									<div>
+										<v-icon color="accent">mdi-file-document-outline</v-icon>
+										<span class="mx-2">{{ $t('tools.explore.report') }}</span>
+									</div>
+								</v-expansion-panel-header>
+								<v-expansion-panel-content v-if="reportData" :style="{ 'overflow': 'hidden', 'display': 'flex', 'flex-direction': 'column' }">
+									<span class="text-subtitle-1">{{ reportData.location.properties.locationName }}</span>
+									<v-btn icon color="accent" class="ml-2" @click="downloadReport">
+										<v-icon>mdi-download</v-icon>
+									</v-btn>
+									<v-simple-table fixed-header :height="this.reportHeight">
+										<thead>
+											<tr>
+												<th>{{ $t('tools.common.download.headers.indicator') }}</th>
+												<th>{{ $t('tools.common.download.headers.year') }}</th>
+												<th>{{ $t('data.value') }}</th>
+												<th>{{ $t('data.moe') }}</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr v-for="(entry, idx) in reportData.data" :key="idx">
+												<td>{{ entry['indicatorName_' + locale] }}</td>
+												<td>{{ entry.year_ }}</td>
+												<td class="text-end">
+													<span v-if="entry.indicatorValue && entry.indicatorName_en === 'Median Household Income'">
+														{{ '$' + entry.indicatorValue.toLocaleString() }}
+													</span>
+													<span v-else-if="entry.indicatorValue">
+														{{ entry.indicatorValue.toFixed(1).toLocaleString() + '%' }}
+													</span>
+													<span v-else>
+														{{ $t('data.no_data') }}
+													</span>
+												</td>
+												<td class="text--secondary">
+													<span v-if="entry.moe && entry.indicatorName_en === 'Median Household Income'">
+														&#177; {{ '$' + entry.moe.toLocaleString() }}
+													</span>
+													<span v-else-if="entry.moe">
+														&#177; {{ entry.moe.toFixed(1).toLocaleString() + '%' }}
+													</span>
+												</td>
+											</tr>
+										</tbody>
+									</v-simple-table>
+								</v-expansion-panel-content>
+							</v-expansion-panel>
 							<v-expansion-panel v-if="indicator.showPoints">
 								<v-expansion-panel-header class="text--primary" data-html2canvas-ignore>
 									<div>
@@ -173,7 +164,7 @@
 										<v-checkbox 
 											color="accent"
 											:value="pointType" 
-											:label="pointType['name_' + locale]"
+											:label="pointType['name_' + locale] + ' (' + pointType.year + ')'"
 											v-model="selectedPointTypes"
 											@change="togglePointType(pointType.id)"
 											hide-details
@@ -259,9 +250,7 @@ import colorbrewer from 'colorbrewer'
 import { ckmeans } from 'simple-statistics'
 import {scaleLinear} from 'd3-scale'
 import ExploreToolsPanel from '@/app/components/ExploreToolsPanel'
-import ExploreMapPopup from '@/app/components/ExploreMapPopup'
 import { format } from '@/formatter/formatter'
-import Vue from 'vue'
 
 export default {
 	name: 'ExploreMap',
@@ -385,7 +374,7 @@ export default {
 				})
 		},
 		reportHeight() {
-			return this.$refs.exploreMap?.$el?.offsetHeight - 32 + 'px';
+			return this.$refs.exploreMap?.$el?.offsetHeight - 280 + 'px';
 		}
 	},
 	watch: {
@@ -417,6 +406,10 @@ export default {
 		},
 		filterSelections(newValue) {
 			this.selectedLocationType = this.layers?.find(l => l.id === newValue.locationType);
+			
+		},
+		filteredLocationGeojson(newValue) {
+			this.getReportData(newValue);
 		},
 		showMapLabels() {
 			this.drawMap();
@@ -427,6 +420,9 @@ export default {
 		indicator(newValue, oldValue) {
 			if (newValue.id !== oldValue?.id && newValue.showPoints) {
 				this.getPoints()
+			} else if (!newValue.showPoints) {
+				this.pointsGeojson = featureCollection([])
+				this.selectedPointTypes = []
 			}
 		}
 	},
@@ -551,9 +547,6 @@ export default {
 					}
 				);
 			}
-			if (this.indicator.showReport) {
-				layer.bindPopup(this.buildPopupComponent(layer));
-			}
 
 			layer.on('mouseover', (layer) => {
 				this.setDockedTooltip({
@@ -571,9 +564,7 @@ export default {
 				this.setDefaultDockedTooltip()
 			});
 			layer.on('click', (e) => {
-				if (!this.indicator.showReport) {
-					this.selectLocation(e.target.feature.id);
-				}
+				this.selectLocation(e.target.feature.id);
 			});
 		},
 		onEachFilteredLocationFeature(feature, layer) {
@@ -592,10 +583,6 @@ export default {
 				);
 			}
 
-			if (this.indicator.showReport) {
-				layer.bindPopup(this.buildPopupComponent(layer));
-			}
-
 			layer.on('mouseover', (layer) => {
 				this.setDockedTooltip({
 					value: layer.target.feature.properties.value,
@@ -612,9 +599,7 @@ export default {
 				this.setDefaultDockedTooltip()
 			});
 			layer.on('click', (e) => {
-				if (!this.indicator.showReport) {
-					this.selectLocation(e.target.feature.id);
-				}
+				this.selectLocation(e.target.feature.id);
 			});
 		},
 		pointToLayer(feature, latlng) {
@@ -661,27 +646,15 @@ export default {
 				this.pointCollections = response.data
 			})
 		},
-		buildPopupComponent(layer) {
-			let component = Vue.extend(ExploreMapPopup)
-			let vm = new component({
-				propsData: {
-					feature: layer.feature,
-					selectedLocationType: this.selectedLocationType,
-					applyFilter: () => this.selectLocation(layer.feature.id),
-					viewReport: () => {						
-						axios.get('/api/location-report', { params: { locationTypeId: this.selectedLocationType.id, locationId: layer.feature.id } }).then(response => {
-							this.reportData = { location: layer.feature, data: null };
-							this.reportData.data = response.data;
-						});
-						layer.closePopup();
-					}
-				}
-			}).$mount();
-			return vm.$el;
+		getReportData(location) {
+			axios.get('/api/location-report', { params: { locationTypeId: this.selectedLocationType.id, locationId: location.id } }).then(response => {
+				this.reportData = { location: location, data: null };
+				this.reportData.data = response.data;
+			});
 		},
 		downloadReport() {
 			let fileName = this.reportData.location.properties.locationName + '.csv';
-			let csv = [i18n.t('tools.common.download.headers.category'), i18n.t('tools.common.download.headers.indicator'), i18n.t('tools.common.download.headers.year'), i18n.t('data.value'), i18n.t('data.moe')].join(',') + '\n'
+			let csv = [i18n.t('tools.common.download.headers.indicator'), i18n.t('tools.common.download.headers.year'), i18n.t('data.value'), i18n.t('data.moe')].join(',') + '\n'
 				+ Object.entries(this.reportData.data).map(i => i[1]).map(i => {
 						let value = '';
 						let moe = '';
@@ -695,7 +668,7 @@ export default {
 						} else if (i.moe) {
 							moe = '"' + i.moe.toFixed(1).toLocaleString() + '%' + '"';
 						}
-						return [i['category_' + this.locale], i['indicatorName_' + this.locale], i.year_, value, moe].join(',');
+						return [i['indicatorName_' + this.locale], i.year_, value, moe].join(',');
 					}).join('\n');
 			let downloadLink = document.createElement('a');
 			downloadLink.download = fileName;
@@ -721,14 +694,5 @@ export default {
 
 	::v-deep .v-expansion-panels {
 		flex-direction: column;
-	}
-
-	::v-deep .layer-control {
-		width: 360px;
-	}
-	::v-deep .leaflet-top.leaflet-right,
-	::v-deep .report-control {
-		width: 480px;
-		z-index: 1001;
 	}
 </style>

@@ -297,6 +297,7 @@ public class ExploreRepositoryPostgresql implements ExploreRepository {
 						currentPointType.setName_en(rs.getString("pt_name_en"));
 						currentPointType.setName_es(rs.getString("pt_name_es"));
 						currentPointType.setColor(rs.getString("pt_color"));
+						currentPointType.setYear(rs.getString("p_year"));
 						currentPoints = new ArrayList<>();
 						currentPointCollection.setPointType(currentPointType);
 						currentPointCollection.setPoints(currentPoints);

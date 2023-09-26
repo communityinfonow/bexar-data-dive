@@ -6,6 +6,7 @@ public class PointType {
 	private String name_en;
 	private String name_es;
 	private String color;
+	private String year;
 	
 	public int getId() {
 		return id;
@@ -30,5 +31,11 @@ public class PointType {
 	}
 	public void setColor(String color) {
 		this.color = color;
+	}
+	public String getYear() {
+		return year;
+	}
+	public void setYear(String year) {
+		this.year = year;
 	}
 }
