@@ -10,8 +10,8 @@ drop table if exists tbl_point_types;
 alter table tbl_indicators add column if not exists show_points boolean not null default false;
 alter table tbl_indicators add column if not exists show_report boolean not null default false;
 
-update tbl_indicators set show_points = true where id_ = 77;
-update tbl_indicators set show_report = true where id_ = 77;
+update tbl_indicators set show_points = true where id_ in (77, 119);
+update tbl_indicators set show_report = true where id_ in (77, 119);
 
 create table if not exists tbl_point_types (
 	id_ numeric primary key,
@@ -44,15 +44,15 @@ delete from tbl_points;
 delete from tbl_point_types;
 insert into tbl_point_types (id_, name_en, name_es, sort_order, color) values
 ( 1, 'Adult and Child Care Centers', 'Adult and Child Care Centers (es)',  3, 'red'),
-( 2, 'Community Gardens', 'Community Gardens (es)',  10, 'purple'),
-( 3, 'Day Care Homes', 'Day Care Homes (es)',  4, 'yellow'),
-( 4, 'Farmer Markets', 'Farmer Markets (es)',  9, 'lime'),
-( 5, 'Food Pantries', 'Food Pantries (es)',  7, 'magenta'),
-( 6, 'Free Meal Sites', 'Free Meal Sites (es)',  8, 'pink'),
+( 2, 'Community Gardens', 'Community Gardens (es)',  10, '#10002B'),
+( 3, 'Day Care Homes', 'Day Care Homes (es)',  4, '#E6E600'),
+( 4, 'Farmer Markets', 'Farmer Markets (es)',  9, '#40916C'),
+( 5, 'Food Pantries', 'Food Pantries (es)',  7, '#7B2CBF'),
+( 6, 'Free Meal Sites', 'Free Meal Sites (es)',  8, '#F4ACB7'),
 ( 7, 'SNAP Retailers', 'SNAP Retailers (es)',  5, 'orange'),
 ( 8, 'Summer Meal Programs', 'Summer Meal Programs (es)',  1, 'maroon'),
 ( 9, 'School Nutrition Programs', 'School Nutrition Programs (es)',  2, 'green'),
-(10, 'WIC Retailers', 'WIC Retailers (es)', 6, 'olive')
+(10, 'WIC Retailers', 'WIC Retailers (es)', 6, '#AFA26E')
 on conflict do nothing;
 
 
