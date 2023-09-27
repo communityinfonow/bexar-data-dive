@@ -132,6 +132,9 @@
 													<span v-if="entry.indicatorValue && entry.indicatorName_en === 'Median Household Income'">
 														{{ '$' + entry.indicatorValue.toLocaleString() }}
 													</span>
+													<span v-else-if="entry.indicatorValue && entry.indicatorName_en === 'Retail Food Environment Index'">
+														{{ entry.indicatorValue.toFixed(1).toLocaleString() }}
+													</span>
 													<span v-else-if="entry.indicatorValue">
 														{{ entry.indicatorValue.toFixed(1).toLocaleString() + '%' }}
 													</span>
@@ -142,6 +145,9 @@
 												<td class="text--secondary">
 													<span v-if="entry.moe && entry.indicatorName_en === 'Median Household Income'">
 														&#177; {{ '$' + entry.moe.toLocaleString() }}
+													</span>
+													<span v-else-if="entry.moe && entry.indicatorName_en === 'Retail Food Environment Index'">
+														{{ entry.moe.toFixed(1).toLocaleString() }}
 													</span>
 													<span v-else-if="entry.moe">
 														&#177; {{ entry.moe.toFixed(1).toLocaleString() + '%' }}
@@ -660,11 +666,15 @@ export default {
 						let moe = '';
 						if (i.indicatorValue && i.indicatorName_en === 'Median Household Income') {
 							value = '"$' + i.indicatorValue.toLocaleString() + '"';
+						} else if (i.indicatorValue && i.indicatorName_en === 'Retail Food Environment Index') {
+							value = '"' + i.indicatorValue.toLocaleString() + '"';
 						} else if (i.indicatorValue) {
 							value = '"' + i.indicatorValue.toFixed(1).toLocaleString() + '%' + '"';
 						}
 						if (i.moe && i.indicatorName_en === 'Median Household Income') {
 							moe = '"' + '$' + i.moe.toLocaleString() + '"';
+						} else if (i.moe && i.indicatorName_en === 'Retail Food Environment Index') {
+							moe = '"' + i.moe.toLocaleString() + '"';
 						} else if (i.moe) {
 							moe = '"' + i.moe.toFixed(1).toLocaleString() + '%' + '"';
 						}

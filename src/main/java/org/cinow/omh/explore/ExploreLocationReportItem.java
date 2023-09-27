@@ -12,8 +12,6 @@ public class ExploreLocationReportItem {
 	private BigDecimal indicatorValue;
 	private BigDecimal moe;
 	private int sort;
-	private String category_en;
-	private String category_es;
 
 	public String getIndicatorName_en() {
 		return indicatorName_en;
@@ -63,16 +61,4 @@ public class ExploreLocationReportItem {
 	public void setSort(int sort) {
 		this.sort = sort;
 	}
-	public String getCategory_en() {
-		return category_en;
-	}
-	public void setCategory_en(String category_en) {
-		this.category_en = category_en;
-	}
-	public String getCategory_es() {
-		return category_es;
-	}
-	public void setCategory_es(String category_es) {
-		this.category_es = category_es;
-	}	
 }

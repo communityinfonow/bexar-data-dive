@@ -325,7 +325,7 @@ public class ExploreRepositoryPostgresql implements ExploreRepository {
 	public List<ExploreLocationReportItem> getLocationReport(int locationTypeId, String locationId) {
 		String sql = ""
 			+ " select * from ("
-			+ " select indicator_name_en, indicator_name_es, year_, location_id, location_type_id, indicator_value, moe, sort, category_en, category_es, "
+			+ " select indicator_name_en, indicator_name_es, year_, location_id, location_type_id, indicator_value, moe, sort, "
 			+ "   dense_rank() over (partition by indicator_name_en, year_ order by year_ desc) as ranking "
 			+ " from tbl_location_report "
 			+ " where location_type_id = :location_type_id::numeric "
@@ -349,8 +349,6 @@ public class ExploreRepositoryPostgresql implements ExploreRepository {
 				item.setIndicatorValue(rs.getBigDecimal("indicator_value"));
 				item.setMoe(rs.getBigDecimal("moe"));
 				item.setSort(rs.getInt("sort"));
-				item.setCategory_en(rs.getString("category_en"));
-				item.setCategory_es(rs.getString("category_es"));
 				
 				return item;
 			}
