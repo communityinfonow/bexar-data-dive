@@ -424,7 +424,7 @@ export default {
 			this.drawMap();
 		},
 		indicator(newValue, oldValue) {
-			if (newValue.id !== oldValue?.id && newValue.showPoints) {
+			if (newValue.id !== oldValue?.id && newValue.showPoints && !oldValue?.showPoints) {
 				this.getPoints()
 			} else if (!newValue.showPoints) {
 				this.pointsGeojson = featureCollection([])
@@ -562,8 +562,8 @@ export default {
 					moeLow: layer.target.feature.properties.moeLow,
 					moeHigh: layer.target.feature.properties.moeHigh,
 					location: layer.target.feature.properties.locationName,
-					year: this.exploreData.filters.yearFilter.options[0].id,
-					indicatorFilters: this.exploreData.filters.indicatorFilters
+					year: this.exploreData?.filters?.yearFilter.options[0].id,
+					indicatorFilters: this.exploreData?.filters?.indicatorFilters
 				});
 			});
 			layer.on('mouseout', () => {
@@ -597,8 +597,8 @@ export default {
 					moeLow: layer.target.feature.properties.moeLow,
 					moeHigh: layer.target.feature.properties.moeHigh,
 					location: layer.target.feature.properties.locationName,
-					year: this.exploreData.filters.yearFilter.options[0].id,
-					indicatorFilters: this.exploreData.filters.indicatorFilters
+					year: this.exploreData?.filters?.yearFilter.options[0].id,
+					indicatorFilters: this.exploreData?.filters?.indicatorFilters
 				});
 			});
 			layer.on('mouseout', () => {
@@ -643,8 +643,8 @@ export default {
 					moeLow: null,
 					moeHigh: null,
 					location: null,
-					year: this.exploreData.filters.yearFilter.options[0]?.id,
-					indicatorFilters: this.exploreData.filters.indicatorFilters
+					year: this.exploreData?.filters?.yearFilter.options[0]?.id,
+					indicatorFilters: this.exploreData?.filters?.indicatorFilters
 				});
 		},
 		getPoints() {
@@ -653,10 +653,12 @@ export default {
 			})
 		},
 		getReportData(location) {
-			axios.get('/api/location-report', { params: { locationTypeId: this.selectedLocationType.id, locationId: location.id } }).then(response => {
-				this.reportData = { location: location, data: null };
-				this.reportData.data = response.data;
-			});
+			if (location && this.selectedLocationType) {
+				axios.get('/api/location-report', { params: { locationTypeId: this.selectedLocationType.id, locationId: location.id } }).then(response => {
+					this.reportData = { location: location, data: null };
+					this.reportData.data = response.data;
+				});
+			}
 		},
 		downloadReport() {
 			let fileName = this.reportData.location.properties.locationName + '.csv';
