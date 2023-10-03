@@ -41,6 +41,12 @@
 						:options-style="style"
 					></l-geo-json>
 					<l-geo-json
+						v-if="pointsGeojson"
+						:geojson="pointsGeojson"
+						:options="pointsOptions"
+					>
+					</l-geo-json>
+					<l-geo-json
 						v-if="highlightFilteredLocation && filteredLocationGeojson"
 						ref="filteredLocation"
 						:geojson="filteredLocationGeojson"
@@ -93,14 +99,126 @@
 					</l-control>
 					<l-control
 						position="bottomright"
-						class="layer-control"
+						class="layer-control d-flex flex-column"
 						v-if="layers && layers.length"
 					>
-						<v-expansion-panels data-html2canvas-ignore>
-							<v-expansion-panel>
+						<v-expansion-panels accordion class="report-control">
+							<v-expansion-panel v-if="indicator.showReport">
+								<v-expansion-panel-header class="text--primary" data-html2canvas-ignore>
+									<div>
+										<v-icon color="accent">mdi-file-document-outline</v-icon>
+										<span class="mx-2">{{ $t('tools.explore.report') }}</span>
+									</div>
+								</v-expansion-panel-header>
+								<v-expansion-panel-content v-if="reportData" :style="{ 'overflow': 'hidden', 'display': 'flex', 'flex-direction': 'column' }">
+									<span class="text-subtitle-1">{{ reportData.location.properties.locationName }}</span>
+									<v-btn icon color="accent" class="ml-2" @click="downloadReport">
+										<v-icon>mdi-download</v-icon>
+									</v-btn>
+									<v-simple-table fixed-header :height="this.reportHeight">
+										<thead>
+											<tr>
+												<th>{{ $t('tools.common.download.headers.indicator') }}</th>
+												<th>{{ $t('tools.common.download.headers.year') }}</th>
+												<th>{{ $t('data.value') }}</th>
+												<th>{{ $t('data.moe') }}</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr v-for="(entry, idx) in reportData.data" :key="idx">
+												<td>{{ entry['indicatorName_' + locale] }}</td>
+												<td>{{ entry.year_ }}</td>
+												<td class="text-end">
+													<span v-if="entry.indicatorValue && entry.indicatorName_en === 'Median Household Income'">
+														{{ '$' + entry.indicatorValue.toLocaleString() }}
+													</span>
+													<span v-else-if="entry.indicatorValue && entry.indicatorName_en === 'Retail Food Environment Index'">
+														{{ entry.indicatorValue.toFixed(1).toLocaleString() }}
+													</span>
+													<span v-else-if="entry.indicatorValue">
+														{{ entry.indicatorValue.toFixed(1).toLocaleString() + '%' }}
+													</span>
+													<span v-else>
+														{{ $t('data.no_data') }}
+													</span>
+												</td>
+												<td class="text--secondary">
+													<span v-if="entry.moe && entry.indicatorName_en === 'Median Household Income'">
+														&#177; {{ '$' + entry.moe.toLocaleString() }}
+													</span>
+													<span v-else-if="entry.moe && entry.indicatorName_en === 'Retail Food Environment Index'">
+														{{ entry.moe.toFixed(1).toLocaleString() }}
+													</span>
+													<span v-else-if="entry.moe">
+														&#177; {{ entry.moe.toFixed(1).toLocaleString() + '%' }}
+													</span>
+												</td>
+											</tr>
+										</tbody>
+									</v-simple-table>
+								</v-expansion-panel-content>
+							</v-expansion-panel>
+							<v-expansion-panel v-if="indicator.showPoints">
+								<v-expansion-panel-header class="text--primary" data-html2canvas-ignore>
+									<div>
+										<v-icon color="accent">mdi-circle</v-icon>
+										<span class="mx-2">{{ $t('tools.explore.locations') }}</span>
+									</div>
+								</v-expansion-panel-header>
+								<v-expansion-panel-content class="location-options">
+									<div v-for="pointType in pointTypes" :key="pointType.id">
+										<v-checkbox 
+											color="accent"
+											:value="pointType" 
+											:label="pointType['name_' + locale] + ' (' + pointType.year + ')'"
+											v-model="selectedPointTypes"
+											@change="togglePointType(pointType.id)"
+											hide-details
+											class="mt-0"
+										>
+											<template v-slot:append>
+												<v-icon :style="{ 'color':pointType.color }">mdi-circle</v-icon>
+											</template>
+										</v-checkbox>
+										<div 
+											v-if="selectedPointTypes.some(pt => pt.id === pointType.id)
+												&& pointScales 
+												&& pointScales.find(ps => ps.pointType.id === pointType.id)
+												&& pointScales.find(ps => ps.pointType.id === pointType.id).min 
+													!== pointScales.find(ps => ps.pointType.id === pointType.id).max"
+											class="d-flex align-center justify-space-between px-10 text-center"
+											
+										>
+											<div
+												v-for="(value, index) in [
+													pointScales.find(ps => ps.pointType.id === pointType.id).min, 
+													pointScales.find(ps => ps.pointType.id === pointType.id).mid, 
+													pointScales.find(ps => ps.pointType.id === pointType.id).max
+												]"
+												:key="'range_' + index"
+											>
+												<v-icon
+													:size="pointScales.find(ps => ps.pointType.id === pointType.id).scale(value)"
+													:style="{ 'color': pointType.color }"
+												>
+													mdi-circle
+												</v-icon>
+												<br>
+												<span>
+													{{ value }}
+												</span>
+											</div>
+										</div>
+										<div v-if="selectedPointTypes.some(pt => pt.id === pointType.id) && pointCollections.find(pc => pc.pointType.id === pointType.id).points[0]['valueLabel_' + locale]" class="text-center mb-2">{{ pointCollections.find(pc => pc.pointType.id === pointType.id).points[0]['valueLabel_' + locale] }}</div>
+									</div>
+								</v-expansion-panel-content>
+							</v-expansion-panel>
+							<v-expansion-panel data-html2canvas-ignore>
 								<v-expansion-panel-header class="text--primary">
-									<v-icon color="accent">mdi-layers</v-icon>
-									<span class="mx-2">{{ $t('tools.community.community_types') }}</span>
+									<div>
+										<v-icon color="accent">mdi-layers</v-icon>
+										<span class="mx-2">{{ $t('tools.community.community_types') }}</span>
+									</div>
 								</v-expansion-panel-header>
 								<v-expansion-panel-content>
 									<v-radio-group
@@ -129,11 +247,14 @@
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex'
 import i18n from '@/i18n'
+import axios from 'axios'
+import L from 'leaflet'
 import { latLng } from 'leaflet'
 import { LMap, LTileLayer, LGeoJson, LControl } from 'vue2-leaflet'
 import { feature, featureCollection, multiPolygon } from '@turf/helpers'
 import colorbrewer from 'colorbrewer'
 import { ckmeans } from 'simple-statistics'
+import {scaleLinear} from 'd3-scale'
 import ExploreToolsPanel from '@/app/components/ExploreToolsPanel'
 import { format } from '@/formatter/formatter'
 
@@ -156,10 +277,14 @@ export default {
 			filteredLocationGeojson: null,
 			refreshOptions: false,
 			selectedLocationType: null,
+			pointCollections: [],
+			selectedPointTypes: [],
+			pointsGeojson: featureCollection([]),
+			reportData: null
 		}
 	},
 	computed: {
-		...mapState(['exploreData', 'locale', 'filterSelections', 'showMapLabels', 'highlightFilteredLocation', 'exploreTab', 'customLocations']),
+		...mapState(['exploreData', 'locale', 'filterSelections', 'showMapLabels', 'highlightFilteredLocation', 'exploreTab', 'customLocations', 'indicator']),
 		...mapGetters(['locationMenu', 'filters']),
 		layers() {
 			return this.filters?.locationTypeFilter?.options?.map(option => {
@@ -174,6 +299,12 @@ export default {
 			this.refreshOptions;
 			return {
 				onEachFeature: this.onEachFeature
+			}
+		},
+		pointsOptions() {
+			this.refreshOptions;
+			return {
+				pointToLayer: this.pointToLayer,
 			}
 		},
 		filteredLocationOptions() {
@@ -226,6 +357,30 @@ export default {
 					return [{ value: range[0], label: format(this.exploreData.indicator.typeId, range[0]) },
 					 { value: range[1], label: format(this.exploreData.indicator.typeId, range[1]) }];
 				});
+		},
+		pointTypes() {
+			return this.pointCollections?.map(pc => pc.pointType)
+		},
+		pointScales() {
+			return this.pointCollections?.filter(pc => pc.points.some(p => p.value))
+				.map(pc => {
+					let values = pc.points.map(p => p.value);
+					let min = Math.min(...values);
+					let max = Math.max(...values);
+					let scale = scaleLinear()
+						.domain([min, max])
+						.range(min === max ? [8, 8] : [8, 80]);
+					return {
+						pointType: pc.pointType,
+						scale: scale,
+						min: min,
+						max: max,
+						mid: Math.floor((min + max) / 2)
+					}
+				})
+		},
+		reportHeight() {
+			return this.$refs.exploreMap?.$el?.offsetHeight - 280 + 'px';
 		}
 	},
 	watch: {
@@ -236,6 +391,10 @@ export default {
 		},
     	locale() {
 			this.drawMap()
+			this.pointsGeojson = featureCollection([])
+			this.pointTypes.forEach(pt => {
+				this.togglePointType(pt.id)
+			})
 		},
 		exploreTab(newValue) {
 			if (newValue === 'map') {
@@ -253,12 +412,24 @@ export default {
 		},
 		filterSelections(newValue) {
 			this.selectedLocationType = this.layers?.find(l => l.id === newValue.locationType);
+			
+		},
+		filteredLocationGeojson(newValue) {
+			this.getReportData(newValue);
 		},
 		showMapLabels() {
 			this.drawMap();
 		},
 		highlightFilteredLocation() {
 			this.drawMap();
+		},
+		indicator(newValue, oldValue) {
+			if (newValue.id !== oldValue?.id && newValue.showPoints && !oldValue?.showPoints) {
+				this.getPoints()
+			} else if (!newValue.showPoints) {
+				this.pointsGeojson = featureCollection([])
+				this.selectedPointTypes = []
+			}
 		}
 	},
 	mounted () {
@@ -269,6 +440,9 @@ export default {
 			}
 			if (this.mapInitialized && this.exploreData) {
 				this.drawMap();
+			}
+			if (this.indicator?.showPoints) {
+				this.getPoints()
 			}
 		}, 100);
 		
@@ -299,10 +473,35 @@ export default {
 			newFilterSelections.location = this.filters.locationFilter.options.filter(o => o.typeId === this.selectedLocationType.id)[0].id;
 			this.setFilterSelections(newFilterSelections);
 		},
+		togglePointType(pointType) {
+			if (!this.selectedPointTypes.some(pt => pt.id === pointType)) {
+				this.pointsGeojson.features = this.pointsGeojson.features.filter(f => f.properties.typeId !== pointType);
+			} else {
+				this.pointsGeojson.features = this.pointsGeojson.features.concat(this.pointCollections
+					.find(pc => pc.pointType.id === pointType)
+					.points
+					.map(p => {
+						return {
+							type: 'Feature',
+							geometry: JSON.parse(p.geojson),
+							properties: {
+								...JSON.parse(p['featureProperties_' + this.locale]),
+								id: p.id,
+								typeId: pointType,
+								valueLabel_en: p.valueLabel_en,
+								valueLabel_es: p.valueLabel_es,
+								value: p.value
+							}
+						}
+					})
+				);
+			}
+		},
 		selectLocation(location) {
 			let newFilterSelections = JSON.parse(JSON.stringify(this.filterSelections));
 			newFilterSelections.locationType = this.selectedLocationType.id;
-			if (this.selectedLocationType.id === '7') {
+			// swap to the location type the custom location is built from if selecting a standard location while the currently filtered location is custom
+			if (this.selectedLocationType.id === '7' && !isNaN(Number(location))) {
 				newFilterSelections.locationType = this.customLocations.find(cl => cl.id === this.filterSelections.location).typeId;
 			}
 			newFilterSelections.location = location;
@@ -363,8 +562,8 @@ export default {
 					moeLow: layer.target.feature.properties.moeLow,
 					moeHigh: layer.target.feature.properties.moeHigh,
 					location: layer.target.feature.properties.locationName,
-					year: this.exploreData.filters.yearFilter.options[0].id,
-					indicatorFilters: this.exploreData.filters.indicatorFilters
+					year: this.exploreData?.filters?.yearFilter.options[0].id,
+					indicatorFilters: this.exploreData?.filters?.indicatorFilters
 				});
 			});
 			layer.on('mouseout', () => {
@@ -398,8 +597,8 @@ export default {
 					moeLow: layer.target.feature.properties.moeLow,
 					moeHigh: layer.target.feature.properties.moeHigh,
 					location: layer.target.feature.properties.locationName,
-					year: this.exploreData.filters.yearFilter.options[0].id,
-					indicatorFilters: this.exploreData.filters.indicatorFilters
+					year: this.exploreData?.filters?.yearFilter.options[0].id,
+					indicatorFilters: this.exploreData?.filters?.indicatorFilters
 				});
 			});
 			layer.on('mouseout', () => {
@@ -408,6 +607,23 @@ export default {
 			layer.on('click', (e) => {
 				this.selectLocation(e.target.feature.id);
 			});
+		},
+		pointToLayer(feature, latlng) {
+			let size = 8;
+			if (this.pointScales.find(ps => ps.pointType.id === feature.properties.typeId)) {
+				size = this.pointScales.find(ps => ps.pointType.id === feature.properties.typeId).scale(feature.properties.value);
+			}
+			return L.marker(latlng, {
+				icon: L.divIcon({
+					className: 'dive-point',
+					html: '<div class="dive-point-icon" style="opacity: 0.8; background-color: ' + this.pointTypes.find(pt => pt.id === feature.properties.typeId).color  + '; width: ' + size + 'px; height: ' + size + 'px; border-radius: 50%;"></div>',
+					tooltipAnchor: [size/2, size/2]
+				})
+			}).bindTooltip(
+				Object.entries(feature.properties).filter(([key]) => key !== 'id' && key !== 'typeId' && key !== 'valueLabel_en' && key !== 'valueLabel_es' && key !== 'value').map(([key, value]) => key + ': ' + (!isNaN(Number(value)) ? Number(value).toLocaleString() : value)).join('<br>')
+				+ (feature.properties.value ? '<br>' + feature.properties['valueLabel_' + this.locale] + ': ' + Number(feature.properties.value).toLocaleString() : ''),
+				
+			);
 		},
 		getLayerShadingColor(feature) {
 			if (!feature.properties.value || feature.properties.suppressed) {
@@ -427,9 +643,49 @@ export default {
 					moeLow: null,
 					moeHigh: null,
 					location: null,
-					year: this.exploreData.filters.yearFilter.options[0]?.id,
-					indicatorFilters: this.exploreData.filters.indicatorFilters
+					year: this.exploreData?.filters?.yearFilter.options[0]?.id,
+					indicatorFilters: this.exploreData?.filters?.indicatorFilters
 				});
+		},
+		getPoints() {
+			axios.get('/api/points').then(response => {
+				this.pointCollections = response.data
+			})
+		},
+		getReportData(location) {
+			if (location && this.selectedLocationType) {
+				axios.get('/api/location-report', { params: { locationTypeId: this.selectedLocationType.id, locationId: location.id } }).then(response => {
+					this.reportData = { location: location, data: null };
+					this.reportData.data = response.data;
+				});
+			}
+		},
+		downloadReport() {
+			let fileName = this.reportData.location.properties.locationName + '.csv';
+			let csv = [i18n.t('tools.common.download.headers.indicator'), i18n.t('tools.common.download.headers.year'), i18n.t('data.value'), i18n.t('data.moe')].join(',') + '\n'
+				+ Object.entries(this.reportData.data).map(i => i[1]).map(i => {
+						let value = '';
+						let moe = '';
+						if (i.indicatorValue && i.indicatorName_en === 'Median Household Income') {
+							value = '"$' + i.indicatorValue.toLocaleString() + '"';
+						} else if (i.indicatorValue && i.indicatorName_en === 'Retail Food Environment Index') {
+							value = '"' + i.indicatorValue.toLocaleString() + '"';
+						} else if (i.indicatorValue) {
+							value = '"' + i.indicatorValue.toFixed(1).toLocaleString() + '%' + '"';
+						}
+						if (i.moe && i.indicatorName_en === 'Median Household Income') {
+							moe = '"' + '$' + i.moe.toLocaleString() + '"';
+						} else if (i.moe && i.indicatorName_en === 'Retail Food Environment Index') {
+							moe = '"' + i.moe.toLocaleString() + '"';
+						} else if (i.moe) {
+							moe = '"' + i.moe.toFixed(1).toLocaleString() + '%' + '"';
+						}
+						return [i['indicatorName_' + this.locale], i.year_, value, moe].join(',');
+					}).join('\n');
+			let downloadLink = document.createElement('a');
+			downloadLink.download = fileName;
+			downloadLink.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+			downloadLink.click();
 		}
 	},
 }
@@ -446,5 +702,9 @@ export default {
 		font-size: 14px;
 		text-shadow: -2px -2px 2px #fff, 2px -2px 2px #fff, -2px 2px 2px #fff, 2px 2px 2px #fff;
 		text-align: center;
+	}
+
+	::v-deep .v-expansion-panels {
+		flex-direction: column;
 	}
 </style>

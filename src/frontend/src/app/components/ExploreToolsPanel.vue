@@ -454,7 +454,9 @@ export default {
 						scale: 2.666, 
 						useCORS: true,
 						ignoreElements: (el) => {
-							return el.classList.contains('leaflet-control-zoom');
+							return el.classList.contains('leaflet-control-zoom')
+							 || el.matches('.location-options .mdi-checkbox-marked')
+							 || (el.matches('.location-options .v-input--checkbox') && !el.querySelector('input:checked'));
 						}
 					}).then((chartCanvas) => {
 						let imageCanvas = document.createElement('canvas');

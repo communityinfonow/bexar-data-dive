@@ -78,6 +78,16 @@ public class Indicator {
 	private boolean aggregable;
 
 	/**
+	 * Whether to show points for this indicator.
+	 */
+	private boolean showPoints;
+
+	/**
+	 * Whether to show a report for this indicator.
+	 */
+	private boolean showReport;
+
+	/**
 	 * @return the id
 	 */
 	public String getId() {
@@ -271,5 +281,33 @@ public class Indicator {
 	 */
 	public void setAggregable(boolean aggregable) {
 		this.aggregable = aggregable;
+	}
+
+	/**
+	 * @return the showPoints
+	 */
+	public boolean isShowPoints() {
+		return showPoints;
+	}
+
+	/**
+	 * @param showPoints the showPoints to set
+	 */
+	public void setShowPoints(boolean showPoints) {
+		this.showPoints = showPoints;
+	}
+
+	/**
+	 * @return the showReport
+	 */
+	public boolean isShowReport() {
+		return showReport;
+	}
+
+	/**
+	 * @param showReport the showReport to set
+	 */
+	public void setShowReport(boolean showReport) {
+		this.showReport = showReport;
 	}
 }

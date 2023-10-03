@@ -39,9 +39,25 @@ public class IndicatorMenuItem implements Item {
 	 */
 	private String description_es;
 
+	/**
+	 * Whether the indicator has data yet.
+	 */
 	private boolean hasData;
 
+	/**
+	 * Whether the indicator may be aggregated.
+	 */
 	private boolean aggregable;
+
+	/**
+	 * Whether to show points for this indicator.
+	 */
+	private boolean showPoints;
+
+	/**
+	 * Whether to show a report for this indicator.
+	 */
+	private boolean showReport;
 
 	/**
 	 * @return the id
@@ -151,5 +167,21 @@ public class IndicatorMenuItem implements Item {
 
 	public void setAggregable(boolean aggregable) {
 		this.aggregable = aggregable;
+	}
+
+	public boolean isShowPoints() {
+		return showPoints;
+	}
+
+	public void setShowPoints(boolean showPoints) {
+		this.showPoints = showPoints;
+	}
+
+	public boolean isShowReport() {
+		return showReport;
+	}
+
+	public void setShowReport(boolean showReport) {
+		this.showReport = showReport;
 	}
 }
