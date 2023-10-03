@@ -1,6 +1,16 @@
 <template>
-  <v-footer app inset outlined tile class="text-body-2 d-flex justify-end d-print-none" style="z-index: 9999; background-color: white;" height="34px">
-	{{ $t('app.copyright') }} &copy; {{ new Date().getFullYear() }}&nbsp;<a href="https://cinow.info">{{ $t('app.cinow') }}</a>. {{ $t('app.all_rights_reserved') }}
+  <v-footer app inset absolute outlined tile color="white" class="d-print-none px-0" style="z-index: 9999;">
+    <hr style="width: 100%;" />
+    <div class="my-4 px-16" style="width: 100%;">
+      <span v-html="$t('home_view.acknowledgement')"></span>
+    </div>
+    <hr style="width: 100%;" />
+    <div class="my-4 px-4 d-flex justify-end align-center" style="width: 100%;">
+      <span>
+        {{ $t('app.copyright') }} &copy; {{ new Date().getFullYear() }}&nbsp;<a href="https://cinow.info" class="link--text">{{ $t('app.cinow') }}</a>. {{ $t('app.all_rights_reserved') }}
+      </span>
+      <img src="/img/cinow_logo.png" class="ml-4" style="height: 30px;" alt="CI:Now Logo" />
+    </div>
   </v-footer>
 </template>
 

@@ -75,4 +75,13 @@ export default {
 ::v-deep .v-card__title {
   word-break: break-word;
 }
+
+::v-deep .page-header {
+  background: url('~@/assets/img/background_header.svg');
+  background-size: cover;
+}
+
+::v-deep .container {
+  padding: 0;
+}
 </style>

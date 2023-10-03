@@ -1,15 +1,14 @@
 <template>
-  <v-app-bar app color="accent" dark class="d-print-none">
-    <v-toolbar-title class="">
-      <img class="float-left" src="/img/bdd_logo_color.png" style="height: 40px;" alt="Bexar Data Dive Logo" />
-      <span class="float-left ml-4" style="line-height: 40px; font-size: 1.2em;">{{ $t('app.name') }} <sup class="text-caption font-weight-bold">BETA</sup></span>
+  <v-app-bar app color="white" light flat height="84px" class="d-print-none">
+    <v-toolbar-title class="px-4 py-2">
+      <img src="/img/bexar-data-dive-logo.svg" style="height: 60px;" alt="Bexar Data Dive Logo" />
     </v-toolbar-title>
     <v-spacer></v-spacer>
-    <v-btn-toggle :value="locale" mandatory group dark data-html2canvas-ignore>
+    <v-btn-toggle :value="locale" mandatory group data-html2canvas-ignore class="secondary--text">
       <v-btn text tile plain value="en" class="header-button" @click="setLocale('en')">English</v-btn>
+      <v-divider vertical class="header-button-divider"></v-divider>
       <v-btn text tile plain value="es" class="header-button" @click="setLocale('es')">Español</v-btn>
     </v-btn-toggle>
-    <span><img src="/img/cinow_logo.png" style="height: 30px;" alt="CI:Now Logo" /></span>
   </v-app-bar>
 </template>
 
@@ -27,11 +26,20 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.v-app-bar ::v-deep .v-toolbar__content {
+  padding: 0;
+}
 .v-app-bar.v-app-bar--fixed {
   z-index: 1001;
 }
 .header-button {
   font-size: 14pt !important;
   font-weight: bold;
+}
+.header-button-divider {
+  border-width: 0 2px 0 0;
+  max-height: 26px;
+  margin-top: 16px;
+  background-color: $color-secondary;
 }
 </style>

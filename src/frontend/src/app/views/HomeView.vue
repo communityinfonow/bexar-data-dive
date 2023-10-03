@@ -1,31 +1,13 @@
 <template>
   <v-container fluid>
-    <v-row>
-      <v-col cols="7">
-      <section class="d-flex">
-        <img class="ma-4" src="/img/bdd_logo_color.png" style="height: 100px;" alt="Bexar Data Dive Logo" />
-        <h1 class="text-h3 my-4 logo-header">
-          {{ $t('app.name_line_1') }}<br>
-          {{ $t('app.name_line_2') }}
-        </h1>
-      </section>
-      <p class="welcome-message font-weight-light my-8 mx-4">{{ $t('home_view.welcome_message') }}</p>  
-      </v-col>
-      <v-col cols="5">
-        <v-card v-if="currentAnnouncement" flat class="mr-12 float-right">
-          <v-card-text>
-            <div class="text-subtitle-1"><v-icon :style="{ transform: announcementView.icon_transform || '' }">{{ announcementView.icon }}</v-icon> {{ $t('announcements_view.name') }}</div>
-            <p class="text-h5 text--primary mb-0">{{ currentAnnouncement['title_' + locale] }}</p>
-            <p>{{ new Date(currentAnnouncement.date + 'T00:00:00').toLocaleDateString() }}</p>
-            <div class="announcement-message text--primary" v-html="currentAnnouncement['message_' + locale]"></div>
-          </v-card-text>
-          <v-card-actions>
-            <v-btn text color="primary" to="/announcements">{{ $t('featured_card.learn_more') }}</v-btn>
-        </v-card-actions>
-        </v-card>
-      </v-col>
-    </v-row>
-    <h2 class="text-h5 mt-8 mb-2 mx-4">{{ $t('home_view.available_tools') }}</h2>
+    <section class="page-header d-flex flex-column text-center light--text pa-12">
+      <div class="font-weight-medium" style="font-size: 1.125em;">{{ $t('home_view.powered_by') }}</div>
+      <div class="font-weight-bold" style="font-size: 3em;">{{ $t('home_view.connecting_line_1') }}</div>
+      <div class="font-weight-bold" style="font-size: 3em;">{{ $t('home_view.connecting_line_2') }}</div>
+      <div class="font-weight-medium mt-2" style="font-size: 1.125em;">{{ $t('home_view.welcome_line_1') }}</div>
+      <div class="font-weight-medium" style="font-size: 1.125em;">{{ $t('home_view.welcome_line_2') }}</div>
+    </section>
+    <h2 class="font-weight-bold mt-12 mb-12 text-center" style="font-size: 2em; text-transform: uppercase;">{{ $t('home_view.available_tools') }}</h2>
     <section class="d-flex" :class="{ 'flex-row': $vuetify.breakpoint.mdAndUp, 'flex-column': $vuetify.breakpoint.smAndDown }">
       <template v-for="tool in tools">
         <featured-card 
@@ -41,7 +23,25 @@
         </featured-card>
       </template>
     </section>
-    <p class="my-4 mx-4 font-weight-light font-italic" v-html="$t('home_view.acknowledgement')"></p>
+    <v-row>
+      <v-col cols="6">
+        TODO: bexar data facts
+      </v-col>
+      <v-col cols="6">
+        <v-card v-if="currentAnnouncement" flat>
+          <v-card-text>
+            <div class="text-subtitle-1"><v-icon :style="{ transform: announcementView.icon_transform || '' }">{{ announcementView.icon }}</v-icon> {{ $t('announcements_view.name') }}</div>
+            <p class="text-h5 text--primary mb-0">{{ currentAnnouncement['title_' + locale] }}</p>
+            <p>{{ new Date(currentAnnouncement.date + 'T00:00:00').toLocaleDateString() }}</p>
+            <div class="announcement-message text--primary" v-html="currentAnnouncement['message_' + locale]"></div>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn text color="primary" to="/announcements">{{ $t('featured_card.learn_more') }}</v-btn>
+        </v-card-actions>
+        </v-card>
+      </v-col>
+      
+    </v-row>
   </v-container>
 </template>
 

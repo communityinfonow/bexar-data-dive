@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="143.43239mm"
+   height="143.43239mm"
+   viewBox="0 0 143.43239 143.43238"
+   version="1.1"
+   id="svg114"
+   sodipodi:docname="icon_health.svg"
+   inkscape:version="1.0.2-2 (e86c870879, 2021-01-15)">
+  <defs
+     id="defs108" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.35"
+     inkscape:cx="809.04838"
+     inkscape:cy="-16.661271"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     inkscape:document-rotation="0"
+     showgrid="false"
+     inkscape:pagecheckerboard="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata111">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(108.41118,-152.39136)">
+    <g
+       id="g849"
+       transform="matrix(0.35277777,0,0,-0.35277777,35.021208,224.10755)">
+      <path
+         d="m 0,0 c 0,-112.274 -91.016,-203.29 -203.29,-203.29 -112.274,0 -203.29,91.016 -203.29,203.29 0,112.274 91.016,203.29 203.29,203.29 C -91.016,203.29 0,112.274 0,0"
+         style="fill:#163d7d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         id="path851" />
+    </g>
+    <g
+       id="g853"
+       transform="matrix(0.35277777,0,0,-0.35277777,14.512367,224.10755)">
+      <path
+         d="m 0,0 c 0,-80.167 -64.988,-145.155 -145.155,-145.155 -80.166,0 -145.154,64.988 -145.154,145.155 0,80.167 64.988,145.155 145.154,145.155 C -64.988,145.155 0,80.167 0,0"
+         style="fill:#1c54a5;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         id="path855" />
+    </g>
+    <g
+       id="g857"
+       transform="matrix(0.35277777,0,0,-0.35277777,-1.8901767,216.29525)">
+      <path
+         d="m 0,0 c 0,28.471 -23.164,51.638 -51.628,51.638 -20.892,0 -38.911,-12.473 -47.035,-30.354 -8.116,17.881 -26.139,30.354 -47.021,30.354 -28.477,0 -51.634,-23.167 -51.634,-51.638 0,-6.006 1.031,-11.766 2.929,-17.134 2.159,-6.111 5.432,-11.693 9.581,-16.507 1.769,-2.059 3.691,-3.972 5.766,-5.729 l 78.752,-78.227 c 0.485,-0.485 1.116,-0.727 1.754,-0.727 0.643,0 1.278,0.242 1.767,0.727 l 81.677,81.149 -0.006,0.011 c 5.293,5.305 9.445,11.745 12.044,18.932 C -1.08,-12.038 0,-6.142 0,0"
+         style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         id="path859" />
+    </g>
+  </g>
+</svg>
