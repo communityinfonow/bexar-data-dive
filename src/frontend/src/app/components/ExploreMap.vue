@@ -25,12 +25,7 @@
 					@ready="initializeMap"
 				>
 					<l-tile-layer
-						url="https://stamen-tiles.a.ssl.fastly.net/toner-background/{z}/{x}/{y}.png"
-						:options="{ crossOrigin: 'anonymous' }"
-						:attribution="$t('tools.common.map_attribution')"
-					></l-tile-layer>
-					<l-tile-layer
-						url="https://stamen-tiles.a.ssl.fastly.net/toner-hybrid/{z}/{x}/{y}.png"
+						url="https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png"
 						:options="{ crossOrigin: 'anonymous' }"
 						:attribution="$t('tools.common.map_attribution')"
 					></l-tile-layer>
