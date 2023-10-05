@@ -28,15 +28,20 @@
             @ready="initializeSelectionMap"
           >
             <l-tile-layer
-              url="https://stamen-tiles.a.ssl.fastly.net/toner-background/{z}/{x}/{y}.png"
+              url="https://tiles.stadiamaps.com/tiles/stamen_toner_background/{z}/{x}/{y}{r}.png"
               :options="{ crossOrigin: 'anonymous' }"
               :attribution="$t('tools.common.map_attribution')"
             />
             <l-tile-layer
-              url="https://stamen-tiles.a.ssl.fastly.net/toner-hybrid/{z}/{x}/{y}.png"
+              url="https://tiles.stadiamaps.com/tiles/stamen_toner_lines/{z}/{x}/{y}{r}.png"
               :options="{ crossOrigin: 'anonymous' }"
               :attribution="$t('tools.common.map_attribution')"
-            />
+            ></l-tile-layer>
+            <l-tile-layer
+              url="https://tiles.stadiamaps.com/tiles/stamen_toner_labels/{z}/{x}/{y}{r}.png"
+              :options="{ crossOrigin: 'anonymous' }"
+              :attribution="$t('tools.common.map_attribution')"
+            ></l-tile-layer>
             <l-geo-json
               v-if="selectionGeojson"
               :geojson="selectionGeojson"
