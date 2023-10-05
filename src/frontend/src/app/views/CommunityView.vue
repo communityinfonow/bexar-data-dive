@@ -34,7 +34,17 @@
           @ready="initializeSelectionMap"
         >
           <l-tile-layer
-						url="https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png"
+            url="https://tiles.stadiamaps.com/tiles/stamen_toner_background/{z}/{x}/{y}{r}.png"
+            :options="{ crossOrigin: 'anonymous' }"
+            :attribution="$t('tools.common.map_attribution')"
+          />
+          <l-tile-layer
+						url="https://tiles.stadiamaps.com/tiles/stamen_toner_lines/{z}/{x}/{y}{r}.png"
+						:options="{ crossOrigin: 'anonymous' }"
+						:attribution="$t('tools.common.map_attribution')"
+					></l-tile-layer>
+					<l-tile-layer
+						url="https://tiles.stadiamaps.com/tiles/stamen_toner_labels/{z}/{x}/{y}{r}.png"
 						:options="{ crossOrigin: 'anonymous' }"
 						:attribution="$t('tools.common.map_attribution')"
 					></l-tile-layer>
@@ -85,7 +95,17 @@
               @ready="initializeCommunityMap"
             >
               <l-tile-layer
-                url="https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png"
+                url="https://tiles.stadiamaps.com/tiles/stamen_toner_background/{z}/{x}/{y}{r}.png"
+                :options="{ crossOrigin: 'anonymous' }"
+                :attribution="$t('tools.common.map_attribution')"
+              />
+              <l-tile-layer
+                url="https://tiles.stadiamaps.com/tiles/stamen_toner_lines/{z}/{x}/{y}{r}.png"
+                :options="{ crossOrigin: 'anonymous' }"
+                :attribution="$t('tools.common.map_attribution')"
+              ></l-tile-layer>
+              <l-tile-layer
+                url="https://tiles.stadiamaps.com/tiles/stamen_toner_labels/{z}/{x}/{y}{r}.png"
                 :options="{ crossOrigin: 'anonymous' }"
                 :attribution="$t('tools.common.map_attribution')"
               ></l-tile-layer>

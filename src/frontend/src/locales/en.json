@@ -115,7 +115,7 @@
       "about_tool": "About the tool",
       "make_selection": "Please make a selection",
       "filter_unavailable": "This filter is not available when combined with the other filters currently applied.",
-      "map_attribution": "&copy; <a href='https://stadiamaps.com/' target='_blank'>Stadia Maps</a> | &copy; <a href='https://openmaptiles.org/' target='_blank'>OpenMapTiles</a> | &copy; <a href='https://www.openstreetmap.org/about' target='_blank'>OpenStreetMap</a>",
+      "map_attribution": "&copy; <a href='https://www.stadiamaps.com/' target='_blank'>Stadia Maps</a> | &copy; <a href='https://stamen.com/' target='_blank'>Stamen Design</a> | &copy; <a href='https://openmaptiles.org/' target='_blank'>OpenMapTiles</a> | &copy; <a href='https://www.openstreetmap.org/about/' target='_blank'>OpenStreetMap</a>",
       "download": {
         "name": "Download",
         "items": {
