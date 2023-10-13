@@ -58,7 +58,7 @@ export default {
   }
 }
 ::v-deep .v-menu__content {
-  z-index: 1000 !important;
+  z-index: 10000 !important;
 }
 ::v-deep .v-btn--plain:not(.v-btn--active):not(.v-btn--loading):not(:focus):not(:hover) .v-btn__content {
   opacity: 1 !important;
@@ -68,8 +68,23 @@ export default {
 }
 
 ::v-deep .v-breadcrumbs {
-  padding-top: 16px;
+  padding-top: 80px;
+  padding-left: 0px !important;
   padding-bottom: 0;
+  text-transform: uppercase;
+}
+
+::v-deep .v-breadcrumbs__item {
+  color: $color-light !important;
+  font-weight: bold;
+}
+
+::v-deep .v-breadcrumbs__item--disabled {
+  font-weight: normal;
+}
+
+::v-deep .v-breadcrumbs__divider {
+  padding: 0px !important;
 }
 
 ::v-deep .v-card__title {

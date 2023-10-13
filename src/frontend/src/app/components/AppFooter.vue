@@ -1,5 +1,5 @@
 <template>
-  <v-footer app inset absolute outlined tile color="white" class="d-print-none px-0" style="z-index: 9999;">
+  <v-footer app inset absolute outlined tile color="white" class="d-print-none px-0" style="z-index: 9998;">
     <hr style="width: 100%;" />
     <div class="my-4 px-16" style="width: 100%;">
       <span v-html="$t('home_view.acknowledgement')"></span>

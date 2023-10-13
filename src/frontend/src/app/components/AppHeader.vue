@@ -1,7 +1,7 @@
 <template>
-  <v-app-bar app color="white" light flat height="84px" class="d-print-none">
+  <v-app-bar app color="white" light flat height="80px" class="d-print-none">
     <v-toolbar-title class="px-4 py-2">
-      <img src="/img/bexar-data-dive-logo.svg" style="height: 60px;" alt="Bexar Data Dive Logo" />
+      <img src="/img/bexar-data-dive-logo.svg" style="height: 56px;" alt="Bexar Data Dive Logo" />
     </v-toolbar-title>
     <v-spacer></v-spacer>
     <v-btn-toggle :value="locale" mandatory group data-html2canvas-ignore class="secondary--text">

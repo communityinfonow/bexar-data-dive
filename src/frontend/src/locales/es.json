@@ -184,6 +184,7 @@
 
   "about_data_view": {
     "name": "Sobre la Información",
+    "welcome": "TODO: welcome message for this page? (es)",
     "indicators": "Indicadores",
     "visit_source": "Ir a la fuente",
     "source_citation": "Citar fuente",
@@ -195,10 +196,12 @@
   },
   "faqs_view": {
     "name": "Preguntas Frecuentes",
+    "welcome": "TODO: welcome message for this page? (es)",
     "questions": "Preguntas"
   },
   "announcements_view": {
-    "name": "Anuncios"
+    "name": "Anuncios",
+    "welcome": "TODO: welcome message for this page? (es)"
   },
   "data": {
     "value": "Valor",

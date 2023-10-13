@@ -11,7 +11,7 @@
       right>
       <template v-slot:activator>
         <v-btn v-model="surveyOpen" fab color="yellow" class="wobbly">
-          <v-icon>mdi-note-edit</v-icon>
+          <img src="/img/icon_ux_survey__active.svg" height="56px" width="56px">
         </v-btn>
       </template>
       <v-card class="survey-card" light>
@@ -126,7 +126,7 @@ export default {
 <style lang="scss" scoped>
   .visitor-survey-fab {
     z-index: 9999;
-    bottom: 36%;
+    bottom: 12em;
   }
   .visitor-survey-fab .v-btn {
     bottom: 36%;

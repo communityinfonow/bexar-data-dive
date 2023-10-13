@@ -31,6 +31,8 @@
                 :about_route="'about-data?indicator=' + indicator.id" 
                 :view_route="indicator.route"
                 :click_route="selectItem"
+                :primary_button_text="$t('featured_card.view')"
+                :secondary_button_text="$t('featured_card.learn_more')"
               >
               </featured-card>
             </template>

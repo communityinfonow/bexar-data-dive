@@ -1,6 +1,17 @@
 <template>
   <v-container v-if="indicatorMenu" fluid class="pa-0 fill-height">
     <v-row class="no-gutters flex-column fill-height">
+      <v-col v-if="showIntro" cols="auto" class="grow">
+        <section class="page-header d-flex flex-column light--text pa-12 pb-0">
+          <h1 class="font-weight-bold" style="font-size: 2.5rem;">{{ $t('tools.tables.name') }}</h1>
+          <div class="font-weight-medium mt-2" style="font-size: 1.25rem;">{{ $t('tools.tables.long_description') }}</div>
+          <v-breadcrumbs :items="breadcrumbs" class="mb-2" dark>
+            <template v-slot:divider>
+              <v-icon>mdi-chevron-right</v-icon>
+            </template>
+          </v-breadcrumbs>
+        </section>
+      </v-col>
       <v-col cols="auto" class="shrink">
         <MenuToolbar
           class="flex-column"
@@ -10,31 +21,37 @@
           :searchType="$t('tools.common.indicators')"
         ></MenuToolbar>
       </v-col>
-      <v-col cols="auto">
-        <v-breadcrumbs :items="breadcrumbs">
-          <template v-slot:divider>
-            <v-icon>mdi-chevron-right</v-icon>
+      <v-col v-if="featuredIndicators" cols="auto">
+        <section class="mb-8">
+          <h2 class="text-h4 mt-16 mb-2 font-weight-black text-center" style="text-transform: uppercase;">{{ $t('tools.common.featured_indicators') }}</h2>
+          <p style="margin: 0 30%; font-size: 1.25em;">{{ $t('tools.tables.get_started') }}</p>
+        </section>
+        <section class="d-flex" :class="{ 'flex-row': $vuetify.breakpoint.mdAndUp, 'flex-column': $vuetify.breakpoint.smAndDown }">
+          <template v-for="indicator in featuredIndicators">
+            <featured-card 
+              :key="indicator.id" 
+              :item="indicator"
+              :name="indicator['name_' + locale]" 
+              :postText="$t('tools.explore.docked_tooltip.source') + ': ' + indicator.source['name_' + locale]"
+              :about_route="'about-data?indicator=' + indicator.id" 
+              :view_route="indicator.route"
+              :click_route="selectItem"
+              :primary_button_text="$t('featured_card.view')"
+              :secondary_button_text="$t('featured_card.learn_more')"
+              :iconPath="getIconPath(indicator.categoryId)"
+            >
+            </featured-card>
           </template>
-        </v-breadcrumbs>
+        </section>
       </v-col>
-      <v-col v-if="showIntro" cols="auto" class="pa-4 grow">
-        <h1 class="text-h3 mb-2">{{ $t('tools.tables.name') }}</h1>
-        <p>{{ $t('tools.tables.long_description') }}</p>
-        <p>{{ $t('tools.tables.get_started') }}</p>
-        <h2 v-if="featuredIndicators" class="text-h5 mt-8 mb-2">{{ $t('tools.common.featured_indicators') }}</h2>
-          <section v-if="featuredIndicators" class="d-flex" :class="{ 'flex-row': $vuetify.breakpoint.mdAndUp, 'flex-column': $vuetify.breakpoint.smAndDown }">
-            <template v-for="indicator in featuredIndicators">
-              <featured-card 
-                :key="indicator.id" 
-                :item="indicator"
-                :name="indicator['name_' + locale]" 
-                :about_route="'about-data?indicator=' + indicator.id" 
-                :view_route="indicator.route"
-                :click_route="selectItem"
-              >
-              </featured-card>
-            </template>
-          </section>
+      <v-col v-if="!showIntro" cols="auto" class="shrink">
+        <MenuToolbar
+          class="flex-column"
+          :menu="indicatorMenu"
+          :selectItem="selectItem"
+          :flattenSingleItems="false"
+          :searchType="$t('tools.common.indicators')"
+        ></MenuToolbar>
       </v-col>
       <v-col v-if="indicator && tablesData" cols="auto" class="pt-4 px-4">
           <h1 class="text-h3 mb-1 d-flex justify-space-between">
@@ -726,6 +743,28 @@ export default {
   },
   methods: {
     ...mapActions(['setIndicator', 'setTablesData', 'getTablesData', 'getFeaturedIndicators', 'setToolRoute']),
+    getIconPath(categoryId) {
+      switch (categoryId) {
+        case '1':
+          return '/img/icon_data_civic_social.svg';
+        case '2':
+          return '/img/icon_data_criminal_justice.svg';
+        case '3':
+          return '/img/icon_data_demographic.svg';
+        case '4':
+          return '/img/icon_data_economic.svg'
+        case '5':
+          return '/img/icon_data_education.svg';
+        case '6':
+          return '/img/icon_data_environment.svg';
+        case '7':
+          return '/img/icon_data_health.svg';
+        case '8':
+          return '/img/icon_data_housing.svg';
+      }
+
+      return '';
+    },
     selectItem(item) {
       if (item.id !== this.indicator?.id) {
         this.setIndicator(item).then(() => {
