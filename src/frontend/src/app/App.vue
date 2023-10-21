@@ -13,7 +13,7 @@
       fixed
       bottom
       height="12px"
-      color="accent"
+      color="green"
       style="z-index: 10001"
     ></v-progress-linear>
     <AppFooter></AppFooter>
@@ -98,5 +98,19 @@ export default {
 
 ::v-deep .container {
   padding: 0;
+}
+
+::v-deep .page-header.main-content .v-breadcrumbs {
+  padding-top: 20px;
+}
+
+main {
+  padding-bottom: 200px !important;
+}
+
+::v-deep .sticky-menu {
+  position: sticky;
+  top: 80px;
+  z-index: 1000;
 }
 </style>

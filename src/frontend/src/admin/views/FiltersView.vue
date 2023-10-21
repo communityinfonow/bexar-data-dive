@@ -22,7 +22,7 @@
 							<v-switch label="Display" v-model="fo.display"></v-switch>
 						</v-card-text>
 						<v-card-actions>
-							<v-btn color="primary" @click="updateHandler(fo, idx)">
+							<v-btn color="red" @click="updateHandler(fo, idx)">
 								Save
 							</v-btn>
 						</v-card-actions>
@@ -52,7 +52,7 @@
 							<v-switch label="Display" v-model="newFilterOption.display"></v-switch>
 						</v-card-text>
 						<v-card-actions>
-							<v-btn type="submit" color="primary" @click.prevent="addHandler">
+							<v-btn type="submit" color="red" @click.prevent="addHandler">
 								Add
 							</v-btn>
 						</v-card-actions>

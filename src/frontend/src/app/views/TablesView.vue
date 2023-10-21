@@ -1,10 +1,21 @@
 <template>
   <v-container v-if="indicatorMenu" fluid class="pa-0 fill-height">
     <v-row class="no-gutters flex-column fill-height">
-      <v-col v-if="showIntro" cols="auto" class="grow">
-        <section class="page-header d-flex flex-column light--text pa-12 pb-0">
-          <h1 class="font-weight-bold" style="font-size: 2.5rem;">{{ $t('tools.tables.name') }}</h1>
-          <div class="font-weight-medium mt-2" style="font-size: 1.25rem;">{{ $t('tools.tables.long_description') }}</div>
+      <v-col cols="auto" class="grow">
+        <section :class="'page-header d-flex flex-column light--text pa-12 pb-0 ' + (!showIntro ? 'main-content' : '')">
+          <h1 v-if="showIntro" class="font-weight-bold" style="font-size: 2.5rem;">{{ $t('tools.tables.name') }}</h1>
+          <h1 v-if="indicator" class="font-weight-bold" style="font-size: 2.5rem;">
+            <span>
+              <span v-if="tablesData.category.parentCategoryId">{{ tablesData.category['name_' + locale] }} - </span>
+              {{ tablesData.indicator['name_' + locale] }}
+              <indicator-definition :indicator="indicator"></indicator-definition>
+              <h2 class="text-subtitle-1 mb-2">{{ tablesData.source['name_' + locale] }}</h2>
+            </span>
+          </h1>
+          <div v-if="showIntro" class="font-weight-medium mt-2" style="font-size: 1.25rem;">
+            {{ $t('tools.tables.headline') }}
+            {{ $t('tools.tables.long_description') }}
+          </div>
           <v-breadcrumbs :items="breadcrumbs" class="mb-2" dark>
             <template v-slot:divider>
               <v-icon>mdi-chevron-right</v-icon>
@@ -12,7 +23,7 @@
           </v-breadcrumbs>
         </section>
       </v-col>
-      <v-col cols="auto" class="shrink">
+      <v-col cols="auto" class="shrink sticky-menu">
         <MenuToolbar
           class="flex-column"
           :menu="indicatorMenu"
@@ -21,7 +32,7 @@
           :searchType="$t('tools.common.indicators')"
         ></MenuToolbar>
       </v-col>
-      <v-col v-if="featuredIndicators" cols="auto">
+      <v-col v-if="showIntro && featuredIndicators" cols="auto">
         <section class="mb-8">
           <h2 class="text-h4 mt-16 mb-2 font-weight-black text-center" style="text-transform: uppercase;">{{ $t('tools.common.featured_indicators') }}</h2>
           <p style="margin: 0 30%; font-size: 1.25em;">{{ $t('tools.tables.get_started') }}</p>
@@ -38,39 +49,25 @@
               :click_route="selectItem"
               :primary_button_text="$t('featured_card.view')"
               :secondary_button_text="$t('featured_card.learn_more')"
-              :iconPath="getIconPath(indicator.categoryId)"
+              :iconPath="getCategoryIconPath(indicator.categoryId)"
+              dense
             >
             </featured-card>
           </template>
         </section>
       </v-col>
-      <v-col v-if="!showIntro" cols="auto" class="shrink">
-        <MenuToolbar
-          class="flex-column"
-          :menu="indicatorMenu"
-          :selectItem="selectItem"
-          :flattenSingleItems="false"
-          :searchType="$t('tools.common.indicators')"
-        ></MenuToolbar>
-      </v-col>
       <v-col v-if="indicator && tablesData" cols="auto" class="pt-4 px-4">
-          <h1 class="text-h3 mb-1 d-flex justify-space-between">
-            <span>
-              <span v-if="tablesData.category.parentCategoryId">{{ tablesData.category['name_' + locale] }} - </span>
-              {{ tablesData.indicator['name_' + locale] }}
-              <indicator-definition :indicator="indicator"></indicator-definition>
-            </span>
+          <v-alert dense type="error" v-if="locationLimitExceeded">{{ $t('tools.tables.location_limit_exceeded') }}</v-alert>
+          <div class="d-flex">
+            <v-text-field v-model="search" :disabled="locationLimitExceeded" :label="$t('tools.common.search')" hide-details @input="loadTablesData()">
+              <template v-slot:append><v-icon color="green">mdi-magnify</v-icon></template>
+            </v-text-field>
             <div>
               <download-menu :downloadData="downloadTablesData"></download-menu>
               <share-menu></share-menu>
               <about-menu indicator tool :indicatorId="indicator.id"></about-menu>
             </div>
-          </h1>
-          <h2 class="text-subtitle-1 mb-2">{{ tablesData.source['name_' + locale] }}</h2>
-          <v-alert dense type="error" v-if="locationLimitExceeded">{{ $t('tools.tables.location_limit_exceeded') }}</v-alert>
-          <v-text-field v-model="search" :disabled="locationLimitExceeded" :label="$t('tools.common.search')" hide-details @input="loadTablesData()">
-            <template v-slot:append><v-icon color="accent">mdi-magnify</v-icon></template>
-          </v-text-field>
+          </div>
           <v-data-table
             :headers="filteredHeaders"
             :items="items"
@@ -87,7 +84,7 @@
               {{ header.text }}
               <v-menu offset-y eager>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon color="accent" v-bind="attrs" v-on="on" :aria-label="$t('tools.tables.filter')">
+                  <v-btn icon color="green" v-bind="attrs" v-on="on" :aria-label="$t('tools.tables.filter')">
                     <v-icon>mdi-filter-variant</v-icon>
                   </v-btn>
                 </template>
@@ -106,7 +103,7 @@
                       <v-list-item-action>
                         <v-checkbox
                           v-model="locationType.selected"
-                          color="primary"
+                          color="red"
                           hide-details
                           :disabled="locationType.id === '7' && !indicator.aggregable"
                         ></v-checkbox>
@@ -115,7 +112,7 @@
                     </v-list-item>
                   </v-list>
                   <v-card-actions>
-                    <v-btn block color="accent" :disabled="locationLimitExceeded" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
+                    <v-btn block rounded dark color="green" :disabled="locationLimitExceeded" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-menu>
@@ -124,7 +121,7 @@
               {{ header.text }}
               <v-menu offset-y eager>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon color="accent" v-bind="attrs" v-on="on" :aria-label="$t('tools.tables.filter')">
+                  <v-btn icon color="green" v-bind="attrs" v-on="on" :aria-label="$t('tools.tables.filter')">
                     <v-icon>mdi-filter-variant</v-icon>
                   </v-btn>
                 </template>
@@ -143,7 +140,7 @@
                       <v-list-item-action>
                         <v-checkbox
                           v-model="location.selected"
-                          color="primary"
+                          color="red"
                           hide-details
                           :disabled="location.typeId === '7' && !indicator.aggregable"
                         ></v-checkbox>
@@ -152,7 +149,7 @@
                     </v-list-item>
                   </v-list>
                   <v-card-actions>
-                    <v-btn block color="accent" :disabled="locationLimitExceeded" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
+                    <v-btn block rounded dark color="green" :disabled="locationLimitExceeded" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-menu>
@@ -161,7 +158,7 @@
               {{ header.text }}
               <v-menu offset-y>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon color="accent" v-bind="attrs" v-on="on" :aria-label="$t('tools.tables.filter')">
+                  <v-btn icon color="green" v-bind="attrs" v-on="on" :aria-label="$t('tools.tables.filter')">
                     <v-icon>mdi-filter-variant</v-icon>
                   </v-btn>
                 </template>
@@ -180,7 +177,7 @@
                       <v-list-item-action>
                         <v-checkbox
                           v-model="year.selected"
-                          color="primary"
+                          color="red"
                           hide-details
                         ></v-checkbox>
                       </v-list-item-action>
@@ -188,7 +185,7 @@
                     </v-list-item>
                   </v-list>
                   <v-card-actions>
-                    <v-btn block color="accent" :disabled="locationLimitExceeded" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
+                    <v-btn block rounded dark color="green" :disabled="locationLimitExceeded" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-menu>
@@ -197,7 +194,7 @@
               {{ header.text }}
               <v-menu offset-y>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon color="accent" v-bind="attrs" v-on="on" :aria-label="$t('tools.tables.filter')">
+                  <v-btn icon color="green" v-bind="attrs" v-on="on" :aria-label="$t('tools.tables.filter')">
                     <v-icon>mdi-filter-variant</v-icon>
                   </v-btn>
                 </template>
@@ -216,7 +213,7 @@
                       <v-list-item-action>
                         <v-checkbox
                           v-model="race.selected"
-                          color="primary"
+                          color="red"
                           hide-details
                         ></v-checkbox>
                       </v-list-item-action>
@@ -224,7 +221,7 @@
                     </v-list-item>
                   </v-list>
                   <v-card-actions>
-                    <v-btn block color="accent" :disabled="locationLimitExceeded" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
+                    <v-btn block rounded dark color="green" :disabled="locationLimitExceeded" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-menu>
@@ -233,7 +230,7 @@
               {{ header.text }}
               <v-menu offset-y>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon color="accent" v-bind="attrs" v-on="on" :aria-label="$t('tools.tables.filter')">
+                  <v-btn icon color="green" v-bind="attrs" v-on="on" :aria-label="$t('tools.tables.filter')">
                     <v-icon>mdi-filter-variant</v-icon>
                   </v-btn>
                 </template>
@@ -252,7 +249,7 @@
                       <v-list-item-action>
                         <v-checkbox
                           v-model="age.selected"
-                          color="primary"
+                          color="red"
                           hide-details
                         ></v-checkbox>
                       </v-list-item-action>
@@ -260,7 +257,7 @@
                     </v-list-item>
                   </v-list>
                   <v-card-actions>
-                    <v-btn block color="accent" :disabled="locationLimitExceeded" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
+                    <v-btn block rounded dark color="green" :disabled="locationLimitExceeded" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-menu>
@@ -269,7 +266,7 @@
               {{ header.text }}
               <v-menu offset-y>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon color="accent" v-bind="attrs" v-on="on" :aria-label="$t('tools.tables.filter')">
+                  <v-btn icon color="green" v-bind="attrs" v-on="on" :aria-label="$t('tools.tables.filter')">
                     <v-icon>mdi-filter-variant</v-icon>
                   </v-btn>
                 </template>
@@ -288,7 +285,7 @@
                       <v-list-item-action>
                         <v-checkbox
                           v-model="sex.selected"
-                          color="primary"
+                          color="red"
                           hide-details
                         ></v-checkbox>
                       </v-list-item-action>
@@ -296,7 +293,7 @@
                     </v-list-item>
                   </v-list>
                   <v-card-actions>
-                    <v-btn block color="accent" :disabled="locationLimitExceeded" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
+                    <v-btn block rounded dark color="green" :disabled="locationLimitExceeded" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-menu>
@@ -305,7 +302,7 @@
               {{ header.text }}
               <v-menu offset-y>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon color="accent" v-bind="attrs" v-on="on" :aria-label="$t('tools.tables.filter')">
+                  <v-btn icon color="green" v-bind="attrs" v-on="on" :aria-label="$t('tools.tables.filter')">
                     <v-icon>mdi-filter-variant</v-icon>
                   </v-btn>
                 </template>
@@ -324,7 +321,7 @@
                       <v-list-item-action>
                         <v-checkbox
                           v-model="education.selected"
-                          color="primary"
+                          color="red"
                           hide-details
                         ></v-checkbox>
                       </v-list-item-action>
@@ -332,7 +329,7 @@
                     </v-list-item>
                   </v-list>
                   <v-card-actions>
-                    <v-btn block color="accent" :disabled="locationLimitExceeded" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
+                    <v-btn block rounded dark color="green" :disabled="locationLimitExceeded" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-menu>
@@ -341,7 +338,7 @@
               {{ header.text }}
               <v-menu offset-y>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn icon color="accent" v-bind="attrs" v-on="on" :aria-label="$t('tools.tables.filter')">
+                  <v-btn icon color="green" v-bind="attrs" v-on="on" :aria-label="$t('tools.tables.filter')">
                     <v-icon>mdi-filter-variant</v-icon>
                   </v-btn>
                 </template>
@@ -360,7 +357,7 @@
                       <v-list-item-action>
                         <v-checkbox
                           v-model="income.selected"
-                          color="primary"
+                          color="red"
                           hide-details
                         ></v-checkbox>
                       </v-list-item-action>
@@ -368,7 +365,7 @@
                     </v-list-item>
                   </v-list>
                   <v-card-actions>
-                    <v-btn block color="accent" :disabled="locationLimitExceeded" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
+                    <v-btn block rounded dark color="green" :disabled="locationLimitExceeded" @click="loadTablesData()">{{ $t('tools.explore.apply_filters') }}</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-menu>
@@ -389,7 +386,8 @@ import FeaturedCard from '@/app/components/FeaturedCard'
 import DownloadMenu from '@/app/components/DownloadMenu'
 import ShareMenu from '@/app/components/ShareMenu'
 import AboutMenu from '@/app/components/AboutMenu'
-import IndicatorDefinition from '../components/IndicatorDefinition.vue'
+import IndicatorDefinition from '@/app/components/IndicatorDefinition.vue'
+import { getCategoryIconPath } from '@/services/icons'
 import debounce from 'debounce'
 
 export default {
@@ -742,29 +740,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setIndicator', 'setTablesData', 'getTablesData', 'getFeaturedIndicators', 'setToolRoute']),
-    getIconPath(categoryId) {
-      switch (categoryId) {
-        case '1':
-          return '/img/icon_data_civic_social.svg';
-        case '2':
-          return '/img/icon_data_criminal_justice.svg';
-        case '3':
-          return '/img/icon_data_demographic.svg';
-        case '4':
-          return '/img/icon_data_economic.svg'
-        case '5':
-          return '/img/icon_data_education.svg';
-        case '6':
-          return '/img/icon_data_environment.svg';
-        case '7':
-          return '/img/icon_data_health.svg';
-        case '8':
-          return '/img/icon_data_housing.svg';
-      }
-
-      return '';
-    },
+    ...mapActions(['setIndicator', 'setTablesData', 'getTablesData', 'getFeaturedIndicators', 'setToolRoute' ]),
     selectItem(item) {
       if (item.id !== this.indicator?.id) {
         this.setIndicator(item).then(() => {
@@ -827,6 +803,9 @@ export default {
     selectAllIncomesChange() {
       this.incomes.forEach(i => i.selected = this.selectAllIncomes);
     },
+    getCategoryIconPath(category) {
+      return getCategoryIconPath(category);
+    }
   }
 }
 </script>
@@ -836,7 +815,7 @@ export default {
 ::v-deep .v-data-table-header .v-icon:before,
 ::v-deep .v-data-table-header .v-icon:after,
 ::v-deep .v-data-table-header .v-data-table-header__sort-badge {
-  color: var(--v-accent-base) !important;
+  color: var(--v-green-base) !important;
 }
 .filter-list {
   min-width: 160px;

@@ -3,7 +3,7 @@
 		<v-card outlined tile id="explore_filters">
 			<v-card-title>
 				<span class="text-h6 font-weight-light">
-					<v-icon color="accent">mdi-filter-variant</v-icon>
+					<v-icon color="green">mdi-filter-variant</v-icon>
 					{{ $t('tools.explore.filters') }}
 				</span>
 			</v-card-title>
@@ -105,7 +105,7 @@
 				</template>
 			</v-card-text>
 			<v-card-actions class="d-flex justify-end">
-				<v-btn style="font-size: 14pt;" class="font-weight-bold" color="accent" :disabled="!applyNeeded" @click="applyFilters" data-html2canvas-ignore>
+				<v-btn style="font-size: 14pt;" class="font-weight-bold" color="green" :disabled="!applyNeeded" @click="applyFilters" data-html2canvas-ignore>
 					{{ $t('tools.explore.apply_filters') }}
 				</v-btn>
 			</v-card-actions>

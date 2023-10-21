@@ -30,7 +30,7 @@ import { SVGRenderer } from 'echarts/renderers';
 import { AriaComponent, LegendComponent, GridComponent } from 'echarts/components';
 import { BarChart, CustomChart } from 'echarts/charts';
 import ExploreToolsPanel from '@/app/components/ExploreToolsPanel'
-import { format } from '@/formatter/formatter'
+import { format } from '@/services/formatter'
 
 export default {
 	name: 'ExploreCompareChart',

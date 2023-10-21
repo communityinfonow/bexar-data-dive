@@ -3,7 +3,7 @@
     <v-list-item-title v-if="!singleItem" :class="textClass">
       {{ itemName }}
     </v-list-item-title>
-    <span v-else class="textClass">
+    <span v-else :class="textClass">
       {{ itemName }}
     </span>
   </v-btn>

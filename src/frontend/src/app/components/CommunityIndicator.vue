@@ -1,8 +1,8 @@
 <template>
-	<div :id="'community_indicator_' + this.item.indicator.id" class="pl-4 pt-2 mb-6" :class="{ 'd-print-none': !item.year }">
+	<div :id="'community_indicator_' + this.item.indicator.id" class="pa-8 mb-8 community-indicator" :class="{ 'd-print-none': !item.year }">
 		<section>
 			<template v-if="!item.indicator.aggregable && community.location.typeId === '7'">
-				<h3 class="text-h6">
+				<h3 class="text-h6 font-weight-bold">
 					<span v-if="parentName">{{ parentName }} - </span>
 					{{ item.indicator['name_' + locale]}}
 				</h3>
@@ -11,16 +11,16 @@
 			<template v-else-if="item.indicator.hasData && item.year">
 				<div class="d-flex justify-space-between">
 					<div>
-						<h3 class="text-h6 d-flex">
+						<h3 class="text-h6 font-weight-bold d-flex">
 							<div>
 							<span v-if="parentName">{{ parentName }}<span v-if="item.indicator['name_' + locale]"> - </span></span>
 							{{ item.indicator['name_' + locale]}}<span v-if="item.indicator['name_' + locale]">:</span>
 							</div>
-							<v-chip color="secondary" label class="ml-2" v-if="item.indicator['name_' + locale]">
+							<v-chip color="secondary" label class="mx-2" v-if="item.indicator['name_' + locale]">
 								<span v-if="item.demographicData[0].suppressed" class="text-h6 mb-0">{{ $t('data.suppressed') }}</span>
 								<span v-else-if="item.demographicData[0].value === null" class="text-h6 mb-0">{{ $t('data.no_data') }}</span>
 								<template v-else>
-									<div class="text-h6 mb-0">{{ formatValue(item.indicatorType.id, item.demographicData[0].value) }}</div>
+									<div class="text-h6 font-weight-bold mb-0">{{ formatValue(item.indicatorType.id, item.demographicData[0].value) }}</div>
 									<div v-if="item.demographicData[0].moeLow && item.demographicData[0].moeHigh" class="ml-2">{{ $t('data.moe_range') }} {{ formatValue(item.indicatorType.id, item.demographicData[0].moeLow) }} - {{ formatValue(item.indicatorType.id, item.demographicData[0].moeHigh) }}</div> 
 								</template>
 							</v-chip>
@@ -30,7 +30,7 @@
 							{{ community.location['name_' + locale]}}, 
 							{{ item.source['name_' + locale] }} ({{ item.year }})
 						</p>
-						<p v-if="item.indicator['name_' + locale] && item.demographicData.filter(i => i.demographicFilter.id !== null).length" :id="'community_indicator_chart_title_' + item.indicator.id" class="font-italic text-subtitle-1 mb-4">
+						<p v-if="item.indicator['name_' + locale] && item.demographicData.filter(i => i.demographicFilter.id !== null).length" :id="'community_indicator_chart_title_' + item.indicator.id" class="text-subtitle-1 mb-4 blue--text">
 								{{ $t('tools.community.percentage_of') }}
 								<span class="text-normal font-weight-bold">"{{ (parentName ? parentName + ' - ' : '') + item.indicator['name_' + locale] }}"</span>
 								{{ $t('tools.community.who_are') }}
@@ -65,14 +65,14 @@
 				</v-row>
 			</template>
 			<template v-else-if="item.indicator.hasData">
-				<h3 class="text-h6">
+				<h3 class="text-h6 font-weight-bold">
 					<span v-if="parentName">{{ parentName }} - </span>
 					{{ item.indicator['name_' + locale]}}
 				</h3>
 				<p>{{ $t('tools.community.no_data_geography') }}</p>
 			</template>
 			<template v-else>
-				<h3 class="text-h6">
+				<h3 class="text-h6 font-weight-bold">
 					<span v-if="parentName">{{ parentName }} - </span>
 					{{ item.indicator['name_' + locale]}}
 				</h3>
@@ -86,7 +86,7 @@
 import i18n from '@/i18n'
 import { mapActions, mapState } from 'vuex'
 import CommunityChart from '@/app/components/CommunityChart'
-import { format } from '@/formatter/formatter'
+import { format } from '@/services/formatter'
 import html2canvas from 'html2canvas'
 import DownloadMenu from '@/app/components/DownloadMenu'
 import AboutMenu from '@/app/components/AboutMenu'
@@ -180,6 +180,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+	.community-indicator {
+		background-color: $color-grey;
+		border-radius: 2em;
+	}
 	::v-deep .v-chip .v-chip__content {
 		align-items: baseline;
 		flex-direction: row;

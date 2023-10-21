@@ -84,8 +84,8 @@ public class CommunityService {
 			mergedIndicator.getIndicator().setFeatured(false);
 			mergedIndicator.getIndicator().setHasData(filterCategory.getIndicators().get(0).getIndicator().isHasData());
 			mergedIndicator.getIndicator().setRatePer(0);
-			mergedIndicator.setSource(new Source());
-			mergedIndicator.getIndicator().getSource().setId(filterCategory.getIndicators().get(0).getIndicator().getSourceId());
+			mergedIndicator.getIndicator().setSource(new Source());
+			mergedIndicator.getIndicator().getSource().setId(filterCategory.getIndicators().get(0).getSource().getId());
 			mergedIndicator.getIndicator().setTypeId(filterCategory.getIndicators().get(0).getIndicator().getTypeId());
 			mergedIndicator.setIndicatorType(filterCategory.getIndicators().get(0).getIndicatorType());
 			mergedIndicator.setSource(filterCategory.getIndicators().get(0).getSource());

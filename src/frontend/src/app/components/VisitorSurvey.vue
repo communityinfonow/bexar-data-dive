@@ -30,9 +30,9 @@
               </div>
             </v-card-text>
             <v-card-actions @click.stop="">
-              <v-btn text @click.stop="dismissSurvey">{{ $t('survey.close') }}</v-btn>
+              <v-btn text rounded @click.stop="dismissSurvey">{{ $t('survey.close') }}</v-btn>
               <v-spacer></v-spacer>
-              <v-btn color="primary" :disabled="!surveyResponse" @click.stop="submitSurvey">{{ $t('survey.submit') }}</v-btn>
+              <v-btn rounded dark color="red" :disabled="!surveyResponse" @click.stop="submitSurvey">{{ $t('survey.submit') }}</v-btn>
             </v-card-actions>
           </v-form>
         </template>
@@ -40,7 +40,7 @@
           <v-card-text v-html="$t('survey.feedback')" @click.stop="">
           </v-card-text>
           <v-card-actions @click.stop=""> 
-            <v-btn class="mx-auto" text color="primary" @click="closeSurvey">{{ $t('survey.close') }}</v-btn>
+            <v-btn class="mx-auto" text color="red" @click="closeSurvey">{{ $t('survey.close') }}</v-btn>
           </v-card-actions>
         </template>
       </v-card>

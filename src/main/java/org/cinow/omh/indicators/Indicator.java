@@ -233,7 +233,7 @@ public class Indicator {
 	 * @return the sourceId
 	 */
 	public String getSourceId() {
-		return this.source.getId();
+		return this.source != null ? this.source.getId() : null;
 	}
 
 	/**

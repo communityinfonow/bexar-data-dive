@@ -32,7 +32,7 @@
 <script>
 import { mapState } from 'vuex'
 import i18n from '@/i18n'
-import { format } from '@/formatter/formatter'
+import { format } from '@/services/formatter'
 
 export default {
 	name: 'DockedTooltip',

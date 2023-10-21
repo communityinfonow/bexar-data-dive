@@ -1,7 +1,7 @@
 <template>
 	<v-menu offset-y min-width="300px">
 		<template v-slot:activator="{ on }">
-			<v-btn color="accent" icon data-html2canvas-ignore v-on="on">
+			<v-btn color="green" icon data-html2canvas-ignore v-on="on">
 				<v-icon>mdi-share</v-icon>
 			</v-btn>
 		</template>

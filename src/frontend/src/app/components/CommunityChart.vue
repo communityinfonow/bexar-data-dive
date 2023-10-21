@@ -14,7 +14,7 @@ import * as echarts from 'echarts/core';
 import { SVGRenderer } from 'echarts/renderers';
 import { AriaComponent, LegendComponent, GridComponent, TitleComponent } from 'echarts/components';
 import { BarChart, CustomChart } from 'echarts/charts';
-import { format } from '@/formatter/formatter'
+import { format } from '@/services/formatter'
 
 export default {
 	name: 'CommunityChart',
@@ -96,7 +96,7 @@ export default {
 				type: 'category', 
 				data: xAxisData,
 				axisTick: { show: false },
-				axisLabel: { ...textStyle, interval: 0, width: '80', overflow: 'break', lineHeight: 20, color: '#333333' }
+				axisLabel: { ...textStyle, fontWeight: 'bold', interval: 0, width: '80', overflow: 'break', lineHeight: 20, color: '#333333' }
 			}];
 			option.textStyle = textStyle;
 			option.color = '#3b5a98';
@@ -133,6 +133,7 @@ export default {
 							a: {
 								align: 'center',
 								fontSize: this.smallScreen ? '12px' : '16px',
+								fontWeight: 'bold',
 								lineHeight: '20',
 								color: '#333333'
 							},

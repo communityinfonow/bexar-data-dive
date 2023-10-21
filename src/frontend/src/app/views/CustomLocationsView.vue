@@ -57,7 +57,7 @@
         <v-col cols="4">
           <v-form ref="selectionForm" lazy-validation v-model="selectionForm" class="d-flex flex-column justify-start">
             <v-btn
-              color="accent"
+              color="green"
               @click="viewCustomLocations"
             >
               <v-icon left>mdi-folder-open</v-icon>
@@ -95,7 +95,7 @@
                       <template v-slot:default="{active}">
                         <v-list-item-action>
                           <v-checkbox
-                            color="accent"
+                            color="green"
                             :input-value="active"
                           ></v-checkbox>
                         </v-list-item-action>
@@ -117,7 +117,7 @@
                         <template v-slot:default="{active}">
                           <v-list-item-action>
                             <v-checkbox
-                              color="accent"
+                              color="green"
                               :input-value="active"
                             ></v-checkbox>
                           </v-list-item-action>
@@ -139,7 +139,7 @@
                       <template v-slot:default="{active}">
                         <v-list-item-action>
                           <v-checkbox
-                            color="accent"
+                            color="green"
                             :input-value="active"
                           ></v-checkbox>
                         </v-list-item-action>
@@ -155,14 +155,14 @@
             <v-spacer></v-spacer>
             <div v-if="!message" class="d-flex">
               <v-btn
-                color="primary"
+                color="red"
                 class="mt-4 mr-2 flex-grow-1"
                 @click="saveCustomLocation"
               >
                 {{ $t('tools.custom_locations.save') }}
               </v-btn>
               <v-btn
-                color="primary"
+                color="red"
                 class="mt-4 ml-2 flex-grow-1"
                 @click="exportCustomLocation"
               >
@@ -179,7 +179,7 @@
                     <v-btn
                       small
                       text
-                      color="primary"
+                      color="red"
                       @click="viewCommunity(customLocation)"
                     >
                       {{ $t('tools.custom_locations.view_community') }}
@@ -206,13 +206,13 @@
           <v-card-subtitle>{{ $t('tools.custom_locations.open_description') }}</v-card-subtitle>
           <v-alert v-if="!customLocations.length" type="info">{{ $t('tools.custom_locations.no_locations_saved') }}</v-alert>
           <v-list>
-            <v-list-item-group v-model="customLocationSelected" color="primary">
+            <v-list-item-group v-model="customLocationSelected" color="red">
               <v-list-item v-for="location in customLocations" :key="location.id" :value="location">
                 <v-list-item-content>
                   <v-list-item-title>{{ location.name }}</v-list-item-title>
                 </v-list-item-content>
                 <v-list-item-action class="flex-row">
-                  <v-btn text inline color="primary" @click="viewCommunity(location)">
+                  <v-btn text inline color="red" @click="viewCommunity(location)">
                     {{ $t('tools.custom_locations.view_community') }}
                   </v-btn>
                   <v-btn text inline @click="removeCustomLocation(location.id)">
@@ -226,7 +226,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="primary" text :disabled="!customLocationSelected && !customLocationFile" @click="openCustomLocation">{{ $t('tools.custom_locations.open') }}</v-btn>
+          <v-btn color="red" text :disabled="!customLocationSelected && !customLocationFile" @click="openCustomLocation">{{ $t('tools.custom_locations.open') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

@@ -1,7 +1,122 @@
 <template>
   <v-container v-if="locationMenu" fluid class="pa-0 fill-height">
     <v-row class="no-gutters flex-column fill-height">
-      <v-col cols="auto">
+      <v-col cols="auto" class="grow">
+        <section :class="'page-header d-flex flex-column light--text pa-12 pb-0 ' +  + (!showIntro ? 'main-content' : '')">
+          <h1 v-if="showIntro" class="font-weight-bold" style="font-size: 2.5rem;">{{ $t('tools.community.name') }}</h1>
+          <div v-if="showIntro" class="font-weight-medium mt-2" style="font-size: 1.25rem;">
+            {{ $t('tools.community.headline') }}
+            {{ $t('tools.community.long_description') }}
+          </div>
+          <div v-if="community">
+            <v-row>
+              <v-col cols="2">
+                <l-map
+                  v-if="componentInitialized"
+                  ref="communityMap"
+                  :zoom="zoom"
+                  :center="center"
+                  :options="{ zoomControl: false, preferCanvas: true }"
+                  :style="{ height: '290px' }"
+                  v-resize:debounce.100="resizeHandler"
+                  @ready="initializeCommunityMap"
+                >
+                  <l-tile-layer
+                    url="https://tiles.stadiamaps.com/tiles/stamen_toner_background/{z}/{x}/{y}{r}.png"
+                    :options="{ crossOrigin: 'anonymous' }"
+                    :attribution="$t('tools.common.map_attribution')"
+                  />
+                  <l-tile-layer
+                    url="https://tiles.stadiamaps.com/tiles/stamen_toner_lines/{z}/{x}/{y}{r}.png"
+                    :options="{ crossOrigin: 'anonymous' }"
+                    :attribution="$t('tools.common.map_attribution')"
+                  ></l-tile-layer>
+                  <l-tile-layer
+                    url="https://tiles.stadiamaps.com/tiles/stamen_toner_labels/{z}/{x}/{y}{r}.png"
+                    :options="{ crossOrigin: 'anonymous' }"
+                    :attribution="$t('tools.common.map_attribution')"
+                  ></l-tile-layer>
+                  <l-geo-json
+                    v-if="communityGeojson"
+                    :geojson="communityGeojson"
+                    :options="options"
+                  ></l-geo-json>
+                </l-map>
+              </v-col>
+              <v-col cols="10">
+                <div class="d-flex flex-column justify-space-between">
+                  <h1 class="font-weight-bold" style="font-size: 2.5rem;" id="community_name">
+                    {{ community.location['name_' + locale] }}
+                    <span v-if="community.location.typeId === '7'">
+                      ({{ locationMenu.categories.find(c => c.id === customLocations.find(cl => cl.id === community.location.id).typeId)['name_' + this.locale]}})
+                    </span>
+                  </h1>
+                  <div>
+                    <!-- TODO: download/share/about menu styles -->
+                    <!-- TODO: community level menu not showing up -->
+                    <download-menu :downloadData="downloadCommunityData"></download-menu>
+                    <share-menu></share-menu>
+                    <about-menu tool></about-menu>
+                  </div>
+                </div>
+                <v-spacer></v-spacer>
+                <div>
+                  <v-select 
+                    style="width: 240px;"
+                    filled
+                    rounded
+                    dense
+                    background-color="#fff"
+                    :label="$t('tools.community.skip')"
+                    :items="categories"
+                    :item-text="(item) => { return item['name_' + locale] + (item.hasData ? '' : ' (' + $t('tools.community.coming_soon') + ')') }"
+                    :item-disabled="(item) => !item.hasData"
+                    item-value="id"
+                    v-model="selectedCategory"
+                    @change="skipToCategory"
+                  >
+                  </v-select>
+                  <v-select
+                    style="width: 240px;"
+                    filled
+                    rounded
+                    dense
+                    background-color="#fff"
+                    :label="$t('tools.community.compare_by')"
+                    :items="filterTypes"
+                    :item-text="'name_' + locale"
+                    item-value="id"
+                    v-model="selectedFilterType"
+                    @change="applyFilter"
+                  >
+                  </v-select>
+                  <div class="v-input v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select pt-2">
+                    <label aria-label id="labelsOrLinesLabel" class="v-label v-label--active theme--light" style="left: 0px; right: auto; position: absolute;">{{ $t('tools.common.chart_options') }}</label>
+                    <v-btn-toggle v-model="labelsOrLines" id="labelsOrLines" aria-labelledby="labelsOrLinesLabel">
+                      <v-btn 
+                        v-for="item in [['labels', $t('tools.common.chart_options_labels')], ['lines', $t('tools.common.chart_options_lines')]]" 
+                        :key="item[0]" 
+                        :value="item[0]" 
+                        color="green"
+                        small
+                        dark
+                      >
+                        {{ item[1] }}
+                      </v-btn>
+                    </v-btn-toggle>
+                  </div>
+                </div>
+              </v-col>
+            </v-row>
+          </div>
+          <v-breadcrumbs :items="breadcrumbs" class="mb-2" dark>
+            <template v-slot:divider>
+              <v-icon>mdi-chevron-right</v-icon>
+            </template>
+          </v-breadcrumbs>
+        </section>
+      </v-col>
+      <v-col cols="auto" class="shrink sticky-menu">
         <MenuToolbar
           class="flex-column"
           :menu="locationMenu"
@@ -10,18 +125,6 @@
           :searchType="$t('tools.common.locations')"
         ></MenuToolbar>
       </v-col>
-      <v-col cols="auto">
-        <v-breadcrumbs :items="breadcrumbs">
-          <template v-slot:divider>
-            <v-icon>mdi-chevron-right</v-icon>
-          </template>
-        </v-breadcrumbs>
-      </v-col>
-      <v-col v-if="showIntro" cols="auto" class="pa-4 shrink">
-        <h1 class="text-h3 mb-2">{{ $t('tools.community.name') }}</h1>
-        <p>{{ $t('tools.community.long_description') }}</p>
-        <p>{{ $t('tools.community.get_started') }}</p>
-      </v-col>
       <v-col v-if="showIntro" cols="auto" class="pa-4 grow">
         <l-map
           v-if="componentInitialized"
@@ -29,7 +132,7 @@
           :zoom="zoom"
           :center="center"
           :options="{ zoomDelta: 0.5, zoomSnap: 0.5, preferCanvas: true }"
-          :style="{ height: '100%', 'min-height': '300px' }"
+          :style="{ height: '100%', 'min-height': '600px' }"
           v-resize:debounce.100="resizeHandler"
           @ready="initializeSelectionMap"
         >
@@ -60,7 +163,7 @@
           >
             <v-card tile outlined :style="{ boxShadow: 'none !important' }">
               <v-card-title class="pb-0 text--primary">
-                <v-icon color="accent">mdi-layers</v-icon>
+                <v-icon color="green">mdi-layers</v-icon>
                 {{ $t('tools.community.community_types') }}
               </v-card-title>
               <v-card-text>
@@ -69,7 +172,7 @@
                   @change="drawSelectionMap"
                 >
                   <v-radio 
-                    color="accent"
+                    color="green"
                     v-for="layer in layers" 
                     :key="layer.id" 
                     :value="layer" 
@@ -82,97 +185,13 @@
         </l-map>
       </v-col>
       <v-col v-if="community" cols="auto" class="pa-4 grow">
-        <v-row class="mb-8">
-          <v-col cols="2">
-            <l-map
-              v-if="componentInitialized"
-              ref="communityMap"
-              :zoom="zoom"
-              :center="center"
-              :options="{ zoomControl: false, preferCanvas: true }"
-              :style="{ height: '260px' }"
-              v-resize:debounce.100="resizeHandler"
-              @ready="initializeCommunityMap"
-            >
-              <l-tile-layer
-                url="https://tiles.stadiamaps.com/tiles/stamen_toner_background/{z}/{x}/{y}{r}.png"
-                :options="{ crossOrigin: 'anonymous' }"
-                :attribution="$t('tools.common.map_attribution')"
-              />
-              <l-tile-layer
-                url="https://tiles.stadiamaps.com/tiles/stamen_toner_lines/{z}/{x}/{y}{r}.png"
-                :options="{ crossOrigin: 'anonymous' }"
-                :attribution="$t('tools.common.map_attribution')"
-              ></l-tile-layer>
-              <l-tile-layer
-                url="https://tiles.stadiamaps.com/tiles/stamen_toner_labels/{z}/{x}/{y}{r}.png"
-                :options="{ crossOrigin: 'anonymous' }"
-                :attribution="$t('tools.common.map_attribution')"
-              ></l-tile-layer>
-              <l-geo-json
-                v-if="communityGeojson"
-                :geojson="communityGeojson"
-                :options="options"
-              ></l-geo-json>
-            </l-map>
-          </v-col>
-          <v-col cols="10">
-            <div class="d-flex justify-space-between">
-              <h1 class="text-h3 mt-2 mb-4" id="community_name">
-                {{ community.location['name_' + locale] }}
-                <span v-if="community.location.typeId === '7'">
-                  ({{ locationMenu.categories.find(c => c.id === customLocations.find(cl => cl.id === community.location.id).typeId)['name_' + this.locale]}})
-                </span>
-              </h1>
-              <div>
-                <download-menu :downloadData="downloadCommunityData"></download-menu>
-                <share-menu></share-menu>
-                <about-menu tool></about-menu>
-              </div>
-            </div>
-            <v-select 
-              style="width: 200px;"
-              color="accent"
-              :label="$t('tools.community.skip')"
-              :items="categories"
-              :item-text="(item) => { return item['name_' + locale] + (item.hasData ? '' : ' (' + $t('tools.community.coming_soon') + ')') }"
-              :item-disabled="(item) => !item.hasData"
-              item-value="id"
-              v-model="selectedCategory"
-              @change="skipToCategory"
-            >
-            </v-select>
-            <v-select
-              style="width: 200px;"
-              color="accent"
-              :label="$t('tools.community.compare_by')"
-              :items="filterTypes"
-              :item-text="'name_' + locale"
-              item-value="id"
-              v-model="selectedFilterType"
-              @change="applyFilter"
-            >
-            </v-select>
-            <div class="v-input v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select pt-2">
-              <label aria-label id="labelsOrLinesLabel" class="v-label v-label--active theme--light" style="left: 0px; right: auto; position: absolute;">{{ $t('tools.common.chart_options') }}</label>
-              <v-btn-toggle v-model="labelsOrLines" id="labelsOrLines" aria-labelledby="labelsOrLinesLabel">
-                <v-btn 
-                  v-for="item in [['labels', $t('tools.common.chart_options_labels')], ['lines', $t('tools.common.chart_options_lines')]]" 
-                  :key="item[0]" 
-                  :value="item[0]" 
-                  color="accent"
-                  small
-                >
-                  {{ item[1] }}
-                </v-btn>
-              </v-btn-toggle>
-            </div>
-          </v-col>
-        </v-row>
         <h2 v-if="noCommunityData" class="text-h4">{{ $t('tools.community.data_coming_soon')}}</h2>
         <section v-for="data in sortedData" :key="'category_' + data.category.id">
           <div v-if="data.category.hasData">
-            <h2 :id="'category_' + data.category.id" class="text-h4 mb-4">{{ data.category['name_' + locale]}}</h2>
+            <h2 :id="'category_' + data.category.id" class="d-flex text-h4 mt-8 mb-4 blue--text font-weight-bold" style="text-transform: uppercase;">
+              <span class="mr-4">{{ data.category['name_' + locale]}}</span>
+              <v-divider class="mt-5"></v-divider>
+            </h2>
             <template v-for="item in data.indicators">
               <template v-if="item.indicators">
                 <div :key="'category_' + item.category.id">
@@ -202,9 +221,6 @@ import L from 'leaflet'
 import { latLng } from 'leaflet'
 import { LMap, LTileLayer, LControl, LGeoJson } from 'vue2-leaflet'
 import { feature, featureCollection, multiPolygon } from '@turf/helpers'
-//import combine from '@turf/combine'
-//import flatten from '@turf/flatten'
-//import dissolve from '@turf/dissolve'
 import MenuToolbar from '@/app/components/MenuToolbar'
 import CommunityIndicator from '@/app/components/CommunityIndicator'
 import DownloadMenu from '@/app/components/DownloadMenu'

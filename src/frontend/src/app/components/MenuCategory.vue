@@ -1,5 +1,5 @@
 <template>
-	<v-menu offset-y :internal-activator="true" :key="'category_' + category.id" max-height="60%" allow-overflow eager v-model="menuOpen">
+	<v-menu offset-y :internal-activator="true" :key="'category_' + category.id" max-height="60vh" allow-overflow eager v-model="menuOpen">
 		<template v-slot:activator="{ on }">
 			<v-btn text tile v-on="on" style="height: 100%;" :class="textClass">
 				{{ categoryName }}

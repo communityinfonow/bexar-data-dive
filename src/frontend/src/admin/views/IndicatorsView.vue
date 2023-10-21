@@ -72,7 +72,7 @@
 							<v-switch label="Aggregable" v-model="ind.aggregable"></v-switch>
 						</v-card-text>
 						<v-card-actions>
-							<v-btn color="primary" @click="updateHandler(ind, idx)">
+							<v-btn color="red" @click="updateHandler(ind, idx)">
 								Save
 							</v-btn>
 						</v-card-actions>
@@ -151,7 +151,7 @@
 							<v-switch label="Aggregable" v-model="newIndicator.aggregable"></v-switch>
 						</v-card-text>
 						<v-card-actions>
-							<v-btn type="submit" color="primary" @click.prevent="addHandler">
+							<v-btn type="submit" color="red" @click.prevent="addHandler">
 								Add
 							</v-btn>
 						</v-card-actions>

@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 import router from '@/app/router/index'
 import i18n from '@/i18n'
 import axios from 'axios'
-import { format } from '@/formatter/formatter'
+import { format } from '@/services/formatter'
 
 Vue.use(Vuex)
 

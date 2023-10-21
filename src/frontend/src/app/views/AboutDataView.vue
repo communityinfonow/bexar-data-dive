@@ -63,7 +63,7 @@
           <v-sheet rounded class="pa-2 d-flex align-center citation-content" :class="{ 'cursor-pointer': clipboardWritable }" @click="clipboardWritable ? copyCitation() : null">
             <span ref="citationEl" v-html="citation"></span>
             <v-spacer></v-spacer>
-            <v-btn class="ml-2" color="primary" icon :disabled="!clipboardWritable" @click="clipboardWritable ? copyCitation() : null">
+            <v-btn class="ml-2" color="red" icon :disabled="!clipboardWritable" @click="clipboardWritable ? copyCitation() : null">
               <v-icon>mdi-content-copy</v-icon>
             </v-btn>
           </v-sheet>

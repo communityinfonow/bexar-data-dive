@@ -37,8 +37,9 @@
 				</v-col>
 				<v-col cols="2" v-if="showCompareOptions">
 					<v-btn
-						color="primary"
-						tile
+						color="red"
+						rounded
+						dark
 						@click="applyComparison"
 					>
 						{{ $t('tools.explore.compare') }}
@@ -48,12 +49,14 @@
 					<div class="d-flex justify-end">
 						<div class="v-input v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select pt-1 flex-grow-0 flex-shrink-1">
 							<label aria-label id="labelsOrLinesLabel" class="v-label v-label--active theme--light" style="left: 0px; right: auto; position: absolute;">{{ $t('tools.common.chart_options') }}</label>
-							<v-btn-toggle v-model="labelsOrLines" id="labelsOrLines" aria-labelledby="labelsOrLinesLabel">
+							<!-- TODO: style/color these buttons -->
+							<v-btn-toggle rounded v-model="labelsOrLines" id="labelsOrLines" aria-labelledby="labelsOrLinesLabel">
 								<v-btn 
 									v-for="item in [['labels', $t('tools.common.chart_options_labels')], ['lines', $t('tools.common.chart_options_lines')]]" 
 									:key="item[0]" 
 									:value="item[0]" 
-									color="accent"
+									color="green"
+									dark
 									small
 									:disabled="item[0] == 'lines' && exploreData && !exploreData.indicator.hasMoe"
 									:title="item[0] == 'lines' && exploreData && !exploreData.indicator.hasMoe ? $t('tools.common.chart_options_no_moe') : ''"
@@ -76,6 +79,7 @@
 							hide-details
 							style="margin-top: 2px;"
 							class="mr-6"
+							color="red"
 						></v-switch>
 						<v-switch
 							inset
@@ -83,6 +87,7 @@
 							style="margin-top: 2px;"
 							v-model="labelsOrLines"
 							hide-details
+							color="red"
 						></v-switch>
 					</template>
 					<download-menu :downloadData="downloadData" :downloadImage="downloadImage"></download-menu>

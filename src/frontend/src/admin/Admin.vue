@@ -11,7 +11,7 @@
       fixed
       bottom
       height="12px"
-      color="accent"
+      color="green"
       style="z-index: 10001"
     ></v-progress-linear>
     <AppFooter></AppFooter>
