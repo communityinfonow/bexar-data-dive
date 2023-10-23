@@ -258,7 +258,7 @@ export default {
 					lineStyle: { opacity: 0 },
 					itemStyle: { opacity: 0 },
 					areaStyle: { opacity: 0.25 },
-					color: '#3aa38f'
+					color: '#b8237e'
 				});
 			}
 			let allValues = option.series[0].data.map(d => d.value);

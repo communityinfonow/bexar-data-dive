@@ -113,4 +113,43 @@ main {
   top: 80px;
   z-index: 1000;
 }
+
+::v-deep .v-btn.v-item--active.v-btn--active.v-btn--is-elevated.v-btn--has-bg.theme--dark.v-size--small.red .v-btn__content {
+  color: $color-grey !important;
+}
+
+::v-deep .definition-tooltip-container {
+  background: transparent;
+}
+
+::v-deep .definition-tooltip {
+  color: $color-primary;
+  background-color: $color-light;
+  border: 1px solid $color-primary;
+  border-radius: 1em;
+  padding: 1em;
+}
+
+::v-deep .definition-tooltip-wedge {
+  content: "";
+  width: 0;
+  height: 0;
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+  border-right: 20px solid $color-primary;
+  position: absolute;
+  top: calc(50% - 20px);
+  left: -3px;
+}
+::v-deep .definition-tooltip-wedge::after {
+  content: "";
+  width: 0;
+  height: 0;
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+  border-right: 20px solid $color-light;
+  position: absolute;
+  top: calc(50% - 20px);
+  left: 1px;
+}
 </style>

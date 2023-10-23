@@ -1,5 +1,5 @@
 <template>
-  <v-card tile class="fill-height">
+<v-card style="position: sticky; top: 80px; height: calc(100vh - 80px); overflow-y: scroll;">
 	<v-card-title>{{ title }}</v-card-title>
 	<v-card-actions>
 		<v-autocomplete

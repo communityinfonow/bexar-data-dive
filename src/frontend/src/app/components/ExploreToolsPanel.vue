@@ -49,13 +49,12 @@
 					<div class="d-flex justify-end">
 						<div class="v-input v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select pt-1 flex-grow-0 flex-shrink-1">
 							<label aria-label id="labelsOrLinesLabel" class="v-label v-label--active theme--light" style="left: 0px; right: auto; position: absolute;">{{ $t('tools.common.chart_options') }}</label>
-							<!-- TODO: style/color these buttons -->
 							<v-btn-toggle rounded v-model="labelsOrLines" id="labelsOrLines" aria-labelledby="labelsOrLinesLabel">
 								<v-btn 
 									v-for="item in [['labels', $t('tools.common.chart_options_labels')], ['lines', $t('tools.common.chart_options_lines')]]" 
 									:key="item[0]" 
 									:value="item[0]" 
-									color="green"
+									color="red"
 									dark
 									small
 									:disabled="item[0] == 'lines' && exploreData && !exploreData.indicator.hasMoe"

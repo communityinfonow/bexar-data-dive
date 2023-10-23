@@ -62,7 +62,7 @@
             <v-text-field v-model="search" :disabled="locationLimitExceeded" :label="$t('tools.common.search')" hide-details @input="loadTablesData()">
               <template v-slot:append><v-icon color="green">mdi-magnify</v-icon></template>
             </v-text-field>
-            <div>
+            <div class="mt-3">
               <download-menu :downloadData="downloadTablesData"></download-menu>
               <share-menu></share-menu>
               <about-menu indicator tool :indicatorId="indicator.id"></about-menu>

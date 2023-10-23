@@ -44,66 +44,68 @@
                 </l-map>
               </v-col>
               <v-col cols="10">
-                <div class="d-flex flex-column justify-space-between">
-                  <h1 class="font-weight-bold" style="font-size: 2.5rem;" id="community_name">
-                    {{ community.location['name_' + locale] }}
-                    <span v-if="community.location.typeId === '7'">
-                      ({{ locationMenu.categories.find(c => c.id === customLocations.find(cl => cl.id === community.location.id).typeId)['name_' + this.locale]}})
-                    </span>
-                  </h1>
-                  <div>
-                    <!-- TODO: download/share/about menu styles -->
-                    <!-- TODO: community level menu not showing up -->
-                    <download-menu :downloadData="downloadCommunityData"></download-menu>
-                    <share-menu></share-menu>
-                    <about-menu tool></about-menu>
+                <div class="d-flex flex-column fill-height">
+                  <div class="d-flex flex-row justify-space-between">
+                    <h1 class="font-weight-bold" style="font-size: 2.5rem;" id="community_name">
+                      {{ community.location['name_' + locale] }}
+                      <span v-if="community.location.typeId === '7'">
+                        ({{ locationMenu.categories.find(c => c.id === customLocations.find(cl => cl.id === community.location.id).typeId)['name_' + this.locale]}})
+                      </span>
+                    </h1>
+                    <div>
+                      <!-- TODO: download/share/about menu styles -->
+                      <!-- TODO: community level menu not showing up -->
+                      <download-menu :downloadData="downloadCommunityData"></download-menu>
+                      <share-menu></share-menu>
+                      <about-menu tool></about-menu>
+                    </div>
                   </div>
-                </div>
-                <v-spacer></v-spacer>
-                <div>
-                  <v-select 
-                    style="width: 240px;"
-                    filled
-                    rounded
-                    dense
-                    background-color="#fff"
-                    :label="$t('tools.community.skip')"
-                    :items="categories"
-                    :item-text="(item) => { return item['name_' + locale] + (item.hasData ? '' : ' (' + $t('tools.community.coming_soon') + ')') }"
-                    :item-disabled="(item) => !item.hasData"
-                    item-value="id"
-                    v-model="selectedCategory"
-                    @change="skipToCategory"
-                  >
-                  </v-select>
-                  <v-select
-                    style="width: 240px;"
-                    filled
-                    rounded
-                    dense
-                    background-color="#fff"
-                    :label="$t('tools.community.compare_by')"
-                    :items="filterTypes"
-                    :item-text="'name_' + locale"
-                    item-value="id"
-                    v-model="selectedFilterType"
-                    @change="applyFilter"
-                  >
-                  </v-select>
-                  <div class="v-input v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select pt-2">
-                    <label aria-label id="labelsOrLinesLabel" class="v-label v-label--active theme--light" style="left: 0px; right: auto; position: absolute;">{{ $t('tools.common.chart_options') }}</label>
-                    <v-btn-toggle v-model="labelsOrLines" id="labelsOrLines" aria-labelledby="labelsOrLinesLabel">
-                      <v-btn 
-                        v-for="item in [['labels', $t('tools.common.chart_options_labels')], ['lines', $t('tools.common.chart_options_lines')]]" 
-                        :key="item[0]" 
-                        :value="item[0]" 
-                        color="green"
-                        small
-                        dark
-                      >
-                        {{ item[1] }}
-                      </v-btn>
-                    </v-btn-toggle>
+                  <v-spacer></v-spacer>
+                  <div>
+                    <v-select 
+                      style="width: 240px;"
+                      filled
+                      rounded
+                      dense
+                      background-color="#fff"
+                      :label="$t('tools.community.skip')"
+                      :items="categories"
+                      :item-text="(item) => { return item['name_' + locale] + (item.hasData ? '' : ' (' + $t('tools.community.coming_soon') + ')') }"
+                      :item-disabled="(item) => !item.hasData"
+                      item-value="id"
+                      v-model="selectedCategory"
+                      @change="skipToCategory"
+                    >
+                    </v-select>
+                    <v-select
+                      style="width: 240px;"
+                      filled
+                      rounded
+                      dense
+                      background-color="#fff"
+                      :label="$t('tools.community.compare_by')"
+                      :items="filterTypes"
+                      :item-text="'name_' + locale"
+                      item-value="id"
+                      v-model="selectedFilterType"
+                      @change="applyFilter"
+                    >
+                    </v-select>
+                    <div class="v-input v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select pt-2">
+                      <label aria-label id="labelsOrLinesLabel" class="v-label v-label--active theme--light white--text" style="left: 0px; right: auto; position: absolute;">{{ $t('tools.common.chart_options') }}</label>
+                      <v-btn-toggle v-model="labelsOrLines" id="labelsOrLines" aria-labelledby="labelsOrLinesLabel">
+                        <v-btn 
+                          v-for="item in [['labels', $t('tools.common.chart_options_labels')], ['lines', $t('tools.common.chart_options_lines')]]" 
+                          :key="item[0]" 
+                          :value="item[0]" 
+                          color="red"
+                          small
+                          dark
+                        >
+                          {{ item[1] }}
+                        </v-btn>
+                      </v-btn-toggle>
+                    </div>
                   </div>
                 </div>
               </v-col>

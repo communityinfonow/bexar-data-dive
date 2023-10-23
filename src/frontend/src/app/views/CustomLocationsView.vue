@@ -1,19 +1,19 @@
 <template>
   <v-container v-if="locationMenu" fluid class="pa-0 fill-height">
     <v-row class="no-gutters flex-column fill-height">
-      <v-col cols="auto">
-        <v-breadcrumbs :items="breadcrumbs">
-          <template v-slot:divider>
-            <v-icon>mdi-chevron-right</v-icon>
-          </template>
-        </v-breadcrumbs>
-      </v-col>
-      <v-col cols="auto" class="pa-4 shrink">
-        <div class="d-flex justify-space-between">
-          <h1 class="text-h3 mb-2">{{ $t('tools.custom_locations.name') }}</h1>
-        </div>
-        <p>{{ $t('tools.custom_locations.long_description') }}</p>
-        <p>{{ $t('tools.custom_locations.get_started') }}</p>
+      <v-col cols="auto" class="grow">
+        <section class="page-header d-flex flex-column light--text pa-12 pb-0">
+          <h1 class="font-weight-bold" style="font-size: 2.5rem;">{{ $t('tools.custom_locations.name') }}</h1>
+          <div class="font-weight-medium mt-2" style="font-size: 1.25rem;">
+            {{ $t('tools.custom_locations.headline') }}
+            {{ $t('tools.custom_locations.long_description') }}
+          </div>
+          <v-breadcrumbs :items="breadcrumbs" class="mb-2" dark>
+            <template v-slot:divider>
+              <v-icon>mdi-chevron-right</v-icon>
+            </template>
+          </v-breadcrumbs>
+        </section>
       </v-col>
       <v-col cols="auto" class="pa-4 grow d-flex">
         <v-col cols="8">
@@ -57,7 +57,8 @@
         <v-col cols="4">
           <v-form ref="selectionForm" lazy-validation v-model="selectionForm" class="d-flex flex-column justify-start">
             <v-btn
-              color="green"
+              color="red"
+              dark
               @click="viewCustomLocations"
             >
               <v-icon left>mdi-folder-open</v-icon>
@@ -156,6 +157,7 @@
             <div v-if="!message" class="d-flex">
               <v-btn
                 color="red"
+                dark
                 class="mt-4 mr-2 flex-grow-1"
                 @click="saveCustomLocation"
               >
@@ -163,6 +165,7 @@
               </v-btn>
               <v-btn
                 color="red"
+                dark
                 class="mt-4 ml-2 flex-grow-1"
                 @click="exportCustomLocation"
               >
