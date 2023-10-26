@@ -142,7 +142,7 @@
     },
     "custom_locations": {
       "name": "Crea Tu Propia Área",
-      "short_description": "TODO: short tool intro text (es)",
+      "short_description": "",
       "long_description": "\"Crea Tu Propia Área\" es una herramienta que le permite construir sus propias geografías. Cree tantas áreas personalizadas como desee utilizando SSAs (Áreas Estadísticas Pequeñas), distritos de ayuntamiento, códigos postales y áreas de censo como los componentes fundamentales. Una vez creada(s), usuarios pueden explorar y visualizar datos para sus áreas personalizadas usando Bexar Data Dive. Las áreas personalizadas se pueden guardar en su navegador o descargar para uso futuro.",
       "get_started": "Para comenzar, escriba un nombre para su nueva área personalizada. Luego, seleccione el tipo de geografía que le gustaría usar como componente fundamental para construir su área. Empiece a ensamblar simplemente haciendo clic en las geografías del mapa o seleccionándolas de la lista a la derecha.",
       "or": "o",
@@ -184,7 +184,7 @@
 
   "about_data_view": {
     "name": "Sobre la Información",
-    "welcome": "TODO: welcome message for this page? (es)",
+    "welcome": "",
     "indicators": "Indicadores",
     "visit_source": "Ir a la fuente",
     "source_citation": "Citar fuente",
@@ -196,12 +196,12 @@
   },
   "faqs_view": {
     "name": "Preguntas Frecuentes",
-    "welcome": "TODO: welcome message for this page? (es)",
+    "welcome": "",
     "questions": "Preguntas"
   },
   "announcements_view": {
     "name": "Anuncios",
-    "welcome": "TODO: welcome message for this page? (es)"
+    "welcome": ""
   },
   "data": {
     "value": "Valor",

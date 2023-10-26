@@ -53,8 +53,6 @@
                       </span>
                     </h1>
                     <div>
-                      <!-- TODO: download/share/about menu styles -->
-                      <!-- TODO: community level menu not showing up -->
                       <v-btn-toggle rounded borderless active-class="none">
                         <download-menu :downloadData="downloadCommunityData"></download-menu>
                         <share-menu></share-menu>

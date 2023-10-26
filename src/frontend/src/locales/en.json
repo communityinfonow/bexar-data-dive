@@ -145,7 +145,7 @@
     },
     "custom_locations": {
       "name": "Create Your Own Area",
-      "short_description": "TODO: short tool intro text",
+      "short_description": "",
       "headline": "Create Your Own Area is a tool where you can build your own geographies.",
       "long_description": "Create as many custom areas as you would like using SSAs, Council Districts, Zipcodes and Census tracts as the building blocks. Once created, users can explore and visualize data for their custom area(s) with Bexar Data Dive. Custom areas can be saved within your browser or downloaded for future use.",
       "get_started": "To get started, type in a name for your new custom area. Then, select the type of geography you would like to use as the building blocks to assemble your area. Start building by simply clicking geographies on the map or selecting them from the list on the right.",
@@ -187,7 +187,7 @@
   },
   "about_data_view": {
     "name": "About the Data",
-    "welcome": "TODO: welcome message for this page?",
+    "welcome": "",
     "indicators": "Indicators",
     "visit_source": "Go to source",
     "source_citation": "Cite Source",
@@ -200,12 +200,12 @@
   },
   "faqs_view": {
     "name": "Frequently Asked Questions",
-    "welcome": "TODO: welcome message for this page?",
+    "welcome": "",
     "questions": "Questions"
   },
   "announcements_view": {
     "name": "Announcements",
-    "welcome": "TODO: welcome message for this page?"
+    "welcome": ""
   },
   "data": {
     "value": "Value",
