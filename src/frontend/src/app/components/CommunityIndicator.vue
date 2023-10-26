@@ -42,8 +42,10 @@
 							</p>
 					</div>
 					<div>
-						<download-menu :downloadData="downloadData" :downloadImage="downloadImage"></download-menu>
-						<about-menu indicator :indicatorId="item.indicator.id"></about-menu>
+						<v-btn-toggle rounded borderless active-class="none">
+							<download-menu :downloadData="downloadData" :downloadImage="downloadImage"></download-menu>
+							<about-menu indicator :indicatorId="item.indicator.id"></about-menu>
+						</v-btn-toggle>
 					</div>
 				</div>
 				<v-row>

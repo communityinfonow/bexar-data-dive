@@ -105,7 +105,7 @@
 				</template>
 			</v-card-text>
 			<v-card-actions class="d-flex justify-end">
-				<v-btn style="font-size: 14pt;" class="font-weight-bold" color="green" :disabled="!applyNeeded" @click="applyFilters" data-html2canvas-ignore>
+				<v-btn rounded style="font-size: 14pt;" class="font-weight-bold" color="green" :disabled="!applyNeeded" @click="applyFilters" data-html2canvas-ignore>
 					{{ $t('tools.explore.apply_filters') }}
 				</v-btn>
 			</v-card-actions>

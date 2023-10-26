@@ -1,7 +1,7 @@
 <template>
   <v-container v-if="aboutData" fluid class="pa-0">
     <section class="page-header d-flex flex-column light--text pa-12 pb-0">
-      <h1 class="font-weight-bold" style="font-size: 2.5rem;">{{ $t('about_data_view.name') }}</h1>
+      <h1 class="text-dive-h3">{{ $t('about_data_view.name') }}</h1>
       <div class="font-weight-medium mt-2" style="font-size: 1.25rem;" v-html="$t('about_data_view.welcome')"></div>
       <v-breadcrumbs :items="breadcrumbs" class="mb-2" dark>
         <template v-slot:divider>
@@ -11,30 +11,28 @@
     </section>
     <v-row class="no-gutters">
       <v-col cols="7" class="pa-4 col col-auto">
-        <h1 class="text-h3 mb-4">{{ $t('about_data_view.name') }}</h1>
         <section v-for="(category, index) in sortedAboutData.categories" :key="category.category.id">
-          <h2 :class="(index > 0 ? 'mt-8' : 'mt-4') + ' mb-4 text-h4'">{{ category.category['name_' + locale]}}</h2>
+          <h2 :class="(index > 0 ? 'mt-8' : 'mt-4') + ' mb-4 text-dive-h4 blue--text text-uppercase'">{{ category.category['name_' + locale]}}</h2>
           <section v-for="item in category.items" :key="item.id">
             <template v-if="item.items">
-              <h3 class="mb-2 text-h5">{{ item.category['name_' + locale] }}</h3>
               <section v-for="subItem in item.items" :key="subItem.id" class="mb-4">
-                <h4 class="mb-1 text-h6" :id="'indicator_' + subItem.indicator.id">{{ subItem.indicator['name_' + locale] }}</h4>
+                <h3 class="mb-4 text-dive-h5" :id="'indicator_' + subItem.indicator.id">{{ item.category['name_' + locale] }} - {{ subItem.indicator['name_' + locale] }}</h3>
                 <section v-if="subItem.indicator['description_' + locale] !== ''" v-html="subItem.indicator['description_' + locale]"></section>
                 <p v-if="subItem.indicator['description_' + locale] === ''">{{ $t('tools.community.coming_soon') }}</p>
                 <v-btn v-if="subItem.indicator.hasData" rounded dark color="red" class="mr-4" @click.stop="openCitationDialog(subItem)">{{ $t('about_data_view.source_citation') }}</v-btn>
                 <v-btn text link rounded color="red" target="_blank" :href="subItem.source.url">{{ $t('about_data_view.visit_source') }} <sup><v-icon x-small color="red">mdi-open-in-new</v-icon></sup></v-btn>
+                <v-divider class="my-8"></v-divider>
               </section>
-              <v-divider class="my-4"></v-divider>
             </template>
             <template v-else>
-              <h3 class="mb-1 text-h6" :id="'indicator_' + item.indicator.id">{{ item.indicator['name_' + locale] }}</h3>
+              <h3 class="mb-4 text-dive-h5" :id="'indicator_' + item.indicator.id">{{ item.indicator['name_' + locale] }}</h3>
               <section class="mb-4">
                 <section v-if="!item.items && item.indicator['description_' + locale] !== ''" v-html="item.indicator['description_' + locale]"></section>
                 <p v-if="item.indicator['description_' + locale] === ''">{{ $t('tools.community.coming_soon') }}</p>
                 <v-btn v-if="item.indicator.hasData" rounded dark color="red" class="mr-4" @click.stop="openCitationDialog(item)">{{ $t('about_data_view.source_citation') }}</v-btn>
                 <v-btn text link rounded color="red" target="_blank" :href="item.source.url">{{ $t('about_data_view.visit_source') }} <sup><v-icon x-small color="red">mdi-open-in-new</v-icon></sup></v-btn>
               </section>
-              <v-divider class="my-6"></v-divider>
+              <v-divider class="my-8"></v-divider>
             </template>
           </section>
         </section>

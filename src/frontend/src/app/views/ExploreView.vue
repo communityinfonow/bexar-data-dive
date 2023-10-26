@@ -3,9 +3,9 @@
     <v-row class="no-gutters flex-wrap flex-column fill-height">
       <v-col cols="auto" class="grow">
         <section :class="'page-header d-flex flex-column light--text pa-12 pb-0 ' + (!showIntro ? 'main-content' : '')">
-          <h1 v-if="showIntro" class="font-weight-bold" style="font-size: 2.5rem;">{{ $t('tools.explore.name') }}</h1>
+          <h1 v-if="showIntro" class="text-dive-h3">{{ $t('tools.explore.name') }}</h1>
           <div v-if="indicator && exploreData" cols="auto" id="explore_indicator">
-            <h1 class="font-weight-bold" style="font-size: 2.5rem;">
+            <h1 class="text-dive-h3">
               <span v-if="exploreData.category.parentCategoryId">
                 {{ exploreData.category['name_' + locale] }} - 
               </span>
@@ -36,7 +36,7 @@
       </v-col>
       <v-col v-if="showIntro" cols="auto" class="pa-4">
           <section class="mb-8">
-            <h2 class="text-h4 mt-16 mb-2 font-weight-black text-center" style="text-transform: uppercase;">{{ $t('tools.common.featured_indicators') }}</h2>
+            <h2 class="text-dive-h4 mt-16 mb-2 font-weight-bold text-center" style="text-transform: uppercase;">{{ $t('tools.common.featured_indicators') }}</h2>
             <p style="margin: 0 30%; font-size: 1.25em;">{{ $t('tools.tables.get_started') }}</p>
           </section>
           <section v-if="featuredIndicators" class="d-flex" :class="{ 'flex-row': $vuetify.breakpoint.mdAndUp, 'flex-column': $vuetify.breakpoint.smAndDown }">

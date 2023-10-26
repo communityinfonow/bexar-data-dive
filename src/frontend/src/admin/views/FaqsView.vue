@@ -31,7 +31,7 @@
 							<v-switch label="Display" v-model="q.display"></v-switch>
 						</v-card-text>
 						<v-card-actions>
-							<v-btn color="red" @click="updateHandler(q, i)">
+							<v-btn rounded color="red" @click="updateHandler(q, i)">
 								Save
 							</v-btn>
 						</v-card-actions>
@@ -69,7 +69,7 @@
 							<v-switch label="Display" v-model="newFaq.display"></v-switch>
 						</v-card-text>
 						<v-card-actions>
-							<v-btn type="submit" color="red" @click.prevent="addHandler">
+							<v-btn rounded type="submit" color="red" @click.prevent="addHandler">
 								Add
 							</v-btn>
 						</v-card-actions>

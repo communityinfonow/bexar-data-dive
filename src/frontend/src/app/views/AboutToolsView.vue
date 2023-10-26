@@ -1,7 +1,7 @@
 <template>
   <v-container fluid class="pa-0">
     <section class="page-header d-flex flex-column light--text pa-12 pb-0">
-      <h1 class="font-weight-bold" style="font-size: 2.5rem;">{{ $t('about_tools_view.name') }}</h1>
+      <h1 class="text-dive-h3">{{ $t('about_tools_view.name') }}</h1>
       <div class="font-weight-medium mt-2" style="font-size: 1.25rem;" v-html="$t('about_tools_view.welcome')"></div>
       <v-breadcrumbs :items="breadcrumbs" class="mb-2" dark>
         <template v-slot:divider>
@@ -17,14 +17,14 @@
               <v-img :src="tool.imagePath" class="mr-12"></v-img>
             </v-col>
             <v-col cols="8">
-              <h2 class="d-flex blue--text" style="text-transform: uppercase;">
+              <h2 class="d-flex blue--text text-dive-h5" style="text-transform: uppercase;">
                 <img :src="tool.iconPath" height="48px" width="48px">
                 <span class="mx-4 my-2">{{ tool.name }}</span>
               </h2>
               <p class="blue--text font-weight-bold mt-2 mb-4">{{ tool.headline }}</p>
               <p>{{ tool.fullDescription }}</p>
               <section v-for="(subTool, index) in tool.subTools" :key="'subtool_' + index" class="">
-                <h3 class="text-body-1 font-weight-bold mt-2">{{ subTool.name }}</h3>
+                <h3 class="text-dive-h6 blue--text text-uppercase font-weight-bold mt-2">{{ subTool.name }}</h3>
                 <p>{{ subTool.fullDescription }}</p>
               </section>
               <section class="text-right">

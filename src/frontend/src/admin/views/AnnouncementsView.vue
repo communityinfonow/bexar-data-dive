@@ -37,6 +37,7 @@
 									<v-spacer></v-spacer>
 									<v-btn
 										text
+										rounded
 										color="red"
 										@click="menu = false"
 									>
@@ -44,6 +45,7 @@
 									</v-btn>
 									<v-btn
 										text
+										rounded
 										color="red"
 										@click="$refs.update_announcement_date_menus[idx].save(ann.date)"
 									>
@@ -72,7 +74,7 @@
 							<v-switch label="Display" v-model="ann.display"></v-switch>
 						</v-card-text>
 						<v-card-actions>
-							<v-btn color="red" @click="updateHandler(ann, idx)">
+							<v-btn rounded color="red" @click="updateHandler(ann, idx)">
 								Save
 							</v-btn>
 						</v-card-actions>
@@ -116,6 +118,7 @@
 								>
 									<v-spacer></v-spacer>
 									<v-btn
+										rounded
 										text
 										color="red"
 										@click="menu = false"
@@ -123,6 +126,7 @@
 										Cancel
 									</v-btn>
 									<v-btn
+										rounded
 										text
 										color="red"
 										@click="$refs.newAnnouncmentDateMenu.save(newAnnouncement.date)"
@@ -152,7 +156,7 @@
 							<v-switch label="Display" v-model="newAnnouncement.display"></v-switch>
 						</v-card-text>
 						<v-card-actions>
-							<v-btn type="submit" color="red" @click.prevent="addHandler">
+							<v-btn rounded type="submit" color="red" @click.prevent="addHandler">
 								Add
 							</v-btn>
 						</v-card-actions>

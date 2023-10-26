@@ -2,12 +2,15 @@
   <v-container fluid>
     <section class="page-header d-flex flex-column text-center light--text pa-12">
       <div class="font-weight-medium" style="font-size: 1.25rem;">{{ $t('home_view.powered_by') }}</div>
-      <div class="font-weight-bold" style="font-size: 3.25rem;">{{ $t('home_view.connecting_line_1') }}</div>
-      <div class="font-weight-bold" style="font-size: 3.25rem;">{{ $t('home_view.connecting_line_2') }}</div>
+      <h1 class="text-dive-h1">
+        {{ $t('home_view.connecting_line_1') }}
+        <br>
+        {{ $t('home_view.connecting_line_2') }}
+      </h1>
       <div class="font-weight-medium mt-2" style="font-size: 1.25rem;">{{ $t('home_view.welcome_line_1') }}</div>
       <div class="font-weight-medium" style="font-size: 1.25rem;">{{ $t('home_view.welcome_line_2') }}</div>
     </section>
-    <h2 class="font-weight-bold mt-12 mb-12 text-center" style="font-size: 2em; text-transform: uppercase;">{{ $t('home_view.available_tools') }}</h2>
+    <h2 class="text-dive-h4 text-uppercase mt-16 mb-2 font-weight-black text-center">{{ $t('home_view.available_tools') }}</h2>
     <section class="d-flex" :class="{ 'flex-row': $vuetify.breakpoint.mdAndUp, 'flex-column': $vuetify.breakpoint.smAndDown }">
       <template v-for="tool in tools">
         <featured-card 

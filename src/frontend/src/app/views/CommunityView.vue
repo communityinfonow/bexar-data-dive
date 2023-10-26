@@ -3,7 +3,7 @@
     <v-row class="no-gutters flex-column fill-height">
       <v-col cols="auto" class="grow">
         <section :class="'page-header d-flex flex-column light--text pa-12 pb-0 ' +  + (!showIntro ? 'main-content' : '')">
-          <h1 v-if="showIntro" class="font-weight-bold" style="font-size: 2.5rem;">{{ $t('tools.community.name') }}</h1>
+          <h1 v-if="showIntro" class="text-dive-h3">{{ $t('tools.community.name') }}</h1>
           <div v-if="showIntro" class="font-weight-medium mt-2" style="font-size: 1.25rem;">
             {{ $t('tools.community.headline') }}
             {{ $t('tools.community.long_description') }}
@@ -46,7 +46,7 @@
               <v-col cols="10">
                 <div class="d-flex flex-column fill-height">
                   <div class="d-flex flex-row justify-space-between">
-                    <h1 class="font-weight-bold" style="font-size: 2.5rem;" id="community_name">
+                    <h1 class="text-dive-h3" id="community_name">
                       {{ community.location['name_' + locale] }}
                       <span v-if="community.location.typeId === '7'">
                         ({{ locationMenu.categories.find(c => c.id === customLocations.find(cl => cl.id === community.location.id).typeId)['name_' + this.locale]}})
@@ -55,9 +55,11 @@
                     <div>
                       <!-- TODO: download/share/about menu styles -->
                       <!-- TODO: community level menu not showing up -->
-                      <download-menu :downloadData="downloadCommunityData"></download-menu>
-                      <share-menu></share-menu>
-                      <about-menu tool></about-menu>
+                      <v-btn-toggle rounded borderless active-class="none">
+                        <download-menu :downloadData="downloadCommunityData"></download-menu>
+                        <share-menu></share-menu>
+                        <about-menu tool></about-menu>
+                      </v-btn-toggle>
                     </div>
                   </div>
                   <v-spacer></v-spacer>
@@ -93,7 +95,7 @@
                     </v-select>
                     <div class="v-input v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select pt-2">
                       <label aria-label id="labelsOrLinesLabel" class="v-label v-label--active theme--light white--text" style="left: 0px; right: auto; position: absolute;">{{ $t('tools.common.chart_options') }}</label>
-                      <v-btn-toggle v-model="labelsOrLines" id="labelsOrLines" aria-labelledby="labelsOrLinesLabel">
+                      <v-btn-toggle v-model="labelsOrLines" id="labelsOrLines" aria-labelledby="labelsOrLinesLabel" rounded>
                         <v-btn 
                           v-for="item in [['labels', $t('tools.common.chart_options_labels')], ['lines', $t('tools.common.chart_options_lines')]]" 
                           :key="item[0]" 
@@ -118,7 +120,7 @@
           </v-breadcrumbs>
         </section>
       </v-col>
-      <v-col cols="auto" class="shrink sticky-menu">
+      <v-col cols="auto" class="shrink sticky-menu" style="margin-top: -26px;">
         <MenuToolbar
           class="flex-column"
           :menu="locationMenu"
@@ -187,12 +189,12 @@
         </l-map>
       </v-col>
       <v-col v-if="community" cols="auto" class="pa-4 grow">
-        <h2 v-if="noCommunityData" class="text-h4">{{ $t('tools.community.data_coming_soon')}}</h2>
+        <h2 v-if="noCommunityData" class="text-dive-h5">{{ $t('tools.community.data_coming_soon')}}</h2>
         <section v-for="data in sortedData" :key="'category_' + data.category.id">
           <div v-if="data.category.hasData">
-            <h2 :id="'category_' + data.category.id" class="d-flex text-h4 mt-8 mb-4 blue--text font-weight-bold" style="text-transform: uppercase;">
+            <h2 :id="'category_' + data.category.id" class="d-flex text-dive-h4 mt-8 mb-4 blue--text" style="text-transform: uppercase;">
               <span class="mr-4">{{ data.category['name_' + locale]}}</span>
-              <v-divider class="mt-5"></v-divider>
+              <v-divider class="mt-6"></v-divider>
             </h2>
             <template v-for="item in data.indicators">
               <template v-if="item.indicators">

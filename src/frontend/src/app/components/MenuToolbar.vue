@@ -6,8 +6,8 @@
           <v-slide-group show-arrows style="height: 100%;">
             <template v-for="category in sortedMenu.categories">
               <v-slide-item :key="'category_' + category.id" v-if="category.items.length">
-                <MenuButton text v-if="category.items.length === 1 && flattenSingleItems" :item="category.items[0]" :selectItem="selectItem" :singleItem="true" textClass="font-weight-bold"></MenuButton>
-                <MenuCategory v-else :category="category" :selectItem="selectItem" textClass="font-weight-bold"></MenuCategory>
+                <MenuButton text v-if="category.items.length === 1 && flattenSingleItems" :item="category.items[0]" :selectItem="selectItem" :singleItem="true" textClass="font-weight-bold blue--text"></MenuButton>
+                <MenuCategory v-else :category="category" :selectItem="selectItem" textClass="font-weight-bold blue--text"></MenuCategory>
               </v-slide-item>
             </template>
           </v-slide-group>

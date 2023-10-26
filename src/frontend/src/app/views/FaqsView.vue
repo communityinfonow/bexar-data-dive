@@ -1,7 +1,7 @@
 <template>
   <v-container v-if="faqs" fluid class="pa-0">
     <section class="page-header d-flex flex-column light--text pa-12 pb-0">
-      <h1 class="font-weight-bold" style="font-size: 2.5rem;">{{ $t('faqs_view.name') }}</h1>
+      <h1 class="text-dive-h3">{{ $t('faqs_view.name') }}</h1>
       <div class="font-weight-medium mt-2" style="font-size: 1.25rem;" v-html="$t('faqs_view.welcome')"></div>
       <v-breadcrumbs :items="breadcrumbs" class="mb-2" dark>
         <template v-slot:divider>
@@ -11,12 +11,12 @@
     </section>
     <v-row class="no-gutters">
       <v-col cols="7" class="pa-4 col col-auto">
-        <section v-for="item in faqs" :key="item.id">
-          <h2 class="mb-4 text-h5" :id="'question_' + item.id">{{ item['question_' + locale]}}</h2>
+        <section v-for="item in faqs" :key="item.id" class="mt-4">
+          <h2 class="mb-4 text-dive-h5" :id="'question_' + item.id">{{ item['question_' + locale]}}</h2>
           <section class="mb-8">
             <section v-html="item['answer_' + locale]"></section>
           </section>
-          <v-divider class="my-4"></v-divider>
+          <v-divider class="my-8"></v-divider>
         </section>
       </v-col>
       <v-col cols="5">

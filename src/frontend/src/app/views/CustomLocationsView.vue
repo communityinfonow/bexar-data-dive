@@ -3,7 +3,7 @@
     <v-row class="no-gutters flex-column fill-height">
       <v-col cols="auto" class="grow">
         <section class="page-header d-flex flex-column light--text pa-12 pb-0">
-          <h1 class="font-weight-bold" style="font-size: 2.5rem;">{{ $t('tools.custom_locations.name') }}</h1>
+          <h1 class="text-dive-h3">{{ $t('tools.custom_locations.name') }}</h1>
           <div class="font-weight-medium mt-2" style="font-size: 1.25rem;">
             {{ $t('tools.custom_locations.headline') }}
             {{ $t('tools.custom_locations.long_description') }}
@@ -57,6 +57,7 @@
         <v-col cols="4">
           <v-form ref="selectionForm" lazy-validation v-model="selectionForm" class="d-flex flex-column justify-start">
             <v-btn
+              rounded
               color="red"
               dark
               @click="viewCustomLocations"
@@ -65,8 +66,8 @@
               {{ $t('tools.custom_locations.open')}}
             </v-btn>
             <span class="text-button text-center font-italic mt-2">- {{ $t('tools.custom_locations.or') }} -</span>
-            <h2 class="text-button text-center">{{ $t('tools.custom_locations.create') }}</h2>
-            <h2 class="text-subtitle-1">{{ $t('tools.custom_locations.step_1') }}</h2>
+            <h2 class="text-button text-center text-dive-h6">{{ $t('tools.custom_locations.create') }}</h2>
+            <h3 class="text-subtitle-1">{{ $t('tools.custom_locations.step_1') }}</h3>
             <v-text-field
               v-if="customLocationGeojson"
               :label="$t('tools.custom_locations.location_name')"
@@ -75,7 +76,7 @@
               persistent-hint
               :rules="[rules.name_required, rules.custom_name]"
             ></v-text-field>
-            <h2 class="text-subtitle-1">{{ $t('tools.custom_locations.step_2') }}</h2>
+            <h3 class="text-subtitle-1">{{ $t('tools.custom_locations.step_2') }}</h3>
             <v-select
               v-if="layers.length"
               :items="layers"
@@ -156,6 +157,7 @@
             <v-spacer></v-spacer>
             <div v-if="!message" class="d-flex">
               <v-btn
+                rounded
                 color="red"
                 dark
                 class="mt-4 mr-2 flex-grow-1"
@@ -164,6 +166,7 @@
                 {{ $t('tools.custom_locations.save') }}
               </v-btn>
               <v-btn
+                rounded
                 color="red"
                 dark
                 class="mt-4 ml-2 flex-grow-1"
@@ -180,6 +183,7 @@
                   </v-col>
                   <v-col class="shrink d-flex">
                     <v-btn
+                      rounded
                       small
                       text
                       color="red"
@@ -188,6 +192,7 @@
                       {{ $t('tools.custom_locations.view_community') }}
                     </v-btn>
                     <v-btn
+                      rounded
                       small
                       text
                       @click="message = false"
@@ -215,10 +220,10 @@
                   <v-list-item-title>{{ location.name }}</v-list-item-title>
                 </v-list-item-content>
                 <v-list-item-action class="flex-row">
-                  <v-btn text inline color="red" @click="viewCommunity(location)">
+                  <v-btn rounded text inline color="red" @click="viewCommunity(location)">
                     {{ $t('tools.custom_locations.view_community') }}
                   </v-btn>
-                  <v-btn text inline @click="removeCustomLocation(location.id)">
+                  <v-btn rounded text inline @click="removeCustomLocation(location.id)">
                     {{ $t('tools.custom_locations.delete') }}
                   </v-btn>
                 </v-list-item-action>
@@ -229,7 +234,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="red" text :disabled="!customLocationSelected && !customLocationFile" @click="openCustomLocation">{{ $t('tools.custom_locations.open') }}</v-btn>
+          <v-btn rounded color="red" text :disabled="!customLocationSelected && !customLocationFile" @click="openCustomLocation">{{ $t('tools.custom_locations.open') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

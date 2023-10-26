@@ -209,7 +209,7 @@ export default {
 									let lowPoint = api.coord([xValue, api.value(2)]) || 0;
 									let halfWidth = api.size([1, 0])[0] * 0.1;
 									let style = {
-										stroke: '#3aa38f',
+										stroke: '#b8237e',
 										fill: null,
 										lineWidth: 2
 									};

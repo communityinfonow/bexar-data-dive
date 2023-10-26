@@ -3,8 +3,8 @@
     <v-row class="no-gutters flex-column fill-height">
       <v-col cols="auto" class="grow">
         <section :class="'page-header d-flex flex-column light--text pa-12 pb-0 ' + (!showIntro ? 'main-content' : '')">
-          <h1 v-if="showIntro" class="font-weight-bold" style="font-size: 2.5rem;">{{ $t('tools.tables.name') }}</h1>
-          <h1 v-if="indicator" class="font-weight-bold" style="font-size: 2.5rem;">
+          <h1 v-if="showIntro" class="text-dive-h3">{{ $t('tools.tables.name') }}</h1>
+          <h1 v-if="indicator" class="text-dive-h3">
             <span>
               <span v-if="tablesData.category.parentCategoryId">{{ tablesData.category['name_' + locale] }} - </span>
               {{ tablesData.indicator['name_' + locale] }}
@@ -34,7 +34,7 @@
       </v-col>
       <v-col v-if="showIntro && featuredIndicators" cols="auto">
         <section class="mb-8">
-          <h2 class="text-h4 mt-16 mb-2 font-weight-black text-center" style="text-transform: uppercase;">{{ $t('tools.common.featured_indicators') }}</h2>
+          <h2 class="text-dive-h4 text-uppercase mt-16 mb-2 text-center">{{ $t('tools.common.featured_indicators') }}</h2>
           <p style="margin: 0 30%; font-size: 1.25em;">{{ $t('tools.tables.get_started') }}</p>
         </section>
         <section class="d-flex" :class="{ 'flex-row': $vuetify.breakpoint.mdAndUp, 'flex-column': $vuetify.breakpoint.smAndDown }">
@@ -62,10 +62,12 @@
             <v-text-field v-model="search" :disabled="locationLimitExceeded" :label="$t('tools.common.search')" hide-details @input="loadTablesData()">
               <template v-slot:append><v-icon color="green">mdi-magnify</v-icon></template>
             </v-text-field>
-            <div class="mt-3">
-              <download-menu :downloadData="downloadTablesData"></download-menu>
-              <share-menu></share-menu>
-              <about-menu indicator tool :indicatorId="indicator.id"></about-menu>
+            <div class="mt-2">
+              <v-btn-toggle rounded borderless class="ml-2">
+                <download-menu :downloadData="downloadTablesData"></download-menu>
+                <share-menu></share-menu>
+                <about-menu indicator tool :indicatorId="indicator.id"></about-menu>
+              </v-btn-toggle>
             </div>
           </div>
           <v-data-table

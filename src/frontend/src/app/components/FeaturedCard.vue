@@ -5,12 +5,12 @@
         class="d-flex flex-column flex-grow-1 ma-4 featured-card"
       >
         <v-img :src="imagePath" class="align-end featured-image-gradient">
-			<v-card-title :class="'featured-card-title ' + text_color + '--text ' + background_color + (dense ? ' pb-0' : '')" v-if="name">
+			<v-card-title :class="'flex-nowrap featured-card-title ' + text_color + '--text ' + background_color + (dense ? ' pb-0' : '')" v-if="name">
 				<img v-if="iconPath" :src="iconPath" class="mr-2" height="48" width="48px">
-				{{ name }}
+				<div>{{ name }}</div>
 			</v-card-title>
         </v-img>
-			<v-card-text :class="'featured-card-text ' + text_color + '--text ' + background_color + (dense ? ' pt-0' : '')">
+			<v-card-text :class="'featured-card-text ' + text_color + '--text ' + background_color + (dense ? ' pt-0' : '')" :style="{ minHeight: description ? '132px' : '' }">
 				<p class="text-h6 font-weight-bold mb-0">{{ header }}</p>
 				<p class="description" v-html="description"></p>
 				<p class="text-subtitle-2">{{ postText }}</p>
@@ -115,7 +115,7 @@
 
 <style lang="scss" scoped>
 	.featured-image-gradient {
-		background: rgba($color-secondary, 1);
+		background: rgba($color-grey, 1);
 	}
 	.featured-card-title {
 		font-size: 1.5rem;
@@ -123,7 +123,6 @@
 		font-weight: bold;
 	}
 	.featured-card-text {
-		/*min-height: 100px;/ /* remove min height until we re-show the descriptions */
 		background: rgba($color-grey, 1);
 	}
 	.featured-card-text .description {

@@ -64,9 +64,11 @@
 								</v-btn>
 							</v-btn-toggle>
 						</div>
-						<download-menu :downloadData="downloadData" :downloadImage="downloadImage"></download-menu>
-						<share-menu></share-menu>
-						<about-menu indicator tool :indicatorId="indicatorId"></about-menu>
+						<v-btn-toggle rounded borderless class="ml-2" style="margin-top: -8px">
+							<download-menu :downloadData="downloadData" :downloadImage="downloadImage"></download-menu>
+							<share-menu></share-menu>
+							<about-menu indicator tool :indicatorId="indicatorId"></about-menu>
+						</v-btn-toggle>
 					</div>
 				</v-col>
 				<v-col v-if="showHighlightFilteredLocation" cols="auto" class="d-flex justify-end">
@@ -89,9 +91,11 @@
 							color="red"
 						></v-switch>
 					</template>
-					<download-menu :downloadData="downloadData" :downloadImage="downloadImage"></download-menu>
-					<share-menu></share-menu>
-					<about-menu indicator tool :indicatorId="indicatorId"></about-menu>
+					<v-btn-toggle rounded borderless class="ml-2" style="margin-top: -.5em">
+						<download-menu :downloadData="downloadData" :downloadImage="downloadImage"></download-menu>
+						<share-menu></share-menu>
+						<about-menu indicator tool :indicatorId="indicatorId"></about-menu>
+					</v-btn-toggle>
 				</v-col>
 			</v-row>
 		</v-form>

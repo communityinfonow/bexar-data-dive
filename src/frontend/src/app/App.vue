@@ -111,7 +111,7 @@ main {
 ::v-deep .sticky-menu {
   position: sticky;
   top: 80px;
-  z-index: 1000;
+  z-index: 1001;
 }
 
 ::v-deep .v-btn.v-item--active.v-btn--active.v-btn--is-elevated.v-btn--has-bg.theme--dark.v-size--small.red .v-btn__content {
@@ -151,5 +151,30 @@ main {
   position: absolute;
   top: calc(50% - 20px);
   left: 1px;
+}
+
+::v-deep .text-dive-h1 {
+  font-size: 3.5rem;
+  font-weight: bold;
+}
+::v-deep .text-dive-h2 {
+  font-size: 3.0rem;
+  font-weight: bold;
+}
+::v-deep .text-dive-h3 {
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+::v-deep .text-dive-h4 {
+  font-size: 2.0rem;
+  font-weight: bold;
+}
+::v-deep .text-dive-h5 {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+::v-deep .text-dive-h6 {
+  font-size: 1.0rem;
+  font-weight: bold;
 }
 </style>
