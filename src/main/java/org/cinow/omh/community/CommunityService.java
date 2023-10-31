@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.cinow.omh.filters.FilterOption;
 import org.cinow.omh.indicators.Indicator;
 import org.cinow.omh.locations.LocationRepository;
+import org.cinow.omh.sources.Source;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -83,7 +84,8 @@ public class CommunityService {
 			mergedIndicator.getIndicator().setFeatured(false);
 			mergedIndicator.getIndicator().setHasData(filterCategory.getIndicators().get(0).getIndicator().isHasData());
 			mergedIndicator.getIndicator().setRatePer(0);
-			mergedIndicator.getIndicator().setSourceId(filterCategory.getIndicators().get(0).getIndicator().getSourceId());
+			mergedIndicator.getIndicator().setSource(new Source());
+			mergedIndicator.getIndicator().getSource().setId(filterCategory.getIndicators().get(0).getSource().getId());
 			mergedIndicator.getIndicator().setTypeId(filterCategory.getIndicators().get(0).getIndicator().getTypeId());
 			mergedIndicator.setIndicatorType(filterCategory.getIndicators().get(0).getIndicatorType());
 			mergedIndicator.setSource(filterCategory.getIndicators().get(0).getSource());

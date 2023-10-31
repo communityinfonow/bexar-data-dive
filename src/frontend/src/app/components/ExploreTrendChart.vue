@@ -30,7 +30,7 @@ import { SVGRenderer } from 'echarts/renderers';
 import { AriaComponent, LegendComponent, GridComponent } from 'echarts/components';
 import { LineChart, BarChart, CustomChart } from 'echarts/charts';
 import ExploreToolsPanel from '@/app/components/ExploreToolsPanel'
-import { format } from '@/formatter/formatter'
+import { format } from '@/services/formatter'
 
 export default {
 	name: 'ExploreTrendChart',
@@ -258,7 +258,7 @@ export default {
 					lineStyle: { opacity: 0 },
 					itemStyle: { opacity: 0 },
 					areaStyle: { opacity: 0.25 },
-					color: '#3aa38f'
+					color: '#b8237e'
 				});
 			}
 			let allValues = option.series[0].data.map(d => d.value);

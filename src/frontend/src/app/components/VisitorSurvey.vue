@@ -11,7 +11,7 @@
       right>
       <template v-slot:activator>
         <v-btn v-model="surveyOpen" fab color="yellow" class="wobbly">
-          <v-icon>mdi-note-edit</v-icon>
+          <img src="/img/icon_ux_survey__active.svg" height="56px" width="56px">
         </v-btn>
       </template>
       <v-card class="survey-card" light>
@@ -30,9 +30,9 @@
               </div>
             </v-card-text>
             <v-card-actions @click.stop="">
-              <v-btn text @click.stop="dismissSurvey">{{ $t('survey.close') }}</v-btn>
+              <v-btn text rounded @click.stop="dismissSurvey">{{ $t('survey.close') }}</v-btn>
               <v-spacer></v-spacer>
-              <v-btn color="primary" :disabled="!surveyResponse" @click.stop="submitSurvey">{{ $t('survey.submit') }}</v-btn>
+              <v-btn rounded dark color="red" :disabled="!surveyResponse" @click.stop="submitSurvey">{{ $t('survey.submit') }}</v-btn>
             </v-card-actions>
           </v-form>
         </template>
@@ -40,7 +40,7 @@
           <v-card-text v-html="$t('survey.feedback')" @click.stop="">
           </v-card-text>
           <v-card-actions @click.stop=""> 
-            <v-btn class="mx-auto" text color="primary" @click="closeSurvey">{{ $t('survey.close') }}</v-btn>
+            <v-btn class="mx-auto" text color="red" @click="closeSurvey">{{ $t('survey.close') }}</v-btn>
           </v-card-actions>
         </template>
       </v-card>
@@ -126,7 +126,7 @@ export default {
 <style lang="scss" scoped>
   .visitor-survey-fab {
     z-index: 9999;
-    bottom: 36%;
+    bottom: 12em;
   }
   .visitor-survey-fab .v-btn {
     bottom: 36%;

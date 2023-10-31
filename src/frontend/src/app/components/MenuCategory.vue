@@ -1,7 +1,7 @@
 <template>
-	<v-menu offset-y :internal-activator="true" :key="'category_' + category.id" max-height="80%" allow-overflow eager v-model="menuOpen">
+	<v-menu offset-y :internal-activator="true" :key="'category_' + category.id" max-height="60vh" allow-overflow eager v-model="menuOpen">
 		<template v-slot:activator="{ on }">
-			<v-btn text tile v-on="on" style="height: 100%;">
+			<v-btn text tile v-on="on" style="height: 100%;" :class="textClass">
 				{{ categoryName }}
 				<v-icon right>mdi-chevron-down</v-icon>
 			</v-btn>
@@ -53,9 +53,12 @@ export default {
     category: {
       type: Object,
     },
-	selectItem: { 
-		type: Function,
-	}
+    selectItem: { 
+      type: Function,
+    },
+    textClass: {
+      type: String
+    }
   },
   data() {
     return {

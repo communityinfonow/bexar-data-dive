@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.cinow.omh.sources.Source;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -139,11 +140,13 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 	@Override
 	public List<Indicator> getFeaturedIndicators() {
 		String sql = ""
-			+ " select id_, indicator_category_id, indicator_type_id, "
-			+ "   name_en, name_es, description_en, description_es, show_points, show_report "
-			+ " from tbl_indicators "
-			+ " where featured = true "
-			+ "   and display = true ";
+			+ " select i.id_, i.indicator_category_id, i.indicator_type_id, "
+			+ "   i.name_en, i.name_es, i.description_en, i.description_es, i.show_points, i.show_report, "
+			+ "   s.id_ as source_id, s.name_en as source_name_en, s.name_es as source_name_es "
+			+ " from tbl_indicators i "
+			+ "   join tbl_sources s on s.id_ = i.source_id "
+			+ " where i.featured = true "
+			+ "   and i.display = true ";
 		
 		return this.jdbcTemplate.query(sql, new RowMapper<Indicator>() {
 			@Override
@@ -158,6 +161,10 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 				indicator.setDescription_es(rs.getString("description_es"));
 				indicator.setShowPoints(rs.getBoolean("show_points"));
 				indicator.setShowReport(rs.getBoolean("show_report"));
+				indicator.setSource(new Source());
+				indicator.getSource().setId(rs.getString("source_id"));
+				indicator.getSource().setName_en(rs.getString("source_name_en"));
+				indicator.getSource().setName_es(rs.getString("source_name_es"));
 
 				return indicator;
 			}
@@ -235,7 +242,8 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 				indicator.setName_es(rs.getString("name_es"));
 				indicator.setDescription_en(rs.getString("description_en"));
 				indicator.setDescription_es(rs.getString("description_es"));
-				indicator.setSourceId(rs.getString("source_id"));
+				indicator.setSource(new Source());
+				indicator.getSource().setId(rs.getString("source_id"));
 				indicator.setFeatured(rs.getBoolean("featured"));
 				indicator.setDisplay(rs.getBoolean("display"));
 				indicator.setRatePer(rs.getInt("rate_per"));

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="143.26341mm"
+   height="143.26376mm"
+   viewBox="0 0 143.26341 143.26376"
+   version="1.1"
+   id="svg114"
+   sodipodi:docname="civic_social_icon.svg"
+   inkscape:version="1.0.2-2 (e86c870879, 2021-01-15)">
+  <defs
+     id="defs108" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.35"
+     inkscape:cx="295.75366"
+     inkscape:cy="370.04071"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     inkscape:document-rotation="0"
+     showgrid="false"
+     inkscape:pagecheckerboard="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata111">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-27.398065,-50.076461)">
+    <g
+       id="g84"
+       transform="matrix(0.35277777,0,0,-0.35277777,170.66147,121.70834)">
+      <path
+         d="m 0,0 c 0,-112.142 -90.909,-203.051 -203.051,-203.051 -112.141,0 -203.05,90.909 -203.05,203.051 0,112.142 90.909,203.051 203.05,203.051 C -90.909,203.051 0,112.142 0,0"
+         style="fill:#163d7d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         id="path86" />
+    </g>
+    <g
+       id="g88"
+       transform="matrix(0.35277777,0,0,-0.35277777,150.17679,121.70834)">
+      <path
+         d="m 0,0 c 0,-80.072 -64.911,-144.984 -144.984,-144.984 -80.072,0 -144.983,64.912 -144.983,144.984 0,80.072 64.911,144.984 144.983,144.984 C -64.911,144.984 0,80.072 0,0"
+         style="fill:#1c54a5;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         id="path90" />
+    </g>
+    <g
+       id="g92"
+       transform="matrix(0.35277777,0,0,-0.35277777,104.46296,145.09383)">
+      <path
+         d="m 0,0 c 25.617,25.617 25.617,67.149 0,92.766 -25.617,25.617 -67.149,25.617 -92.766,0 -25.617,-25.617 -25.617,-67.149 0,-92.766 l -19.836,-19.836 64.027,0.664 C -31.065,-19.754 -13.366,-13.366 0,0"
+         style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         id="path94" />
+    </g>
+    <g
+       id="g96"
+       transform="matrix(0.35277777,0,0,-0.35277777,140.4463,109.73823)">
+      <path
+         d="m 0,0 c 0,-43.401 -35.184,-78.585 -78.585,-78.585 -43.401,0 -78.584,35.184 -78.584,78.585 0,43.401 35.183,78.585 78.584,78.585 C -35.184,78.585 0,43.401 0,0"
+         style="fill:#1c54a5;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         id="path98" />
+    </g>
+    <g
+       id="g100"
+       transform="matrix(0.35277777,0,0,-0.35277777,95.806858,126.58785)">
+      <path
+         d="m 0,0 c -25.617,25.617 -25.617,67.149 0,92.766 25.617,25.617 67.149,25.617 92.766,0 25.617,-25.617 25.617,-67.149 0,-92.766 l 19.836,-19.836 -64.027,0.664 C 31.065,-19.754 13.366,-13.366 0,0"
+         style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         id="path102" />
+    </g>
+  </g>
+</svg>

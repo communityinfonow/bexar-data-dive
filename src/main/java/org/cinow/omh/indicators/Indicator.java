@@ -1,5 +1,7 @@
 package org.cinow.omh.indicators;
 
+import org.cinow.omh.sources.Source;
+
 /**
  * This object represents an indicator.
  * 
@@ -53,9 +55,9 @@ public class Indicator {
 	private boolean hasMoe;
 
 	/**
-	 * The source id.
+	 * The source.
 	 */
-	private String sourceId;
+	private Source source;
 
 	/**
 	 * Whether the indicator is featured.
@@ -214,17 +216,24 @@ public class Indicator {
 	}
 
 	/**
-	 * @return the sourceId
+	 * @return the source
 	 */
-	public String getSourceId() {
-		return sourceId;
+	public Source getSource() {
+		return this.source;
 	}
 
 	/**
-	 * @param sourceId the sourceId to set
+	 * @param source the source to set
 	 */
-	public void setSourceId(String sourceId) {
-		this.sourceId = sourceId;
+	public void setSource(Source source) {
+		this.source = source;
+	}
+
+	/**
+	 * @return the sourceId
+	 */
+	public String getSourceId() {
+		return this.source != null ? this.source.getId() : null;
 	}
 
 	/**

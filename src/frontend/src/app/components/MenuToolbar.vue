@@ -1,20 +1,19 @@
 <template>
-  <v-toolbar dense class="menu-toolbar d-print-none">
+  <v-toolbar dense class="menu-toolbar d-print-none px-8">
     <v-toolbar-items style="width: 100%;">
       <v-row style="max-width: 100%;">
         <v-col cols="10">
           <v-slide-group show-arrows style="height: 100%;">
             <template v-for="category in sortedMenu.categories">
               <v-slide-item :key="'category_' + category.id" v-if="category.items.length">
-                <MenuButton text v-if="category.items.length === 1 && flattenSingleItems" :item="category.items[0]" :selectItem="selectItem" :singleItem="true"></MenuButton>
-                <MenuCategory v-else :category="category" :selectItem="selectItem"></MenuCategory>
+                <MenuButton text v-if="category.items.length === 1 && flattenSingleItems" :item="category.items[0]" :selectItem="selectItem" :singleItem="true" textClass="font-weight-bold blue--text"></MenuButton>
+                <MenuCategory v-else :category="category" :selectItem="selectItem" textClass="font-weight-bold blue--text"></MenuCategory>
               </v-slide-item>
             </template>
           </v-slide-group>
         </v-col>
-        <v-col cols="2">
+        <v-col cols="2" class="mt-1">
           <v-autocomplete
-            color="accent"
             :label="$t('tools.common.search') + ' ' + searchType"
             :placeholder="$t('tools.common.search') + ' ' + searchType"
             v-model="selectedItem"
@@ -27,8 +26,11 @@
             hide-details
             solo
             flat
+            rounded
+            background-color="grey"
+            dense
           >
-            <template v-slot:prepend-inner><v-icon color="accent">mdi-magnify</v-icon></template>
+            <template v-slot:prepend-inner><v-img src="/img/icon_ux_search.svg" height="1em" width="1em" class="mr-2"></v-img></template>
           </v-autocomplete>
         </v-col>
       </v-row>

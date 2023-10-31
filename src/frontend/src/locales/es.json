@@ -142,7 +142,7 @@
     },
     "custom_locations": {
       "name": "Crea Tu Propia Área",
-      "short_description": "TODO: short tool intro text (es)",
+      "short_description": "",
       "long_description": "\"Crea Tu Propia Área\" es una herramienta que le permite construir sus propias geografías. Cree tantas áreas personalizadas como desee utilizando SSAs (Áreas Estadísticas Pequeñas), distritos de ayuntamiento, códigos postales y áreas de censo como los componentes fundamentales. Una vez creada(s), usuarios pueden explorar y visualizar datos para sus áreas personalizadas usando Bexar Data Dive. Las áreas personalizadas se pueden guardar en su navegador o descargar para uso futuro.",
       "get_started": "Para comenzar, escriba un nombre para su nueva área personalizada. Luego, seleccione el tipo de geografía que le gustaría usar como componente fundamental para construir su área. Empiece a ensamblar simplemente haciendo clic en las geografías del mapa o seleccionándolas de la lista a la derecha.",
       "or": "o",
@@ -173,13 +173,18 @@
   },
   "home_view": {
     "name": "Página Principal",
-    "welcome_message": "Bienvenido a Data Dive de Bexar, organizada por CI:Now. Disponemos de tres herramientas para ayudarle a explorar, visualizar e interactuar con los datos. Para obtener más información sobre el funcionamiento de cada herramienta, haga clic en los enlaces siguientes o en el menú lateral.",
-    "available_tools": "Herramientas Disponibles",
-    "acknowledgement": "Este proyecto es financiado por la Oficina de Salud de las Minorías del Departamento de Salud y Servicios Humanos de los Estados Unidos (HHS, por sus siglas en inglés) como parte de un premio de asistencia financiera por un total de $750,000 con un 100 por ciento de financiación de OMH/OASH/HHS. Los contenidos pertenecen a el/los autor/es y no representan necesariamente la opinión oficial ni tienen el respaldo de OMH/OASH/HHS ni el Gobierno de los Estados Unidos. Para obtener más información, por favor visita <a target='_blank' href='https://www.minorityhealth.hhs.gov'>www.minorityhealth.hhs.gov</a>."
+    "available_tools": "Nuestras herramientas Disponibles",
+    "acknowledgement": "Este proyecto es financiado por la Oficina de Salud de las Minorías del Departamento de Salud y Servicios Humanos de los Estados Unidos (HHS, por sus siglas en inglés) como parte de un premio de asistencia financiera por un total de $750,000 con un 100 por ciento de financiación de OMH/OASH/HHS. Los contenidos pertenecen a el/los autor/es y no representan necesariamente la opinión oficial ni tienen el respaldo de OMH/OASH/HHS ni el Gobierno de los Estados Unidos. Para obtener más información, por favor visita <a target='_blank' href='https://www.minorityhealth.hhs.gov'>www.minorityhealth.hhs.gov</a>.",
+    "powered_by": "Desarrollado por CI:Now",
+    "connecting_line_1": "Conectándote con los datos",
+    "connecting_line_2": "de tu comunidad",
+    "welcome_line_1": "Bienvenido a Data Dive de Bexar, disponemos de tres herramientas para ayudarle ",
+    "welcome_line_2": "a explorar, visualizar e interactuar con los datos en el Condado de Bexar."
   },
 
   "about_data_view": {
     "name": "Sobre la Información",
+    "welcome": "",
     "indicators": "Indicadores",
     "visit_source": "Ir a la fuente",
     "source_citation": "Citar fuente",
@@ -191,10 +196,12 @@
   },
   "faqs_view": {
     "name": "Preguntas Frecuentes",
+    "welcome": "",
     "questions": "Preguntas"
   },
   "announcements_view": {
-    "name": "Anuncios"
+    "name": "Anuncios",
+    "welcome": ""
   },
   "data": {
     "value": "Valor",

@@ -1,9 +1,8 @@
 <template>
-  <v-card style="position: fixed; top: 0; bottom: 0; right: 0; margin: 64px 0 34px 0; overflow-y: scroll; width: 40%;">
+<v-card style="position: sticky; top: 80px; height: calc(100vh - 80px); overflow-y: scroll;">
 	<v-card-title>{{ title }}</v-card-title>
 	<v-card-actions>
 		<v-autocomplete
-			prepend-icon="mdi-magnify"
 			:label="$t('tools.common.search')"
 			:placeholder="$t('tools.common.search')"
 			v-model="selectedItem"
@@ -16,7 +15,9 @@
 			hide-details
 			solo
 			flat
-		></v-autocomplete>
+		>
+			 <template v-slot:prepend-inner><v-img src="/img/icon_ux_search.svg" height="1em" width="1em" class="mr-2"></v-img></template>
+		</v-autocomplete>
 	</v-card-actions>
 	<v-list v-if="menu.categories.length > 1">
 		<template v-for="category in menu.categories">

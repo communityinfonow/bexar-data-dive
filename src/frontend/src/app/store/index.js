@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 import router from '@/app/router/index'
 import i18n from '@/i18n'
 import axios from 'axios'
-import { format } from '@/formatter/formatter'
+import { format } from '@/services/formatter'
 
 Vue.use(Vuex)
 
@@ -45,20 +45,24 @@ export default new Vuex.Store({
         {
           key: 'community',
           name: i18n.t('tools.community.name'),
+          iconPath: "/img/icon_tool_community__active.svg",
+          iconPathInactive: "/img/icon_tool_community__inactive.svg",
           imagePath: "/img/tools_community_" + i18n.locale + ".png",
           route: state.communityRoute,
-          icon: 'mdi-map',
           shortDescription: i18n.t('tools.community.short_description'),
+          headline: i18n.t('tools.community.headline'),
           fullDescription: i18n.t('tools.community.long_description'),
           showOnHome: true
         },
         {
           key: 'explore',
           name: i18n.t('tools.explore.name'),
+          iconPath: "/img/icon_tool_explore__active.svg",
+          iconPathInactive: "/img/icon_tool_explore__inactive.svg",
           imagePath: "/img/tools_explore_" + i18n.locale + ".png",
           route: state.exploreRoute,
-          icon: 'mdi-view-dashboard',
           shortDescription: i18n.t('tools.explore.short_description'),
+          headline: i18n.t('tools.explore.headline'),
           fullDescription: i18n.t('tools.explore.long_description'),
           showOnHome: true,
           subTools: [
@@ -79,20 +83,24 @@ export default new Vuex.Store({
         {
           key: 'tables',
           name: i18n.t('tools.tables.name'),
+          iconPath: "/img/icon_tool_tables__active.svg",
+          iconPathInactive: "/img/icon_tool_tables__inactive.svg",
           imagePath: "/img/tools_tables_" + i18n.locale + ".png",
           route: state.tablesRoute,
-          icon: 'mdi-grid',
           shortDescription: i18n.t('tools.tables.short_description'),
+          headline: i18n.t('tools.tables.headline'),
           fullDescription: i18n.t('tools.tables.long_description'),
           showOnHome: true
         },
         {
           key: 'custom-locations',
           name: i18n.t('tools.custom_locations.name'),
-          imagePath: "/img/custom_locations_tables_" + i18n.locale + ".png",
+          iconPath: "/img/icon_tool_custom__active.svg",
+          iconPathInactive: "/img/icon_tool_custom__inactive.svg",
+          imagePath: "/img/tools_custom_" + i18n.locale + ".png",
           route: state.customLocationsRoute,
-          icon: 'mdi-map-plus',
           shortDescription: i18n.t('tools.custom_locations.short_description'),
+          headline: i18n.t('tools.custom_locations.headline'),
           fullDescription: i18n.t('tools.custom_locations.long_description'),
           showOnHome: false
         }

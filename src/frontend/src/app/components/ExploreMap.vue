@@ -111,13 +111,13 @@
 							<v-expansion-panel v-if="indicator.showReport">
 								<v-expansion-panel-header class="text--primary" data-html2canvas-ignore>
 									<div>
-										<v-icon color="accent">mdi-file-document-outline</v-icon>
+										<v-icon color="green">mdi-file-document-outline</v-icon>
 										<span class="mx-2">{{ $t('tools.explore.report') }}</span>
 									</div>
 								</v-expansion-panel-header>
 								<v-expansion-panel-content v-if="reportData" :style="{ 'overflow': 'hidden', 'display': 'flex', 'flex-direction': 'column' }">
 									<span class="text-subtitle-1">{{ reportData.location.properties.locationName }}</span>
-									<v-btn icon color="accent" class="ml-2" @click="downloadReport">
+									<v-btn icon color="green" class="ml-2" @click="downloadReport">
 										<v-icon>mdi-download</v-icon>
 									</v-btn>
 									<v-simple-table fixed-header :height="this.reportHeight">
@@ -166,14 +166,14 @@
 							<v-expansion-panel v-if="indicator.showPoints">
 								<v-expansion-panel-header class="text--primary" data-html2canvas-ignore>
 									<div>
-										<v-icon color="accent">mdi-circle</v-icon>
+										<v-icon color="green">mdi-circle</v-icon>
 										<span class="mx-2">{{ $t('tools.explore.locations') }}</span>
 									</div>
 								</v-expansion-panel-header>
 								<v-expansion-panel-content class="location-options">
 									<div v-for="pointType in pointTypes" :key="pointType.id">
 										<v-checkbox 
-											color="accent"
+											color="green"
 											:value="pointType" 
 											:label="pointType['name_' + locale] + ' (' + pointType.year + ')'"
 											v-model="selectedPointTypes"
@@ -221,7 +221,7 @@
 							<v-expansion-panel data-html2canvas-ignore>
 								<v-expansion-panel-header class="text--primary">
 									<div>
-										<v-icon color="accent">mdi-layers</v-icon>
+										<v-icon color="green">mdi-layers</v-icon>
 										<span class="mx-2">{{ $t('tools.community.community_types') }}</span>
 									</div>
 								</v-expansion-panel-header>
@@ -232,7 +232,7 @@
 									class="mt-0"
 									>
 									<v-radio 
-										color="accent"
+										color="green"
 										v-for="layer in layers" 
 										:key="layer.id" 
 										:value="layer" 
@@ -261,7 +261,7 @@ import colorbrewer from 'colorbrewer'
 import { ckmeans } from 'simple-statistics'
 import {scaleLinear} from 'd3-scale'
 import ExploreToolsPanel from '@/app/components/ExploreToolsPanel'
-import { format } from '@/formatter/formatter'
+import { format } from '@/services/formatter'
 
 export default {
 	name: 'ExploreMap',

@@ -12,13 +12,14 @@
     <v-list nav>
       <v-list-item-group
         v-model="activeView"
-        active-class="primary--text text--accent-4"
+        active-class="red--text"
         :aria-label="$t('tools.tools')"
       >
         <template v-for="(item, index) in navItems">
           <v-list-item v-if="index < 5" :key="index" :to="item.route" role="option">
             <v-list-item-icon>
-              <v-icon>{{ item.icon }}</v-icon>
+              <v-icon v-if="item.icon">{{ item.icon }}</v-icon>
+              <v-img :src="$route.name === item.key ? item.iconPath : item.iconPathInactive" v-if="item.iconPath" height="24" width="24"></v-img>
             </v-list-item-icon>
             <v-list-item-content>
               <v-list-item-title>{{ item.name }}</v-list-item-title>
@@ -29,9 +30,9 @@
     </v-list>
     <template v-slot:append>
       <v-list nav>
-        <v-item-group
+        <v-list-item-group
           v-model="activeView"
-          active-class="primary--text text-accent-4"
+          active-class="red--text"
         >
           <template v-for="(item, index) in navItems">
             <v-list-item v-if="index >= 5" :key="index" :to="item.route">
@@ -43,7 +44,7 @@
               </v-list-item-content>
             </v-list-item>
           </template>
-        </v-item-group>
+        </v-list-item-group>
         <v-list-item href="https://cinow.info/contact/#form" target="_blank">
           <v-list-item-icon><v-icon>mdi-bug</v-icon></v-list-item-icon>
           <v-list-item-content>
@@ -87,12 +88,13 @@ export default {
       return [{ route: '/home', icon: 'mdi-home', name: i18n.t('home_view.name') }]
         .concat(this.tools)
         .concat(this.about_views)
-    },
+    }
   },
   watch: {
     activeView() {
       this.miniNavDrawer = true
     },
+    
   },
   methods: {},
 }

@@ -16,7 +16,8 @@
     "community": {
       "name": "My Community",
       "short_description": "The easiest way to <span class='font-weight-black'>quickly get information</span> about demographics, housing, education and much more across communities in Bexar County.",
-      "long_description": "My Community is a tool that allows you to explore information about demographics, housing, education and much more across communities in Bexar County. Communities include Council Districts, Zipcodes, Census Tracts and SSA's, or Statistical Small Areas. SSAs are combinations of Census Tracts grouped on meaningful indicators like Race/Ethnicity, housing, age, education, and income. CI:Now created SSAs to help users analyze data in areas small enough to see meaningful differences across the county, yet large enough to yield better estimates.",
+      "headline": "My Community is a tool that allows you to explore information about demographics, housing, education and much more across communities in Bexar County.",
+      "long_description": "Communities include Council Districts, Zipcodes, Census Tracts and SSA's, or Statistical Small Areas. SSAs are combinations of Census Tracts grouped on meaningful indicators like Race/Ethnicity, housing, age, education, and income. CI:Now created SSAs to help users analyze data in areas small enough to see meaningful differences across the county, yet large enough to yield better estimates.",
       "get_started": "To get started, browse or search for an indicator using the menu above or select a location on the map below.",
       "community_types": "Community Types",
       "skip": "Skip ahead to",
@@ -37,7 +38,8 @@
     "explore": {
       "name": "Explore Data",
       "short_description": "A <span class='font-weight-black'>deeper dive</span> into local data through interactive mapping, trend and comparison visualization tools.",
-      "long_description": "Explore Data is where you can take a deeper dive into the indicators about your community through interactive maps and charts. Indicators can be mapped across geographic areas, trended in charts to view that data over time, or compared to other local communities in a bar chart. You will also have the ability to filter results by location, year, race/ethnicity, sex, education level or poverty status depending on what's available from the data source. Additionally, you can download and save the visuals you create.",
+      "headline": "Explore Data is where you can take a deeper dive into the indicators about your community through interactive maps and charts.",
+      "long_description": "Indicators can be mapped across geographic areas, trended in charts to view that data over time, or compared to other local communities in a bar chart. You will also have the ability to filter results by location, year, race/ethnicity, sex, education level or poverty status depending on what's available from the data source. Additionally, you can download and save the visuals you create.",
       "get_started": "To get started, browse or search for an indicator using the menu above or explore one of the featured indicators below.",
       "no_data_location_year": "No data is available for the selected location type for this year",
       "no_data_custom_locations": "No data is available for custom areas for this indicator",
@@ -80,7 +82,8 @@
     "tables": {
       "name": "Tables & Downloads",
       "short_description": "Access to <span class='font-weight-black'>downloadable data</span> in a machine-readable spreadsheet format.",
-      "long_description": "Tables & Downloads is where you can access data in a machine-readable spreadsheet format to use in your own data processing and visualization tools. You can filter the data by location, year, race/ethnicity, education level or poverty status, depending on what is available from the data source, download and save the data tables you create.",
+      "headline": "Tables & Downloads is where you can access data in a machine-readable spreadsheet format to use in your own data processing and visualization tools.",
+      "long_description": "You can filter the data by location, year, race/ethnicity, education level or poverty status, depending on what is available from the data source, download and save the data tables you create.",
       "get_started": "To get started, browse or search for an indicator using the menu above or select one of the featured indicators below.",
       "filter": "Filter",
       "headers": {
@@ -142,8 +145,9 @@
     },
     "custom_locations": {
       "name": "Create Your Own Area",
-      "short_description": "TODO: short tool intro text",
-      "long_description": "Create Your Own Area is a tool where you can build your own geographies. Create as many custom areas as you would like using SSAs, Council Districts, Zipcodes and Census tracts as the building blocks. Once created, users can explore and visualize data for their custom area(s) with Bexar Data Dive. Custom areas can be saved within your browser or downloaded for future use.",
+      "short_description": "",
+      "headline": "Create Your Own Area is a tool where you can build your own geographies.",
+      "long_description": "Create as many custom areas as you would like using SSAs, Council Districts, Zipcodes and Census tracts as the building blocks. Once created, users can explore and visualize data for their custom area(s) with Bexar Data Dive. Custom areas can be saved within your browser or downloaded for future use.",
       "get_started": "To get started, type in a name for your new custom area. Then, select the type of geography you would like to use as the building blocks to assemble your area. Start building by simply clicking geographies on the map or selecting them from the list on the right.",
       "or": "or",
       "step_1": "Step 1: Name area",
@@ -173,12 +177,17 @@
   },
   "home_view": {
     "name": "Home",
-    "welcome_message": "Welcome to the Bexar Data Dive, hosted by CI:Now. We have three tools to help you explore, visualize, and interact with data. For more information about how each tool works, click on the links below or in the side menu.",
-    "available_tools": "Available Tools",
-    "acknowledgement": "This project is supported by the Office of Minority Health of the U.S. Department of Health and Human Services (HHS) as part of a financial assistance award totaling $750,000 with 100 percent funded by OMH/OASH/HHS. The contents are those of the author(s) and do not necessarily represent the official views of, nor an endorsement by, OMH/OASH/HHS, or the U.S. Government. For more information, please visit <a target='_blank' href='https://www.minorityhealth.hhs.gov'>www.minorityhealth.hhs.gov</a>."
+    "available_tools": "Our Available Tools",
+    "acknowledgement": "This project is supported by the Office of Minority Health of the U.S. Department of Health and Human Services (HHS) as part of a financial assistance award totaling $750,000 with 100 percent funded by OMH/OASH/HHS. The contents are those of the author(s) and do not necessarily represent the official views of, nor an endorsement by, OMH/OASH/HHS, or the U.S. Government. For more information, please visit <a target='_blank' href='https://www.minorityhealth.hhs.gov'>www.minorityhealth.hhs.gov</a>.",
+    "powered_by": "Powered by CI:Now",
+    "connecting_line_1": "Connecting you to your",
+    "connecting_line_2": "community data",
+    "welcome_line_1": "Welcome to Bexar Data Dive, we currently have three tools to help",
+    "welcome_line_2": "you explore, visualize, and interact with data in Bexar County."
   },
   "about_data_view": {
     "name": "About the Data",
+    "welcome": "",
     "indicators": "Indicators",
     "visit_source": "Go to source",
     "source_citation": "Cite Source",
@@ -186,14 +195,17 @@
     "processed_published": "Processed and published by Community Information Now for Bexar Data Dive."
   },
   "about_tools_view": {
-    "name": "About the Tools"
+    "name": "About the Tools",
+    "welcome": "Providing access to <b>good data that shines the light on<br> community conditions</b> in Bexar County."
   },
   "faqs_view": {
     "name": "Frequently Asked Questions",
+    "welcome": "",
     "questions": "Questions"
   },
   "announcements_view": {
-    "name": "Announcements"
+    "name": "Announcements",
+    "welcome": ""
   },
   "data": {
     "value": "Value",

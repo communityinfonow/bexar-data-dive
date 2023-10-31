@@ -1,9 +1,9 @@
 <template>
   <v-btn text tile @click="selectItem(item)" style="height: 100%;">
-    <v-list-item-title v-if="!singleItem">
+    <v-list-item-title v-if="!singleItem" :class="textClass">
       {{ itemName }}
     </v-list-item-title>
-    <span v-else>
+    <span v-else :class="textClass">
       {{ itemName }}
     </span>
   </v-btn>
@@ -23,6 +23,9 @@ export default {
     },
     singleItem: {
       type: Boolean
+    },
+    textClass: {
+      type: String
     }
   },
   computed: {
