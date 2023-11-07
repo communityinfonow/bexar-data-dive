@@ -10,6 +10,9 @@
 	<div class="definition-tooltip">
 		<div class="definition-tooltip-wedge"></div>
 		<span v-html="indicator['description_' + locale] && indicator['description_' + locale].substring(3, indicator['description_' + locale].indexOf('</p>')) || $t('tools.community.coming_soon')"></span>
+		<v-btn color="red" text block class="mt-2" :to="'about-data?indicator=' + this.indicator.id">
+			{{ $t('featured_card.learn_more') }}
+		</v-btn>
 	</div>
 	</v-tooltip>
 </template>

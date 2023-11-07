@@ -42,10 +42,7 @@
 							</p>
 					</div>
 					<div>
-						<v-btn-toggle rounded borderless active-class="none">
-							<download-menu :downloadData="downloadData" :downloadImage="downloadImage"></download-menu>
-							<about-menu indicator :indicatorId="item.indicator.id"></about-menu>
-						</v-btn-toggle>
+						<button-menu :downloadData="downloadData" :downloadImage="downloadImage"></button-menu>
 					</div>
 				</div>
 				<v-row>
@@ -90,17 +87,15 @@ import { mapActions, mapState } from 'vuex'
 import CommunityChart from '@/app/components/CommunityChart'
 import { format } from '@/services/formatter'
 import html2canvas from 'html2canvas'
-import DownloadMenu from '@/app/components/DownloadMenu'
-import AboutMenu from '@/app/components/AboutMenu'
+import ButtonMenu from '@/app/components/ButtonMenu'
 import IndicatorDefinition from '@/app/components/IndicatorDefinition'
 
 export default {
 	name: 'CommunityIndicator',
 	components: {
 		CommunityChart,
-		DownloadMenu,
-		AboutMenu,
-		IndicatorDefinition
+		IndicatorDefinition,
+		ButtonMenu
 	},
 	props: {
 		item: {

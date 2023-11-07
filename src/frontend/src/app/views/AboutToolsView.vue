@@ -1,14 +1,5 @@
 <template>
   <v-container fluid class="pa-0">
-    <section class="page-header d-flex flex-column light--text pa-12 pb-0">
-      <h1 class="text-dive-h3">{{ $t('about_tools_view.name') }}</h1>
-      <div class="font-weight-medium mt-2" style="font-size: 1.25rem;" v-html="$t('about_tools_view.welcome')"></div>
-      <v-breadcrumbs :items="breadcrumbs" class="mb-2" dark>
-        <template v-slot:divider>
-          <v-icon>mdi-chevron-right</v-icon>
-        </template>
-      </v-breadcrumbs>
-    </section>
     <v-row class="no-gutters flex-column">
       <v-col cols="auto" class="pa-12 col col-auto">
         <section v-for="(tool, index) in tools" :key="'tool_' + index" class="mb-16">
