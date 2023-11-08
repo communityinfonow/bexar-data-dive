@@ -36,7 +36,7 @@
       </v-col>
       <v-col v-if="showIntro" cols="auto" class="pa-4">
           <section class="mb-8">
-            <h2 class="text-dive-h4 mt-16 mb-2 font-weight-bold text-center" style="text-transform: uppercase;">{{ $t('tools.common.featured_indicators') }}</h2>
+            <h2 class="text-dive-h4 mt-16 mb-2 font-weight-light text-center" style="text-transform: uppercase;">{{ $t('tools.common.featured_indicators') }}</h2>
             <p style="margin: 0 30%; font-size: 1.25em;">{{ $t('tools.tables.get_started') }}</p>
           </section>
           <section v-if="featuredIndicators" class="d-flex" :class="{ 'flex-row': $vuetify.breakpoint.mdAndUp, 'flex-column': $vuetify.breakpoint.smAndDown }">

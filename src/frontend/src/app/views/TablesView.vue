@@ -34,7 +34,7 @@
       </v-col>
       <v-col v-if="showIntro && featuredIndicators" cols="auto">
         <section class="mb-8">
-          <h2 class="text-dive-h4 text-uppercase mt-16 mb-2 text-center">{{ $t('tools.common.featured_indicators') }}</h2>
+          <h2 class="text-dive-h4 text-uppercase mt-16 mb-2 text-center font-weight-light">{{ $t('tools.common.featured_indicators') }}</h2>
           <p style="margin: 0 30%; font-size: 1.25em;">{{ $t('tools.tables.get_started') }}</p>
         </section>
         <section class="d-flex" :class="{ 'flex-row': $vuetify.breakpoint.mdAndUp, 'flex-column': $vuetify.breakpoint.smAndDown }">

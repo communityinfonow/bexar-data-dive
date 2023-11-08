@@ -3,45 +3,46 @@
 		flat
         :width="fill_width ? '100%' : maxWidth"
         class="d-flex flex-column flex-grow-1 ma-4 featured-card"
+		@click="click_route ? click_route(item) : null"
+		:to="view_route ? view_route : null"
       >
-        <v-img :src="imagePath" class="align-end featured-image-gradient">
-			<v-card-title :class="'flex-nowrap featured-card-title ' + text_color + '--text ' + background_color + (dense ? ' pb-0' : '')" v-if="name">
-				<img v-if="iconPath" :src="iconPath" class="mr-2" height="48" width="48px">
-				<div>{{ name }}</div>
-			</v-card-title>
-        </v-img>
-			<v-card-text :class="'featured-card-text ' + text_color + '--text ' + background_color + (dense ? ' pt-0' : '')" :style="{ minHeight: description ? '132px' : '' }">
-				<p class="text-h6 font-weight-bold mb-0">{{ header }}</p>
-				<p class="description" v-html="description"></p>
-				<p class="text-subtitle-2">{{ postText }}</p>
-		  	</v-card-text>
-			<v-spacer class="featured-card-actions"></v-spacer>
-			<v-card-actions :class="'featured-card-actions pa-8 ' + background_color">
-				<v-btn v-if="about_route" text color="red" link :to="about_route" rounded style="text-transform: none;">
-					{{ secondary_button_text }}
-				</v-btn>
-				<v-spacer></v-spacer>
-				<v-btn 
-					v-if="view_route" 
-					color="red"
-					class="white--text font-weight-bold" 
-					rounded
-					:to="view_route" 
-					:aria-label="$t('featured_card.view') + ' ' + name"
-				>
-					{{ primary_button_text }}
-				</v-btn>
-				<v-btn 
-					v-if="click_route" 
-					color="red" 
-					class="white--text font-weight-bold"
-					@click="click_route(item)" 
-					:aria-label="$t('featured_card.view') + ' ' + name"
-					rounded
-				>
-					{{ primary_button_text }}
-				</v-btn>
-			</v-card-actions>
+		<v-img :src="imagePath" class="align-end featured-image-gradient"></v-img>
+		<v-card-title :class="'flex-nowrap featured-card-title ' + text_color + '--text ' + background_color + (dense ? ' pb-0' : '')" v-if="name">
+			<img v-if="iconPath" :src="iconPath" class="mr-2" height="48" width="48">
+			<div>{{ name }}</div>
+		</v-card-title>
+		<v-card-text :class="'featured-card-text ' + text_color + '--text ' + background_color + (dense ? ' pt-0' : '')" :style="{ minHeight: description ? '132px' : '' }">
+			<p class="text-h6 font-weight-bold mb-0">{{ header }}</p>
+			<p class="description" v-html="description"></p>
+			<p class="text-subtitle-2">{{ postText }}</p>
+		</v-card-text>
+		<v-spacer class="featured-card-actions"></v-spacer>
+		<v-card-actions :class="'featured-card-actions pa-8 ' + background_color">
+			<v-btn v-if="about_route" text color="red" link :to="about_route" rounded style="text-transform: none;">
+				{{ secondary_button_text }}
+			</v-btn>
+			<v-spacer></v-spacer>
+			<v-btn 
+				v-if="view_route" 
+				color="red"
+				class="white--text font-weight-bold" 
+				rounded
+				:to="view_route" 
+				:aria-label="$t('featured_card.view') + ' ' + name"
+			>
+				{{ primary_button_text }}
+			</v-btn>
+			<v-btn 
+				v-if="click_route" 
+				color="red" 
+				class="white--text font-weight-bold"
+				@click="click_route(item)" 
+				:aria-label="$t('featured_card.view') + ' ' + name"
+				rounded
+			>
+				{{ primary_button_text }}
+			</v-btn>
+		</v-card-actions>
       </v-card>
 </template>
 

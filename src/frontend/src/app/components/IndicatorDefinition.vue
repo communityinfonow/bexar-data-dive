@@ -1,5 +1,5 @@
 <template>
-	<v-tooltip :open-on-hover="false" right max-width="20%" z-index="9999" content-class="definition-tooltip-container">
+	<v-tooltip :value="open" :open-on-hover="false" right max-width="20%" z-index="9999" content-class="definition-tooltip-container">
 	<template v-slot:activator="{ on, attrs}">
 		<span v-on="on" v-bind="attrs" class="ml-2">
 			<v-btn icon data-html2canvas-ignore>
@@ -7,7 +7,7 @@
 			</v-btn>
 		</span>
 	</template>
-	<div class="definition-tooltip">
+	<div class="definition-tooltip" v-click-outside="toggle">
 		<div class="definition-tooltip-wedge"></div>
 		<span v-html="indicator['description_' + locale] && indicator['description_' + locale].substring(3, indicator['description_' + locale].indexOf('</p>')) || $t('tools.community.coming_soon')"></span>
 	</div>
@@ -27,6 +27,16 @@ export default {
 	computed: {
 		...mapState(['locale']),
 	},
+	data() {
+		return {
+			open: false
+		}
+	},
+	methods: {
+		toggle() {
+			this.open = !this.open
+		}
+	}
 }
 </script>
 

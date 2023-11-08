@@ -117,6 +117,12 @@ main {
 ::v-deep .v-btn.v-item--active.v-btn--active.v-btn--is-elevated.v-btn--has-bg.theme--dark.v-size--small.red .v-btn__content {
   color: $color-grey !important;
 }
+::v-deep .v-btn.v-btn--disabled.v-btn--has-bg.theme--dark.v-size--small {
+  background-color: $color-primary !important;
+}
+::v-deep .v-btn.v-btn--disabled.v-btn--has-bg.theme--dark.v-size--small .v-btn__content{
+  color: $color-grey !important;
+}
 
 ::v-deep .definition-tooltip-container {
   background: transparent;
