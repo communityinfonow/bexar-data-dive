@@ -129,6 +129,7 @@
           "category": "Category",
           "indicator": "Indicator",
           "source": "Source",
+          "location_id": "Location ID",
           "location_type": "Location Type",
           "location": "Location",
           "year": "Year",

@@ -131,6 +131,7 @@ export default {
 			let csv = [
 				i18n.t('tools.common.download.headers.indicator'), 
 				i18n.t('tools.common.download.headers.source'), 
+				i18n.t('tools.common.download.headers.location_id'),
 				i18n.t('tools.common.download.headers.location'), 
 				i18n.t('tools.common.download.headers.year'),
 				i18n.t('tools.common.download.headers.race'),
@@ -140,6 +141,7 @@ export default {
 			csv += this.item.demographicData.map(data => {
 				return '\n"' + ((this.parentName ? this.parentName + ' - ' : '') + this.item.indicator['name_' + this.locale])+ '",'
 					+ '"' + this.item.source['name_' + this.locale] + '",'
+					+ '"' + this.community.location.id + '",'
 					+ '"' + this.community.location['name_' + this.locale] + '",'
 					+ this.item.year + ','
 					+ '"' + (data.demographicFilter['name_' + this.locale] || i18n.t('data.all')) + '",'
