@@ -4,7 +4,7 @@
       <v-col cols="auto" class="grow">
         <section :class="'page-header d-flex flex-column light--text pa-12 pb-0 ' + (!showIntro ? 'main-content' : '')">
           <h1 v-if="showIntro" class="text-dive-h3">{{ $t('tools.tables.name') }}</h1>
-          <h1 v-if="indicator" class="text-dive-h3">
+          <h1 v-if="tablesData && indicator" class="text-dive-h3">
             <span>
               <span v-if="tablesData.category.parentCategoryId">{{ tablesData.category['name_' + locale] }} - </span>
               {{ tablesData.indicator['name_' + locale] }}
@@ -450,7 +450,7 @@ export default {
         }
       ];
 
-      if (this.tablesData) {
+      if (this.tablesData && this.indicator) {
         crumbs.push({
           text: (this.tablesData.category.parentCategoryId ? this.tablesData.category['name_' + this.locale] + ' - ' : '') + this.indicator['name_' + this.locale],
           disabled: true

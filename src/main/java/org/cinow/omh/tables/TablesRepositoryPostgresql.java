@@ -472,6 +472,7 @@ public class TablesRepositoryPostgresql implements TablesRepository{
 				: (data.getCategory().getParentCategoryId() != null ? data.getCategory().getName_en() + " - " : "") + data.getIndicator().getName_en();
 		items.append(enquote(indicator) + ",");
 		items.append(enquote("es".equalsIgnoreCase(request.getLang()) ? data.getSource().getName_es() : data.getSource().getName_en()) + ",");
+		items.append(enquote(item.getLocationId()) + ",");
 		items.append(enquote("es".equalsIgnoreCase(request.getLang()) ? item.getLocationType_es() : item.getLocationType_en()) + ",");
 		items.append(enquote("es".equalsIgnoreCase(request.getLang()) ? item.getLocation_es() : item.getLocation_en()) + ",");
 		items.append(enquote(item.getYear()) + ",");
