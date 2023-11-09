@@ -89,6 +89,7 @@ public class TablesService {
 		StringBuilder csv = new StringBuilder();
 		csv.append(enquote("es".equalsIgnoreCase(request.getLang()) ? "Indicador" : "Indicator") + ",");
 		csv.append(enquote("es".equalsIgnoreCase(request.getLang()) ? "Fuente" : "Source") + ",");
+		csv.append(enquote("es".equalsIgnoreCase(request.getLang()) ? "Identificación de Ubicación" : "Location ID") + ",");
 		csv.append(enquote("es".equalsIgnoreCase(request.getLang()) ? "Tipo de Ubicación" : "Location Type") + ",");
 		csv.append(enquote("es".equalsIgnoreCase(request.getLang()) ? "Ubicación" : "Location") + ",");
 		csv.append(enquote("es".equalsIgnoreCase(request.getLang()) ? "Año" : "Year") + ",");

@@ -320,6 +320,7 @@ export default {
 			let csv = [
 				i18n.t('tools.common.download.headers.indicator'), 
 				i18n.t('tools.common.download.headers.source'), 
+				i18n.t('tools.common.download.headers.location_id'),
 				i18n.t('tools.common.download.headers.location_type'), 
 				i18n.t('tools.common.download.headers.location'), 
 				i18n.t('tools.common.download.headers.year')
@@ -339,6 +340,7 @@ export default {
 					return '\n' 
 						+ '"' + ((this.exploreData.category ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.exploreData.indicator['name_' + this.locale]) + '",'
 						+ '"' + this.exploreData.source['name_' + this.locale] + '",'
+						+ '"' + data.location.id + '",'
 						+ '"' + data.locationType['name_' + this.locale] + '",'
 						+ '"' + data.location['name_' + this.locale] + '",'
 						+ this.filterSelections.year + ','
@@ -353,6 +355,7 @@ export default {
 					return '\n'
 						+ '"' + ((this.exploreData.category ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.exploreData.indicator['name_' + this.locale]) + '",'
 						+ '"' + this.exploreData.source['name_' + this.locale] + '",'
+						+ '"' + data.location.id + '",'
 						+ '"' + data.locationType['name_' + this.locale] + '",'
 						+ '"' + data.location['name_' + this.locale] + '",'
 						+ year + ','
@@ -367,6 +370,7 @@ export default {
 				csv += '\n'
 					+ '"' + ((this.exploreData.category ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.exploreData.indicator['name_' + this.locale]) + '",'
 					+ '"' + this.exploreData.source['name_' + this.locale] + '",'
+					+ '"' + data.location.id + '",'
 					+ '"' + data.locationType['name_' + this.locale] + '",'
 					+ '"' + data.location['name_' + this.locale] + '",'
 					+ this.filterSelections.year + ','
@@ -379,6 +383,7 @@ export default {
 						csv += '\n'
 							+ '"' + ((this.exploreData.category ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.exploreData.indicator['name_' + this.locale]) + '",'
 							+ '"' + this.exploreData.source['name_' + this.locale] + '",'
+							+ '"' + comp.location.id + '",'
 							+ '"' + comp.locationType['name_' + this.locale] + '",'
 							+ '"' + comp.location['name_' + this.locale] + '",'
 							+ this.filterSelections.year + ','
@@ -392,6 +397,7 @@ export default {
 						csv += '\n'
 							+ '"' + ((this.exploreData.category ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.exploreData.indicator['name_' + this.locale]) + '",'
 							+ '"' + this.exploreData.source['name_' + this.locale] + '",'
+							+ '"' + data.location.id + '",'
 							+ '"' + data.locationType['name_' + this.locale] + '",'
 							+ '"' + data.location['name_' + this.locale] + '",'
 							+ year.id + ','
@@ -405,6 +411,7 @@ export default {
 						csv += '\n'
 							+ '"' + ((this.exploreData.category ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.exploreData.indicator['name_' + this.locale]) + '",'
 							+ '"' + this.exploreData.source['name_' + this.locale] + '",'
+							+ '"' + data.location.id + '",'
 							+ '"' + data.locationType['name_' + this.locale] + '",'
 							+ '"' + data.location['name_' + this.locale] + '",'
 							+ this.filterSelections.year + ','

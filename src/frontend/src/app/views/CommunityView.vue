@@ -511,6 +511,7 @@ export default {
         i18n.t('tools.common.download.headers.category'),
 				i18n.t('tools.common.download.headers.indicator'), 
 				i18n.t('tools.common.download.headers.source'), 
+        i18n.t('tools.common.download.headers.location_id'),
 				i18n.t('tools.common.download.headers.location'), 
 				i18n.t('tools.common.download.headers.year'),
 				i18n.t('tools.common.download.headers.race'),
@@ -535,6 +536,7 @@ export default {
           return '\n"' + cat['name_' + this.locale] + '",' 
             + '"' + ((subcat ? subcat['name_' + this.locale] + ' - ' : '') + ind.indicator['name_' + this.locale])+ '",'
             + '"' + ind.source['name_' + this.locale] + '",'
+            + '"' + this.community.location.id + '",'
             + '"' + this.community.location['name_' + this.locale] + '",'
             + ind.year + ','
             + '"' + (data.demographicFilter['name_' + this.locale] || i18n.t('data.all')) + '",'

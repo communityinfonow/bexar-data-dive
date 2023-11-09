@@ -126,6 +126,7 @@
           "category": "Categoría",
           "indicator": "Indicador",
           "source": "Fuente",
+          "location_id": "Identificación de Ubicación",
           "location_type": "Tipo de Ubicación",
           "location": "Ubicación",
           "year": "Año",
