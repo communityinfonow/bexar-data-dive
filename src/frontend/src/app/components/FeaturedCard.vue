@@ -122,6 +122,7 @@
 		font-size: 1.5rem;
 		background: rgba($color-grey, 1);
 		font-weight: bold;
+		border-top: 4px solid white;
 	}
 	.featured-card-text {
 		background: rgba($color-grey, 1);
