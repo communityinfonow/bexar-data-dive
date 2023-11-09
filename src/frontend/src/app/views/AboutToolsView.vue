@@ -12,11 +12,11 @@
                 <img :src="tool.iconPath" height="48px" width="48px">
                 <span class="mx-4 my-2">{{ tool.name }}</span>
               </h2>
-              <p class="blue--text font-weight-bold mt-2 mb-4">{{ tool.headline }}</p>
-              <p>{{ tool.fullDescription }}</p>
+              <p class="blue--text font-weight-bold mt-2 mb-4" style="font-size: 1.25rem">{{ tool.headline }}</p>
+              <p style="font-size: 1.25rem">{{ tool.fullDescription }}</p>
               <section v-for="(subTool, index) in tool.subTools" :key="'subtool_' + index" class="">
-                <h3 class="text-dive-h6 blue--text text-uppercase font-weight-bold mt-2">{{ subTool.name }}</h3>
-                <p>{{ subTool.fullDescription }}</p>
+                <h3 class="text-dive-h6 blue--text text-uppercase font-weight-bold mt-2" style="font-size: 1.25rem">{{ subTool.name }}</h3>
+                <p style="font-size: 1.25rem">{{ subTool.fullDescription }}</p>
               </section>
               <section class="text-right">
                 <v-btn 
