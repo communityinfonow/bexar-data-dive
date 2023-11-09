@@ -15,7 +15,7 @@
           <h2 class="mb-2 text-dive-h4" :id="'question_' + item.id">{{ item['title_' + locale]}}</h2>
           <h3 class="mb-4 text-subtitle-1">{{ new Date(item.date + 'T00:00:00').toLocaleDateString() }}</h3>
           <section class="mb-8">
-            <section v-html="item['message_' + locale]"></section>
+            <section v-html="item['message_' + locale]" style="font-size: 1.25rem"></section>
           </section>
           <v-divider class="my-4"></v-divider>
         </section>

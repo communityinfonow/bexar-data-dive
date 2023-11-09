@@ -137,6 +137,9 @@
           "range": "Range"
         }
       },
+      "share": {
+        "name": "Share"
+      },
       "chart_options": "Chart options",
       "chart_options_labels": "Labels",
       "chart_options_lines": "MOE lines",
@@ -185,6 +188,12 @@
     "welcome_line_1": "Welcome to Bexar Data Dive, we currently have three tools to help",
     "welcome_line_2": "you explore, visualize, and interact with data in Bexar County."
   },
+  "help_view": {
+    "name": "Help",
+    "short_description": "TODO: help view short description",
+    "headline": "TODO: help view headline",
+    "long_description": ": help view long description"
+  },
   "about_data_view": {
     "name": "About the Data",
     "welcome": "",
@@ -200,7 +209,7 @@
   },
   "faqs_view": {
     "name": "Frequently Asked Questions",
-    "welcome": "",
+    "welcome": "TODO: need FAQ text",
     "questions": "Questions"
   },
   "announcements_view": {

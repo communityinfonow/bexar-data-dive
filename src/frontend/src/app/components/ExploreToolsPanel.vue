@@ -64,11 +64,7 @@
 								</v-btn>
 							</v-btn-toggle>
 						</div>
-						<v-btn-toggle rounded borderless class="ml-2" style="margin-top: -8px">
-							<download-menu :downloadData="downloadData" :downloadImage="downloadImage"></download-menu>
-							<share-menu></share-menu>
-							<about-menu indicator tool :indicatorId="indicatorId"></about-menu>
-						</v-btn-toggle>
+						<button-menu :downloadData="downloadData" :downloadImage="downloadImage" class="ml-2" style="margin-top: -8px"></button-menu>
 					</div>
 				</v-col>
 				<v-col v-if="showHighlightFilteredLocation" cols="auto" class="d-flex justify-end">
@@ -91,11 +87,7 @@
 							color="red"
 						></v-switch>
 					</template>
-					<v-btn-toggle rounded borderless class="ml-2" style="margin-top: -.5em">
-						<download-menu :downloadData="downloadData" :downloadImage="downloadImage"></download-menu>
-						<share-menu></share-menu>
-						<about-menu indicator tool :indicatorId="indicatorId"></about-menu>
-					</v-btn-toggle>
+					<button-menu :downloadData="downloadData" :downloadImage="downloadImage" class="ml-2" style="margin-top: -.5em"></button-menu>
 				</v-col>
 			</v-row>
 		</v-form>
@@ -107,17 +99,13 @@
 import i18n from '@/i18n'
 import { mapActions, mapState, mapGetters } from 'vuex'
 import router from '@/app/router/index'
-import DownloadMenu from '@/app/components/DownloadMenu'
-import ShareMenu from '@/app/components/ShareMenu'
-import AboutMenu from '@/app/components/AboutMenu'
+import ButtonMenu from '@/app/components/ButtonMenu'
 import html2canvas from 'html2canvas'
 
 export default {
 	name: 'ExploreToolsPanel',
 	components: {
-		DownloadMenu,
-		ShareMenu,
-		AboutMenu
+		ButtonMenu
 	},
 	computed: {
 		...mapState(['filterSelections', 'locale', 'exploreData', 'indicator', 'indicatorMenu']),

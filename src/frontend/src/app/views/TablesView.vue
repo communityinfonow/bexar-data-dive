@@ -63,11 +63,7 @@
               <template v-slot:append><v-icon color="green">mdi-magnify</v-icon></template>
             </v-text-field>
             <div class="mt-2">
-              <v-btn-toggle rounded borderless class="ml-2">
-                <download-menu :downloadData="downloadTablesData"></download-menu>
-                <share-menu></share-menu>
-                <about-menu indicator tool :indicatorId="indicator.id"></about-menu>
-              </v-btn-toggle>
+              <button-menu :downloadData="downloadTablesData" class="ml-2"></button-menu>
             </div>
           </div>
           <v-data-table
@@ -385,9 +381,7 @@ import i18n from '@/i18n'
 import router from '@/app/router/index'
 import MenuToolbar from '@/app/components/MenuToolbar'
 import FeaturedCard from '@/app/components/FeaturedCard'
-import DownloadMenu from '@/app/components/DownloadMenu'
-import ShareMenu from '@/app/components/ShareMenu'
-import AboutMenu from '@/app/components/AboutMenu'
+import ButtonMenu from '@/app/components/ButtonMenu'
 import IndicatorDefinition from '@/app/components/IndicatorDefinition.vue'
 import { getCategoryIconPath } from '@/services/icons'
 import debounce from 'debounce'
@@ -397,9 +391,7 @@ export default {
   components: {
     MenuToolbar,
     FeaturedCard,
-    DownloadMenu,
-    ShareMenu,
-    AboutMenu,
+    ButtonMenu,
     IndicatorDefinition
   },
   data() {

@@ -53,11 +53,7 @@
                       </span>
                     </h1>
                     <div>
-                      <v-btn-toggle rounded borderless active-class="none">
-                        <download-menu :downloadData="downloadCommunityData"></download-menu>
-                        <share-menu></share-menu>
-                        <about-menu tool></about-menu>
-                      </v-btn-toggle>
+                      <button-menu :downloadData="downloadCommunityData"></button-menu>
                     </div>
                   </div>
                   <v-spacer></v-spacer>
@@ -225,9 +221,7 @@ import { LMap, LTileLayer, LControl, LGeoJson } from 'vue2-leaflet'
 import { feature, featureCollection, multiPolygon } from '@turf/helpers'
 import MenuToolbar from '@/app/components/MenuToolbar'
 import CommunityIndicator from '@/app/components/CommunityIndicator'
-import DownloadMenu from '@/app/components/DownloadMenu'
-import ShareMenu from '@/app/components/ShareMenu'
-import AboutMenu from '@/app/components/AboutMenu'
+import ButtonMenu from '@/app/components/ButtonMenu'
 
 export default {
   name: 'CommunityView',
@@ -238,9 +232,7 @@ export default {
     LGeoJson,
     MenuToolbar,
     CommunityIndicator,
-    DownloadMenu,
-    ShareMenu,
-    AboutMenu
+    ButtonMenu
   },
   data() {
     return {
