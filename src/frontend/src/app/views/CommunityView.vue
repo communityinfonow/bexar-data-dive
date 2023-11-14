@@ -2,7 +2,12 @@
   <v-container v-if="locationMenu" fluid class="pa-0 fill-height">
     <v-row class="no-gutters flex-column fill-height">
       <v-col cols="auto" class="grow">
-        <section :class="'page-header d-flex flex-column light--text pa-12 pb-0 ' +  + (!showIntro ? 'main-content' : '')">
+        <section :class="'page-header d-flex flex-column light--text px-12 pb-4 ' +  + (!showIntro ? 'main-content' : '')">
+          <v-breadcrumbs :items="breadcrumbs" class="mb-8" dark>
+            <template v-slot:divider>
+              <v-icon>mdi-chevron-right</v-icon>
+            </template>
+          </v-breadcrumbs>
           <h1 v-if="showIntro" class="text-dive-h3">{{ $t('tools.community.name') }}</h1>
           <div v-if="showIntro" class="font-weight-medium mt-2" style="font-size: 1.25rem;">
             {{ $t('tools.community.headline') }}
@@ -107,14 +112,9 @@
               </v-col>
             </v-row>
           </div>
-          <v-breadcrumbs :items="breadcrumbs" class="mb-2" dark>
-            <template v-slot:divider>
-              <v-icon>mdi-chevron-right</v-icon>
-            </template>
-          </v-breadcrumbs>
         </section>
       </v-col>
-      <v-col cols="auto" class="shrink sticky-menu" style="margin-top: -26px;">
+      <v-col cols="auto" class="shrink sticky-menu" :style="{ 'margin-top': showIntro ? '0' : '-26px' }">
         <MenuToolbar
           class="flex-column"
           :menu="locationMenu"

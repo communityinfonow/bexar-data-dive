@@ -187,8 +187,8 @@
   },
   "help_view": {
     "name": "Help",
-    "short_description": "TODO: help view short description",
-    "headline": "TODO: help view headline",
+    "short_description": "",
+    "headline": "",
     "long_description": ": help view long description"
   },
   "about_data_view": {

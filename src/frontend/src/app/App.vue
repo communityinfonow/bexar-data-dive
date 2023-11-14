@@ -68,7 +68,6 @@ export default {
 }
 
 ::v-deep .v-breadcrumbs {
-  padding-top: 80px;
   padding-left: 0px !important;
   padding-bottom: 0;
   text-transform: uppercase;

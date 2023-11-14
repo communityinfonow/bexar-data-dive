@@ -2,7 +2,12 @@
   <v-container v-if="indicatorMenu" fluid class="pa-0 fill-height">
     <v-row class="no-gutters flex-column fill-height">
       <v-col cols="auto" class="grow">
-        <section :class="'page-header d-flex flex-column light--text pa-12 pb-0 ' + (!showIntro ? 'main-content' : '')">
+        <section :class="'page-header d-flex flex-column light--text px-12 pb-4 ' + (!showIntro ? 'main-content' : '')">
+          <v-breadcrumbs :items="breadcrumbs" class="mb-8" dark>
+            <template v-slot:divider>
+              <v-icon>mdi-chevron-right</v-icon>
+            </template>
+          </v-breadcrumbs>
           <h1 v-if="showIntro" class="text-dive-h3">{{ $t('tools.tables.name') }}</h1>
           <h1 v-if="tablesData && indicator" class="text-dive-h3">
             <span>
@@ -16,11 +21,6 @@
             {{ $t('tools.tables.headline') }}
             {{ $t('tools.tables.long_description') }}
           </div>
-          <v-breadcrumbs :items="breadcrumbs" class="mb-2" dark>
-            <template v-slot:divider>
-              <v-icon>mdi-chevron-right</v-icon>
-            </template>
-          </v-breadcrumbs>
         </section>
       </v-col>
       <v-col cols="auto" class="shrink sticky-menu">

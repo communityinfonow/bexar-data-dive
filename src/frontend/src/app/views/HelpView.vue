@@ -1,13 +1,13 @@
 <template>
   <v-container fluid class="pa-0">
-    <section id="page-header" class="page-header d-flex flex-column light--text pa-12 pb-0">
-      <h1 class="text-dive-h3">{{ $t('help_view.name') }}</h1>
-      <div class="font-weight-medium mt-2" style="font-size: 1.25rem;" v-html="$t('help_view.headline')"></div>
-      <v-breadcrumbs :items="breadcrumbs" class="mb-2" dark>
+    <section id="page-header" class="page-header d-flex flex-column light--text px-12 pb-4">
+      <v-breadcrumbs :items="breadcrumbs" class="mb-8" dark>
         <template v-slot:divider>
           <v-icon>mdi-chevron-right</v-icon>
         </template>
       </v-breadcrumbs>
+      <h1 class="text-dive-h3">{{ $t('help_view.name') }}</h1>
+      <div v-if="$t('help_view.headline')" class="font-weight-medium mt-2" style="font-size: 1.25rem;" v-html="$t('help_view.headline')"></div>
     </section>
     <section class="sticky-menu">
       <MenuToolbar
@@ -121,9 +121,6 @@ export default {
     selectTool(item) {
       this.selectedMenuItem = item.items[0];
       this.updateRoute(item.items[0])
-    },
-    selectSearchMatch() {
-      //TODO: needs implemented
     },
     selectMenuItem(item) {
       if (item.categoryId == item.id) {

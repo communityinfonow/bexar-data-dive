@@ -2,7 +2,12 @@
   <v-container v-if="indicatorMenu" fluid class="fill-height pa-0">
     <v-row class="no-gutters flex-wrap flex-column fill-height">
       <v-col cols="auto" class="grow">
-        <section :class="'page-header d-flex flex-column light--text pa-12 pb-0 ' + (!showIntro ? 'main-content' : '')">
+        <section :class="'page-header d-flex flex-column light--text px-12 pb-4 ' + (!showIntro ? 'main-content' : '')">
+          <v-breadcrumbs :items="breadcrumbs" class="mb-8" dark>
+            <template v-slot:divider>
+              <v-icon>mdi-chevron-right</v-icon>
+            </template>
+          </v-breadcrumbs>
           <h1 v-if="showIntro" class="text-dive-h3">{{ $t('tools.explore.name') }}</h1>
           <div v-if="indicator && exploreData" cols="auto" id="explore_indicator">
             <h1 class="text-dive-h3">
@@ -18,11 +23,6 @@
             {{ $t('tools.explore.headline') }}
             {{ $t('tools.explore.long_description') }}
           </div>
-          <v-breadcrumbs :items="breadcrumbs" class="mb-2" dark>
-            <template v-slot:divider>
-              <v-icon>mdi-chevron-right</v-icon>
-            </template>
-          </v-breadcrumbs>
         </section>
       </v-col>
       <v-col cols="auto" class="shrink sticky-menu">

@@ -191,8 +191,8 @@
   },
   "help_view": {
     "name": "Help",
-    "short_description": "TODO: help view short description",
-    "headline": "TODO: help view headline",
+    "short_description": "",
+    "headline": "",
     "long_description": ": help view long description"
   },
   "about_data_view": {
@@ -206,11 +206,11 @@
   },
   "about_tools_view": {
     "name": "About the Tools",
-    "welcome": "Providing access to <b>good data that shines the light on<br> community conditions</b> in Bexar County."
+    "welcome": ""
   },
   "faqs_view": {
     "name": "Frequently Asked Questions",
-    "welcome": "TODO: need FAQ text",
+    "welcome": "",
     "questions": "Questions"
   },
   "announcements_view": {
