@@ -193,7 +193,7 @@
     "name": "Help",
     "short_description": "",
     "headline": "",
-    "long_description": ": help view long description"
+    "long_description": ""
   },
   "about_data_view": {
     "name": "About the Data",

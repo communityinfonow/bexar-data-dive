@@ -186,10 +186,10 @@
     "welcome_line_2": "a explorar, visualizar e interactuar con los datos en el Condado de Bexar."
   },
   "help_view": {
-    "name": "Help",
+    "name": "Ayuda",
     "short_description": "",
     "headline": "",
-    "long_description": ": help view long description"
+    "long_description": ""
   },
   "about_data_view": {
     "name": "Sobre la Información",
