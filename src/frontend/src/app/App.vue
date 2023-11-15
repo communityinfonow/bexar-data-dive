@@ -68,7 +68,6 @@ export default {
 }
 
 ::v-deep .v-breadcrumbs {
-  padding-top: 80px;
   padding-left: 0px !important;
   padding-bottom: 0;
   text-transform: uppercase;
@@ -115,6 +114,12 @@ main {
 }
 
 ::v-deep .v-btn.v-item--active.v-btn--active.v-btn--is-elevated.v-btn--has-bg.theme--dark.v-size--small.red .v-btn__content {
+  color: $color-grey !important;
+}
+::v-deep .v-btn.v-btn--disabled.v-btn--has-bg.theme--dark.v-size--small {
+  background-color: $color-primary !important;
+}
+::v-deep .v-btn.v-btn--disabled.v-btn--has-bg.theme--dark.v-size--small .v-btn__content{
   color: $color-grey !important;
 }
 

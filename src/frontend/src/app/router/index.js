@@ -10,6 +10,7 @@ import AboutDataView from '@/app/views/AboutDataView.vue'
 import FaqsView from '@/app/views/FaqsView.vue'
 import AnnouncementsView from '@/app/views/AnnouncementsView.vue'
 import UnauthorizedView from '@/app/views/UnauthorizedView.vue'
+import HelpView from '@/app/views/HelpView.vue'
 
 Vue.use(VueRouter)
 
@@ -42,6 +43,11 @@ const routes = [
     path: '/custom-locations',
     name: 'custom-locations',
     component: CustomLocationsView
+  },
+  { 
+    path: '/help', 
+    name: 'help', 
+    component: HelpView
   },
   {
     path: '/about-tools',

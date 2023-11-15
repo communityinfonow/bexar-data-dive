@@ -129,6 +129,7 @@
           "category": "Category",
           "indicator": "Indicator",
           "source": "Source",
+          "location_id": "Location ID",
           "location_type": "Location Type",
           "location": "Location",
           "year": "Year",
@@ -136,6 +137,9 @@
           "value": "Value",
           "range": "Range"
         }
+      },
+      "share": {
+        "name": "Share"
       },
       "chart_options": "Chart options",
       "chart_options_labels": "Labels",
@@ -185,6 +189,12 @@
     "welcome_line_1": "Welcome to Bexar Data Dive, we currently have three tools to help",
     "welcome_line_2": "you explore, visualize, and interact with data in Bexar County."
   },
+  "help_view": {
+    "name": "Help",
+    "short_description": "",
+    "headline": "",
+    "long_description": ""
+  },
   "about_data_view": {
     "name": "About the Data",
     "welcome": "",
@@ -196,7 +206,7 @@
   },
   "about_tools_view": {
     "name": "About the Tools",
-    "welcome": "Providing access to <b>good data that shines the light on<br> community conditions</b> in Bexar County."
+    "welcome": ""
   },
   "faqs_view": {
     "name": "Frequently Asked Questions",

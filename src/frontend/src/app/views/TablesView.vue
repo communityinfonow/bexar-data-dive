@@ -2,9 +2,14 @@
   <v-container v-if="indicatorMenu" fluid class="pa-0 fill-height">
     <v-row class="no-gutters flex-column fill-height">
       <v-col cols="auto" class="grow">
-        <section :class="'page-header d-flex flex-column light--text pa-12 pb-0 ' + (!showIntro ? 'main-content' : '')">
+        <section :class="'page-header d-flex flex-column light--text px-12 pb-4 ' + (!showIntro ? 'main-content' : '')">
+          <v-breadcrumbs :items="breadcrumbs" class="mb-8" dark>
+            <template v-slot:divider>
+              <v-icon>mdi-chevron-right</v-icon>
+            </template>
+          </v-breadcrumbs>
           <h1 v-if="showIntro" class="text-dive-h3">{{ $t('tools.tables.name') }}</h1>
-          <h1 v-if="indicator" class="text-dive-h3">
+          <h1 v-if="tablesData && indicator" class="text-dive-h3">
             <span>
               <span v-if="tablesData.category.parentCategoryId">{{ tablesData.category['name_' + locale] }} - </span>
               {{ tablesData.indicator['name_' + locale] }}
@@ -16,11 +21,6 @@
             {{ $t('tools.tables.headline') }}
             {{ $t('tools.tables.long_description') }}
           </div>
-          <v-breadcrumbs :items="breadcrumbs" class="mb-2" dark>
-            <template v-slot:divider>
-              <v-icon>mdi-chevron-right</v-icon>
-            </template>
-          </v-breadcrumbs>
         </section>
       </v-col>
       <v-col cols="auto" class="shrink sticky-menu">
@@ -34,7 +34,7 @@
       </v-col>
       <v-col v-if="showIntro && featuredIndicators" cols="auto">
         <section class="mb-8">
-          <h2 class="text-dive-h4 text-uppercase mt-16 mb-2 text-center">{{ $t('tools.common.featured_indicators') }}</h2>
+          <h2 class="text-dive-h4 text-uppercase mt-16 mb-2 text-center font-weight-light">{{ $t('tools.common.featured_indicators') }}</h2>
           <p style="margin: 0 30%; font-size: 1.25em;">{{ $t('tools.tables.get_started') }}</p>
         </section>
         <section class="d-flex" :class="{ 'flex-row': $vuetify.breakpoint.mdAndUp, 'flex-column': $vuetify.breakpoint.smAndDown }">
@@ -63,11 +63,7 @@
               <template v-slot:append><v-icon color="green">mdi-magnify</v-icon></template>
             </v-text-field>
             <div class="mt-2">
-              <v-btn-toggle rounded borderless class="ml-2">
-                <download-menu :downloadData="downloadTablesData"></download-menu>
-                <share-menu></share-menu>
-                <about-menu indicator tool :indicatorId="indicator.id"></about-menu>
-              </v-btn-toggle>
+              <button-menu :downloadData="downloadTablesData" class="ml-2"></button-menu>
             </div>
           </div>
           <v-data-table
@@ -385,9 +381,7 @@ import i18n from '@/i18n'
 import router from '@/app/router/index'
 import MenuToolbar from '@/app/components/MenuToolbar'
 import FeaturedCard from '@/app/components/FeaturedCard'
-import DownloadMenu from '@/app/components/DownloadMenu'
-import ShareMenu from '@/app/components/ShareMenu'
-import AboutMenu from '@/app/components/AboutMenu'
+import ButtonMenu from '@/app/components/ButtonMenu'
 import IndicatorDefinition from '@/app/components/IndicatorDefinition.vue'
 import { getCategoryIconPath } from '@/services/icons'
 import debounce from 'debounce'
@@ -397,9 +391,7 @@ export default {
   components: {
     MenuToolbar,
     FeaturedCard,
-    DownloadMenu,
-    ShareMenu,
-    AboutMenu,
+    ButtonMenu,
     IndicatorDefinition
   },
   data() {
@@ -450,7 +442,7 @@ export default {
         }
       ];
 
-      if (this.tablesData) {
+      if (this.tablesData && this.indicator) {
         crumbs.push({
           text: (this.tablesData.category.parentCategoryId ? this.tablesData.category['name_' + this.locale] + ' - ' : '') + this.indicator['name_' + this.locale],
           disabled: true

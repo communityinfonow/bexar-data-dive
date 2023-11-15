@@ -212,7 +212,7 @@ export default {
 					disabled: true
 				},
 				label: { 
-					show: this.compareLabelsOrLines === 'labels', 
+					show: true, 
 					position: 'top',
 					formatter: (o) => {
 						if (o.data.suppressed) {

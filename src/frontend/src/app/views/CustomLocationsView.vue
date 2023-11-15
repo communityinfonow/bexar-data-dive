@@ -2,17 +2,17 @@
   <v-container v-if="locationMenu" fluid class="pa-0 fill-height">
     <v-row class="no-gutters flex-column fill-height">
       <v-col cols="auto" class="grow">
-        <section class="page-header d-flex flex-column light--text pa-12 pb-0">
+        <section class="page-header d-flex flex-column light--text px-12 pb-4">
+          <v-breadcrumbs :items="breadcrumbs" class="mb-8" dark>
+            <template v-slot:divider>
+              <v-icon>mdi-chevron-right</v-icon>
+            </template>
+          </v-breadcrumbs>
           <h1 class="text-dive-h3">{{ $t('tools.custom_locations.name') }}</h1>
           <div class="font-weight-medium mt-2" style="font-size: 1.25rem;">
             {{ $t('tools.custom_locations.headline') }}
             {{ $t('tools.custom_locations.long_description') }}
           </div>
-          <v-breadcrumbs :items="breadcrumbs" class="mb-2" dark>
-            <template v-slot:divider>
-              <v-icon>mdi-chevron-right</v-icon>
-            </template>
-          </v-breadcrumbs>
         </section>
       </v-col>
       <v-col cols="auto" class="pa-4 grow d-flex">

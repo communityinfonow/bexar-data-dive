@@ -111,14 +111,18 @@ export default {
 					},
 					barWidth: '120px',
 					label: { 
-						show: this.labelsOrLines === 'labels', 
+						//show: this.labelsOrLines === 'labels', 
+						show: true,
 						position: 'top',
 						formatter: (o) => {
 							if (o.data.suppressed) {
 								return '{a|' + i18n.t('data.suppressed') + '}';
 							} else if (o.data.noData) {
 								return '{a|' + i18n.t('data.no_data') + '}';
+							} else if (this.labelsOrLines !== 'labels') {
+								return '';
 							}
+
 							let rows = ['{a|' + i18n.t('data.value') +': ' + format(this.indicatorType.id, o.data.value) + '}'];
 							if (o.data.moeLow || o.data.moeHigh) {
 								rows.push('{b|' + i18n.t('data.moe_range') 
@@ -207,7 +211,7 @@ export default {
 									let xValue = api.value(0);
 									let highPoint = api.coord([xValue, api.value(1)]) || 0;
 									let lowPoint = api.coord([xValue, api.value(2)]) || 0;
-									let halfWidth = api.size([1, 0])[0] * 0.1;
+									let halfWidth = Math.min(20, api.size([1, 0])[0] * 0.1);
 									let style = {
 										stroke: '#b8237e',
 										fill: null,

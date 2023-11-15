@@ -2,7 +2,12 @@
   <v-container v-if="locationMenu" fluid class="pa-0 fill-height">
     <v-row class="no-gutters flex-column fill-height">
       <v-col cols="auto" class="grow">
-        <section :class="'page-header d-flex flex-column light--text pa-12 pb-0 ' +  + (!showIntro ? 'main-content' : '')">
+        <section :class="'page-header d-flex flex-column light--text px-12 pb-4 ' +  + (!showIntro ? 'main-content' : '')">
+          <v-breadcrumbs :items="breadcrumbs" class="mb-8" dark>
+            <template v-slot:divider>
+              <v-icon>mdi-chevron-right</v-icon>
+            </template>
+          </v-breadcrumbs>
           <h1 v-if="showIntro" class="text-dive-h3">{{ $t('tools.community.name') }}</h1>
           <div v-if="showIntro" class="font-weight-medium mt-2" style="font-size: 1.25rem;">
             {{ $t('tools.community.headline') }}
@@ -53,11 +58,7 @@
                       </span>
                     </h1>
                     <div>
-                      <v-btn-toggle rounded borderless active-class="none">
-                        <download-menu :downloadData="downloadCommunityData"></download-menu>
-                        <share-menu></share-menu>
-                        <about-menu tool></about-menu>
-                      </v-btn-toggle>
+                      <button-menu :downloadData="downloadCommunityData"></button-menu>
                     </div>
                   </div>
                   <v-spacer></v-spacer>
@@ -111,14 +112,9 @@
               </v-col>
             </v-row>
           </div>
-          <v-breadcrumbs :items="breadcrumbs" class="mb-2" dark>
-            <template v-slot:divider>
-              <v-icon>mdi-chevron-right</v-icon>
-            </template>
-          </v-breadcrumbs>
         </section>
       </v-col>
-      <v-col cols="auto" class="shrink sticky-menu" style="margin-top: -26px;">
+      <v-col cols="auto" class="shrink sticky-menu" :style="{ 'margin-top': showIntro ? '0' : '-26px' }">
         <MenuToolbar
           class="flex-column"
           :menu="locationMenu"
@@ -225,9 +221,7 @@ import { LMap, LTileLayer, LControl, LGeoJson } from 'vue2-leaflet'
 import { feature, featureCollection, multiPolygon } from '@turf/helpers'
 import MenuToolbar from '@/app/components/MenuToolbar'
 import CommunityIndicator from '@/app/components/CommunityIndicator'
-import DownloadMenu from '@/app/components/DownloadMenu'
-import ShareMenu from '@/app/components/ShareMenu'
-import AboutMenu from '@/app/components/AboutMenu'
+import ButtonMenu from '@/app/components/ButtonMenu'
 
 export default {
   name: 'CommunityView',
@@ -238,9 +232,7 @@ export default {
     LGeoJson,
     MenuToolbar,
     CommunityIndicator,
-    DownloadMenu,
-    ShareMenu,
-    AboutMenu
+    ButtonMenu
   },
   data() {
     return {
@@ -519,6 +511,7 @@ export default {
         i18n.t('tools.common.download.headers.category'),
 				i18n.t('tools.common.download.headers.indicator'), 
 				i18n.t('tools.common.download.headers.source'), 
+        i18n.t('tools.common.download.headers.location_id'),
 				i18n.t('tools.common.download.headers.location'), 
 				i18n.t('tools.common.download.headers.year'),
 				i18n.t('tools.common.download.headers.race'),
@@ -543,6 +536,7 @@ export default {
           return '\n"' + cat['name_' + this.locale] + '",' 
             + '"' + ((subcat ? subcat['name_' + this.locale] + ' - ' : '') + ind.indicator['name_' + this.locale])+ '",'
             + '"' + ind.source['name_' + this.locale] + '",'
+            + '"' + this.community.location.id + '",'
             + '"' + this.community.location['name_' + this.locale] + '",'
             + ind.year + ','
             + '"' + (data.demographicFilter['name_' + this.locale] || i18n.t('data.all')) + '",'

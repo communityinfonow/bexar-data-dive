@@ -109,25 +109,26 @@ export default new Vuex.Store({
     about_views: () => {
       return [
         {
-          name: i18n.t('about_tools_view.name'),
-          route: 'about-tools',
-          icon: 'mdi-information'
+          key: 'help',
+          name: i18n.t('help_view.name'),
+          icon: 'mdi-help-circle',
+          route: 'help',
+          shortDescription: i18n.t('help_view.short_description'),
+          headline: i18n.t('help_view.headline'),
+          fullDescription: i18n.t('help_view.long_description')
         },
         {
+          key: 'about-data',
           name: i18n.t('about_data_view.name'),
           route: 'about-data',
-          icon: 'mdi-database'
+          iconPath: '/img/icon_ux_info__active.svg',
+          iconPathInactive: '/img/icon_ux_info__inactive.svg'
         },
         {
           name: i18n.t('announcements_view.name'),
           route: 'announcements',
           icon: 'mdi-bullhorn',
           icon_transform: 'rotate(-45deg)'
-        },
-        {
-          name: i18n.t('faqs_view.name'),
-          route: 'faqs',
-          icon: 'mdi-help-circle' 
         }
       ]
     },
@@ -178,6 +179,44 @@ export default new Vuex.Store({
         }
       }
       return filters
+    },
+    helpMenu: (state) => {
+      return {
+        categories: [
+          {
+            id: 'faqs',
+            name_en: i18n.t('faqs_view.name'),
+            name_es: i18n.t('faqs_view.name'),
+            description_en: i18n.t('faqs_view.welcome'),
+            description_es: i18n.t('faqs_view.welcome'),
+            subcategories: null,
+            items: state.faqs?.map(faq => {
+              return {
+                categoryId: 'faqs',
+                id: faq.id,
+                name_en: faq.question_en,
+                name_es: faq.question_es,
+                hasData: true
+              }
+            }) || []
+          },
+          {
+            id: 'about-tools',
+            name_en: i18n.t('about_tools_view.name'),
+            name_es: i18n.t('about_tools_view.name'),
+            description_en: i18n.t('about_tools_view.welcome'),
+            description_es: i18n.t('about_tools_view.welcome'),
+            subcategories: null,
+            items: [{
+                categoryId: 'about-tools',
+                id: 'about-tools',
+                name_en: i18n.t('about_tools_view.name'),
+                name_es: i18n.t('about_tools_view.name'),
+                hasData: true
+            }]
+          }
+        ]
+      }
     }
   },
   mutations: {
@@ -500,7 +539,7 @@ export default new Vuex.Store({
       });
     },
     getFaqs(context) {
-      axios.get('/api/faqs').then(response => {
+      return axios.get('/api/faqs').then(response => {
         context.commit('SET_FAQS', response.data.filter(f => !!f.display))
       });
     },
