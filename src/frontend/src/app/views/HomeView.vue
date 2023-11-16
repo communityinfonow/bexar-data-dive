@@ -44,28 +44,36 @@
             <div>Bexar Data Facts</div>
           </v-card-title>
           <v-card-text class="featured-card-text black--text fill-height">
+            <div style="padding-left: 16.667%">
+              
+            </div>
+            <v-row>
+              <v-col cols="12" style="padding-left: 16.667%">
+                <div class="text-h4 font-weight-bold">{{ bexarDataFacts[0]['name_' + locale] }}</div>
+              </v-col>
+            </v-row>
             <v-row v-for="(indicator, index) in bexarDataFacts" :key="index">
                 <v-col cols="4" class="text-right">
-                  <div class="text-h3 font-weight-bold">
+                  <div :class="(index === 0 ? 'text-h3' : 'text-h4') + ' font-weight-bold'">
                   {{ bexarDataFactsValue[index] }}
                   </div>
                   <div v-if="bexarDataFactsRange[index]">
                     {{ $t('tools.common.download.headers.range')}}: {{ bexarDataFactsRange[index] }}
                   </div>
                 </v-col>
-                <v-col cols="8">
-                  <div class="text-h6 font-weight-bold">{{ bexarDataFacts[index]['name_' + locale] }}</div>
-                  <div>{{ $t('tools.common.download.headers.location') }}: {{ locationMenu.categories.find(c => c.id == '1').items.find(i => i.id == '48029')['name_'  + locale] }}</div>
-                  <div>{{ $t('tools.common.download.headers.source') }}: {{ bexarDataFacts[index].source['name_' + locale] }}, {{ bexarDataFacts[index].year }}</div>
-                  <div v-if="bexarDataFacts[index].race_en">{{ $t('tools.tables.headers.race')}}: {{ bexarDataFacts[index]['race_' + locale] }}</div>
-                  <div v-if="bexarDataFacts[index].age_en">{{ $t('tools.tables.headers.age')}}: {{ bexarDataFacts[index]['age_' + locale] }}</div>
-                  <div v-if="bexarDataFacts[index].sex_en">{{ $t('tools.tables.headers.sex')}}: {{ bexarDataFacts[index]['sex_' + locale] }}</div>
-                  <div v-if="bexarDataFacts[index].education_en">{{ $t('tools.tables.headers.education')}}: {{ bexarDataFacts[index]['education_' + locale] }}</div>
-                  <div v-if="bexarDataFacts[index].income_en">{{ $t('tools.tables.headers.income')}}: {{ bexarDataFacts[index]['income_' + locale] }}</div>
+                <v-col cols="8" class="text-subtitle-1">
+                  <div v-if="index === 0" style="font-size: 1.25em;">Population: All</div>
+                  <div v-else>
+                    Population: {{ bexarDataFactsFilter[index] }}
+                  </div>
                 </v-col>
             </v-row>
           </v-card-text>
           <v-card-actions class="featured-card-actions pa-8">
+            <div class="text-caption">
+              <div>{{ $t('tools.common.download.headers.location') }}: {{ locationMenu.categories.find(c => c.id == '1').items.find(i => i.id == '48029')['name_'  + locale] }}</div>
+              <div>{{ $t('tools.common.download.headers.source') }}: {{ bexarDataFacts[0].source['name_' + locale] }}, {{ bexarDataFacts[0].year }}</div>
+            </div>
             <v-spacer></v-spacer>
             <v-btn 
               outlined
@@ -160,6 +168,28 @@ export default {
           return null;
         }
         return format(fact.typeId, fact.moeLow) + ' - ' + format(fact.typeId, fact.moeHigh)
+      })
+    },
+    bexarDataFactsFilter() {
+      return this.bexarDataFacts?.map(fact => {
+        let filters = []
+        if (fact.race_en) {
+          filters.push(fact['race_' + this.locale])
+        }
+        if (fact.age_en) {
+          filters.push(fact['age_' + this.locale])
+        }
+        if (fact.sex_en) {
+          filters.push(fact['sex_' + this.locale])
+        }
+        if (fact.education_en) {
+          filters.push(fact['education_' + this.locale])
+        }
+        if (fact.income_en) {
+          filters.push(fact['income_' + this.locale])
+        }
+        
+        return filters.join(', ')
       })
     },
     currentAnnouncement() {
