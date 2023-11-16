@@ -6,6 +6,10 @@ public class FeaturedIndicator extends Indicator {
 	
 	private BigDecimal value;
 
+	private BigDecimal moeLow;
+
+	private BigDecimal moeHigh;
+
 	private boolean suppressed;
 
 	private String year;
@@ -18,12 +22,20 @@ public class FeaturedIndicator extends Indicator {
 		this.value = value;
 	}
 
-	public String getYear() {
-		return year;
+	public BigDecimal getMoeLow() {
+		return moeLow;
 	}
 
-	public void setYear(String year) {
-		this.year = year;
+	public void setMoeLow(BigDecimal moeLow) {
+		this.moeLow = moeLow;
+	}
+
+	public BigDecimal getMoeHigh() {
+		return moeHigh;
+	}
+
+	public void setMoeHigh(BigDecimal moeHigh) {
+		this.moeHigh = moeHigh;
 	}
 
 	public boolean isSuppressed() {
@@ -33,4 +45,14 @@ public class FeaturedIndicator extends Indicator {
 	public void setSuppressed(boolean suppressed) {
 		this.suppressed = suppressed;
 	}
+
+	public String getYear() {
+		return year;
+	}
+
+	public void setYear(String year) {
+		this.year = year;
+	}
+
+	
 }

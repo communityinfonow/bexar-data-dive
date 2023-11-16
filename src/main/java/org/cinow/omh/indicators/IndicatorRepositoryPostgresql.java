@@ -146,7 +146,7 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 			+ "   case when c.parent_category_id is null then i.name_es else c.name_es || ' - ' || i.name_es end as name_es, "
 			+ "   i.description_en, i.description_es, i.show_points, i.show_report, "
 			+ "   s.id_ as source_id, s.name_en as source_name_en, s.name_es as source_name_es, "
-			+ "   round(iv.indicator_value, 1) as indicator_value, iv.suppress, iv.year_, "
+			+ "   round(iv.indicator_value, 1) as indicator_value, round(iv.moe_low, 1) as moe_low, round(iv.moe_high, 1) as moe_high, iv.suppress, iv.year_, "
 			+ "   rank() over (partition by i.id_ order by iv.year_ desc) as rank "
 			+ " from tbl_indicators i "
 			+ "   join tbl_indicator_categories c on i.indicator_category_id = c.id_ "
@@ -179,6 +179,8 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 				indicator.getSource().setName_en(rs.getString("source_name_en"));
 				indicator.getSource().setName_es(rs.getString("source_name_es"));
 				indicator.setValue(rs.getBigDecimal("indicator_value"));
+				indicator.setMoeLow(rs.getBigDecimal("moe_low"));
+				indicator.setMoeHigh(rs.getBigDecimal("moe_high"));
 				indicator.setSuppressed(rs.getBoolean("suppress"));
 				indicator.setYear(rs.getString("year_"));
 

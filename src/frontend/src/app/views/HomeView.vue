@@ -33,10 +33,8 @@
       <v-col cols="6">
         <!-- TODO: translations -->
         <!-- TODO: featured MOE? -->
-        <!-- TODO: year location after source okay? -->
-        <!-- TODO: always Bexar County? -->
         <v-card
-          v-if="featuredIndicator"
+          v-if="featuredIndicator && locationMenu"
           flat
           width="100%"
           class="d-flex flex-column flex-grow-1 ma-4 featured-card fill-height"
@@ -48,11 +46,17 @@
           </v-card-title>
           <v-card-text class="featured-card-text black--text fill-height">
             <v-row>
-                <v-col cols="4" class="text-right text-h3 font-weight-bold">
+                <v-col cols="4" class="text-right">
+                  <div class="text-h3 font-weight-bold">
                   {{ featuredIndicatorValue }}
+                  </div>
+                  <div v-if="featuredIndicatorRange">
+                    {{ $t('tools.common.download.headers.range')}}: {{ featuredIndicatorRange }}
+                  </div>
                 </v-col>
                 <v-col cols="8">
                   <div class="text-h6 font-weight-bold">{{ featuredIndicator['name_' + locale] }}</div>
+                  <div>{{ $t('tools.common.download.headers.location') }}: {{ locationMenu.categories.find(c => c.id == '1').items.find(i => i.id == '48029')['name_'  + locale] }}</div>
                   <div>{{ $t('tools.common.download.headers.source') }}: {{ featuredIndicator.source['name_' + locale] }}, {{ featuredIndicator.year }}</div>
                 </v-col>
             </v-row>
@@ -116,7 +120,7 @@ export default {
     }
   },
   computed: { 
-    ...mapState(['locale', 'announcements', 'featuredIndicators']), 
+    ...mapState(['locale', 'announcements', 'featuredIndicators', 'locationMenu']), 
     ...mapGetters(['tools', 'about_views']),
     featuredIndicator() {
       return this.featuredIndicators ? this.featuredIndicators[this.featuredIndicatorIndex] : null
@@ -132,6 +136,13 @@ export default {
         return i18n.t('data.no_data');
       }
       return format(this.featuredIndicator.typeId, this.featuredIndicator.value)
+    },
+    featuredIndicatorRange() {
+      if (!this.featuredIndicator || !this.featuredIndicator.moeLow) {
+        return null
+      }
+
+      return format(this.featuredIndicator.typeId, this.featuredIndicator.moeLow) + ' - ' + format(this.featuredIndicator.typeId, this.featuredIndicator.moeHigh)
     },
     currentAnnouncement() {
       return this.announcements ? this.announcements[0] : null
