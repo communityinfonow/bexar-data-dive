@@ -5,6 +5,8 @@
         class="d-flex flex-column flex-grow-1 ma-4 featured-card"
 		@click="click_route ? click_route(item) : null"
 		:to="view_route ? view_route : null"
+		:href="href ? href : null"
+		:target="href ? '_blank' : null"
       >
 		<v-img :src="imagePath" class="align-end featured-image-gradient"></v-img>
 		<v-card-title :class="'flex-nowrap featured-card-title ' + text_color + '--text ' + background_color + (dense ? ' pb-0' : '')" v-if="name">
@@ -27,7 +29,17 @@
 				color="red"
 				class="white--text font-weight-bold" 
 				rounded
-				:to="view_route" 
+				:to="view_route"
+				:aria-label="$t('featured_card.view') + ' ' + name"
+			>
+				{{ primary_button_text }}
+			</v-btn>
+			<v-btn 
+				v-if="href" 
+				color="red"
+				class="white--text font-weight-bold" 
+				rounded
+				:href="href"
 				:aria-label="$t('featured_card.view') + ' ' + name"
 			>
 				{{ primary_button_text }}
@@ -100,6 +112,9 @@
 			dense: {
 				type: Boolean,
 				default: false
+			},
+			href: {
+				type: String
 			}
 		},
 		computed: {
