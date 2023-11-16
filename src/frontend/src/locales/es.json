@@ -16,7 +16,8 @@
     "community": {
       "name": "Mi Comunidad",
       "short_description": "La forma más fácil de conseguir información de forma rápida sobre demografía, vivienda, educación y mucho más en las comunidades del Condado de Bexar.",
-      "long_description": "Mi Comunidad es una herramienta que le permite explorar la información sobre la demografía, la vivienda, la educación y mucho más a través de las comunidades en el Condado de Bexar. Las SSAs son combinaciones de secciones censales agrupadas según indicadores significativos como raza/etnia, vivienda, edad, educación e ingresos. CI:Now creó las SSAs para ayudar a los usuarios a analizar los datos en áreas lo suficientemente pequeñas como para ver diferencias significativas en el condado, pero lo suficientemente grandes como para producir mejores estimaciones.",
+      "headline": "Mi Comunidad es una herramienta que le permite explorar la información sobre la demografía, la vivienda, la educación y mucho más a través de las comunidades en el Condado de Bexar.",
+      "long_description": "Las SSAs son combinaciones de secciones censales agrupadas según indicadores significativos como raza/etnia, vivienda, edad, educación e ingresos. CI:Now creó las SSAs para ayudar a los usuarios a analizar los datos en áreas lo suficientemente pequeñas como para ver diferencias significativas en el condado, pero lo suficientemente grandes como para producir mejores estimaciones.",
       "get_started": "Para empezar, navegue o busque un indicador utilizando el menú de arriba o seleccione una ubicación en el mapa de abajo.",
       "community_types": "Tipos de Comunidad",
       "skip": "Avanzar a",
@@ -37,7 +38,8 @@
     "explore": {
       "name": "Exploración de Datos",
       "short_description": "Una inmersión más profunda en la información local a través de mapas interactivos, tendencias y herramientas de visualización comparativas. ",
-      "long_description": "En la sección Exploración de Datos podrá profundizar en los indicadores de su comunidad a través de mapas y gráficos interactivos. Los indicadores pueden ser mapeados a través de las áreas geográficas, con tendencias en los gráficos para ver los datos en el tiempo, o en comparación con otras comunidades locales en un gráfico de barras. También tendrá la posibilidad de filtrar los resultados por ubicación, año, raza/etnia, sexo, nivel educativo o estado de pobreza, según lo que disponga la fuente de datos. Además, podrá descargar y guardar los gráficos que cree.",
+      "headline": "En la sección Exploración de Datos podrá profundizar en los indicadores de su comunidad a través de mapas y gráficos interactivos.",
+      "long_description": "Los indicadores pueden ser mapeados a través de las áreas geográficas, con tendencias en los gráficos para ver los datos en el tiempo, o en comparación con otras comunidades locales en un gráfico de barras. También tendrá la posibilidad de filtrar los resultados por ubicación, año, raza/etnia, sexo, nivel educativo o estado de pobreza, según lo que disponga la fuente de datos. Además, podrá descargar y guardar los gráficos que cree.",
       "get_started": "Para empezar, navegue o busque un indicador utilizando el menú de arriba o haga clic en uno de los indicadores destacados de abajo.",
       "no_data_location_year": "No hay datos disponibles para el tipo de ubicación seleccionado para este año",
       "no_data_custom_locations": "No hay datos disponibles para áreas personalizadas para este indicador",
@@ -80,7 +82,8 @@
     "tables": {
       "name": "Tablas y Descargas",
       "short_description": "Acceso a información descargable en un formato de hoja de cálculo legible por máquina.",
-      "long_description": "Tablas y Descargas es donde puedes tener acceso a información en un formato de hoja de cálculo legible por máquina para utilizarla con tu propio procesador de información y herramientas de visualización. Puedes filtrar la información por ubicación, año, raza/etnia, nivel educativo o nivel de pobreza, dependiendo de qué esté disponible en la fuente de información, descargar y guardar las tablas de datos que crees. ",
+      "headline": "Tablas y Descargas es donde puedes tener acceso a información en un formato de hoja de cálculo legible por máquina para utilizarla con tu propio procesador de información y herramientas de visualización.",
+      "long_description": "Puedes filtrar la información por ubicación, año, raza/etnia, nivel educativo o nivel de pobreza, dependiendo de qué esté disponible en la fuente de información, descargar y guardar las tablas de datos que crees. ",
       "get_started": "Para comenzar, navega o busca un indicador utilizando el menú de arriba o selecciona uno de los indicadores destacados que se encuentran debajo.",
       "filter": "Filtro",
       "headers": {
@@ -147,7 +150,8 @@
     "custom_locations": {
       "name": "Crea Tu Propia Área",
       "short_description": "",
-      "long_description": "\"Crea Tu Propia Área\" es una herramienta que le permite construir sus propias geografías. Cree tantas áreas personalizadas como desee utilizando SSAs (Áreas Estadísticas Pequeñas), distritos de ayuntamiento, códigos postales y áreas de censo como los componentes fundamentales. Una vez creada(s), usuarios pueden explorar y visualizar datos para sus áreas personalizadas usando Bexar Data Dive. Las áreas personalizadas se pueden guardar en su navegador o descargar para uso futuro.",
+      "headline": "\"Crea Tu Propia Área\" es una herramienta que le permite construir sus propias geografías.",
+      "long_description": "Cree tantas áreas personalizadas como desee utilizando SSAs (Áreas Estadísticas Pequeñas), distritos de ayuntamiento, códigos postales y áreas de censo como los componentes fundamentales. Una vez creada(s), usuarios pueden explorar y visualizar datos para sus áreas personalizadas usando Bexar Data Dive. Las áreas personalizadas se pueden guardar en su navegador o descargar para uso futuro.",
       "get_started": "Para comenzar, escriba un nombre para su nueva área personalizada. Luego, seleccione el tipo de geografía que le gustaría usar como componente fundamental para construir su área. Empiece a ensamblar simplemente haciendo clic en las geografías del mapa o seleccionándolas de la lista a la derecha.",
       "or": "o",
       "step_1": "Paso 1: Nombre el área",
@@ -188,12 +192,14 @@
   "help_view": {
     "name": "Ayuda",
     "short_description": "",
-    "headline": "",
-    "long_description": ""
+    "headline": "Explore las preguntas frecuentes, aprenda sobre las herramientas y navegue guías y capacitaciones de Dive. Reporte cualquier error o problema del sitio aquí.",
+    "long_description": "",
+    "guides_trainings_name": "Guías y Capacitaciones",
+    "guides_trainings_description": "Acceda a materiales de capacitación, información, y guías para aprovechar al máximo todo lo que Dive tiene para ofrecer."
   },
   "about_data_view": {
     "name": "Sobre la Información",
-    "welcome": "",
+    "welcome": "Encuentre definiciones detalladas de los datos, las notas, y las fuentes para todos los indicadores en Dive.",
     "indicators": "Indicadores",
     "visit_source": "Ir a la fuente",
     "source_citation": "Citar fuente",
@@ -201,16 +207,17 @@
     "processed_published": "Procesado y publicado por Community Information Now para Data Dive de Bexar."
   },
   "about_tools_view": {
-    "name": "Sobre las Herramientas"
+    "name": "Sobre las Herramientas",
+    "welcome": "Aprenda sobre las diferentes herramientas disponibles para acceder y visualizar los datos en Dive."
   },
   "faqs_view": {
     "name": "Preguntas Frecuentes",
-    "welcome": "",
+    "welcome": "Consulte las respuestas a preguntas comunes sobre Dive.",
     "questions": "Preguntas"
   },
   "announcements_view": {
     "name": "Anuncios",
-    "welcome": ""
+    "welcome": "Aprenda que funciones nuevas, actualizaciones de los datos y oportunidades de capacitación están disponibles."
   },
   "data": {
     "value": "Valor",
