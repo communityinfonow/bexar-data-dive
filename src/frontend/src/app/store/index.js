@@ -17,6 +17,7 @@ export default new Vuex.Store({
     customLocationsRoute: 'custom-locations',
     locationMenu: null,
     indicatorMenu: null,
+    bexarDataFacts: null,
     featuredIndicators: null,
     community: null,
     indicator: null,
@@ -232,6 +233,9 @@ export default new Vuex.Store({
     SET_LOCATION_MENU(state, locationMenu) {
       state.locationMenu = locationMenu
     },
+    SET_BEXAR_DATA_FACTS(state, bexarDataFacts) {
+      state.bexarDataFacts = bexarDataFacts
+    },
     SET_FEATURED_INDICATORS(state, indicators) {
       state.featuredIndicators = indicators
     },
@@ -347,6 +351,11 @@ export default new Vuex.Store({
     getLocationMenu(context) {
       axios.get('/api/location-menu').then(response => {
         context.commit('SET_LOCATION_MENU', response.data)
+      })
+    },
+    getBexarDataFacts(context) {
+      axios.get('/api/bexar-data-facts').then(response => {
+        context.commit('SET_BEXAR_DATA_FACTS', response.data)
       })
     },
     getFeaturedIndicators(context) {

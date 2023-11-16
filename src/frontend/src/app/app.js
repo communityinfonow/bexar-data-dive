@@ -77,6 +77,7 @@ new Vue({
     }
     this.$store.dispatch('setCustomLocations', storedCustomLocations)
     this.$store.dispatch('getFeaturedIndicators')
+    this.$store.dispatch('getBexarDataFacts')
   },
   mounted: function () {
     

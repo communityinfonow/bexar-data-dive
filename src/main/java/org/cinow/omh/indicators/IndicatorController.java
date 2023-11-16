@@ -36,10 +36,18 @@ public class IndicatorController {
 	}
 
 	/**
+	 * @return the featured indicator
+	 */
+	@GetMapping(path = "/api/bexar-data-facts", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<FeaturedIndicator>> getBexarDataFacts() {
+		return ResponseEntity.ok(this.indicatorService.getBexarDataFacts());
+	}
+
+	/**
 	 * @return the featured indicators
 	 */
 	@GetMapping(path = "/api/featured-indicators", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<FeaturedIndicator>> getFeaturedIndicators() {
+	public ResponseEntity<List<Indicator>> getFeaturedIndicators() {
 		return ResponseEntity.ok(this.indicatorService.getFeaturedIndicators());
 	}
 

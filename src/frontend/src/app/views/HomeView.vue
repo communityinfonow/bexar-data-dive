@@ -33,30 +33,35 @@
       <v-col cols="12" lg="6">
         <!-- TODO: translations -->
         <v-card
-          v-if="featuredIndicator && locationMenu"
+          v-if="bexarDataFacts && locationMenu"
           flat
           width="100%"
           class="d-flex flex-column flex-grow-1 ma-4 featured-card fill-height"
-          :to="'about-data?indicator=' + featuredIndicator.id"
+          :to="bexarDataFactsLink"
         >
           <v-card-title class="flex-nowrap featured-card-title black--text py-12" style="padding-left: 16.667%">
             <img src="/img/logo__active.svg" class="mr-4" height="48" width="48">
             <div>Bexar Data Facts</div>
           </v-card-title>
           <v-card-text class="featured-card-text black--text fill-height">
-            <v-row>
+            <v-row v-for="(indicator, index) in bexarDataFacts" :key="index">
                 <v-col cols="4" class="text-right">
                   <div class="text-h3 font-weight-bold">
-                  {{ featuredIndicatorValue }}
+                  {{ bexarDataFactsValue[index] }}
                   </div>
-                  <div v-if="featuredIndicatorRange">
-                    {{ $t('tools.common.download.headers.range')}}: {{ featuredIndicatorRange }}
+                  <div v-if="bexarDataFactsRange[index]">
+                    {{ $t('tools.common.download.headers.range')}}: {{ bexarDataFactsRange[index] }}
                   </div>
                 </v-col>
                 <v-col cols="8">
-                  <div class="text-h6 font-weight-bold">{{ featuredIndicator['name_' + locale] }}</div>
+                  <div class="text-h6 font-weight-bold">{{ bexarDataFacts[index]['name_' + locale] }}</div>
                   <div>{{ $t('tools.common.download.headers.location') }}: {{ locationMenu.categories.find(c => c.id == '1').items.find(i => i.id == '48029')['name_'  + locale] }}</div>
-                  <div>{{ $t('tools.common.download.headers.source') }}: {{ featuredIndicator.source['name_' + locale] }}, {{ featuredIndicator.year }}</div>
+                  <div>{{ $t('tools.common.download.headers.source') }}: {{ bexarDataFacts[index].source['name_' + locale] }}, {{ bexarDataFacts[index].year }}</div>
+                  <div v-if="bexarDataFacts[index].race_en">{{ $t('tools.tables.headers.race')}}: {{ bexarDataFacts[index]['race_' + locale] }}</div>
+                  <div v-if="bexarDataFacts[index].age_en">{{ $t('tools.tables.headers.age')}}: {{ bexarDataFacts[index]['age_' + locale] }}</div>
+                  <div v-if="bexarDataFacts[index].sex_en">{{ $t('tools.tables.headers.sex')}}: {{ bexarDataFacts[index]['sex_' + locale] }}</div>
+                  <div v-if="bexarDataFacts[index].education_en">{{ $t('tools.tables.headers.education')}}: {{ bexarDataFacts[index]['education_' + locale] }}</div>
+                  <div v-if="bexarDataFacts[index].income_en">{{ $t('tools.tables.headers.income')}}: {{ bexarDataFacts[index]['income_' + locale] }}</div>
                 </v-col>
             </v-row>
           </v-card-text>
@@ -68,7 +73,7 @@
               class="font-weight-bold" 
               style="border-width: 2px;"
               rounded
-              :to="'about-data?indicator=' + featuredIndicator.id"
+              :to="bexarDataFactsLink"
               :aria-label="$t('about_data_view.name')"
             >
               {{ $t('about_data_view.name') }}
@@ -76,7 +81,6 @@
           </v-card-actions>
         </v-card>
       </v-col>
-      <!-- TODO: just show one announcements when bexar data facts goes live? -->
       <v-col cols="12" lg="6" class="pt-12">
         <featured-card 
           v-if="currentAnnouncement"
@@ -128,34 +132,35 @@ export default {
     if (!this.announcements) {
       this.getAnnouncements();
     }
-    if (!this.featuredIndicators) {
-      this.getFeaturedIndicators();
+    if (!this.bexarDataFacts) {
+      this.getBexarDataFacts();
     }
   },
   computed: { 
-    ...mapState(['locale', 'announcements', 'featuredIndicators', 'locationMenu']), 
+    ...mapState(['locale', 'announcements', 'bexarDataFacts', 'locationMenu']), 
     ...mapGetters(['tools', 'about_views']),
-    featuredIndicator() {
-      return this.featuredIndicators ? this.featuredIndicators[this.featuredIndicatorIndex] : null
+    bexarDataFactsLink() {
+      return this.bexarDataFacts ? '/about-data?indicator=' + this.bexarDataFacts[0].id : null
     },
-    featuredIndicatorValue() {
-      if (!this.featuredIndicator) {
-        return null
-      }
-
-      if (this.featuredIndicator.suppressed) {
-        return i18n.t('data.suppressed');
-      } else if (this.featuredIndicator.value === null) {
-        return i18n.t('data.no_data');
-      }
-      return format(this.featuredIndicator.typeId, this.featuredIndicator.value)
+    bexarDataFactsValue() {
+      return this.bexarDataFacts?.map(fact => {
+        if (fact.suppressed) {
+          return i18n.t('data.suppressed');
+        } else if (fact.value === null) {
+          return i18n.t('data.no_data');
+        }
+        return format(fact.typeId, fact.value)
+      })
     },
-    featuredIndicatorRange() {
-      if (!this.featuredIndicator || !this.featuredIndicator.moeLow) {
-        return null
-      }
-
-      return format(this.featuredIndicator.typeId, this.featuredIndicator.moeLow) + ' - ' + format(this.featuredIndicator.typeId, this.featuredIndicator.moeHigh)
+    bexarDataFactsRange() {
+      return this.bexarDataFacts?.map(fact => {
+        if (fact.suppressed) {
+          return null;
+        } else if (fact.value === null) {
+          return null;
+        }
+        return format(fact.typeId, fact.moeLow) + ' - ' + format(fact.typeId, fact.moeHigh)
+      })
     },
     currentAnnouncement() {
       return this.announcements ? this.announcements[0] : null
@@ -169,11 +174,11 @@ export default {
   },
   data() {
     return {
-      featuredIndicatorIndex: 0
+      
     }
   },
   methods: {
-    ...mapActions(['getAnnouncements', 'getFeaturedIndicators'])
+    ...mapActions(['getAnnouncements', 'getBexarDataFacts'])
   },
 }
 </script>

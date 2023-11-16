@@ -62,11 +62,20 @@ public class IndicatorService {
 	}
 
 	/**
+	 * Gets the Bexar Data Facts
+	 * 
+	 * @return the Bezar Data Facts
+	 */
+	public List<FeaturedIndicator> getBexarDataFacts() {
+		return this.indicatorRepository.getBexarDataFacts();
+	}
+
+	/**
 	 * Gets the featured indicators.
 	 * 
 	 * @return the featured indicators
 	 */
-	public List<FeaturedIndicator> getFeaturedIndicators() {
+	public List<Indicator> getFeaturedIndicators() {
 		return this.indicatorRepository.getFeaturedIndicators();
 	}
 
