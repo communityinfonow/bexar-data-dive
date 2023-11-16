@@ -3,6 +3,8 @@
 		flat
         :width="fill_width ? '100%' : maxWidth"
         class="d-flex flex-column flex-grow-1 ma-4 featured-card"
+		@click="click_route ? click_route(item) : null"
+		:to="view_route ? view_route : null"
       >
 		<v-img v-if="imagePath" :src="imagePath" class="align-end featured-image-gradient"></v-img>
 		<v-card-title :class="'flex-nowrap featured-card-title ' + text_color + '--text ' + background_color + (dense ? ' pb-0' : '')" v-if="name">
@@ -121,7 +123,6 @@
 		background: rgba($color-grey, 1);
 		font-weight: bold;
 		border-top: 4px solid white;
-		text-transform: uppercase;
 	}
 	.featured-card-text {
 		background: rgba($color-grey, 1);

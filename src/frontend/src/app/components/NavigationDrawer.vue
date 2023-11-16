@@ -37,7 +37,8 @@
           <template v-for="(item, index) in navItems">
             <v-list-item v-if="index >= 5" :key="index" :to="item.route">
               <v-list-item-icon>
-                <v-icon :style="{ transform: item.icon_transform || '' }">{{ item.icon }}</v-icon>
+                <v-icon v-if="item.icon" :style="{ transform: item.icon_transform || '' }">{{ item.icon }}</v-icon>
+              <v-img :src="$route.name === item.key ? item.iconPath : item.iconPathInactive" v-if="item.iconPath" height="24" width="24"></v-img>
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title>{{ item.name }}</v-list-item-title>

@@ -1,7 +1,7 @@
 <template>
 	<v-menu offset-y min-width="300px">
 		<template v-slot:activator="{ on }">
-			<v-btn icon data-html2canvas-ignore v-on="on">
+			<v-btn icon data-html2canvas-ignore v-on="on" :aria-label="$t('tools.common.share.name')">
 				<v-img src="/img/icon_ux_menu_share__active.svg" width="24px" height="24px"></v-img>
 			</v-btn>
 		</template>

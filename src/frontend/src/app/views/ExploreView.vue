@@ -2,7 +2,12 @@
   <v-container v-if="indicatorMenu" fluid class="fill-height pa-0">
     <v-row class="no-gutters flex-wrap flex-column fill-height">
       <v-col cols="auto" class="grow">
-        <section :class="'page-header d-flex flex-column light--text pa-12 pb-0 ' + (!showIntro ? 'main-content' : '')">
+        <section :class="'page-header d-flex flex-column light--text px-12 pb-4 ' + (!showIntro ? 'main-content' : '')">
+          <v-breadcrumbs :items="breadcrumbs" class="mb-8" dark>
+            <template v-slot:divider>
+              <v-icon>mdi-chevron-right</v-icon>
+            </template>
+          </v-breadcrumbs>
           <h1 v-if="showIntro" class="text-dive-h3">{{ $t('tools.explore.name') }}</h1>
           <div v-if="indicator && exploreData" cols="auto" id="explore_indicator">
             <h1 class="text-dive-h3">
@@ -18,11 +23,6 @@
             {{ $t('tools.explore.headline') }}
             {{ $t('tools.explore.long_description') }}
           </div>
-          <v-breadcrumbs :items="breadcrumbs" class="mb-2" dark>
-            <template v-slot:divider>
-              <v-icon>mdi-chevron-right</v-icon>
-            </template>
-          </v-breadcrumbs>
         </section>
       </v-col>
       <v-col cols="auto" class="shrink sticky-menu">
@@ -36,7 +36,7 @@
       </v-col>
       <v-col v-if="showIntro" cols="auto" class="pa-4">
           <section class="mb-8">
-            <h2 class="text-dive-h4 mt-16 mb-2 font-weight-bold text-center" style="text-transform: uppercase;">{{ $t('tools.common.featured_indicators') }}</h2>
+            <h2 class="text-dive-h4 mt-16 mb-2 font-weight-light text-center" style="text-transform: uppercase;">{{ $t('tools.common.featured_indicators') }}</h2>
             <p style="margin: 0 30%; font-size: 1.25em;">{{ $t('tools.tables.get_started') }}</p>
           </section>
           <section v-if="featuredIndicators" class="d-flex" :class="{ 'flex-row': $vuetify.breakpoint.mdAndUp, 'flex-column': $vuetify.breakpoint.smAndDown }">
