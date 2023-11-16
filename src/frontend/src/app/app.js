@@ -76,6 +76,7 @@ new Vue({
       storedCustomLocations = []
     }
     this.$store.dispatch('setCustomLocations', storedCustomLocations)
+    this.$store.dispatch('getFeaturedIndicators')
   },
   mounted: function () {
     

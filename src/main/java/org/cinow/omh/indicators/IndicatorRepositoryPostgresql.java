@@ -138,20 +138,33 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<Indicator> getFeaturedIndicators() {
+	public List<FeaturedIndicator> getFeaturedIndicators() {
 		String sql = ""
+			+ " select * from ( "
 			+ " select i.id_, i.indicator_category_id, i.indicator_type_id, "
-			+ "   i.name_en, i.name_es, i.description_en, i.description_es, i.show_points, i.show_report, "
-			+ "   s.id_ as source_id, s.name_en as source_name_en, s.name_es as source_name_es "
+			+ "   case when c.parent_category_id is null then i.name_en else c.name_en || ' - ' || i.name_en end as name_en, "
+			+ "   case when c.parent_category_id is null then i.name_es else c.name_es || ' - ' || i.name_es end as name_es, "
+			+ "   i.description_en, i.description_es, i.show_points, i.show_report, "
+			+ "   s.id_ as source_id, s.name_en as source_name_en, s.name_es as source_name_es, "
+			+ "   round(iv.indicator_value, 1) as indicator_value, iv.suppress, iv.year_, "
+			+ "   rank() over (partition by i.id_ order by iv.year_ desc) as rank "
 			+ " from tbl_indicators i "
+			+ "   join tbl_indicator_categories c on i.indicator_category_id = c.id_ "
 			+ "   join tbl_sources s on s.id_ = i.source_id "
+			+ "   join tbl_indicator_values iv on iv.indicator_id = i.id_ "
+			+ "     and iv.location_type_id = 1 and location_id = '48029' "
+			+ "     and race_id is null and sex_id is null and age_id is null and income_id is null and education_id is null "
 			+ " where i.featured = true "
-			+ "   and i.display = true ";
+			+ "   and i.display = true "
+			+ " ) ranked "
+			+ " where rank = 1 "
+			+ " order by random() "
+			+ " limit 3";
 		
-		return this.jdbcTemplate.query(sql, new RowMapper<Indicator>() {
+		return this.jdbcTemplate.query(sql, new RowMapper<FeaturedIndicator>() {
 			@Override
-			public Indicator mapRow(ResultSet rs, int rowNum) throws SQLException {
-				Indicator indicator = new Indicator();
+			public FeaturedIndicator mapRow(ResultSet rs, int rowNum) throws SQLException {
+				FeaturedIndicator indicator = new FeaturedIndicator();
 				indicator.setId(rs.getString("id_"));
 				indicator.setCategoryId(rs.getString("indicator_category_id"));
 				indicator.setTypeId(rs.getString("indicator_type_id"));
@@ -165,6 +178,9 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 				indicator.getSource().setId(rs.getString("source_id"));
 				indicator.getSource().setName_en(rs.getString("source_name_en"));
 				indicator.getSource().setName_es(rs.getString("source_name_es"));
+				indicator.setValue(rs.getBigDecimal("indicator_value"));
+				indicator.setSuppressed(rs.getBoolean("suppress"));
+				indicator.setYear(rs.getString("year_"));
 
 				return indicator;
 			}

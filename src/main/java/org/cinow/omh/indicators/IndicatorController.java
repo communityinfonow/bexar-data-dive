@@ -39,7 +39,7 @@ public class IndicatorController {
 	 * @return the featured indicators
 	 */
 	@GetMapping(path = "/api/featured-indicators", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<Indicator>> getFeaturedIndicators() {
+	public ResponseEntity<List<FeaturedIndicator>> getFeaturedIndicators() {
 		return ResponseEntity.ok(this.indicatorService.getFeaturedIndicators());
 	}
 

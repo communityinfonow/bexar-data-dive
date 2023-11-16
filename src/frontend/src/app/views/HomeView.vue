@@ -30,11 +30,37 @@
       </template>
     </section>
     <v-row>
-      <!--<v-col cols="6">
-        TODO: bexar data facts
-      </v-col>-->
-      <v-col cols="12">
-
+      <v-col cols="6">
+        <!-- TODO: translations -->
+        <!-- TODO: featured MOE? -->
+        <!-- TODO: year location after source okay? -->
+        <!-- TODO: always Bexar County? -->
+        <v-card
+          v-if="featuredIndicator"
+          flat
+          width="100%"
+          class="d-flex flex-column flex-grow-1 ma-4 featured-card fill-height"
+          :to="'about-data?indicator=' + featuredIndicator.id"
+        >
+          <v-card-title class="flex-nowrap featured-card-title black--text py-12" style="padding-left: 16.667%">
+            <img src="/img/logo__active.svg" class="mr-4" height="48" width="48">
+            <div>Bexar Data Facts</div>
+          </v-card-title>
+          <v-card-text class="featured-card-text black--text fill-height">
+            <v-row>
+                <v-col cols="4" class="text-right text-h3 font-weight-bold">
+                  {{ featuredIndicatorValue }}
+                </v-col>
+                <v-col cols="8">
+                  <div class="text-h6 font-weight-bold">{{ featuredIndicator['name_' + locale] }}</div>
+                  <div>{{ $t('tools.common.download.headers.source') }}: {{ featuredIndicator.source['name_' + locale] }}, {{ featuredIndicator.year }}</div>
+                </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
+      </v-col>
+      <!-- TODO: just show one announcements when bexar data facts goes live? -->
+      <v-col cols="6" class="pt-12">
         <featured-card 
           v-if="currentAnnouncement"
           fill_width
@@ -66,7 +92,6 @@
           </div>
         </template>
       </v-col>
-      
     </v-row>
   </v-container>
 </template>
@@ -74,19 +99,40 @@
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex'
 import FeaturedCard from '@/app/components/FeaturedCard'
+import { format } from '@/services/formatter'
+import i18n from '@/i18n'
+
 export default {
   name: 'HomeView',
   components: {
-    FeaturedCard,
+    FeaturedCard
   },
   created() {
     if (!this.announcements) {
       this.getAnnouncements();
     }
+    if (!this.featuredIndicators) {
+      this.getFeaturedIndicators();
+    }
   },
   computed: { 
-    ...mapState(['locale', 'announcements']), 
+    ...mapState(['locale', 'announcements', 'featuredIndicators']), 
     ...mapGetters(['tools', 'about_views']),
+    featuredIndicator() {
+      return this.featuredIndicators ? this.featuredIndicators[this.featuredIndicatorIndex] : null
+    },
+    featuredIndicatorValue() {
+      if (!this.featuredIndicator) {
+        return null
+      }
+
+      if (this.featuredIndicator.suppressed) {
+        return i18n.t('data.suppressed');
+      } else if (this.featuredIndicator.value === null) {
+        return i18n.t('data.no_data');
+      }
+      return format(this.featuredIndicator.typeId, this.featuredIndicator.value)
+    },
     currentAnnouncement() {
       return this.announcements ? this.announcements[0] : null
     },
@@ -98,10 +144,12 @@ export default {
     }
   },
   data() {
-    return {}
+    return {
+      featuredIndicatorIndex: 0
+    }
   },
   methods: {
-    ...mapActions(['getAnnouncements'])
+    ...mapActions(['getAnnouncements', 'getFeaturedIndicators'])
   },
 }
 </script>

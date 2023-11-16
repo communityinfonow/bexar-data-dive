@@ -37,7 +37,7 @@ public interface IndicatorRepository {
 	 * 
 	 * @return the featured indicators
 	 */
-	List<Indicator> getFeaturedIndicators();
+	List<FeaturedIndicator> getFeaturedIndicators();
 
 	/**
 	 * Gets the indicator category.

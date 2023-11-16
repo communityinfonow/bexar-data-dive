@@ -66,7 +66,7 @@ public class IndicatorService {
 	 * 
 	 * @return the featured indicators
 	 */
-	public List<Indicator> getFeaturedIndicators() {
+	public List<FeaturedIndicator> getFeaturedIndicators() {
 		return this.indicatorRepository.getFeaturedIndicators();
 	}
 
