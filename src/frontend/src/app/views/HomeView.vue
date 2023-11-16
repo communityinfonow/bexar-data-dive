@@ -30,9 +30,8 @@
       </template>
     </section>
     <v-row>
-      <v-col cols="6">
+      <v-col cols="12" lg="6">
         <!-- TODO: translations -->
-        <!-- TODO: featured MOE? -->
         <v-card
           v-if="featuredIndicator && locationMenu"
           flat
@@ -61,10 +60,24 @@
                 </v-col>
             </v-row>
           </v-card-text>
+          <v-card-actions class="featured-card-actions pa-8">
+            <v-spacer></v-spacer>
+            <v-btn 
+              outlined
+              color="black"
+              class="font-weight-bold" 
+              style="border-width: 2px;"
+              rounded
+              :to="'about-data?indicator=' + featuredIndicator.id"
+              :aria-label="$t('about_data_view.name')"
+            >
+              {{ $t('about_data_view.name') }}
+            </v-btn>
+          </v-card-actions>
         </v-card>
       </v-col>
       <!-- TODO: just show one announcements when bexar data facts goes live? -->
-      <v-col cols="6" class="pt-12">
+      <v-col cols="12" lg="6" class="pt-12">
         <featured-card 
           v-if="currentAnnouncement"
           fill_width
