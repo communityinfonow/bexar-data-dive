@@ -192,7 +192,7 @@
   "help_view": {
     "name": "Ayuda",
     "short_description": "",
-    "headline": "Explore las preguntas frecuentes, aprenda sobre las herramientas y navegue guías y capacitaciones de Dive. Reporte cualquier error o problema del sitio aquí.",
+    "headline": "Explore las preguntas frecuentes y aprenda sobre las herramientas",
     "long_description": "",
     "guides_trainings_name": "Guías y Capacitaciones",
     "guides_trainings_description": "Acceda a materiales de capacitación, información, y guías para aprovechar al máximo todo lo que Dive tiene para ofrecer."

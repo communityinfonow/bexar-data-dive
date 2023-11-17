@@ -750,7 +750,7 @@ export default {
       }
     },
     loadTablesData() {
-      if (!this.selectAllLocations && this.selections.locations?.length > 50) {
+      if (!this.indicator || (!this.selectAllLocations && this.selections.locations?.length > 50)) {
         return;
       }
       this.getTablesData(this.selections);

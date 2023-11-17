@@ -192,7 +192,7 @@
   "help_view": {
     "name": "Help",
     "short_description": "",
-    "headline": "Explore frequently asked questions, learn about the tools, and browse Dive guides and trainings. Report any bugs or site issues here.",
+    "headline": "Explore frequently asked questions and learn about the tools.",
     "long_description": "",
     "guides_trainings_name": "Guides and Trainings",
     "guides_trainings_description": "Access training materials, information, and guides to fully take advantage of everything Dive has to offer."
