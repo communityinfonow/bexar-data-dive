@@ -1,9 +1,17 @@
 package org.cinow.omh.indicators;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.cinow.omh.community.CommunityData;
+import org.cinow.omh.community.CommunityDataIndicator;
+import org.cinow.omh.community.CommunityRepository;
+import org.cinow.omh.filters.FilterRepository;
+import org.cinow.omh.filters.IndicatorFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import liquibase.pro.packaged.A;
 
 /**
  * Service class for indicators.
@@ -18,6 +26,12 @@ public class IndicatorService {
 	 */
 	@Autowired
 	private IndicatorRepository indicatorRepository;
+
+	@Autowired
+	private FilterRepository filterRepository;
+
+	@Autowired
+	private CommunityRepository communityRepository;
 	
 	/**
 	 * Builds the indicator menu.
@@ -66,8 +80,22 @@ public class IndicatorService {
 	 * 
 	 * @return the Bezar Data Facts
 	 */
-	public List<FeaturedIndicator> getBexarDataFacts() {
-		return this.indicatorRepository.getBexarDataFacts();
+	public List<CommunityDataIndicator> getBexarDataFacts() {
+		List<CommunityDataIndicator> data = new ArrayList<>();
+		// first, find one random featured indicator
+		Indicator indicator = this.indicatorRepository.getFeaturedIndicators().get(0);
+
+		// then, find the available disaggregations for that indicator
+		List<IndicatorFilter> filters = this.filterRepository.getIndicatorFilters(indicator.getId());
+		
+		// then, find the community data for that indicator for each disaggregation for bexar county
+		filters.forEach(f -> {
+			data.add(this.communityRepository.getCommunityData("48029", "1", f.getType().getId(), indicator.getId())
+				.get(0).getIndicators().get(0));
+		});
+
+
+		return data;
 	}
 
 	/**
