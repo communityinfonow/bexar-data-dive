@@ -51,33 +51,44 @@
               <v-col cols="12" style="padding-left: 16.667%">
                 <div class="text-h4 font-weight-bold">
                   <span v-if="bexarDataFactsCategoryName">{{ bexarDataFactsCategoryName }} -</span>
-                  {{ bexarDataFacts[0].indicator['name_' + locale] }}
-                  <v-chip color="secondary" label class="mx-2" v-if="bexarDataFacts[0].indicator['name_' + locale]">
-                    <span v-if="bexarDataFacts[0].demographicData.find(d => d.demographicFilter.id === null).suppressed" class="text-h6 mb-0">{{ $t('data.suppressed') }}</span>
-                    <span v-else-if="bexarDataFacts[0].demographicData.find(d => d.demographicFilter.id === null).value === null" class="text-h6 mb-0">{{ $t('data.no_data') }}</span>
+                  {{ bexarDataFacts[bexarDataFactsIndex].indicator['name_' + locale] }}
+                  <v-chip color="secondary" label class="mx-2" v-if="bexarDataFacts[bexarDataFactsIndex].indicator['name_' + locale]">
+                    <span v-if="bexarDataFacts[bexarDataFactsIndex].demographicData.find(d => d.demographicFilter.id === null).suppressed" class="text-h6 mb-0">{{ $t('data.suppressed') }}</span>
+                    <span v-else-if="bexarDataFacts[bexarDataFactsIndex].demographicData.find(d => d.demographicFilter.id === null).value === null" class="text-h6 mb-0">{{ $t('data.no_data') }}</span>
                     <template v-else>
-                      <div class="text-h6 font-weight-bold mb-0">{{ formatValue(bexarDataFacts[0].indicatorType.id, bexarDataFacts[0].demographicData.find(d => d.demographicFilter.id === null).value) }}</div>
-                      <div v-if="bexarDataFacts[0].demographicData.find(d => d.demographicFilter.id === null).moeLow && bexarDataFacts[0].demographicData.find(d => d.demographicFilter.id === null).moeHigh" class="ml-2">{{ $t('data.moe_range') }} {{ formatValue(bexarDataFacts[0].indicatorType.id, bexarDataFacts[0].demographicData.find(d => d.demographicFilter.id === null).moeLow) }} - {{ formatValue(bexarDataFacts[0].indicatorType.id, bexarDataFacts[0].demographicData.find(d => d.demographicFilter.id === null).moeHigh) }}</div> 
+                      <div class="text-h6 font-weight-bold mb-0">{{ formatValue(bexarDataFacts[bexarDataFactsIndex].indicatorType.id, bexarDataFacts[bexarDataFactsIndex].demographicData.find(d => d.demographicFilter.id === null).value) }}</div>
+                      <div v-if="bexarDataFacts[bexarDataFactsIndex].demographicData.find(d => d.demographicFilter.id === null).moeLow && bexarDataFacts[bexarDataFactsIndex].demographicData.find(d => d.demographicFilter.id === null).moeHigh" class="ml-2">{{ $t('data.moe_range') }} {{ formatValue(bexarDataFacts[bexarDataFactsIndex].indicatorType.id, bexarDataFacts[bexarDataFactsIndex].demographicData.find(d => d.demographicFilter.id === null).moeLow) }} - {{ formatValue(bexarDataFacts[bexarDataFactsIndex].indicatorType.id, bexarDataFacts[bexarDataFactsIndex].demographicData.find(d => d.demographicFilter.id === null).moeHigh) }}</div> 
                     </template>
                   </v-chip>
                 </div>
               </v-col>
             </v-row>
             <community-chart
-              v-if="bexarDataFacts"
-              :indicatorId="bexarDataFacts[0].indicator.id" 
-              :indicatorType="bexarDataFacts[0].indicatorType"
-              :indicatorName="bexarDataFacts[0].indicator['name_' + locale]"
-              :data="bexarDataFacts[0].demographicData.filter(d => d.demographicFilter.id !== null).reverse()"
+              v-if="bexarDataFactsChartData"
+              :indicatorId="bexarDataFacts[bexarDataFactsIndex].indicator.id" 
+              :indicatorType="bexarDataFacts[bexarDataFactsIndex].indicatorType"
+              :indicatorName="bexarDataFacts[bexarDataFactsIndex].indicator['name_' + locale]"
+              :data="bexarDataFactsChartData"
               labelsOrLines="labels"
               orientation="horizontal"
             >
             </community-chart>
+            <div class="d-flex">
+              <v-btn rounded color="red" dark @click.prevent.stop="prevBexarDataFact()">
+                <v-icon>mdi-arrow-left</v-icon>
+                {{ prevBexarDataFactName }}
+              </v-btn>
+              <v-spacer></v-spacer>
+              <v-btn rounded color="red" dark @click.prevent.stop="nextBexarDataFact()">
+                {{ nextBexarDataFactName }}
+                <v-icon>mdi-arrow-right</v-icon>
+              </v-btn>
+            </div>
           </v-card-text>
           <v-card-actions class="featured-card-actions pa-8">
             <div class="text-caption">
               <div>{{ $t('tools.common.download.headers.location') }}: {{ locationMenu.categories.find(c => c.id == '1').items.find(i => i.id == '48029')['name_'  + locale] }}</div>
-              <div>{{ $t('tools.common.download.headers.source') }}: {{ bexarDataFacts[0].source['name_' + locale] }}, {{ bexarDataFacts[0].year }}</div>
+              <div>{{ $t('tools.common.download.headers.source') }}: {{ bexarDataFacts[bexarDataFactsIndex].source['name_' + locale] }}, {{ bexarDataFacts[bexarDataFactsIndex].year }}</div>
             </div>
             <v-spacer></v-spacer>
             <v-btn 
@@ -146,19 +157,33 @@ export default {
     if (!this.announcements) {
       this.getAnnouncements();
     }
-    if (!this.bexarDataFacts) {
-      this.getBexarDataFacts();
-    }
   },
   computed: { 
     ...mapState(['locale', 'announcements', 'bexarDataFacts', 'locationMenu', 'indicatorMenu']), 
     ...mapGetters(['tools', 'about_views']),
     bexarDataFactsCategoryName() {
-      let category = this.indicatorMenu.categories.map(c => c.subcategories).flat().find(sc => sc.id == this.bexarDataFacts[0].indicator.categoryId);
+      let category = this.indicatorMenu?.categories.map(c => c.subcategories).flat().find(sc => sc.id == this.bexarDataFacts[this.bexarDataFactsIndex].indicator.categoryId);
       return category ? category['name_' + this.locale] : null;
     },
+    bexarDataFactsChartData() {
+      return this.bexarDataFacts[this.bexarDataFactsIndex].demographicData.filter(d => d.demographicFilter.id !== null).toReversed()
+    },
     bexarDataFactsLink() {
-      return this.bexarDataFacts ? '/about-data?indicator=' + this.bexarDataFacts[0].id : null
+      return this.bexarDataFacts ? '/about-data?indicator=' + this.bexarDataFacts[this.bexarDataFactsIndex].id : null
+    },
+    prevBexarDataFactName() {
+      if (this.bexarDataFactsIndex > 0) {
+        return this.bexarDataFacts[this.bexarDataFactsIndex - 1].filterType['name_' + this.locale]
+      } else {
+        return this.bexarDataFacts[this.bexarDataFacts.length - 1].filterType['name_' + this.locale]
+      }
+    },
+    nextBexarDataFactName() {
+      if (this.bexarDataFactsIndex < this.bexarDataFacts.length - 1) {
+        return this.bexarDataFacts[this.bexarDataFactsIndex + 1].filterType['name_' + this.locale]
+      } else {
+        return this.bexarDataFacts[0].filterType['name_' + this.locale]
+      }
     },
     currentAnnouncement() {
       return this.announcements ? this.announcements[0] : null
@@ -172,14 +197,28 @@ export default {
   },
   data() {
     return {
-      
+      bexarDataFactsIndex: 0
     }
   },
   methods: {
-    ...mapActions(['getAnnouncements', 'getBexarDataFacts']),
+    ...mapActions(['getAnnouncements']),
     formatValue(type, value) {
 			return format(type, value)
-		}
+		},
+    prevBexarDataFact() {
+      if (this.bexarDataFactsIndex > 0) {
+        this.bexarDataFactsIndex--;
+      } else {
+        this.bexarDataFactsIndex = this.bexarDataFacts.length - 1;
+      }
+    },
+    nextBexarDataFact() {
+      if (this.bexarDataFactsIndex < this.bexarDataFacts.length - 1) {
+        this.bexarDataFactsIndex++;
+      } else {
+        this.bexarDataFactsIndex = 0;
+      }
+    }
   },
 }
 </script>

@@ -89,9 +89,12 @@ public class IndicatorService {
 		List<IndicatorFilter> filters = this.filterRepository.getIndicatorFilters(indicator.getId());
 		
 		// then, find the community data for that indicator for each disaggregation for bexar county
+
 		filters.forEach(f -> {
-			data.add(this.communityRepository.getCommunityData("48029", "1", f.getType().getId(), indicator.getId())
-				.get(0).getIndicators().get(0));
+			CommunityDataIndicator i = this.communityRepository.getCommunityData("48029", "1", f.getType().getId(), indicator.getId())
+				.get(0).getIndicators().get(0);
+			i.setFilterType(f.getType());
+			data.add(i);
 		});
 
 

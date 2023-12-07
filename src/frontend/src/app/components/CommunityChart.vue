@@ -79,13 +79,14 @@ export default {
 			if (this.chart) {
 				this.chart.dispose();
 			}
+			console.log('chart_container_' + this.indicatorId)
 			this.chart = echarts.init(document.getElementById('chart_container_' + this.indicatorId), null, { renderer: 'svg'});
 			let textStyle = {
 				fontFamily: '"Roboto", sans-serif !important',
 				fontSize: this.smallScreen ? '14px' : '16px'
 			};
 			let option = {};
-			option.grid = { left: 40, right: 20, containLabel: true };
+			option.grid = { left: 40, right: 200, containLabel: true };
 			let valueAxis = this.orientation === 'vertical' ? 'yAxis' : 'xAxis';
 			let categoryAxis = this.orientation === 'vertical' ? 'xAxis' : 'yAxis';
 			option[valueAxis] = { 
