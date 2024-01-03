@@ -3,7 +3,6 @@ package org.cinow.omh.indicators;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.cinow.omh.community.CommunityData;
 import org.cinow.omh.community.CommunityDataIndicator;
 import org.cinow.omh.community.CommunityRepository;
 import org.cinow.omh.filters.FilterRepository;
@@ -11,7 +10,6 @@ import org.cinow.omh.filters.IndicatorFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import liquibase.pro.packaged.A;
 
 /**
  * Service class for indicators.
@@ -89,7 +87,12 @@ public class IndicatorService {
 		List<IndicatorFilter> filters = this.filterRepository.getIndicatorFilters(indicator.getId());
 		
 		// then, find the community data for that indicator for each disaggregation for bexar county
-
+		// if there are no disaggregations, just get the data for bexar county (look for data by race)
+		if (filters.size() == 0) {
+			CommunityDataIndicator i = this.communityRepository.getCommunityData("48029", "1", "1", indicator.getId())
+				.get(0).getIndicators().get(0);
+			data.add(i);
+		}
 		filters.forEach(f -> {
 			CommunityDataIndicator i = this.communityRepository.getCommunityData("48029", "1", f.getType().getId(), indicator.getId())
 				.get(0).getIndicators().get(0);

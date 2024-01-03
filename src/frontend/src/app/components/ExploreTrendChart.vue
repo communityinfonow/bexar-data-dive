@@ -2,7 +2,7 @@
 	<div class="fill-height">
 		<v-row class="no-gutters flex-wrap flex-column fill-height">
 			<explore-tools-panel 
-				v-if="filters"
+				v-if="filters && filterSelections && exploreData"
 				:labelsOrLinesOption="trendLabelsOrLines"
 				:setLabelsOrLinesOption="setTrendLabelsOrLines"
 				dataVisualElementId="trend_chart_container"
@@ -48,7 +48,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['locale', 'exploreData', 'trendLabelsOrLines', 'exploreTab']),
+		...mapState(['locale', 'exploreData', 'trendLabelsOrLines', 'exploreTab', 'filterSelections']),
 		...mapGetters(['filters']),
 	},
 	watch: {

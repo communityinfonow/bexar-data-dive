@@ -198,7 +198,7 @@ export default {
 			if (this.compareBy) {
 				let prev = this.compareWith.map(w => w.id);
 				this.selectCompareBy();
-				this.compareWith = this.compareWithItems.filter(w => prev.includes(w.id));
+				this.compareWith = this.compareWithItems.filter(w => prev.includes(w.id) && !w.filtered);
 				this.applyComparison();
 			}
 		},
@@ -209,35 +209,54 @@ export default {
 			}
 		}
 	},
-	
+	beforeRouteEnter(to, from, next) {
+		next(vm => {
+			vm.init();
+		});
+	},
 	mounted () {
-		this.initializeCompareByItems();
-		if (router.currentRoute.query.compareBy) {
-			this.compareBy = this.compareByItems.find(i => i.id == router.currentRoute.query.compareBy);
-			this.selectCompareBy();
-			if (router.currentRoute.query.compareBy === 'i') {
-				[].concat(router.currentRoute.query.compareWith).forEach(p => {
-					this.compareWith.push(this.compareWithItems.find(i => i.id == p));
-				});
-			} else if (router.currentRoute.query.compareBy === 'l') {
-				[].concat(router.currentRoute.query.compareWith).forEach(p => {
-					this.compareWith.push(this.compareWithItems.find(i => i.typeId == p.split("_")[0] && i.id == p.split("_")[1]));
-				});
-			} else if (router.currentRoute.query.compareBy === 'y') {
-				[].concat(router.currentRoute.query.compareWith).forEach(p => {
-					this.compareWith.push(this.compareWithItems.find(i => i.id == p));
-				});
-			} else {
-				[].concat(router.currentRoute.query.compareWith).forEach(p => {
-					this.compareWith.push(this.compareWithItems.find(i => i.id == p));
-				});
-			}
-			this.selectCompareWith();
-			this.applyComparison();
-		}
+		this.init()
 	},
 	methods: {
 		...mapActions(['setCompareSelections', 'setLoading']),
+		init() {
+			this.initializeCompareByItems();
+			if (router.currentRoute.query.compareBy) {
+				this.compareBy = this.compareByItems.find(i => i.id == router.currentRoute.query.compareBy);
+				this.selectCompareBy();
+				if (router.currentRoute.query.compareBy === 'i') {
+					[].concat(router.currentRoute.query.compareWith).forEach(p => {
+						let indicator = this.compareWithItems.find(i => i.id == p && !i.filtered);
+						if (indicator) {
+							this.compareWith.push(indicator);
+						}
+					});
+				} else if (router.currentRoute.query.compareBy === 'l') {
+					[].concat(router.currentRoute.query.compareWith).forEach(p => {
+						let location = this.compareWithItems.find(i => i.typeId == p.split("_")[0] && i.id == p.split("_")[1] && !i.filtered);
+						if (location) {
+							this.compareWith.push(location);
+						}
+					});
+				} else if (router.currentRoute.query.compareBy === 'y') {
+					[].concat(router.currentRoute.query.compareWith).forEach(p => {
+						let year = this.compareWithItems.find(i => i.id == p && !i.filtered);
+						if (year) {
+							this.compareWith.push(year);
+						}
+					});
+				} else {
+					[].concat(router.currentRoute.query.compareWith).forEach(p => {
+						let item = this.compareWithItems.find(i => i.id == p && !i.filtered);
+						if (item) {
+							this.compareWith.push(item);
+						}
+					});
+				}
+				this.selectCompareWith();
+				this.applyComparison();
+			}
+		},
 		initializeCompareByItems() {
 			this.compareByItems = [];
 			let subcategory = this.indicatorMenu.categories.find(c => c.id === '3').subcategories.find(sc => sc.id === this.indicator.categoryId);
@@ -286,12 +305,13 @@ export default {
 					this.compareWith = [];
 					this.compareWithItems.find(i => i.id === 0).name_en = i18n.t('tools.tables.select_all');
 					this.compareWithItems.find(i => i.id === 0).name_es = i18n.t('tools.tables.select_all');
+					this.compareWithSelectAll = false;
 				} else {
 					this.compareWith = this.compareWithItems.filter(i => i.id !== 0 && !i.filtered);
 					this.compareWithItems.find(i => i.id === 0).name_en = i18n.t('tools.tables.clear_selections');
 					this.compareWithItems.find(i => i.id === 0).name_es = i18n.t('tools.tables.clear_selections');
+					this.compareWithSelectAll = true;
 				}
-				this.compareWithSelectAll = true;
 			} else {
 				if (this.compareWithItems.find(i => i.id === 0)) {
 					this.compareWithItems.find(i => i.id === 0).name_en = i18n.t('tools.tables.select_all');
@@ -303,10 +323,17 @@ export default {
 		validateComparison() {
 			this.$refs.compareForm.validate();
 		},
-		getComparison() {	
+		getComparison() {
+			// manually remove the indicator filter that is already applied from the comparison
+			// even with several safeguards in place, it's still ending up in the comparison 
+			// on subsequent view loads after browser back button use
+			let cw = JSON.parse(JSON.stringify(this.compareWith));
+			if (this.filterSelections?.indicatorFilters[this.compareBy.id]?.id) {
+				cw = cw.filter(i => i.id !== this.filterSelections?.indicatorFilters[this.compareBy.id]?.id);
+			}
 			return {
 				type: this.compareBy,
-				options: this.compareWith
+				options: cw
 			};
 		},
 		applyComparison() { 

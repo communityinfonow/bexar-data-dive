@@ -93,7 +93,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 import router from '@/app/router/index'
 import i18n from '@/i18n'
 import MenuToolbar from '@/app/components/MenuToolbar'
@@ -124,7 +124,8 @@ export default {
     }
   },
   computed: {
-    ...mapState(['indicatorMenu', 'indicator', 'source', 'locale', 'featuredIndicators', 'exploreData']),
+    ...mapState(['indicatorMenu', 'indicator', 'source', 'locale', 'featuredIndicators', 'exploreData', 'filterSelections']),
+    ...mapGetters(['filters']),
     showIntro() {
       return !this.indicator && !router.currentRoute.query.indicator;
     },
@@ -182,12 +183,13 @@ export default {
     if (router.currentRoute.query.indicator && this.indicatorMenu) {
       this.setIndicator(this.indicatorMenu.categories
         .flatMap(category => category.subcategories.flatMap(sc => sc.items).concat(category.items))
-        .find(item => item.id == router.currentRoute.query.indicator))
+        .find(item => item.id == router.currentRoute.query.indicator)).then(() => {
+          if (router.currentRoute.query.tab) {
+            this.selectTab(router.currentRoute.query.tab)
+          }
+        })
     } else {
       this.setIndicator(null)
-    }
-    if (router.currentRoute.query.tab) {
-      this.selectTab(router.currentRoute.query.tab)
     }
     if (!this.featuredIndicators) {
       this.getFeaturedIndicators()
@@ -199,7 +201,11 @@ export default {
         .flatMap(category => category.subcategories.flatMap(sc => sc.items).concat(category.items))
         .find(item => item.id == router.currentRoute.query.indicator)
       if (matchedIndicator?.id !== this.indicator?.id) {
-        this.setIndicator(matchedIndicator)
+        this.setIndicator(matchedIndicator).then(() => {
+          if (router.currentRoute.query.tab) {
+            this.selectTab(router.currentRoute.query.tab)
+          }
+        })
       }
     } else {
       this.setIndicator(null)
@@ -217,7 +223,7 @@ export default {
             indicator: item.id,
             tab: router.currentRoute.query.tab
           },
-        }).then(() => this.selectTab('map'));
+        }).then(() => this.selectTab(router.currentRoute.query.tab));
       }
     },
     selectTab(selectedTab) {

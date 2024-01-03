@@ -38,7 +38,8 @@ export default new Vuex.Store({
     faqs: null,
     announcements: null,
     surveySubmitted: false,
-    customLocations: []
+    customLocations: [],
+    abortController: null
   },
   getters: {
     tools: (state) => {
@@ -417,11 +418,17 @@ export default new Vuex.Store({
       if (!this.state.filterSelections) {
         return;
       }
+      if (this.state.abortController) {
+        this.state.abortController.abort();
+      }
+      this.state.abortController = new AbortController();
+      const signal = this.state.abortController.signal;
       axios.post('/api/explore-data', {
         indicator: context.state.indicator.id, 
         filters: this.state.filterSelections,
         comparisons: this.state.compareSelections
-      }).then(response => {
+      }, { signal }).then(response => {
+        this.state.abortController = null;
         context.commit('SET_EXPLORE_DATA', response.data)
       })
     },

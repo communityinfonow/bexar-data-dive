@@ -261,6 +261,7 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 			+ " from tbl_indicators i "
 			+ "   join tbl_indicator_categories c on i.indicator_category_id = c.id_ "
 			+ "   join tbl_sources s on s.id_ = i.source_id "
+			+ "   join mv_indicator_metadata im on i.id_ = im.indicator_id and location_type_id = 1 and im.has_data = true "
 			+ " where i.featured = true "
 			+ "   and i.display = true "
 			+ " ) ranked "

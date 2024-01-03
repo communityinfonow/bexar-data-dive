@@ -79,7 +79,6 @@ export default {
 			if (this.chart) {
 				this.chart.dispose();
 			}
-			console.log('chart_container_' + this.indicatorId)
 			this.chart = echarts.init(document.getElementById('chart_container_' + this.indicatorId), null, { renderer: 'svg'});
 			let textStyle = {
 				fontFamily: '"Roboto", sans-serif !important',

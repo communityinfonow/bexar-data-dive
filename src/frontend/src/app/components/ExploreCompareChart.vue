@@ -2,7 +2,7 @@
 	<div class="fill-height">
 		<v-row class="no-gutters flex-wrap flex-column fill-height">
 			<explore-tools-panel 
-				v-if="filters && exploreData"
+				v-if="filters && filterSelections && exploreData"
 				:showCompareOptions="true"
 				:labelsOrLinesOption="compareLabelsOrLines"
 				:setLabelsOrLinesOption="setCompareLabelsOrLines"
@@ -43,7 +43,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['locale', 'exploreData', 'compareSelections', 'compareLabelsOrLines', 'exploreTab', 'indicator']),
+		...mapState(['locale', 'exploreData', 'compareSelections', 'compareLabelsOrLines', 'exploreTab', 'indicator', 'filterSelections']),
 		...mapGetters(['filters']),
 		smallScreen() {
 			return document.body.clientWidth <= 1440;
@@ -87,7 +87,10 @@ export default {
 	methods: {
 		...mapActions(['setDockedTooltip', 'setCompareLabelsOrLines']),
 		drawChart() {
-			if (!this.chart) {
+			let filteredLocation = this.exploreData.locationData.find(ld => 
+					ld.location.id === this.exploreData.filters.locationFilter.options[0].id && 
+					ld.location.typeId === this.exploreData.filters.locationTypeFilter.options[0].id);
+			if (!this.chart || !filteredLocation) {
 				return;
 			} else {
 				this.chart.dispose();
@@ -133,7 +136,7 @@ export default {
 					xAxisData.push(this.exploreData.filters.locationFilter.options[0]['name_' + this.locale]);
 				} else if (this.compareSelections.type.id === 'y') {
 					xAxisData.push(this.exploreData.filters.yearFilter.options[0]['name_' + this.locale]);
-				} else {
+				} else if (this.exploreData.filters.indicatorFilters.find(f => f.type.id === this.compareSelections.type.id).options[0]) {
 					xAxisData.push(this.exploreData.filters.indicatorFilters.find(f => f.type.id === this.compareSelections.type.id).options[0]['name_' + this.locale])
 				}
 				xAxisData.push(...this.compareSelections.options.filter(o => !!o).map(o => o['name_' + this.locale]))
@@ -161,9 +164,6 @@ export default {
 			};
 			option.color = '#3b5a98';
 			let seriesData = [];
-			let filteredLocation = this.exploreData.locationData.find(ld => 
-						ld.location.id === this.exploreData.filters.locationFilter.options[0].id && 
-						ld.location.typeId === this.exploreData.filters.locationTypeFilter.options[0].id);
 			seriesData.push({ 
 				value: filteredLocation.yearData[this.exploreData.filters.yearFilter.options[0].id]?.value || 0,
 				suppressed: filteredLocation.yearData[this.exploreData.filters.yearFilter.options[0].id]?.suppressed,
