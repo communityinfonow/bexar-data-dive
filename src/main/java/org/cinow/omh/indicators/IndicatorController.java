@@ -2,6 +2,7 @@ package org.cinow.omh.indicators;
 
 import java.util.List;
 
+import org.cinow.omh.community.CommunityDataIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,14 @@ public class IndicatorController {
 	@GetMapping(path = "/api/indicator-menu", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<IndicatorMenu> getIndicatorMenu() {
 		return ResponseEntity.ok(this.indicatorService.buildIndicatorMenu());
+	}
+
+	/**
+	 * @return the featured indicator
+	 */
+	@GetMapping(path = "/api/bexar-data-facts", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<CommunityDataIndicator>> getBexarDataFacts() {
+		return ResponseEntity.ok(this.indicatorService.getBexarDataFacts());
 	}
 
 	/**

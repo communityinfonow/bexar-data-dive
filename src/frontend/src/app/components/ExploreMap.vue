@@ -2,7 +2,7 @@
 	<div class="fill-height">
 		<v-row class="no-gutters flex-wrap flex-column fill-height">
 			<explore-tools-panel 
-				v-if="filters"
+				v-if="filters && filterSelections && exploreData"
 				:draw="drawMap"
 				:showHighlightFilteredLocation="true"
 				:highlightFilteredLocation="highlightFilteredLocation"

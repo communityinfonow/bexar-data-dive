@@ -187,7 +187,8 @@
     "connecting_line_1": "Connecting you to your",
     "connecting_line_2": "community data",
     "welcome_line_1": "Welcome to Bexar Data Dive, we currently have three tools to help",
-    "welcome_line_2": "you explore, visualize, and interact with data in Bexar County."
+    "welcome_line_2": "you explore, visualize, and interact with data in Bexar County.",
+    "did_you_know": "Did you know?"
   },
   "help_view": {
     "name": "Help",

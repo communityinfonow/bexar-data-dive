@@ -2,6 +2,7 @@ package org.cinow.omh.indicators;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.cinow.omh.sources.Source;
@@ -13,6 +14,9 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
+
+import liquibase.pro.packaged.f;
+import liquibase.pro.packaged.i;
 
 /**
  * {@inheritDoc}
@@ -138,15 +142,131 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 	 * {@inheritDoc}
 	 */
 	@Override
+	public List<FeaturedIndicator> getBexarDataFacts() {
+		String sql = ""
+			+ " with random_featured_indicators as ( "
+			+ " select i.id_ "
+			+ " from tbl_indicators i "
+			+ " where i.featured = true "
+			+ " and i.display = true "
+			+ " order by random() "
+			+ " limit 1 "
+			+ " ), "
+			+ " base_data as ( "
+			+ " select * from ( "
+			+ " select i.id_, i.indicator_category_id, i.indicator_type_id, "
+			+ " case when c.parent_category_id is null then i.name_en else c.name_en || ' - ' || i.name_en end as name_en, "
+			+ " case when c.parent_category_id is null then i.name_es else c.name_es || ' - ' || i.name_es end as name_es, "
+			+ " i.description_en, i.description_es, i.show_points, i.show_report, "
+			+ " s.id_ as source_id, s.name_en as source_name_en, s.name_es as source_name_es, "
+			+ " round(iv.indicator_value, 1) as indicator_value, round(iv.moe_low, 1) as moe_low, round(iv.moe_high, 1) as moe_high, iv.suppress, iv.year_, "
+			+ " rank() over (partition by i.id_ order by iv.year_ desc) as rank, "
+			+ " null as race_en, null as race_es, null as age_en, null as age_es, null as sex_en, null as sex_es, null as income_en, null as income_es, null as education_en, null as education_es "
+			+ " from random_featured_indicators rfi "
+			+ " join tbl_indicators i on i.id_ = rfi.id_ "
+			+ " join tbl_indicator_categories c on i.indicator_category_id = c.id_ "
+			+ " join tbl_sources s on s.id_ = i.source_id "
+			+ " join tbl_indicator_values iv on iv.indicator_id = i.id_ "
+			+ " and iv.location_type_id = 1 and iv.location_id = '48029' "
+			+ " and iv.race_id is null and iv.sex_id is null and iv.age_id is null and iv.income_id is null and iv.education_id is null "
+			+ " ) ranked "
+			+ " where rank = 1 "
+			+ " ), "
+			+ " filtered_data as ( "
+			+ " select * from ( "
+			+ " select i.id_, i.indicator_category_id, i.indicator_type_id, "
+			+ " case when c.parent_category_id is null then i.name_en else c.name_en || ' - ' || i.name_en end as name_en, "
+			+ " case when c.parent_category_id is null then i.name_es else c.name_es || ' - ' || i.name_es end as name_es, "
+			+ " i.description_en, i.description_es, i.show_points, i.show_report, "
+			+ " s.id_ as source_id, s.name_en as source_name_en, s.name_es as source_name_es, "
+			+ " round(iv.indicator_value, 1) as indicator_value, round(iv.moe_low, 1) as moe_low, round(iv.moe_high, 1) as moe_high, iv.suppress, iv.year_, "
+			+ " rank() over (partition by i.id_ order by iv.year_ desc) as rank, "
+			+ " r.name_en as race_en, r.name_es as race_es, a.name_en as age_en, a.name_es as age_es, x.name_en as sex_en, x.name_es as sex_es, n.name_en as income_en, n.name_es as income_es, e.name_en as education_en, e.name_es as education_es"
+			+ " from random_featured_indicators rfi "
+			+ " join tbl_indicators i on i.id_ = rfi.id_ "
+			+ " join tbl_indicator_categories c on i.indicator_category_id = c.id_ "
+			+ " join tbl_sources s on s.id_ = i.source_id "
+			+ " join tbl_indicator_values iv on iv.indicator_id = i.id_ "
+			+ " and iv.location_type_id = 1 and iv.location_id = '48029' "
+			+ " and not (iv.race_id is null and iv.sex_id is null and iv.age_id is null and iv.income_id is null and iv.education_id is null) "
+			+ " left join tbl_filter_options r on r.type_id = 1 and  r.id_ = iv.race_id "
+			+ " left join tbl_filter_options a on a.type_id = 2 and a.id_ = iv.age_id "
+			+ " left join tbl_filter_options x on x.type_id = 3 and x.id_ = iv.sex_id "
+			+ " left join tbl_filter_options n on n.type_id = 5 and n.id_ = iv.income_id "
+			+ " left join tbl_filter_options e on e.type_id = 4 and e.id_ = iv.education_id "
+			+ " ) ranked "
+			+ " where rank = 1 "
+			+ " order by random() "
+			+ " limit 2 "
+			+ " ) "
+			+ " select * from base_data "
+			+ " union all "
+			+ " select * from filtered_data ";
+
+		return this.jdbcTemplate.query(sql, new ResultSetExtractor<List<FeaturedIndicator>>() {
+			@Override
+			public List<FeaturedIndicator> extractData(ResultSet rs) throws SQLException, DataAccessException {
+				List<FeaturedIndicator> featuredIndicators = new ArrayList<>();
+				while (rs.next()) {
+					FeaturedIndicator filteredIndicator = new FeaturedIndicator();
+					filteredIndicator.setId(rs.getString("id_"));
+					filteredIndicator.setCategoryId(rs.getString("indicator_category_id"));
+					filteredIndicator.setTypeId(rs.getString("indicator_type_id"));
+					filteredIndicator.setName_en(rs.getString("name_en"));
+					filteredIndicator.setName_es(rs.getString("name_es"));
+					filteredIndicator.setDescription_en(rs.getString("description_en"));
+					filteredIndicator.setDescription_es(rs.getString("description_es"));
+					filteredIndicator.setShowPoints(rs.getBoolean("show_points"));
+					filteredIndicator.setShowReport(rs.getBoolean("show_report"));
+					filteredIndicator.setSource(new Source());
+					filteredIndicator.getSource().setId(rs.getString("source_id"));
+					filteredIndicator.getSource().setName_en(rs.getString("source_name_en"));
+					filteredIndicator.getSource().setName_es(rs.getString("source_name_es"));
+					filteredIndicator.setValue(rs.getBigDecimal("indicator_value"));
+					filteredIndicator.setMoeLow(rs.getBigDecimal("moe_low"));
+					filteredIndicator.setMoeHigh(rs.getBigDecimal("moe_high"));
+					filteredIndicator.setSuppressed(rs.getBoolean("suppress"));
+					filteredIndicator.setYear(rs.getString("year_"));
+					filteredIndicator.setRace_en(rs.getString("race_en"));
+					filteredIndicator.setRace_es(rs.getString("race_es"));
+					filteredIndicator.setAge_en(rs.getString("age_en"));
+					filteredIndicator.setAge_es(rs.getString("age_es"));
+					filteredIndicator.setSex_en(rs.getString("sex_en"));
+					filteredIndicator.setSex_es(rs.getString("sex_es"));
+					filteredIndicator.setIncome_en(rs.getString("income_en"));
+					filteredIndicator.setIncome_es(rs.getString("income_es"));
+					filteredIndicator.setEducation_en(rs.getString("education_en"));
+					filteredIndicator.setEducation_es(rs.getString("education_es"));
+					featuredIndicators.add(filteredIndicator);
+				}
+
+				return featuredIndicators;
+			}
+
+		});
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public List<Indicator> getFeaturedIndicators() {
 		String sql = ""
+			+ " select * from ( "
 			+ " select i.id_, i.indicator_category_id, i.indicator_type_id, "
-			+ "   i.name_en, i.name_es, i.description_en, i.description_es, i.show_points, i.show_report, "
+			+ "   case when c.parent_category_id is null then i.name_en else c.name_en || ' - ' || i.name_en end as name_en, "
+			+ "   case when c.parent_category_id is null then i.name_es else c.name_es || ' - ' || i.name_es end as name_es, "
+			+ "   i.description_en, i.description_es, i.show_points, i.show_report, "
 			+ "   s.id_ as source_id, s.name_en as source_name_en, s.name_es as source_name_es "
 			+ " from tbl_indicators i "
+			+ "   join tbl_indicator_categories c on i.indicator_category_id = c.id_ "
 			+ "   join tbl_sources s on s.id_ = i.source_id "
+			+ "   join mv_indicator_metadata im on i.id_ = im.indicator_id and location_type_id = 1 and im.has_data = true "
 			+ " where i.featured = true "
-			+ "   and i.display = true ";
+			+ "   and i.display = true "
+			+ " ) ranked "
+			+ " order by random() "
+			+ " limit 3";
 		
 		return this.jdbcTemplate.query(sql, new RowMapper<Indicator>() {
 			@Override
@@ -165,7 +285,7 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 				indicator.getSource().setId(rs.getString("source_id"));
 				indicator.getSource().setName_en(rs.getString("source_name_en"));
 				indicator.getSource().setName_es(rs.getString("source_name_es"));
-
+				
 				return indicator;
 			}
 		});

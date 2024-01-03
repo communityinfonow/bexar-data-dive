@@ -5,6 +5,9 @@ export function getCategoryIconPath(categoryId) {
 	  case '2':
 		return '/img/icon_data_criminal_justice.svg';
 	  case '3':
+	  case '9':
+	  case '10':
+	  case '11':
 		return '/img/icon_data_demographic.svg';
 	  case '4':
 		return '/img/icon_data_economic.svg'

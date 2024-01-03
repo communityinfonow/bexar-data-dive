@@ -47,7 +47,7 @@ export default {
 	computed: {
 		...mapState(['locale', 'exploreData', 'dockedTooltip']),
 		filteredLocation() {
-			return this.exploreData?.filters.locationFilter.options[0]['name_' + this.locale]
+			return this.exploreData?.filters.locationFilter.options[0] ? this.exploreData?.filters.locationFilter.options[0]['name_' + this.locale] : ''
 		},
 		valueFormatted() {
 			if (this.dockedTooltip.suppressed) {

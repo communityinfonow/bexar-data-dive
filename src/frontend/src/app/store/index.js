@@ -17,6 +17,7 @@ export default new Vuex.Store({
     customLocationsRoute: 'custom-locations',
     locationMenu: null,
     indicatorMenu: null,
+    bexarDataFacts: null,
     featuredIndicators: null,
     community: null,
     indicator: null,
@@ -37,7 +38,8 @@ export default new Vuex.Store({
     faqs: null,
     announcements: null,
     surveySubmitted: false,
-    customLocations: []
+    customLocations: [],
+    abortController: null
   },
   getters: {
     tools: (state) => {
@@ -232,6 +234,9 @@ export default new Vuex.Store({
     SET_LOCATION_MENU(state, locationMenu) {
       state.locationMenu = locationMenu
     },
+    SET_BEXAR_DATA_FACTS(state, bexarDataFacts) {
+      state.bexarDataFacts = bexarDataFacts
+    },
     SET_FEATURED_INDICATORS(state, indicators) {
       state.featuredIndicators = indicators
     },
@@ -349,6 +354,11 @@ export default new Vuex.Store({
         context.commit('SET_LOCATION_MENU', response.data)
       })
     },
+    getBexarDataFacts(context) {
+      axios.get('/api/bexar-data-facts').then(response => {
+        context.commit('SET_BEXAR_DATA_FACTS', response.data)
+      })
+    },
     getFeaturedIndicators(context) {
       axios.get('/api/featured-indicators').then(response => {
         context.commit('SET_FEATURED_INDICATORS', response.data)
@@ -408,11 +418,17 @@ export default new Vuex.Store({
       if (!this.state.filterSelections) {
         return;
       }
+      if (this.state.abortController) {
+        this.state.abortController.abort();
+      }
+      this.state.abortController = new AbortController();
+      const signal = this.state.abortController.signal;
       axios.post('/api/explore-data', {
         indicator: context.state.indicator.id, 
         filters: this.state.filterSelections,
         comparisons: this.state.compareSelections
-      }).then(response => {
+      }, { signal }).then(response => {
+        this.state.abortController = null;
         context.commit('SET_EXPLORE_DATA', response.data)
       })
     },

@@ -15,9 +15,10 @@ public interface CommunityRepository {
 	 * @param location the location id
 	 * @param locationType the location type id
 	 * @param filterType the filter type id
+	 * @param indicatorId the indicator id (optional)
 	 * @return the data for the community
 	 */
-	List<CommunityDataCategory> getCommunityData(String location, String locationType, String filterType);
+	List<CommunityDataCategory> getCommunityData(String location, String locationType, String filterType, String indicatorId);
 
 	/**
 	 * Get the data for a custom community.

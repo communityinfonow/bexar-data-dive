@@ -38,7 +38,7 @@ public class CommunityRepositoryPostgresql implements CommunityRepository {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<CommunityDataCategory> getCommunityData(String location, String locationType, String filterType) {
+	public List<CommunityDataCategory> getCommunityData(String location, String locationType, String filterType, String indicatorId) {
 		String sql = ""
 			+ " select * "
 			+ " from ( "
@@ -53,6 +53,7 @@ public class CommunityRepositoryPostgresql implements CommunityRepository {
 			+ "   rank() over(partition by iv.indicator_id order by iv.year_ desc) "
 			+ " from tbl_indicator_categories ic "
 			+ "   join tbl_indicators i on i.indicator_category_id = ic.id_ and i.display = true "
+			+ (indicatorId == null ? "" : " and i.id_ = :indicator_id::numeric ")
 			+ "   join tbl_indicator_types it on it.id_ = i.indicator_type_id "
 			+ "   left join tbl_indicator_values iv on iv.indicator_id = i.id_ "
 			+ "     and iv.location_id = :location_id and iv.location_type_id = :location_type_id::numeric ";
@@ -80,6 +81,7 @@ public class CommunityRepositoryPostgresql implements CommunityRepository {
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
 		paramMap.addValue("location_id", location);
 		paramMap.addValue("location_type_id", locationType);
+		paramMap.addValue("indicator_id", indicatorId);
 
 		return this.namedParameterJdbcTemplate.query(sql, paramMap, new ResultSetExtractor<List<CommunityDataCategory>>() {
 			@Override
