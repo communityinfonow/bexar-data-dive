@@ -43,6 +43,11 @@ public class ExploreData {
 	 * The compare data.
 	 */
 	private List<ExploreDataLocation<ExploreDataPoint>> compareData;
+
+	/**
+	 * The trend compare data.
+	 */
+	private List<ExploreDataLocation<ExploreDataPoint>> trendCompareData;
 	
 	/**
 	 * @return the indicator
@@ -126,5 +131,19 @@ public class ExploreData {
 	 */
 	public void setCompareData(List<ExploreDataLocation<ExploreDataPoint>> compareData) {
 		this.compareData = compareData;
+	}
+
+	/**
+	 * @return the trendCompareData
+	 */
+	public List<ExploreDataLocation<ExploreDataPoint>> getTrendCompareData() {
+		return trendCompareData;
+	}
+
+	/**
+	 * @param trendCompareData the trendCompareData to set
+	 */
+	public void setTrendCompareData(List<ExploreDataLocation<ExploreDataPoint>> trendCompareData) {
+		this.trendCompareData = trendCompareData;
 	}
 }

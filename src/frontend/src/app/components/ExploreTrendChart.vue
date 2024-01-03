@@ -8,6 +8,10 @@
 				:setLabelsOrLinesOption="setTrendLabelsOrLines"
 				dataVisualElementId="trend_chart_container"
 				dataVisualName="trend_chart"
+				:includeLocationFilterInCompareBy="false"
+				:includeYearFilterInCompareBy="false"
+				:setCompareSelections="setTrendCompareSelections"
+
 			>
 			</explore-tools-panel>
 			<v-col cols="auto" class="grow">
@@ -50,7 +54,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['locale', 'exploreData', 'compareSelections', 'trendLabelsOrLines', 'exploreTab', 'indicator', 'filterSelections']),
+		...mapState(['locale', 'exploreData', 'trendCompareSelections', 'trendLabelsOrLines', 'exploreTab', 'indicator', 'filterSelections']),
 		...mapGetters(['filters']),
 	},
 	watch: {
@@ -90,7 +94,7 @@ export default {
 		
 	},
 	methods: {
-		...mapActions(['setDockedTooltip', 'setTrendLabelsOrLines']),
+		...mapActions(['setDockedTooltip', 'setTrendLabelsOrLines', 'setTrendCompareSelections']),
 		drawChart() {
 			if (this.chart) {
 				this.chart.dispose();
@@ -98,8 +102,7 @@ export default {
 			this.chart = echarts.init(document.getElementById('trend_chart_container'), null, { renderer: 'svg'});
 			this.chart.on('mouseover', (params) => {
 				if (params.componentType === 'series') {
-					console.log(params)
-					let comparedIndicatorFilters = JSON.parse(JSON.stringify(params.data.indicatorFilters));
+					let comparedIndicatorFilters = params.data.indicatorFilters ? JSON.parse(JSON.stringify(params.data.indicatorFilters)) : null;
 					this.setDockedTooltip({
 						value: params.data.value,
 						noData: params.data.noData,
@@ -138,17 +141,9 @@ export default {
 				axisLabel: Object.assign({}, textStyle)
 			};
 			let seriesNames = [];
-			if (this.exploreData.compareData) {
-				if (this.compareSelections.type.id === 'i') {
-					seriesNames.push(this.indicator['name_' + this.locale]);
-				} else if (this.compareSelections.type.id === 'l') {
-					seriesNames.push(this.exploreData.filters.locationFilter.options[0]['name_' + this.locale]);
-				} else if (this.compareSelections.type.id === 'y') {
-					seriesNames.push(this.exploreData.filters.yearFilter.options[0]['name_' + this.locale]);
-				} else {
-					seriesNames.push(this.exploreData.filters.indicatorFilters.find(f => f.type.id === this.compareSelections.type.id).options[0]['name_' + this.locale])
-				}
-				seriesNames.push(...this.compareSelections.options.filter(o => !!o).map(o => o['name_' + this.locale]))
+			if (this.exploreData.trendCompareData) {
+				seriesNames.push(this.exploreData.filters.indicatorFilters.find(f => f.type.id === this.trendCompareSelections.type.id).options[0]['name_' + this.locale])
+				seriesNames.push(...this.trendCompareSelections.options.filter(o => !!o).map(o => o['name_' + this.locale]))
 			} else {
 				seriesNames.push('')
 			}
@@ -158,11 +153,11 @@ export default {
 						ld.location.typeId === this.exploreData.filters.locationTypeFilter.options[0].id)?.yearData
 			];
 			seriesData[0].indicatorFiltrers = this.exploreData.filters.indicatorFilters
-			if (this.exploreData.compareData) {
-				seriesData.push(...this.exploreData.compareData.map((cd, index) => {
+			if (this.exploreData.trendCompareData) {
+				seriesData.push(...this.exploreData.trendCompareData.map((cd, index) => {
 					let compareIndicatorFilters = JSON.parse(JSON.stringify(this.exploreData.filters.indicatorFilters));
-					if (!isNaN(this.compareSelections.type.id)) {
-						compareIndicatorFilters.find(f => f.type.id === this.compareSelections.type.id).options[0] = this.compareSelections.options[index];
+					if (!isNaN(this.trendCompareSelections.type.id)) {
+						compareIndicatorFilters.find(f => f.type.id === this.trendCompareSelections.type.id).options[0] = this.trendCompareSelections.options[index];
 					}
 					return {
 						...cd.yearData,
@@ -170,7 +165,6 @@ export default {
 					}
 				}))
 			}
-			console.log(seriesData)
 			option.series = []
 			let allValues = []
 			seriesData.forEach((indicatorData, index) => {
@@ -323,7 +317,7 @@ export default {
 				return value === axisMin || value === axisMax || value === 0 ? Number(value).toLocaleString() : '';
 			};
 
-			if (this.compareSelections) {
+			if (this.trendCompareSelections) {
 				option.legend = {
 					top: 0,
 					left: 'center',

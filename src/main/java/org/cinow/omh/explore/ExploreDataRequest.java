@@ -18,9 +18,14 @@ public class ExploreDataRequest {
 	private FilterRequest filters;
 
 	/**
-	 * @return the comparisons
+	 * The comparisons
 	 */
 	private CompareRequest comparisons;
+
+	/**
+	 * The trendComparisons
+	 */
+	private CompareRequest trendComparisons;
 
 	/**
 	 * @return the indicator
@@ -62,5 +67,19 @@ public class ExploreDataRequest {
 	 */
 	public void setComparisons(CompareRequest comparisons) {
 		this.comparisons = comparisons;
+	}
+
+	/**
+	 * @return the trendComparisons
+	 */
+	public CompareRequest getTrendComparisons() {
+		return trendComparisons;
+	}
+
+	/**
+	 * @param trendComparisons the trendComparisons to set
+	 */
+	public void setTrendComparisons(CompareRequest trendComparisons) {
+		this.trendComparisons = trendComparisons;
 	}
 }

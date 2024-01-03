@@ -131,8 +131,12 @@ export default {
 						name_es: "Indicador"
 				});
 			}
-			items.push(this.filters?.locationFilter.type);
-			items.push(this.filters?.yearFilter.type);
+			if (this.includeLocationFilterInCompareBy) {
+				items.push(this.filters?.locationFilter.type);
+			}
+			if (this.includeYearFilterInCompareBy) {
+				items.push(this.filters?.yearFilter.type);
+			}
 			this.filters?.indicatorFilters.forEach(filter => {
 				let setFilters = Object.entries(this.filterSelections.indicatorFilters || {})
 					.filter(e => e[1].id !== null)
@@ -171,6 +175,17 @@ export default {
 		},
 		dataVisualName: {
 			type: String
+		},
+		includeLocationFilterInCompareBy: {
+			type: Boolean,
+			default: true
+		},
+		includeYearFilterInCompareBy: {
+			type: Boolean,
+			default: true
+		},
+		setCompareSelections: {
+			type: Function
 		}
 	},
 	data() {
@@ -218,35 +233,37 @@ export default {
 		this.init()
 	},
 	methods: {
-		...mapActions(['setCompareSelections', 'setLoading']),
+		...mapActions(['setLoading']),
 		init() {
 			this.initializeCompareByItems();
-			if (router.currentRoute.query.compareBy) {
-				this.compareBy = this.compareByItems.find(i => i.id == router.currentRoute.query.compareBy);
+			let compareByParam = this.dataVisualName === 'compare_chart' ? 'compareBy' : 'trendCompareBy';
+			let compareWithParam = this.dataVisualName === 'compare_chart' ? 'compareWith' : 'trendCompareWith';
+			if (router.currentRoute.query[compareByParam]) {
+				this.compareBy = this.compareByItems.find(i => i.id == router.currentRoute.query[compareByParam]);
 				this.selectCompareBy();
-				if (router.currentRoute.query.compareBy === 'i') {
-					[].concat(router.currentRoute.query.compareWith).forEach(p => {
+				if (router.currentRoute.query[compareByParam] === 'i') {
+					[].concat(router.currentRoute.query[compareWithParam]).forEach(p => {
 						let indicator = this.compareWithItems.find(i => i.id == p && !i.filtered);
 						if (indicator) {
 							this.compareWith.push(indicator);
 						}
 					});
-				} else if (router.currentRoute.query.compareBy === 'l') {
-					[].concat(router.currentRoute.query.compareWith).forEach(p => {
+				} else if (router.currentRoute.query[compareByParam] === 'l') {
+					[].concat(router.currentRoute.query[compareWithParam]).forEach(p => {
 						let location = this.compareWithItems.find(i => i.typeId == p.split("_")[0] && i.id == p.split("_")[1] && !i.filtered);
 						if (location) {
 							this.compareWith.push(location);
 						}
 					});
-				} else if (router.currentRoute.query.compareBy === 'y') {
-					[].concat(router.currentRoute.query.compareWith).forEach(p => {
+				} else if (router.currentRoute.query[compareByParam] === 'y') {
+					[].concat(router.currentRoute.query[compareWithParam]).forEach(p => {
 						let year = this.compareWithItems.find(i => i.id == p && !i.filtered);
 						if (year) {
 							this.compareWith.push(year);
 						}
 					});
 				} else {
-					[].concat(router.currentRoute.query.compareWith).forEach(p => {
+					[].concat(router.currentRoute.query[compareWithParam]).forEach(p => {
 						let item = this.compareWithItems.find(i => i.id == p && !i.filtered);
 						if (item) {
 							this.compareWith.push(item);
@@ -267,8 +284,12 @@ export default {
 						name_es: "Indicador"
 				});
 			}
-			this.compareByItems.push(this.filters?.locationFilter.type);
-			this.compareByItems.push(this.filters?.yearFilter.type);
+			if (this.includeLocationFilterInCompareBy) {
+				this.compareByItems.push(this.filters?.locationFilter.type);
+			}
+			if (this.includeYearFilterInCompareBy) {
+				this.compareByItems.push(this.filters?.yearFilter.type);
+			}
 			this.filters?.indicatorFilters.forEach(filter => {
 				this.compareByItems.push(filter.type)
 			});
@@ -338,7 +359,7 @@ export default {
 		},
 		applyComparison() { 
 			this.validateComparison();
-			if (this.valid) {
+			if (this.valid && this.setCompareSelections) {
 				this.setCompareSelections(this.getComparison());
 			}
 		},

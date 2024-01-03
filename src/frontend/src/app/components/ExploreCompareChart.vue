@@ -8,6 +8,7 @@
 				:setLabelsOrLinesOption="setCompareLabelsOrLines"
 				dataVisualElementId="compare_chart_container"
 				dataVisualName="compare_chart"
+				:setCompareSelections="setCompareSelections"
 			>
 			</explore-tools-panel>
 			<v-col cols="auto" class="grow">
@@ -85,7 +86,7 @@ export default {
 		}, 100);
 	},
 	methods: {
-		...mapActions(['setDockedTooltip', 'setCompareLabelsOrLines']),
+		...mapActions(['setDockedTooltip', 'setCompareLabelsOrLines', 'setCompareSelections']),
 		drawChart() {
 			let filteredLocation = this.exploreData.locationData.find(ld => 
 					ld.location.id === this.exploreData.filters.locationFilter.options[0].id && 
@@ -98,7 +99,7 @@ export default {
 			this.chart = echarts.init(document.getElementById('compare_chart_container'), null, { renderer: 'svg'});
 			this.chart.on('mouseover', (params) => {
 				if (params.componentType === 'series') {
-					let comparedIndicatorFilters = JSON.parse(JSON.stringify(params.data.indicatorFilters));
+					let comparedIndicatorFilters = params.data.indicatorFilters ? JSON.parse(JSON.stringify(params.data.indicatorFilters)) : null;
 					this.setDockedTooltip({ 
 						value: params.data.value,
 						suppressed: params.data.suppressed,

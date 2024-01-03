@@ -33,6 +33,7 @@ export default new Vuex.Store({
     exploreTab: null,
     filterSelections: null,
     compareSelections: null,
+    trendCompareSelections: null,
     tablesData: null,
     aboutData: null,
     faqs: null,
@@ -270,6 +271,9 @@ export default new Vuex.Store({
     SET_COMPARE_SELECTIONS(state, selections) {
       state.compareSelections = selections
     },
+    SET_TREND_COMPARE_SELECTIONS(state, selections) {
+      state.trendCompareSelections = selections
+    },
     SET_TABLES_DATA(state, tablesData) {
       state.tablesData = tablesData
     },
@@ -426,7 +430,8 @@ export default new Vuex.Store({
       axios.post('/api/explore-data', {
         indicator: context.state.indicator.id, 
         filters: this.state.filterSelections,
-        comparisons: this.state.compareSelections
+        comparisons: this.state.compareSelections,
+        trendComparisons: this.state.trendCompareSelections
       }, { signal }).then(response => {
         this.state.abortController = null;
         context.commit('SET_EXPLORE_DATA', response.data)
@@ -470,6 +475,25 @@ export default new Vuex.Store({
         ...router.currentRoute.query,
         compareBy: selections.type.id,
         compareWith: compareWiths
+
+      };
+      if (JSON.stringify(compareQuery) !== JSON.stringify(router.currentRoute.query)) {
+        router.replace({
+          query: compareQuery
+        });
+      }
+      context.dispatch('getExploreData');
+    },
+    setTrendCompareSelections(context, selections) {
+      context.commit('SET_TREND_COMPARE_SELECTIONS', selections);
+      let compareWiths = selections.options.filter(o => !!o).map(o => (o.typeId ? o.typeId + "_" : "") + o.id)
+      if (compareWiths.length === 1) {
+        compareWiths = compareWiths[0]
+      }
+      let compareQuery = {
+        ...router.currentRoute.query,
+        trendCompareBy: selections.type.id,
+        trendCompareWith: compareWiths
 
       };
       if (JSON.stringify(compareQuery) !== JSON.stringify(router.currentRoute.query)) {
