@@ -33,6 +33,13 @@ public interface IndicatorRepository {
 	Indicator getIndicator(String id);
 
 	/**
+	 * Gets a featured indicator for Bexar Data Facts
+	 * 
+	 * @return a featured indicator
+	 */
+	List<FeaturedIndicator> getBexarDataFacts();
+
+	/**
 	 * Gets featured indicators.
 	 * 
 	 * @return the featured indicators

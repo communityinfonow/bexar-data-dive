@@ -2,7 +2,7 @@
 	<div class="fill-height">
 		<v-row class="no-gutters flex-wrap flex-column fill-height">
 			<explore-tools-panel 
-				v-if="filters"
+				v-if="filters && filterSelections && exploreData"
 				:showCompareOptions="true"
 				:labelsOrLinesOption="trendLabelsOrLines"
 				:setLabelsOrLinesOption="setTrendLabelsOrLines"
@@ -50,7 +50,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['locale', 'exploreData', 'compareSelections', 'trendLabelsOrLines', 'exploreTab', 'indicator']),
+		...mapState(['locale', 'exploreData', 'compareSelections', 'trendLabelsOrLines', 'exploreTab', 'indicator', 'filterSelections']),
 		...mapGetters(['filters']),
 	},
 	watch: {

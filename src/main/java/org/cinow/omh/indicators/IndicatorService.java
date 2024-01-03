@@ -1,9 +1,15 @@
 package org.cinow.omh.indicators;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.cinow.omh.community.CommunityDataIndicator;
+import org.cinow.omh.community.CommunityRepository;
+import org.cinow.omh.filters.FilterRepository;
+import org.cinow.omh.filters.IndicatorFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 
 /**
  * Service class for indicators.
@@ -18,6 +24,12 @@ public class IndicatorService {
 	 */
 	@Autowired
 	private IndicatorRepository indicatorRepository;
+
+	@Autowired
+	private FilterRepository filterRepository;
+
+	@Autowired
+	private CommunityRepository communityRepository;
 	
 	/**
 	 * Builds the indicator menu.
@@ -59,6 +71,37 @@ public class IndicatorService {
 		});
 
 		return indicatorMenu;
+	}
+
+	/**
+	 * Gets the Bexar Data Facts
+	 * 
+	 * @return the Bezar Data Facts
+	 */
+	public List<CommunityDataIndicator> getBexarDataFacts() {
+		List<CommunityDataIndicator> data = new ArrayList<>();
+		// first, find one random featured indicator
+		Indicator indicator = this.indicatorRepository.getFeaturedIndicators().get(0);
+
+		// then, find the available disaggregations for that indicator
+		List<IndicatorFilter> filters = this.filterRepository.getIndicatorFilters(indicator.getId());
+		
+		// then, find the community data for that indicator for each disaggregation for bexar county
+		// if there are no disaggregations, just get the data for bexar county (look for data by race)
+		if (filters.size() == 0) {
+			CommunityDataIndicator i = this.communityRepository.getCommunityData("48029", "1", "1", indicator.getId())
+				.get(0).getIndicators().get(0);
+			data.add(i);
+		}
+		filters.forEach(f -> {
+			CommunityDataIndicator i = this.communityRepository.getCommunityData("48029", "1", f.getType().getId(), indicator.getId())
+				.get(0).getIndicators().get(0);
+			i.setFilterType(f.getType());
+			data.add(i);
+		});
+
+
+		return data;
 	}
 
 	/**

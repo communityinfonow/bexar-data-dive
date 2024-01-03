@@ -33,7 +33,7 @@ public class CommunityController {
 	public ResponseEntity<CommunityData> getCommunityData(
 			@RequestParam String location, @RequestParam String locationType, String filterType) {
 		
-		return ResponseEntity.ok(this.communityService.getCommunityData(location, locationType, filterType));
+		return ResponseEntity.ok(this.communityService.getCommunityData(location, locationType, filterType, null));
 	}
 
 	/**

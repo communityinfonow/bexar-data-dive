@@ -2,7 +2,7 @@
 	<div 
 		:ref="'chart_container_' + this.indicatorId" 
 		:id="'chart_container_' + this.indicatorId" 
-		:style="{ width: '100%', height: '400px' }"
+		:style="{ width: '100%', height: orientation === 'vertical' ? '400px' : '600px' }"
 	>
 	</div>
 </template>
@@ -39,6 +39,10 @@ export default {
 		},
 		labelsOrLines: {
 			type: String
+		},
+		orientation: {
+			type: String,
+			default: 'vertical'
 		}
 	},
 	data() {
@@ -81,8 +85,10 @@ export default {
 				fontSize: this.smallScreen ? '14px' : '16px'
 			};
 			let option = {};
-			option.grid = { left: 40, right: 20, containLabel: true };
-			option.yAxis = { 
+			option.grid = { left: 40, right: 200, containLabel: true };
+			let valueAxis = this.orientation === 'vertical' ? 'yAxis' : 'xAxis';
+			let categoryAxis = this.orientation === 'vertical' ? 'xAxis' : 'yAxis';
+			option[valueAxis] = { 
 				type: 'value', 
 				splitLine: { show: false },
 				splitNumber: 1,
@@ -92,7 +98,7 @@ export default {
 			if (xAxisData.length < this.maxDemographics) {
 				xAxisData = xAxisData.concat(...Array.from(Array(this.maxDemographics - xAxisData.length))).map(d => d || '')
 			}
-			option.xAxis = [{ 
+			option[categoryAxis] = [{ 
 				type: 'category', 
 				data: xAxisData,
 				axisTick: { show: false },
@@ -100,6 +106,9 @@ export default {
 			}];
 			option.textStyle = textStyle;
 			option.color = '#3b5a98';
+			if (this.orientation === 'horizontal') {
+				option.grid.left = 100;
+			}
 			option.series = [];
 			
 			let series = [
@@ -109,11 +118,11 @@ export default {
 					emphasis: {
 						disabled: true
 					},
-					barWidth: '120px',
+					barWidth: this.orientation === 'vertical' ? '120px' : '40px',
 					label: { 
 						//show: this.labelsOrLines === 'labels', 
 						show: true,
-						position: 'top',
+						position: this.orientation === 'vertical' ? 'top' : 'right',
 						formatter: (o) => {
 							if (o.data.suppressed) {
 								return '{a|' + i18n.t('data.suppressed') + '}';
@@ -135,14 +144,14 @@ export default {
 						},
 						rich: { 
 							a: {
-								align: 'center',
+								align: this.orientation === 'vertical' ? 'center' : 'left',
 								fontSize: this.smallScreen ? '12px' : '16px',
 								fontWeight: 'bold',
 								lineHeight: '20',
 								color: '#333333'
 							},
 							b: {
-								align: 'center',
+								align: this.orientation === 'vertical' ? 'center' : 'left',
 								fontSize: this.smallScreen ? '10px' : '14px',
 								lineHeight: '16',
 								color: '#666666'
@@ -194,9 +203,9 @@ export default {
 			}
 			let axisMax = Math.ceil(maxValue / rounder) * rounder;
 			let axisMin = Math.floor(minValue / rounder) * rounder;
-			option.yAxis.max = axisMax;
-			option.yAxis.min = axisMin;
-			option.yAxis.axisLabel.formatter = (value) => {
+			option[valueAxis].max = axisMax;
+			option[valueAxis].min = axisMin;
+			option[valueAxis].axisLabel.formatter = (value) => {
 				return value === axisMin || value === axisMax || value === 0 ? value : ''	;
 			};
 			this.chart.setOption(option);

@@ -3,6 +3,7 @@ package org.cinow.omh.community;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.cinow.omh.filters.FilterType;
 import org.cinow.omh.indicators.Indicator;
 import org.cinow.omh.indicators.IndicatorType;
 import org.cinow.omh.sources.Source;
@@ -38,6 +39,11 @@ public class CommunityDataIndicator {
 	 * The individual indicator data points.
 	 */
 	private List<CommunityDataPoint> demographicData;
+
+	/**
+	 * The filter type.
+	 */
+	private FilterType filterType;
 
 	/**
 	 * Constructor initializes fields.
@@ -115,4 +121,14 @@ public class CommunityDataIndicator {
 	public void setDemographicData(List<CommunityDataPoint> demographicData) {
 		this.demographicData = demographicData;
 	}
+
+	public FilterType getFilterType() {
+		return filterType;
+	}
+
+	public void setFilterType(FilterType filterType) {
+		this.filterType = filterType;
+	}
+
+	
 }
