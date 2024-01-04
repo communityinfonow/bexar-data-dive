@@ -409,8 +409,30 @@ export default {
 						+ year + ','
 						+ this.filters.indicatorFilters.map(f => '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"').join(',') + ','
 						+ (values.suppressed ? i18n.t('data.suppressed') : values.value === null ? i18n.t('data.no_data') : values.value) + ','
-            			+ (values.moeLow || values.moeHigh ? (values.moeLow + ' - ' + values.moeHigh) : '');
+						+ (values.moeLow || values.moeHigh ? (values.moeLow + ' - ' + values.moeHigh) : '');
 				})
+				if (this.exploreData?.trendCompareData) {
+					this.exploreData.trendCompareData?.forEach((comp, index) => {
+						csv += Object.entries(comp.yearData).map(([year, values]) => {
+							return '\n'
+								+ '"' + ((this.exploreData.category ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.exploreData.indicator['name_' + this.locale]) + '",'
+								+ '"' + this.exploreData.source['name_' + this.locale] + '",'
+								+ '"' + data.location.id + '",'
+								+ '"' + data.locationType['name_' + this.locale] + '",'
+								+ '"' + data.location['name_' + this.locale] + '",'
+								+ year + ','
+								+ this.filters.indicatorFilters.map(f => {
+									if (f.type.id === this.compareBy?.id) {
+										return '"' + this.compareWith[index]['name_' + this.locale] + '"'; 
+									} else {
+										return '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"';
+									}
+								}).join(',') + ','
+								+ (values.suppressed ? i18n.t('data.suppressed') : values.value === null ? i18n.t('data.no_data') : values.value) + ','
+								+ (values.moeLow || values.moeHigh ? (values.moeLow + ' - ' + values.moeHigh) : '');
+						})	
+					});
+				} 
 			} else if (this.dataVisualName === 'compare_chart') {
 				fileName = 'explore_compare_data.csv';
 				let data = this.exploreData.locationData.find(data => data.location.id === this.filterSelections.location);

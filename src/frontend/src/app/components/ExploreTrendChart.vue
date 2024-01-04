@@ -148,9 +148,9 @@ export default {
 				seriesNames.push('')
 			}
 			//option.color = '#3b5a98';
-			let seriesData = [this.exploreData.locationData.find(ld => 
+			let seriesData = [Object.assign({}, this.exploreData.locationData.find(ld => 
 						ld.location.id === this.exploreData.filters.locationFilter.options[0].id && 
-						ld.location.typeId === this.exploreData.filters.locationTypeFilter.options[0].id)?.yearData
+						ld.location.typeId === this.exploreData.filters.locationTypeFilter.options[0].id)?.yearData)
 			];
 			seriesData[0].indicatorFiltrers = this.exploreData.filters.indicatorFilters
 			if (this.exploreData.trendCompareData) {
@@ -262,6 +262,7 @@ export default {
 				})
 				if (this.trendLabelsOrLines === 'lines' && index === 0) {
 					option.series.push({
+						name: seriesNames[index] + '_moe_low',
 						data: trendYears
 							.map(ty => {
 								let yd = indicatorData[ty]; 
@@ -281,6 +282,7 @@ export default {
 
 					});
 					option.series.push({
+						name: seriesNames[index] + '_moe_high',
 						data: trendYears
 							.map(ty => {
 								let yd = indicatorData[ty]; 
@@ -333,7 +335,7 @@ export default {
 					formatter: (params) => {
 						let rows = [params[0].name]
 						params.forEach(p => {
-							if (p.seriesType === 'line') {
+							if (p.seriesType === 'line' && p.seriesName.indexOf('_moe_') === -1) {
 								rows.push(p.marker + p.seriesName + ': ' + format(this.exploreData.indicator.typeId, p.value))
 							}
 						});
