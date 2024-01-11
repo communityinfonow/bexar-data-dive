@@ -2,7 +2,7 @@
 	<div class="fill-height">
 		<v-row class="no-gutters flex-wrap flex-column fill-height">
 			<explore-tools-panel 
-				v-if="filters && filterSelections && exploreData"
+				v-if="filters && filterSelections && exploreData && layout !== 'dashboard'"
 				:showCompareOptions="true"
 				:labelsOrLinesOption="compareLabelsOrLines"
 				:setLabelsOrLinesOption="setCompareLabelsOrLines"
@@ -37,6 +37,12 @@ export default {
 	name: 'ExploreCompareChart',
 	components: {
 		ExploreToolsPanel
+	},
+	props: {
+		layout: {
+			type: String,
+			default: 'tabs'
+		}
 	},
 	data() {
 		return {

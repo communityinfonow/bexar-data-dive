@@ -2,7 +2,7 @@
 	<div class="fill-height">
 		<v-row class="no-gutters flex-wrap flex-column fill-height">
 			<explore-tools-panel 
-				v-if="filters && filterSelections && exploreData"
+				v-if="filters && filterSelections && exploreData && layout !== 'dashboard'"
 				:showCompareOptions="true"
 				:labelsOrLinesOption="trendLabelsOrLines"
 				:setLabelsOrLinesOption="setTrendLabelsOrLines"
@@ -46,6 +46,10 @@ export default {
 		tab: {
 			type: String,
 		},
+		layout: {
+			type: String,
+			default: 'tabs'
+		}
 	},
 	data() {
 		return {

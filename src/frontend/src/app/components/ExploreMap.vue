@@ -2,7 +2,7 @@
 	<div class="fill-height">
 		<v-row class="no-gutters flex-wrap flex-column fill-height">
 			<explore-tools-panel 
-				v-if="filters && filterSelections && exploreData"
+				v-if="filters && filterSelections && exploreData && layout !== 'dashboard'"
 				:draw="drawMap"
 				:showHighlightFilteredLocation="true"
 				:highlightFilteredLocation="highlightFilteredLocation"
@@ -271,6 +271,12 @@ export default {
 		LGeoJson,
 		LControl,
 		ExploreToolsPanel
+	},
+	props: {
+		layout: {
+			type: String,
+			default: 'tabs'
+		}
 	},
 	data() {
 		return {

@@ -18,6 +18,13 @@
               <indicator-definition :indicator="indicator"></indicator-definition>
             </h1>
             <h2 v-if="source" class="text-subtitle-1 mb-2">{{ source['name_' + locale] }}</h2>
+            <div class="v-input v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select mt-8">
+              <label aria-label id="layoutToggleLabel" class="v-label v-label--active theme--light white--text" style="left: 0px; right: auto; position: absolute;">{{ $t('tools.explore.layouts.layout') }}</label>
+              <v-btn-toggle v-model="layout" id="layoutToggle" aria-labelledby="layoutToggleLabel" rounded>
+                <v-btn :value="'tabs'" color="red" dark small><v-icon color="white" class="mr-2">mdi-tab</v-icon>{{ $t('tools.explore.layouts.tabs') }}</v-btn>
+                <v-btn :value="'dashboard'" color="red" dark small><v-icon color="white" class="mr-2">mdi-view-dashboard</v-icon>{{ $t('tools.explore.layouts.dashboard') }}</v-btn>
+              </v-btn-toggle>
+            </div>
           </div>
           <div v-if="showIntro" class="font-weight-medium mt-2" style="font-size: 1.25rem;">
             {{ $t('tools.explore.headline') }}
@@ -62,20 +69,27 @@
         <v-row class="fill-height no-gutters mt-4">
           <v-col cols="3">
             <v-row class="fill-height no-gutters flex-column px-4">
+              <div class="d-flex align-center">
+                <label aria-label id="layoutLabel" class="v-label v-label--active theme--light mr-4">{{ $t('tools.explore.layouts.layout') }}</label>
+                <v-btn-toggle v-model="layout" class="my-2" color="red" mandatory aria-labelledby="layoutLabel" rounded>
+                  <v-btn :value="'tabs'" color="red" dark small><v-icon color="white" class="mr-2">mdi-tab</v-icon>{{ $t('tools.explore.layouts.tabs') }}</v-btn>
+                  <v-btn :value="'dashboard'" color="red" dark small><v-icon color="white" class="mr-2">mdi-view-dashboard</v-icon>{{ $t('tools.explore.layouts.dashboard') }}</v-btn>
+                </v-btn-toggle>
+              </div>
               <filters-panel></filters-panel>
               <docked-tooltip class="grow" :helpMessage="dockedTooltipHelpMessage" :activeTab="tab"></docked-tooltip>
             </v-row>
           </v-col>
           <v-col cols="9" class="px-4">
             <v-row class="fill-height no-gutters flex-column">
-              <v-col cols="auto" class="shrink">
+              <v-col  v-if="layout === 'tabs'" cols="auto" class="shrink">
                 <v-tabs v-model="tab" grow color="red">
                   <v-tab v-for="tab in tabs" :key="tab" @click="selectTab(tab)">
                     {{ $t('tools.explore.tabs.' + tab + '.name') }}
                   </v-tab>
                 </v-tabs>
               </v-col>
-              <v-col cols="auto" class="grow">
+              <v-col  v-if="layout === 'tabs'" cols="auto" class="grow">
                 <v-tabs-items v-model="tab" class="fill-height">
                   <v-tab-item v-for="tab in tabs" :key="tab" transition="none" reverse-transition="none" class="fill-height">
                     <explore-map v-if="tab === 'map'"></explore-map>
@@ -83,6 +97,23 @@
                     <explore-compare-chart v-if="tab === 'compare'"></explore-compare-chart>
                   </v-tab-item>
                 </v-tabs-items>
+              </v-col>
+              <v-col v-if="layout === 'dashboard'" cols="auto" class="explore-content">
+                <v-row class="fill-height no-gutters">
+                  <v-col cols="5" style="height: 100%;">
+                    <v-sheet outlined class="pa-4" style="width: 100%; height: 100%;">
+                      <explore-map :layout="layout"></explore-map>
+                    </v-sheet>
+                  </v-col>
+                  <v-col cols="7">
+                    <v-sheet outlined class="pa-4" style="width: 100%; height: 50%;">
+                      <explore-trend-chart :layout="layout"></explore-trend-chart>
+                    </v-sheet>
+                    <v-sheet outlined class="pa-4" style="width: 100%; height: 50%;">
+                      <explore-compare-chart :layout="layout"></explore-compare-chart>
+                    </v-sheet>
+                  </v-col>
+                </v-row>
               </v-col>
             </v-row>
           </v-col>
@@ -120,7 +151,8 @@ export default {
   data() {
     return {
       tabs: ['map', 'trend', 'compare'],
-      tab: null
+      tab: null,
+      layout: 'tabs'
     }
   },
   computed: {
