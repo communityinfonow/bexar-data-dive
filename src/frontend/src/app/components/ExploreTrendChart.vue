@@ -260,7 +260,7 @@ export default {
 						}
 					}
 				})
-				if (this.trendLabelsOrLines === 'lines' && index === 0) {
+				if (this.trendLabelsOrLines === 'lines') {
 					option.series.push({
 						name: seriesNames[index] + '_moe_low',
 						data: trendYears
@@ -275,7 +275,7 @@ export default {
 								};
 							}),
 						type: 'line',
-						stack: 'moe',
+						stack: seriesNames[index] + '_moe',
 						lineStyle: { opacity: 0 },
 						itemStyle: { opacity: 0 },
 						areaStyle: { opacity: 0 }
@@ -295,11 +295,11 @@ export default {
 								};
 							}),
 						type: 'line',
-						stack: 'moe',
+						stack: seriesNames[index] + '_moe',
 						lineStyle: { opacity: 0 },
 						itemStyle: { opacity: 0 },
 						areaStyle: { opacity: 0.25 },
-						color: '#b8237e'
+						color: this.seriesColors[index]
 					});
 				}
 			})
@@ -336,7 +336,13 @@ export default {
 						let rows = [params[0].name]
 						params.forEach(p => {
 							if (p.seriesType === 'line' && p.seriesName.indexOf('_moe_') === -1) {
-								rows.push(p.marker + p.seriesName + ': ' + format(this.exploreData.indicator.typeId, p.value))
+								let row = ''
+								row += '<span>' + p.marker + p.seriesName + ': ' + format(this.exploreData.indicator.typeId, p.value) + '</span>'
+								if (p.data.moeLow) {
+									row += '<span class="ml-3 text-subtitle-2 font-weight-light">' + i18n.t('data.moe_range') + ': ' + format(this.exploreData.indicator.typeId, p.data.moeLow)
+									row += ' - ' + format(this.exploreData.indicator.typeId, p.data.moeHigh) + '</span>'
+								}
+								rows.push(row)
 							}
 						});
 						return rows.join('<br/>');
