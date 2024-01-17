@@ -342,7 +342,7 @@ export default {
 							if (p.seriesType === 'line' && p.seriesName.indexOf('_moe_') === -1) {
 								let row = ''
 								row += '<span>' + p.marker + p.seriesName + ': ' + format(this.exploreData.indicator.typeId, p.value) + '</span>'
-								if (p.data.moeLow) {
+								if (p.data.moeLow || p.data.moeHigh) {
 									row += '<span class="ml-3 text-subtitle-2 font-weight-light">' + i18n.t('data.moe_range') + ': ' + format(this.exploreData.indicator.typeId, p.data.moeLow)
 									row += ' - ' + format(this.exploreData.indicator.typeId, p.data.moeHigh) + '</span>'
 								}
