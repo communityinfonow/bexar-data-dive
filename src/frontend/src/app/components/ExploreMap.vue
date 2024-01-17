@@ -2,7 +2,7 @@
 	<div class="fill-height">
 		<v-row class="no-gutters flex-wrap flex-column fill-height">
 			<explore-tools-panel 
-				v-if="filters && filterSelections && exploreData && layout !== 'dashboard'"
+				v-if="filters && filterSelections && exploreData && layout !== 'gallery'"
 				:draw="drawMap"
 				:showHighlightFilteredLocation="true"
 				:highlightFilteredLocation="highlightFilteredLocation"
@@ -105,7 +105,7 @@
 					<l-control
 						position="bottomright"
 						class="layer-control d-flex flex-column"
-						v-if="layers && layers.length"
+						v-if="layout === 'tabs' && layers && layers.length"
 					>
 						<v-expansion-panels accordion class="report-control">
 							<v-expansion-panel v-if="indicator.showReport">
@@ -176,7 +176,7 @@
 											color="green"
 											:value="pointType" 
 											:label="pointType['name_' + locale] + ' (' + pointType.year + ')'"
-											v-model="selectedPointTypes"
+											v-model="mapPointTypes"
 											@change="togglePointType(pointType.id)"
 											hide-details
 											class="mt-0"
@@ -228,7 +228,7 @@
 								<v-expansion-panel-content>
 									<v-radio-group
 									v-model="selectedLocationType"
-									@change="selectLocationType"
+									@change="selectLocationType(selectedLocationType)"
 									class="mt-0"
 									>
 									<v-radio 
@@ -288,15 +288,13 @@ export default {
 			filteredLocationGeojson: null,
 			refreshOptions: false,
 			selectedLocationType: null,
-			pointCollections: [],
-			selectedPointTypes: [],
-			pointsGeojson: featureCollection([]),
+			mapPointTypes: [],
 			reportData: null
 		}
 	},
 	computed: {
-		...mapState(['exploreData', 'locale', 'filterSelections', 'showMapLabels', 'highlightFilteredLocation', 'exploreTab', 'customLocations', 'indicator']),
-		...mapGetters(['locationMenu', 'filters']),
+		...mapState(['exploreData', 'locale', 'filterSelections', 'showMapLabels', 'highlightFilteredLocation', 'exploreTab', 'customLocations', 'indicator', 'pointCollections', 'selectedPointTypes', 'pointsGeojson']),
+		...mapGetters(['locationMenu', 'filters', 'pointTypes']),
 		layers() {
 			return this.filters?.locationTypeFilter?.options?.map(option => {
 				return {
@@ -369,9 +367,6 @@ export default {
 					 { value: range[1], label: format(this.exploreData.indicator.typeId, range[1]) }];
 				});
 		},
-		pointTypes() {
-			return this.pointCollections?.map(pc => pc.pointType)
-		},
 		pointScales() {
 			return this.pointCollections?.filter(pc => pc.points.some(p => p.value))
 				.map(pc => {
@@ -402,7 +397,7 @@ export default {
 		},
     	locale() {
 			this.drawMap()
-			this.pointsGeojson = featureCollection([])
+			this.setPointsGeojson(featureCollection([]))
 			this.pointTypes.forEach(pt => {
 				this.togglePointType(pt.id)
 			})
@@ -438,9 +433,12 @@ export default {
 			if (newValue.id !== oldValue?.id && newValue.showPoints && !oldValue?.showPoints) {
 				this.getPoints()
 			} else if (!newValue.showPoints) {
-				this.pointsGeojson = featureCollection([])
-				this.selectedPointTypes = []
+				this.setPointsGeojson(featureCollection([]))
+				this.setSelectedPointTypes([])
 			}
+		},
+		selectedPointTypes(newValue) {
+			this.mapPointTypes = newValue
 		}
 	},
 	mounted () {
@@ -454,6 +452,7 @@ export default {
 			}
 			if (this.indicator?.showPoints) {
 				this.getPoints()
+				this.mapPointTypes = this.selectedPointTypes
 			}
 		}, 100);
 		
@@ -466,7 +465,7 @@ export default {
 		});
 	},
 	methods: {
-		...mapActions(['setDockedTooltip', 'setFilterSelections', 'setShowMapLabels', 'setHighlightFilteredLocation']),
+		...mapActions(['setDockedTooltip', 'selectLocationType', 'setFilterSelections', 'setShowMapLabels', 'setHighlightFilteredLocation', 'setPointCollections', 'setSelectedPointTypes', 'togglePointType']),
 		initializeMap() {
 			this.mapInitialized = true;
 			if (this.exploreData) {
@@ -476,36 +475,6 @@ export default {
 		resizeHandler() {
 			if (this.exploreTab === 'map') {
 				this.$refs.exploreMap?.mapObject?.invalidateSize();
-			}
-		},
-		selectLocationType() {
-			let newFilterSelections = JSON.parse(JSON.stringify(this.filterSelections));
-			newFilterSelections.locationType = this.selectedLocationType.id;
-			newFilterSelections.location = this.filters.locationFilter.options.filter(o => o.typeId === this.selectedLocationType.id)[0].id;
-			this.setFilterSelections(newFilterSelections);
-		},
-		togglePointType(pointType) {
-			if (!this.selectedPointTypes.some(pt => pt.id === pointType)) {
-				this.pointsGeojson.features = this.pointsGeojson.features.filter(f => f.properties.typeId !== pointType);
-			} else {
-				this.pointsGeojson.features = this.pointsGeojson.features.concat(this.pointCollections
-					.find(pc => pc.pointType.id === pointType)
-					.points
-					.map(p => {
-						return {
-							type: 'Feature',
-							geometry: JSON.parse(p.geojson),
-							properties: {
-								...JSON.parse(p['featureProperties_' + this.locale]),
-								id: p.id,
-								typeId: pointType,
-								valueLabel_en: p.valueLabel_en,
-								valueLabel_es: p.valueLabel_es,
-								value: p.value
-							}
-						}
-					})
-				);
 			}
 		},
 		selectLocation(location) {
@@ -660,7 +629,10 @@ export default {
 		},
 		getPoints() {
 			axios.get('/api/points').then(response => {
-				this.pointCollections = response.data
+				this.setPointCollections(response.data)
+				for (let pointType of this.selectedPointTypes) {
+					this.togglePointType(pointType.id)
+				}
 			})
 		},
 		getReportData(location) {

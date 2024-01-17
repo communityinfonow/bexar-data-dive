@@ -62,7 +62,7 @@
       "layouts": {
         "layout": "Layout",
         "tabs": "Tabs",
-        "dashboard": "Dashboard"
+        "gallery": "Gallery"
       },
       "docked_tooltip": {
         "now_viewing": "Now Viewing",

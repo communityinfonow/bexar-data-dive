@@ -4,6 +4,7 @@ import router from '@/app/router/index'
 import i18n from '@/i18n'
 import axios from 'axios'
 import { format } from '@/services/formatter'
+import { featureCollection } from '@turf/helpers'
 
 Vue.use(Vuex)
 
@@ -40,7 +41,10 @@ export default new Vuex.Store({
     announcements: null,
     surveySubmitted: false,
     customLocations: [],
-    abortController: null
+    abortController: null,
+    pointCollections: null,
+    selectedPointTypes: [],
+    pointsGeojson: featureCollection([]),
   },
   getters: {
     tools: (state) => {
@@ -220,7 +224,10 @@ export default new Vuex.Store({
           }
         ]
       }
-    }
+    },
+    pointTypes(state) {
+			return state.pointCollections?.map(pc => pc.pointType)
+		},
   },
   mutations: {
     SET_LOADING(state, loading) {
@@ -323,6 +330,15 @@ export default new Vuex.Store({
     DELETE_CUSTOM_LOCATION(state, location) {
       state.customLocations = state.customLocations.filter(l => l.id !== location);
       localStorage.setItem('cinow-custom-locations', JSON.stringify(state.customLocations));
+    },
+    SET_POINT_COLLECTIONS(state, pointCollections) {
+      state.pointCollections = pointCollections
+    },
+    SET_SELECTED_POINT_TYPES(state, pointTypes) {
+      state.selectedPointTypes = pointTypes
+    },
+    SET_POINTS_GEOJSON(state, geojson) {
+      state.pointsGeojson = geojson
     }
   },
   actions: {
@@ -445,6 +461,12 @@ export default new Vuex.Store({
     },
     setExploreTab(context, tab) {
       context.commit('SET_EXPLORE_TAB', tab)
+    },
+    selectLocationType(context, locationType) {
+      let newFilterSelections = JSON.parse(JSON.stringify(context.state.filterSelections));
+      newFilterSelections.locationType = locationType.id;
+      newFilterSelections.location = context.state.filters.locationFilter.options.filter(o => o.typeId === locationType.id)[0].id;
+      context.dispatch('setFilterSelections', newFilterSelections);
     },
     setFilterSelections(context, selections) {
       context.commit('SET_FILTER_SELECTIONS', selections);
@@ -628,6 +650,49 @@ export default new Vuex.Store({
     },
     deleteCustomLocation(context, location) {
       context.commit('DELETE_CUSTOM_LOCATION', location)
+    },
+    setPointCollections(context, pointCollections) {
+      context.commit('SET_POINT_COLLECTIONS', pointCollections)
+    },
+    setSelectedPointTypes(context, pointTypes) {
+      context.commit('SET_SELECTED_POINT_TYPES', pointTypes)
+    },
+    setPointsGeojson(context, geojson) {
+      context.commit('SET_POINTS_GEOJSON', geojson)
+    },
+    togglePointType(context, data) {
+      let pointType = data;
+      if (data.length) {
+        //FIXME: map passes in single ID, but panel passes in full selected array of objects...
+      }
+      console.log(pointType)
+      if (!context.state.selectedPointTypes.some(pt => pt.id === pointType)) {
+        let pointTypes = context.state.selectedPointTypes;
+        pointTypes.push(context.state.pointCollections.find(pc => pc.pointType.id === pointType).pointType);
+        context.commit('SET_SELECTED_POINT_TYPES', pointTypes)
+			}
+			if (!context.state.selectedPointTypes.some(pt => pt.id === pointType)) {
+				context.state.pointsGeojson.features = context.state.pointsGeojson.features.filter(f => f.properties.typeId !== pointType);
+			} else {
+				context.state.pointsGeojson.features = context.state.pointsGeojson.features.concat(context.state.pointCollections
+					.find(pc => pc.pointType.id === pointType)
+					.points
+					.map(p => {
+						return {
+							type: 'Feature',
+							geometry: JSON.parse(p.geojson),
+							properties: {
+								...JSON.parse(p['featureProperties_' + context.state.locale]),
+								id: p.id,
+								typeId: pointType,
+								valueLabel_en: p.valueLabel_en,
+								valueLabel_es: p.valueLabel_es,
+								value: p.value
+							}
+						}
+					})
+				);
+			}
     }
   },
   modules: {},

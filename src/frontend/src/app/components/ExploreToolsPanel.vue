@@ -3,6 +3,32 @@
 	<v-col cols="auto" style="max-height: 72px;">
 		<v-form v-if="filters" ref="compareForm" v-model="valid">
 			<v-row class="mt-2 justify-end">
+				<v-col cols="6" v-if="showMapControls">
+					<v-select
+						:label="$t('tools.community.community_types')"
+						dense
+						flat
+						return-object
+						:items="filters.locationTypeFilter.options"
+						:item-text="'name_' + locale"
+						v-model="selectedLocationType"
+						@change="selectLocationType(selectedLocationType)"
+						:rules="[v => !!v || $t('tools.common.make_selection')]"
+					>
+					</v-select>
+					<v-select
+						:label="$t('tools.explore.locations')"
+						dense
+						flat
+						return-object
+						:items="pointTypes"
+						:item-text="(item) => item['name_' + locale] + ' (' + item.year + ')'"
+						v-model="panelPointTypes"
+						@change="togglePointType"
+						multiple
+					>
+					</v-select>
+				</v-col>
 				<v-col cols="2" v-if="showCompareOptions">
 					<v-select
 						:label="$t('tools.explore.compare_by')"
@@ -67,7 +93,7 @@
 						<button-menu :downloadData="downloadData" :downloadImage="downloadImage" class="ml-2" style="margin-top: -8px"></button-menu>
 					</div>
 				</v-col>
-				<v-col v-if="showHighlightFilteredLocation" cols="auto" class="d-flex justify-end">
+				<v-col v-if="showHighlightFilteredLocation" cols="6" class="d-flex justify-end">
 					<template v-if="showHighlightFilteredLocation">
 						<v-switch
 							inset
@@ -108,8 +134,8 @@ export default {
 		ButtonMenu
 	},
 	computed: {
-		...mapState(['filterSelections', 'locale', 'exploreData', 'indicator', 'indicatorMenu']),
-		...mapGetters(['filters']),
+		...mapState(['filterSelections', 'locale', 'exploreData', 'indicator', 'indicatorMenu', 'pointCollections', 'selectedPointTypes']),
+		...mapGetters(['filters', 'pointTypes']),
 		highlight: {
 			get() { return this.highlightFilteredLocation },
 			set(value) { this.setHighlightFilteredLocation(value) }
@@ -186,6 +212,10 @@ export default {
 		},
 		setCompareSelections: {
 			type: Function
+		},
+		showMapControls: {
+			type: Boolean,
+			default: false
 		}
 	},
 	data() {
@@ -197,7 +227,9 @@ export default {
 			compareWith: [],
 			compareWithSelectAll: false,
 			compareCounter: 0,
-			valid: true
+			valid: true,
+			selectedLocationType: null,
+			panelPointTypes: []
 		}
 	},
 	watch: {
@@ -216,12 +248,16 @@ export default {
 				this.compareWith = this.compareWithItems.filter(w => prev.includes(w.id) && !w.filtered);
 				this.applyComparison();
 			}
+			this.selectedLocationType = this.filters.locationTypeFilter.options.find(o => o.id == this.filterSelections.locationType);
 		},
 		locale() {
 			if (this.compareWithItems?.find(i => i.id === 0)) {
 				this.compareWithItems.find(i => i.id === 0).name_en = i18n.t('tools.tables.select_all');
 				this.compareWithItems.find(i => i.id === 0).name_es = i18n.t('tools.tables.select_all');
 			}
+		},
+		selectedPointTypes() {
+			this.panelPointTypes = this.selectedPointTypes;
 		}
 	},
 	beforeRouteEnter(to, from, next) {
@@ -233,7 +269,7 @@ export default {
 		this.init()
 	},
 	methods: {
-		...mapActions(['setLoading']),
+		...mapActions(['setLoading', 'selectLocationType', 'togglePointType']),
 		init() {
 			this.initializeCompareByItems();
 			let compareByParam = this.dataVisualName === 'compare_chart' ? 'compareBy' : 'trendCompareBy';
@@ -273,6 +309,8 @@ export default {
 				this.selectCompareWith();
 				this.applyComparison();
 			}
+			this.selectedLocationType = this.filters.locationTypeFilter.options.find(o => o.id == this.filterSelections.locationType);
+			this.panelPointTypes = this.selectedPointTypes;
 		},
 		initializeCompareByItems() {
 			this.compareByItems = [];

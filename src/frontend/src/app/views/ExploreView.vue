@@ -18,13 +18,6 @@
               <indicator-definition :indicator="indicator"></indicator-definition>
             </h1>
             <h2 v-if="source" class="text-subtitle-1 mb-2">{{ source['name_' + locale] }}</h2>
-            <div class="v-input v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select mt-8">
-              <label aria-label id="layoutToggleLabel" class="v-label v-label--active theme--light white--text" style="left: 0px; right: auto; position: absolute;">{{ $t('tools.explore.layouts.layout') }}</label>
-              <v-btn-toggle v-model="layout" id="layoutToggle" aria-labelledby="layoutToggleLabel" rounded>
-                <v-btn :value="'tabs'" color="red" dark small><v-icon color="white" class="mr-2">mdi-tab</v-icon>{{ $t('tools.explore.layouts.tabs') }}</v-btn>
-                <v-btn :value="'dashboard'" color="red" dark small><v-icon color="white" class="mr-2">mdi-view-dashboard</v-icon>{{ $t('tools.explore.layouts.dashboard') }}</v-btn>
-              </v-btn-toggle>
-            </div>
           </div>
           <div v-if="showIntro" class="font-weight-medium mt-2" style="font-size: 1.25rem;">
             {{ $t('tools.explore.headline') }}
@@ -69,25 +62,26 @@
         <v-row class="fill-height no-gutters mt-4">
           <v-col cols="3">
             <v-row class="fill-height no-gutters flex-column px-4">
-              <div class="d-flex align-center">
-                <label aria-label id="layoutLabel" class="v-label v-label--active theme--light mr-4">{{ $t('tools.explore.layouts.layout') }}</label>
-                <v-btn-toggle v-model="layout" class="my-2" color="red" mandatory aria-labelledby="layoutLabel" rounded>
-                  <v-btn :value="'tabs'" color="red" dark small><v-icon color="white" class="mr-2">mdi-tab</v-icon>{{ $t('tools.explore.layouts.tabs') }}</v-btn>
-                  <v-btn :value="'dashboard'" color="red" dark small><v-icon color="white" class="mr-2">mdi-view-dashboard</v-icon>{{ $t('tools.explore.layouts.dashboard') }}</v-btn>
-                </v-btn-toggle>
-              </div>
               <filters-panel></filters-panel>
               <docked-tooltip class="grow" :helpMessage="dockedTooltipHelpMessage" :activeTab="tab"></docked-tooltip>
             </v-row>
           </v-col>
           <v-col cols="9" class="px-4">
             <v-row class="fill-height no-gutters flex-column">
-              <v-col  v-if="layout === 'tabs'" cols="auto" class="shrink">
+              <v-col cols="auto" class="d-flex shrink">
                 <v-tabs v-model="tab" grow color="red">
                   <v-tab v-for="tab in tabs" :key="tab" @click="selectTab(tab)">
                     {{ $t('tools.explore.tabs.' + tab + '.name') }}
+                    <span v-if="layout === 'gallery'">&nbsp;Options</span>
                   </v-tab>
                 </v-tabs>
+                <div class="d-flex align-center">
+                  <label aria-label id="layoutLabel" class="v-label v-label--active theme--light mx-4">{{ $t('tools.explore.layouts.layout') }}</label>
+                  <v-btn-toggle v-model="layout" class="my-2" color="red" mandatory aria-labelledby="layoutLabel" rounded>
+                    <v-btn :value="'tabs'" color="red" dark small><v-icon color="white" class="mr-2">mdi-tab</v-icon>{{ $t('tools.explore.layouts.tabs') }}</v-btn>
+                    <v-btn :value="'gallery'" color="red" dark small><v-icon color="white" class="mr-2">mdi-view-dashboard</v-icon>{{ $t('tools.explore.layouts.gallery') }}</v-btn>
+                  </v-btn-toggle>
+                </div>
               </v-col>
               <v-col  v-if="layout === 'tabs'" cols="auto" class="grow">
                 <v-tabs-items v-model="tab" class="fill-height">
@@ -98,8 +92,48 @@
                   </v-tab-item>
                 </v-tabs-items>
               </v-col>
-              <v-col v-if="layout === 'dashboard'" cols="auto" class="explore-content">
+              <v-col v-if="layout === 'gallery'" cols="auto" class="gallery-content">
                 <v-row class="fill-height no-gutters">
+                  <v-col cols="12">
+                    <explore-tools-panel
+                      key="gallery-map-tools-panel" 
+                      v-if="filters && filterSelections && exploreData && tabs[tab] === 'map'"
+                      :showHighlightFilteredLocation="true"
+                      :highlightFilteredLocation="highlightFilteredLocation"
+                      :setHighlightFilteredLocation="setHighlightFilteredLocation"
+                      :showLabels="showMapLabels"
+                      :showMapControls="true"
+                      :setLabelsOrLinesOption="setShowMapLabels"
+                      dataVisualElementId="explore_map"
+                      dataVisualName="map"
+                    >
+                    </explore-tools-panel>
+                    <explore-tools-panel 
+                      key="gallery-trend-tools-panel"
+                      v-if="filters && filterSelections && exploreData && tabs[tab] === 'trend'"
+                      :showCompareOptions="true"
+                      :labelsOrLinesOption="trendLabelsOrLines"
+                      :setLabelsOrLinesOption="setTrendLabelsOrLines"
+                      dataVisualElementId="trend_chart_container"
+                      dataVisualName="trend_chart"
+                      :includeLocationFilterInCompareBy="false"
+                      :includeYearFilterInCompareBy="false"
+                      :setCompareSelections="setTrendCompareSelections"
+
+                    >
+                    </explore-tools-panel>
+                    <explore-tools-panel 
+                      key="gallery-compare-tools-panel"
+                      v-if="filters && filterSelections && exploreData && tabs[tab] === 'compare'"
+                      :showCompareOptions="true"
+                      :labelsOrLinesOption="compareLabelsOrLines"
+                      :setLabelsOrLinesOption="setCompareLabelsOrLines"
+                      dataVisualElementId="compare_chart_container"
+                      dataVisualName="compare_chart"
+                      :setCompareSelections="setCompareSelections"
+                    >
+                    </explore-tools-panel>
+                  </v-col>
                   <v-col cols="5" style="height: 100%;">
                     <v-sheet outlined class="pa-4" style="width: 100%; height: 100%;">
                       <explore-map :layout="layout"></explore-map>
@@ -135,6 +169,7 @@ import ExploreMap from '@/app/components/ExploreMap'
 import ExploreTrendChart from '@/app/components/ExploreTrendChart'
 import ExploreCompareChart from '@/app/components/ExploreCompareChart'
 import IndicatorDefinition from '@/app/components/IndicatorDefinition.vue'
+import ExploreToolsPanel from '@/app/components/ExploreToolsPanel.vue'
 import { getCategoryIconPath } from '@/services/icons'
 export default {
   name: 'ExploreView',
@@ -146,7 +181,8 @@ export default {
     ExploreMap,
     ExploreTrendChart,
     ExploreCompareChart,
-    IndicatorDefinition
+    IndicatorDefinition,
+    ExploreToolsPanel
   },
   data() {
     return {
@@ -156,7 +192,8 @@ export default {
     }
   },
   computed: {
-    ...mapState(['indicatorMenu', 'indicator', 'source', 'locale', 'featuredIndicators', 'exploreData', 'filterSelections']),
+    ...mapState(['indicatorMenu', 'indicator', 'source', 'locale', 'featuredIndicators', 'exploreData', 'filterSelections',
+      'highlightFilteredLocation', 'showMapLabels', 'trendLabelsOrLines', 'compareLabelsOrLines']),
     ...mapGetters(['filters']),
     showIntro() {
       return !this.indicator && !router.currentRoute.query.indicator;
@@ -244,7 +281,8 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setIndicator', 'setExploreData', 'setExploreTab', 'getFeaturedIndicators', 'setToolRoute']),
+    ...mapActions(['setIndicator', 'setExploreData', 'setExploreTab', 'getFeaturedIndicators', 'setToolRoute',
+      'setHighlightFilteredLocation', 'setShowMapLabels', 'setTrendLabelsOrLines', 'setTrendCompareSelections', 'setCompareLabelsOrLines', 'setCompareSelections']),
     selectItem(item) {
       if (item.id !== this.indicator?.id) {
         this.setIndicator(item);
@@ -283,5 +321,8 @@ export default {
 <style lang="scss" scoped>
   .explore-content {
     height: 820px;
+  }
+  .gallery-content {
+    height: 720px;
   }
 </style>
