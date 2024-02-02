@@ -60,6 +60,9 @@ export default {
 	computed: {
 		...mapState(['locale', 'exploreData', 'trendCompareSelections', 'trendLabelsOrLines', 'exploreTab', 'indicator', 'filterSelections']),
 		...mapGetters(['filters']),
+		smallScreen() {
+			return document.body.clientWidth <= 1440;
+		}
 	},
 	watch: {
 		locale() {
@@ -87,7 +90,7 @@ export default {
 			echarts.use([SVGRenderer, AriaComponent, LegendComponent, GridComponent, LineChart, BarChart, CustomChart, TooltipComponent]);
 			this.chart = echarts.init(document.getElementById('trend_chart_container'), null, { renderer: 'svg'});
 			window.addEventListener('resize', () => {
-				if (this.exploreTab === 'trend') {
+				if (this.exploreTab === 'trend' || this.layout === 'gallery') {
 					this.chart.resize();
 				}
 			});
@@ -126,7 +129,7 @@ export default {
 			});
 			let textStyle = {
 				fontFamily: '"Roboto", sans-serif !important',
-				fontSize: '16px'
+				fontSize: this.smallScreen || this.layout === 'gallery' ? '12px' : '16px',
 			};
 			let option = {};
 			option.grid = { left: 40, right: 20, containLabel: true };
@@ -225,14 +228,13 @@ export default {
 						rich: { 
 							a: {
 								align: 'center',
-								fontSize: '16px',
+								fontSize: this.smallScreen || this.layout === 'gallery' ? '12px' : '16px',
 								lineHeight: '20',
 								color: '#333333'
 							},
 							b: {
 								align: 'center',
-								fontSize: '14px',
-								lineHeight: '16',
+								fontSize: this.smallScreen || this.layout === 'gallery' ? '10px' : '14px',
 								color: '#666666'
 							}
 						}

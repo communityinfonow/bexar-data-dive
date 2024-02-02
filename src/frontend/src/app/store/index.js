@@ -45,6 +45,7 @@ export default new Vuex.Store({
     pointCollections: null,
     selectedPointTypes: [],
     pointsGeojson: featureCollection([]),
+    reportData: null
   },
   getters: {
     tools: (state) => {
@@ -339,6 +340,9 @@ export default new Vuex.Store({
     },
     SET_POINTS_GEOJSON(state, geojson) {
       state.pointsGeojson = geojson
+    },
+    SET_REPORT_DATA(state, report) {
+      state.reportData = report
     }
   },
   actions: {
@@ -660,21 +664,12 @@ export default new Vuex.Store({
     setPointsGeojson(context, geojson) {
       context.commit('SET_POINTS_GEOJSON', geojson)
     },
-    togglePointType(context, data) {
-      let pointType = data;
-      if (data.length) {
-        //FIXME: map passes in single ID, but panel passes in full selected array of objects...
-      }
-      console.log(pointType)
+    togglePointType(context, pointType) {
       if (!context.state.selectedPointTypes.some(pt => pt.id === pointType)) {
         let pointTypes = context.state.selectedPointTypes;
         pointTypes.push(context.state.pointCollections.find(pc => pc.pointType.id === pointType).pointType);
         context.commit('SET_SELECTED_POINT_TYPES', pointTypes)
-			}
-			if (!context.state.selectedPointTypes.some(pt => pt.id === pointType)) {
-				context.state.pointsGeojson.features = context.state.pointsGeojson.features.filter(f => f.properties.typeId !== pointType);
-			} else {
-				context.state.pointsGeojson.features = context.state.pointsGeojson.features.concat(context.state.pointCollections
+        context.state.pointsGeojson.features = context.state.pointsGeojson.features.concat(context.state.pointCollections
 					.find(pc => pc.pointType.id === pointType)
 					.points
 					.map(p => {
@@ -692,8 +687,19 @@ export default new Vuex.Store({
 						}
 					})
 				);
+			} else {
+        let pointTypes = context.state.selectedPointTypes.filter(pt => pt.id !== pointType);
+        context.commit('SET_SELECTED_POINT_TYPES', pointTypes)
+        context.state.pointsGeojson.features = context.state.pointsGeojson.features.filter(f => f.properties.typeId !== pointType);
+      }
+    },
+    getReportData(context, data) {
+			if (data.location && data.locationType) {
+				axios.get('/api/location-report', { params: { locationTypeId: data.locationType, locationId: data.location.id } }).then(response => {
+          context.commit('SET_REPORT_DATA', { location: data.location, data: response.data });
+				});
 			}
-    }
+		},
   },
   modules: {},
 })

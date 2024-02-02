@@ -93,7 +93,7 @@
                 </v-tabs-items>
               </v-col>
               <v-col v-if="layout === 'gallery'" cols="auto" class="gallery-content">
-                <v-row class="fill-height no-gutters">
+                <v-row class="no-gutters">
                   <v-col cols="12">
                     <explore-tools-panel
                       key="gallery-map-tools-panel" 
@@ -102,10 +102,11 @@
                       :highlightFilteredLocation="highlightFilteredLocation"
                       :setHighlightFilteredLocation="setHighlightFilteredLocation"
                       :showLabels="showMapLabels"
-                      :showMapControls="true"
+                      :showMapControls="indicator.showReport"
                       :setLabelsOrLinesOption="setShowMapLabels"
                       dataVisualElementId="explore_map"
                       dataVisualName="map"
+                      :layout="layout"
                     >
                     </explore-tools-panel>
                     <explore-tools-panel 
@@ -119,7 +120,7 @@
                       :includeLocationFilterInCompareBy="false"
                       :includeYearFilterInCompareBy="false"
                       :setCompareSelections="setTrendCompareSelections"
-
+                      :layout="layout"
                     >
                     </explore-tools-panel>
                     <explore-tools-panel 
@@ -131,11 +132,14 @@
                       dataVisualElementId="compare_chart_container"
                       dataVisualName="compare_chart"
                       :setCompareSelections="setCompareSelections"
+                      :layout="layout"
                     >
                     </explore-tools-panel>
                   </v-col>
-                  <v-col cols="5" style="height: 100%;">
-                    <v-sheet outlined class="pa-4" style="width: 100%; height: 100%;">
+                </v-row>
+                <v-row class="fill-height no-gutters">
+                  <v-col cols="5" class="fill-height">
+                    <v-sheet outlined class="pa-4 fill-height">
                       <explore-map :layout="layout"></explore-map>
                     </v-sheet>
                   </v-col>
@@ -233,6 +237,18 @@ export default {
       return crumbs;
     }
   },
+  watch: {
+    layout(newValue) {
+      if (router.currentRoute.query.layout !== newValue) {
+        router.replace({
+          query: {
+            ...router.currentRoute.query,
+            layout: newValue
+          }
+        })
+      }
+    }
+  },
   beforeRouteEnter(to, from, next) {
     next(vm => {
       vm.$store.dispatch('setIndicator', null)
@@ -263,6 +279,7 @@ export default {
     if (!this.featuredIndicators) {
       this.getFeaturedIndicators()
     }
+    this.layout = router.currentRoute.query.layout || 'tabs'
   },
   updated () {
     if (router.currentRoute.query.indicator && this.indicatorMenu) {
@@ -323,6 +340,6 @@ export default {
     height: 820px;
   }
   .gallery-content {
-    height: 720px;
+    height: 690px;
   }
 </style>

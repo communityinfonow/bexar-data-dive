@@ -3,7 +3,7 @@
 	<v-col cols="auto" style="max-height: 72px;">
 		<v-form v-if="filters" ref="compareForm" v-model="valid">
 			<v-row class="mt-2 justify-end">
-				<v-col cols="6" v-if="showMapControls">
+				<v-col cols="6" v-if="showMapControls" class="d-flex">
 					<v-select
 						:label="$t('tools.community.community_types')"
 						dense
@@ -14,6 +14,7 @@
 						v-model="selectedLocationType"
 						@change="selectLocationType(selectedLocationType)"
 						:rules="[v => !!v || $t('tools.common.make_selection')]"
+						class="mr-4"
 					>
 					</v-select>
 					<v-select
@@ -24,10 +25,26 @@
 						:items="pointTypes"
 						:item-text="(item) => item['name_' + locale] + ' (' + item.year + ')'"
 						v-model="panelPointTypes"
-						@change="togglePointType"
+						@change="selectPointType"
 						multiple
+						class="mr-4"
 					>
+						<template v-slot:item="{item}">
+							<v-list-item-content>
+								<v-list-item-title class="d-flex">
+									<div class="mt-1 mr-2">{{ item['name_' + locale] + ' (' + item.year + ')' }}</div>
+									<v-spacer></v-spacer>
+									<v-icon :style="{ 'color': item.color }">mdi-circle</v-icon>
+								</v-list-item-title>
+							</v-list-item-content>
+						</template>
 					</v-select>
+					<v-dialog v-model="locationReportDialog" style="z-index: 10001" width="60%" >
+						<template v-slot:activator="{on, attrs}">
+							<v-btn rounded color="green" small v-bind="attrs" v-on="on">{{ $t('tools.explore.report') }}</v-btn>
+						</template>
+						<location-report :layout="layout" :closeDialog="() => locationReportDialog = false"></location-report>
+					</v-dialog>
 				</v-col>
 				<v-col cols="2" v-if="showCompareOptions">
 					<v-select
@@ -126,12 +143,14 @@ import i18n from '@/i18n'
 import { mapActions, mapState, mapGetters } from 'vuex'
 import router from '@/app/router/index'
 import ButtonMenu from '@/app/components/ButtonMenu'
+import LocationReport from '@/app/components/LocationReport'
 import html2canvas from 'html2canvas'
 
 export default {
 	name: 'ExploreToolsPanel',
 	components: {
-		ButtonMenu
+		ButtonMenu,
+		LocationReport
 	},
 	computed: {
 		...mapState(['filterSelections', 'locale', 'exploreData', 'indicator', 'indicatorMenu', 'pointCollections', 'selectedPointTypes']),
@@ -216,6 +235,9 @@ export default {
 		showMapControls: {
 			type: Boolean,
 			default: false
+		},
+		layout: {
+			type: String
 		}
 	},
 	data() {
@@ -229,7 +251,8 @@ export default {
 			compareCounter: 0,
 			valid: true,
 			selectedLocationType: null,
-			panelPointTypes: []
+			panelPointTypes: [],
+			locationReportDialog: false
 		}
 	},
 	watch: {
@@ -590,6 +613,13 @@ export default {
 					});
 				});
 			});
+		},
+		selectPointType(pointTypes) {
+			if (this.selectedPointTypes.length > pointTypes.length) {
+				this.togglePointType(this.selectedPointTypes.find(pt => !pointTypes.includes(pt)).id);
+			} else {
+				this.togglePointType(pointTypes.find(pt => !this.selectedPointTypes.includes(pt)).id);
+			}
 		}
 	},
 }

@@ -82,7 +82,7 @@ export default {
 			echarts.use([SVGRenderer, AriaComponent, LegendComponent, GridComponent, BarChart, CustomChart]);
 			this.chart = echarts.init(document.getElementById('compare_chart_container'), null, { renderer: 'svg'});
 			window.addEventListener('resize', () => {
-				if (this.exploreTab === 'compare') {
+				if (this.exploreTab === 'compare' || this.layout === 'gallery') {
 					this.chart.resize();
 				}
 			});
@@ -125,7 +125,7 @@ export default {
 			});
 			let textStyle = {
 				fontFamily: '"Roboto", sans-serif !important',
-				fontSize: this.smallScreen ? '14px' : '16px'
+				fontSize: this.layout === 'gallery' ? '12px' : this.smallScreen ? '14px' : '16px'
 			};
 			let option = {};
 			option.grid = { left: 40, right: 20, containLabel: true };
@@ -157,7 +157,7 @@ export default {
 				axisLabel: { 
 					...textStyle, 
 					interval: 0, 
-					width: '100', 
+					width: this.layout === 'gallery' ? '80' : '100', 
 					overflow: 'break', 
 					lineHeight: 16, 
 					rotate: this.smallScreen ? 45 : 0,
@@ -219,7 +219,7 @@ export default {
 					disabled: true
 				},
 				label: { 
-					show: true, 
+					show: true,  
 					position: 'top',
 					formatter: (o) => {
 						if (o.data.suppressed) {
@@ -230,6 +230,7 @@ export default {
 							let rows = ['{a|' + i18n.t('data.value') +': ' + format(this.exploreData.indicator.typeId, o.data.value) + '}'];
 							if (o.data.moeLow || o.data.moeHigh) {
 								rows.push('{b|' + (this.smallScreen ? '' : (i18n.t('data.moe_range') + ': ') )
+									+ (this.layout === 'gallery' ? '\n' : '')
 									+ format(this.exploreData.indicator.typeId, o.data.moeLow)
 									+ " - "
 									+ format(this.exploreData.indicator.typeId, o.data.moeHigh) + '}');
@@ -242,13 +243,13 @@ export default {
 					rich: { 
 						a: {
 							align: 'center',
-							fontSize: this.smallScreen ? '12px' : '16px',
+							fontSize: this.smallScreen || this.layout === 'gallery' ? '12px' : '16px',
 							lineHeight: '20',
 							color: '#333333'
 						},
 						b: {
 							align: 'center',
-							fontSize: this.smallScreen ? '10px' : '14px',
+							fontSize: this.smallScreen || this.layout === 'gallery' ? '10px' : '14px',
 							lineHeight: '16',
 							color: '#666666'
 						}
