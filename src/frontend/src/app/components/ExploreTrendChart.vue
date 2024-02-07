@@ -148,7 +148,7 @@ export default {
 				axisLabel: Object.assign({}, textStyle)
 			};
 			let seriesNames = [];
-			if (this.exploreData.trendCompareData) {
+			if (this.exploreData.trendCompareData && this.exploreData.filters.indicatorFilters.find(f => f.type.id === this.trendCompareSelections.type.id)) {
 				seriesNames.push(this.exploreData.filters.indicatorFilters.find(f => f.type.id === this.trendCompareSelections.type.id).options[0]['name_' + this.locale])
 				seriesNames.push(...this.trendCompareSelections.options.filter(o => !!o).map(o => o['name_' + this.locale]))
 			} else {
@@ -159,8 +159,8 @@ export default {
 						ld.location.id === this.exploreData.filters.locationFilter.options[0].id && 
 						ld.location.typeId === this.exploreData.filters.locationTypeFilter.options[0].id)?.yearData)
 			];
-			seriesData[0].indicatorFiltrers = this.exploreData.filters.indicatorFilters
-			if (this.exploreData.trendCompareData) {
+			seriesData[0].indicatorFilters = this.exploreData.filters.indicatorFilters
+			if (this.exploreData.trendCompareData && this.exploreData.filters.indicatorFilters.find(f => f.type.id === this.trendCompareSelections.type.id)) {
 				seriesData.push(...this.exploreData.trendCompareData.map((cd, index) => {
 					let compareIndicatorFilters = JSON.parse(JSON.stringify(this.exploreData.filters.indicatorFilters));
 					if (!isNaN(this.trendCompareSelections.type.id)) {

@@ -411,6 +411,7 @@ export default new Vuex.Store({
         context.commit('SET_FILTERS', null)
         context.commit('SET_FILTER_SELECTIONS', null)
         context.commit('SET_COMPARE_SELECTIONS', null)
+        context.commit('SET_TREND_COMPARE_SELECTIONS', null)
       if (indicator == null) {
         return Promise.resolve();
       } else {

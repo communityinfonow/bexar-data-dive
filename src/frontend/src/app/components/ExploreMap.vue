@@ -428,7 +428,7 @@ export default {
 		});
 	},
 	methods: {
-		...mapActions(['setDockedTooltip', 'selectLocationType', 'setFilterSelections', 'setShowMapLabels', 'setHighlightFilteredLocation', 'setPointCollections', 'setSelectedPointTypes', 'togglePointType', 'getReportData']),
+		...mapActions(['setDockedTooltip', 'selectLocationType', 'setFilterSelections', 'setShowMapLabels', 'setHighlightFilteredLocation', 'setPointCollections', 'setSelectedPointTypes', 'togglePointType', 'getReportData', 'setPointsGeojson']),
 		initializeMap() {
 			this.mapInitialized = true;
 			if (this.exploreData) {
