@@ -137,7 +137,7 @@
                     </explore-tools-panel>
                   </v-col>
                 </v-row>
-                <v-row class="fill-height no-gutters">
+                <v-row id="gallery-data-visuals" class="fill-height no-gutters">
                   <v-col cols="5" class="fill-height">
                     <v-sheet outlined class="pa-4 fill-height">
                       <explore-map :layout="layout"></explore-map>

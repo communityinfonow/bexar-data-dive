@@ -60,7 +60,7 @@
         }
       },
       "layouts": {
-        "layout": "Layout",
+        "layout": "View",
         "tabs": "Tabs",
         "gallery": "Gallery"
       },

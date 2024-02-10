@@ -11,6 +11,7 @@
 				:setLabelsOrLinesOption="setShowMapLabels"
 				dataVisualElementId="explore_map"
 				dataVisualName="map"
+				:layout="layout"
 			>
 			</explore-tools-panel>
 			<v-col cols="auto" class="grow">

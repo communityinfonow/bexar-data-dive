@@ -11,7 +11,7 @@
 				:includeLocationFilterInCompareBy="false"
 				:includeYearFilterInCompareBy="false"
 				:setCompareSelections="setTrendCompareSelections"
-
+				:layout="layout"
 			>
 			</explore-tools-panel>
 			<v-col cols="auto" class="grow">

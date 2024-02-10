@@ -9,6 +9,7 @@
 				dataVisualElementId="compare_chart_container"
 				dataVisualName="compare_chart"
 				:setCompareSelections="setCompareSelections"
+				:layout="layout"
 			>
 			</explore-tools-panel>
 			<v-col cols="auto" class="grow">

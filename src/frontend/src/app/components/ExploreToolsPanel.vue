@@ -145,6 +145,7 @@ import router from '@/app/router/index'
 import ButtonMenu from '@/app/components/ButtonMenu'
 import LocationReport from '@/app/components/LocationReport'
 import html2canvas from 'html2canvas'
+import JSZip from 'jszip'
 
 export default {
 	name: 'ExploreToolsPanel',
@@ -426,6 +427,38 @@ export default {
 		},
 		downloadData() {
 			let fileName = '';
+			let csv = this.createCsvTemplate();
+			if (this.layout === 'gallery') {
+				fileName = 'gallery_data.zip';
+				let zip = new JSZip();
+				console.log(this.createCsvTemplate() + this.createMapCsvData())
+				zip.file('explore_map_data.csv', this.createCsvTemplate() + this.createMapCsvData());
+				zip.file('explore_trend_data.csv', this.createCsvTemplate() + this.createTrendCsvData());
+				zip.file('explore_compare_data.csv', this.createCsvTemplate() + this.createCompareCsvData());
+				zip.generateAsync({type:"blob"}).then((content) => {
+					let downloadLink = document.createElement('a');
+					downloadLink.download = fileName;
+					downloadLink.href = URL.createObjectURL(content);
+					downloadLink.click();
+				});
+			} else {
+				if (this.dataVisualName === 'map') {
+					fileName = 'explore_map_data.csv';
+					csv += this.createMapCsvData();
+				} else if (this.dataVisualName === 'trend_chart') {
+					fileName = 'explore_trend_data.csv';
+					csv += this.createTrendCsvData(); 
+				} else if (this.dataVisualName === 'compare_chart') {
+					fileName = 'explore_compare_data.csv';
+					csv += this.createCompareCsvData();
+				}
+				let downloadLink = document.createElement('a');
+				downloadLink.download = fileName;
+				downloadLink.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+				downloadLink.click();
+			}
+		},
+		createCsvTemplate() {
 			let csv = [
 				i18n.t('tools.common.download.headers.indicator'), 
 				i18n.t('tools.common.download.headers.source'), 
@@ -439,66 +472,16 @@ export default {
 				i18n.t('tools.common.download.headers.value'),
 				i18n.t('tools.common.download.headers.range')
 			].join(',');
-			if (this.dataVisualName === 'map') {
-				fileName = 'explore_map_data.csv';
-				csv += this.exploreData.locationData.map((data) => {
-					let yearData = data.yearData[this.filterSelections.year];
-					if (!yearData) {
-						return '';
-					}
-					return '\n' 
-						+ '"' + ((this.exploreData.category ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.exploreData.indicator['name_' + this.locale]) + '",'
-						+ '"' + this.exploreData.source['name_' + this.locale] + '",'
-						+ '"' + data.location.id + '",'
-						+ '"' + data.locationType['name_' + this.locale] + '",'
-						+ '"' + data.location['name_' + this.locale] + '",'
-						+ this.filterSelections.year + ','
-						+ this.filters.indicatorFilters.map(f => '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"').join(',') + ','
-						+ (yearData.suppressed ? i18n.t('data.suppressed') : yearData.value === null ? i18n.t('data.no_data') : yearData.value) + ','
-            			+ (yearData.moeLow || yearData.moeHigh ? (yearData.moeLow + ' - ' + yearData.moeHigh) : '');
-				}).join('');
-			} else if (this.dataVisualName === 'trend_chart') {
-				fileName = 'explore_trend_data.csv';
-				let data = this.exploreData.locationData.find(data => data.location.id === this.filterSelections.location);
-				csv += Object.entries(data.yearData).map(([year, values]) => {
-					return '\n'
-						+ '"' + ((this.exploreData.category ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.exploreData.indicator['name_' + this.locale]) + '",'
-						+ '"' + this.exploreData.source['name_' + this.locale] + '",'
-						+ '"' + data.location.id + '",'
-						+ '"' + data.locationType['name_' + this.locale] + '",'
-						+ '"' + data.location['name_' + this.locale] + '",'
-						+ year + ','
-						+ this.filters.indicatorFilters.map(f => '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"').join(',') + ','
-						+ (values.suppressed ? i18n.t('data.suppressed') : values.value === null ? i18n.t('data.no_data') : values.value) + ','
-						+ (values.moeLow || values.moeHigh ? (values.moeLow + ' - ' + values.moeHigh) : '');
-				})
-				if (this.exploreData?.trendCompareData) {
-					this.exploreData.trendCompareData?.forEach((comp, index) => {
-						csv += Object.entries(comp.yearData).map(([year, values]) => {
-							return '\n'
-								+ '"' + ((this.exploreData.category ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.exploreData.indicator['name_' + this.locale]) + '",'
-								+ '"' + this.exploreData.source['name_' + this.locale] + '",'
-								+ '"' + data.location.id + '",'
-								+ '"' + data.locationType['name_' + this.locale] + '",'
-								+ '"' + data.location['name_' + this.locale] + '",'
-								+ year + ','
-								+ this.filters.indicatorFilters.map(f => {
-									if (f.type.id === this.compareBy?.id) {
-										return '"' + this.compareWith[index]['name_' + this.locale] + '"'; 
-									} else {
-										return '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"';
-									}
-								}).join(',') + ','
-								+ (values.suppressed ? i18n.t('data.suppressed') : values.value === null ? i18n.t('data.no_data') : values.value) + ','
-								+ (values.moeLow || values.moeHigh ? (values.moeLow + ' - ' + values.moeHigh) : '');
-						})	
-					});
-				} 
-			} else if (this.dataVisualName === 'compare_chart') {
-				fileName = 'explore_compare_data.csv';
-				let data = this.exploreData.locationData.find(data => data.location.id === this.filterSelections.location);
+
+			return csv;
+		},
+		createMapCsvData() {
+			let csv = this.exploreData.locationData.map((data) => {
 				let yearData = data.yearData[this.filterSelections.year];
-				csv += '\n'
+				if (!yearData) {
+					return '';
+				}
+				return '\n' 
 					+ '"' + ((this.exploreData.category ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.exploreData.indicator['name_' + this.locale]) + '",'
 					+ '"' + this.exploreData.source['name_' + this.locale] + '",'
 					+ '"' + data.location.id + '",'
@@ -508,60 +491,113 @@ export default {
 					+ this.filters.indicatorFilters.map(f => '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"').join(',') + ','
 					+ (yearData.suppressed ? i18n.t('data.suppressed') : yearData.value === null ? i18n.t('data.no_data') : yearData.value) + ','
 					+ (yearData.moeLow || yearData.moeHigh ? (yearData.moeLow + ' - ' + yearData.moeHigh) : '');
-				if (this.compareBy?.id === 'l') {
-					this.exploreData.compareData.forEach(comp => {
-						let compYearData = comp.yearData[this.filterSelections.year];
-						csv += '\n'
-							+ '"' + ((this.exploreData.category ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.exploreData.indicator['name_' + this.locale]) + '",'
-							+ '"' + this.exploreData.source['name_' + this.locale] + '",'
-							+ '"' + comp.location.id + '",'
-							+ '"' + comp.locationType['name_' + this.locale] + '",'
-							+ '"' + comp.location['name_' + this.locale] + '",'
-							+ this.filterSelections.year + ','
-							+ this.filters.indicatorFilters.map(f => '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"').join(',') + ','
-							+ (compYearData.suppressed ? i18n.t('data.suppressed') : compYearData.value === null ? i18n.t('data.no_data') : compYearData.value) + ','
-							+ (compYearData.moeLow || compYearData.moeHigh ? (compYearData.moeLow + ' - ' + compYearData.moeHigh) : '');
-					});
-				} else if (this.compareBy?.id === 'y') {
-					this.compareWith.forEach(year => {
-						let compYearData = data.yearData[year.id] || {};
-						csv += '\n'
-							+ '"' + ((this.exploreData.category ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.exploreData.indicator['name_' + this.locale]) + '",'
-							+ '"' + this.exploreData.source['name_' + this.locale] + '",'
-							+ '"' + data.location.id + '",'
-							+ '"' + data.locationType['name_' + this.locale] + '",'
-							+ '"' + data.location['name_' + this.locale] + '",'
-							+ year.id + ','
-							+ this.filters.indicatorFilters.map(f => '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"').join(',') + ','
-							+ (compYearData.suppressed ? i18n.t('data.suppressed') : !compYearData.value ? i18n.t('data.no_data') : compYearData.value) + ','
-							+ (compYearData.moeLow || compYearData.moeHigh ? (compYearData.moeLow + ' - ' + compYearData.moeHigh) : '');
-					});
-				} else {
-					this.exploreData.compareData?.forEach((comp, index) => {
-						let compYearData = comp.yearData[this.filterSelections.year];
-						csv += '\n'
+			}).join('');
+
+			return csv
+		},
+		createTrendCsvData() {
+			let data = this.exploreData.locationData.find(data => data.location.id === this.filterSelections.location);
+			let csv = Object.entries(data.yearData).map(([year, values]) => {
+				return '\n'
+					+ '"' + ((this.exploreData.category ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.exploreData.indicator['name_' + this.locale]) + '",'
+					+ '"' + this.exploreData.source['name_' + this.locale] + '",'
+					+ '"' + data.location.id + '",'
+					+ '"' + data.locationType['name_' + this.locale] + '",'
+					+ '"' + data.location['name_' + this.locale] + '",'
+					+ year + ','
+					+ this.filters.indicatorFilters.map(f => '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"').join(',') + ','
+					+ (values.suppressed ? i18n.t('data.suppressed') : values.value === null ? i18n.t('data.no_data') : values.value) + ','
+					+ (values.moeLow || values.moeHigh ? (values.moeLow + ' - ' + values.moeHigh) : '');
+			})
+			if (this.exploreData?.trendCompareData) {
+				this.exploreData.trendCompareData?.forEach((comp, index) => {
+					csv += Object.entries(comp.yearData).map(([year, values]) => {
+						return '\n'
 							+ '"' + ((this.exploreData.category ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.exploreData.indicator['name_' + this.locale]) + '",'
 							+ '"' + this.exploreData.source['name_' + this.locale] + '",'
 							+ '"' + data.location.id + '",'
 							+ '"' + data.locationType['name_' + this.locale] + '",'
 							+ '"' + data.location['name_' + this.locale] + '",'
-							+ this.filterSelections.year + ','
+							+ year + ','
 							+ this.filters.indicatorFilters.map(f => {
-									if (f.type.id === this.compareBy?.id) {
-										return '"' + this.compareWith[index]['name_' + this.locale] + '"'; 
-									} else {
-										return '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"';
-									}
-								}).join(',') + ','
-							+ (compYearData.suppressed ? i18n.t('data.suppressed') : compYearData.value === null ? i18n.t('data.no_data') : compYearData.value) + ','
-							+ (compYearData.moeLow || compYearData.moeHigh ? (compYearData.moeLow + ' - ' + compYearData.moeHigh) : '');
-					});
-				}
+								if (f.type.id === this.compareBy?.id) {
+									return '"' + this.compareWith[index]['name_' + this.locale] + '"'; 
+								} else {
+									return '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"';
+								}
+							}).join(',') + ','
+							+ (values.suppressed ? i18n.t('data.suppressed') : values.value === null ? i18n.t('data.no_data') : values.value) + ','
+							+ (values.moeLow || values.moeHigh ? (values.moeLow + ' - ' + values.moeHigh) : '');
+					})	
+				});
 			}
-			let downloadLink = document.createElement('a');
-			downloadLink.download = fileName;
-			downloadLink.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
-			downloadLink.click();
+
+			return csv;
+		},
+		createCompareCsvData() {
+			let data = this.exploreData.locationData.find(data => data.location.id === this.filterSelections.location);
+			let yearData = data.yearData[this.filterSelections.year];
+			let csv = '\n'
+				+ '"' + ((this.exploreData.category ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.exploreData.indicator['name_' + this.locale]) + '",'
+				+ '"' + this.exploreData.source['name_' + this.locale] + '",'
+				+ '"' + data.location.id + '",'
+				+ '"' + data.locationType['name_' + this.locale] + '",'
+				+ '"' + data.location['name_' + this.locale] + '",'
+				+ this.filterSelections.year + ','
+				+ this.filters.indicatorFilters.map(f => '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"').join(',') + ','
+				+ (yearData.suppressed ? i18n.t('data.suppressed') : yearData.value === null ? i18n.t('data.no_data') : yearData.value) + ','
+				+ (yearData.moeLow || yearData.moeHigh ? (yearData.moeLow + ' - ' + yearData.moeHigh) : '');
+			if (this.compareBy?.id === 'l') {
+				this.exploreData.compareData.forEach(comp => {
+					let compYearData = comp.yearData[this.filterSelections.year];
+					csv += '\n'
+						+ '"' + ((this.exploreData.category ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.exploreData.indicator['name_' + this.locale]) + '",'
+						+ '"' + this.exploreData.source['name_' + this.locale] + '",'
+						+ '"' + comp.location.id + '",'
+						+ '"' + comp.locationType['name_' + this.locale] + '",'
+						+ '"' + comp.location['name_' + this.locale] + '",'
+						+ this.filterSelections.year + ','
+						+ this.filters.indicatorFilters.map(f => '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"').join(',') + ','
+						+ (compYearData.suppressed ? i18n.t('data.suppressed') : compYearData.value === null ? i18n.t('data.no_data') : compYearData.value) + ','
+						+ (compYearData.moeLow || compYearData.moeHigh ? (compYearData.moeLow + ' - ' + compYearData.moeHigh) : '');
+				});
+			} else if (this.compareBy?.id === 'y') {
+				this.compareWith.forEach(year => {
+					let compYearData = data.yearData[year.id] || {};
+					csv += '\n'
+						+ '"' + ((this.exploreData.category ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.exploreData.indicator['name_' + this.locale]) + '",'
+						+ '"' + this.exploreData.source['name_' + this.locale] + '",'
+						+ '"' + data.location.id + '",'
+						+ '"' + data.locationType['name_' + this.locale] + '",'
+						+ '"' + data.location['name_' + this.locale] + '",'
+						+ year.id + ','
+						+ this.filters.indicatorFilters.map(f => '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"').join(',') + ','
+						+ (compYearData.suppressed ? i18n.t('data.suppressed') : !compYearData.value ? i18n.t('data.no_data') : compYearData.value) + ','
+						+ (compYearData.moeLow || compYearData.moeHigh ? (compYearData.moeLow + ' - ' + compYearData.moeHigh) : '');
+				});
+			} else {
+				this.exploreData.compareData?.forEach((comp, index) => {
+					let compYearData = comp.yearData[this.filterSelections.year];
+					csv += '\n'
+						+ '"' + ((this.exploreData.category ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.exploreData.indicator['name_' + this.locale]) + '",'
+						+ '"' + this.exploreData.source['name_' + this.locale] + '",'
+						+ '"' + data.location.id + '",'
+						+ '"' + data.locationType['name_' + this.locale] + '",'
+						+ '"' + data.location['name_' + this.locale] + '",'
+						+ this.filterSelections.year + ','
+						+ this.filters.indicatorFilters.map(f => {
+								if (f.type.id === this.compareBy?.id) {
+									return '"' + this.compareWith[index]['name_' + this.locale] + '"'; 
+								} else {
+									return '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"';
+								}
+							}).join(',') + ','
+						+ (compYearData.suppressed ? i18n.t('data.suppressed') : compYearData.value === null ? i18n.t('data.no_data') : compYearData.value) + ','
+						+ (compYearData.moeLow || compYearData.moeHigh ? (compYearData.moeLow + ' - ' + compYearData.moeHigh) : '');
+				});
+			}
+
+			return csv;
 		},
 		downloadImage() {
 			this.setLoading(true);
@@ -572,6 +608,12 @@ export default {
 			exploreIndicator.id = 'explore_indicator_download';
 			exploreIndicator.style.position = 'absolute';
 			exploreIndicator.style.top = '-400px';
+			exploreIndicator.style.width = '100%';
+			exploreIndicator.style.color = "#fff";
+			exploreIndicator.classList.add('page-header');
+			exploreIndicator.classList.add('px-12');
+			exploreIndicator.classList.add('pt-12');
+			exploreIndicator.classList.add('pb-8');
 			document.querySelector('main').appendChild(exploreIndicator);
 			document.querySelector('#explore_indicator_download h2').innerHTML = ''
 				+ this.filters.locationFilter.options.find(o => o.typeId == this.filterSelections.locationType && o.id == this.filterSelections.location)['name_' + this.locale]
@@ -584,7 +626,8 @@ export default {
 				+ '</h2>';
 			html2canvas(document.querySelector('header'), { scale: 2 }).then((headerCanvas) => {
 				html2canvas(document.querySelector('#explore_indicator_download'), { scale: 2 }).then((indicatorCanvas) => {
-					html2canvas(document.querySelector('#' + this.dataVisualElementId), { 
+				console.log(this)
+					html2canvas(document.querySelector('#' + (this.layout === 'tabs' ? this.dataVisualElementId : 'gallery-data-visuals')), { 
 						scale: 2.666, 
 						useCORS: true,
 						ignoreElements: (el) => {
@@ -604,7 +647,7 @@ export default {
 						imageCanvas.getContext('2d').drawImage(chartCanvas, 0, headerCanvas.height + indicatorCanvas.height);
 
 						let imageLink = document.createElement('a');
-						imageLink.download = this.dataVisualName + '.png';
+						imageLink.download = (this.layout === 'tabs' ? this.dataVisualName : 'gallery') + '.png';
 						imageLink.href = imageCanvas.toDataURL('image/png').replace('image/png', 'image/octet-stream');
 						imageLink.click();
 
