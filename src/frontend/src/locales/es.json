@@ -60,9 +60,9 @@
         }
       },
       "layouts": {
-        "layout": "View (es)",
-        "tabs": "Tabs (es)",
-        "gallery": "Gallery (es)"
+        "layout": "Ver",
+        "tabs": "Pestañas",
+        "gallery": "Galería"
       },
       "docked_tooltip": {
         "now_viewing": "Mirando Ahora",
