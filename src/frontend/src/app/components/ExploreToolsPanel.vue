@@ -431,7 +431,6 @@ export default {
 			if (this.layout === 'gallery') {
 				fileName = 'gallery_data.zip';
 				let zip = new JSZip();
-				console.log(this.createCsvTemplate() + this.createMapCsvData())
 				zip.file('explore_map_data.csv', this.createCsvTemplate() + this.createMapCsvData());
 				zip.file('explore_trend_data.csv', this.createCsvTemplate() + this.createTrendCsvData());
 				zip.file('explore_compare_data.csv', this.createCsvTemplate() + this.createCompareCsvData());
@@ -626,7 +625,6 @@ export default {
 				+ '</h2>';
 			html2canvas(document.querySelector('header'), { scale: 2 }).then((headerCanvas) => {
 				html2canvas(document.querySelector('#explore_indicator_download'), { scale: 2 }).then((indicatorCanvas) => {
-				console.log(this)
 					html2canvas(document.querySelector('#' + (this.layout === 'tabs' ? this.dataVisualElementId : 'gallery-data-visuals')), { 
 						scale: 2.666, 
 						useCORS: true,
