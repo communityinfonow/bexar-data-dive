@@ -30,14 +30,14 @@
         >
         </featured-card>
       </template>
-      <!--<featured-card
+      <featured-card
          v-if="!selectedMenuItem"
         :name="$t('help_view.guides_trainings_name')"
         :description="$t('help_view.guides_trainings_description')"
         :primary_button_text="$t('featured_card.view')"
-        href="https://cinow.info/category/training/"
+        href="https://cinow.info/dive-guides/"
       >
-      </featured-card>-->
+      </featured-card>
       <faqs-view v-if="selectedMenuItem && selectedMenuItem.categoryId === 'faqs'" :selectedFaq="selectedMenuItem"></faqs-view>
       <about-tools-view v-if="selectedMenuItem && selectedMenuItem.categoryId === 'about-tools'"></about-tools-view>
     </v-row>
