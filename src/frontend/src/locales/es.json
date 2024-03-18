@@ -59,6 +59,11 @@
           "description": "El cuadro comparativo extrae datos de múltiples fuentes de datos locales, estatales y nacionales a nivel de condado, código postal, SSA (Área Estadística Pequeña) y sección censal para mostrar un indicador, o múltiples indicadores, a través de categorías."
         }
       },
+      "layouts": {
+        "layout": "Ver",
+        "tabs": "Pestañas",
+        "gallery": "Galería"
+      },
       "docked_tooltip": {
         "now_viewing": "Mirando Ahora",
         "range": "Rango",

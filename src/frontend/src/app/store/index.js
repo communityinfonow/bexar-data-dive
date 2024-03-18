@@ -4,6 +4,7 @@ import router from '@/app/router/index'
 import i18n from '@/i18n'
 import axios from 'axios'
 import { format } from '@/services/formatter'
+import { featureCollection } from '@turf/helpers'
 
 Vue.use(Vuex)
 
@@ -33,13 +34,18 @@ export default new Vuex.Store({
     exploreTab: null,
     filterSelections: null,
     compareSelections: null,
+    trendCompareSelections: null,
     tablesData: null,
     aboutData: null,
     faqs: null,
     announcements: null,
     surveySubmitted: false,
     customLocations: [],
-    abortController: null
+    abortController: null,
+    pointCollections: null,
+    selectedPointTypes: [],
+    pointsGeojson: featureCollection([]),
+    reportData: null
   },
   getters: {
     tools: (state) => {
@@ -219,7 +225,10 @@ export default new Vuex.Store({
           }
         ]
       }
-    }
+    },
+    pointTypes(state) {
+			return state.pointCollections?.map(pc => pc.pointType)
+		},
   },
   mutations: {
     SET_LOADING(state, loading) {
@@ -270,6 +279,9 @@ export default new Vuex.Store({
     SET_COMPARE_SELECTIONS(state, selections) {
       state.compareSelections = selections
     },
+    SET_TREND_COMPARE_SELECTIONS(state, selections) {
+      state.trendCompareSelections = selections
+    },
     SET_TABLES_DATA(state, tablesData) {
       state.tablesData = tablesData
     },
@@ -319,6 +331,18 @@ export default new Vuex.Store({
     DELETE_CUSTOM_LOCATION(state, location) {
       state.customLocations = state.customLocations.filter(l => l.id !== location);
       localStorage.setItem('cinow-custom-locations', JSON.stringify(state.customLocations));
+    },
+    SET_POINT_COLLECTIONS(state, pointCollections) {
+      state.pointCollections = pointCollections
+    },
+    SET_SELECTED_POINT_TYPES(state, pointTypes) {
+      state.selectedPointTypes = pointTypes
+    },
+    SET_POINTS_GEOJSON(state, geojson) {
+      state.pointsGeojson = geojson
+    },
+    SET_REPORT_DATA(state, report) {
+      state.reportData = report
     }
   },
   actions: {
@@ -387,6 +411,7 @@ export default new Vuex.Store({
         context.commit('SET_FILTERS', null)
         context.commit('SET_FILTER_SELECTIONS', null)
         context.commit('SET_COMPARE_SELECTIONS', null)
+        context.commit('SET_TREND_COMPARE_SELECTIONS', null)
       if (indicator == null) {
         return Promise.resolve();
       } else {
@@ -426,7 +451,8 @@ export default new Vuex.Store({
       axios.post('/api/explore-data', {
         indicator: context.state.indicator.id, 
         filters: this.state.filterSelections,
-        comparisons: this.state.compareSelections
+        comparisons: this.state.compareSelections,
+        trendComparisons: this.state.trendCompareSelections
       }, { signal }).then(response => {
         this.state.abortController = null;
         context.commit('SET_EXPLORE_DATA', response.data)
@@ -440,6 +466,12 @@ export default new Vuex.Store({
     },
     setExploreTab(context, tab) {
       context.commit('SET_EXPLORE_TAB', tab)
+    },
+    selectLocationType(context, locationType) {
+      let newFilterSelections = JSON.parse(JSON.stringify(context.state.filterSelections));
+      newFilterSelections.locationType = locationType.id;
+      newFilterSelections.location = context.state.filters.locationFilter.options.filter(o => o.typeId === locationType.id)[0].id;
+      context.dispatch('setFilterSelections', newFilterSelections);
     },
     setFilterSelections(context, selections) {
       context.commit('SET_FILTER_SELECTIONS', selections);
@@ -470,6 +502,25 @@ export default new Vuex.Store({
         ...router.currentRoute.query,
         compareBy: selections.type.id,
         compareWith: compareWiths
+
+      };
+      if (JSON.stringify(compareQuery) !== JSON.stringify(router.currentRoute.query)) {
+        router.replace({
+          query: compareQuery
+        });
+      }
+      context.dispatch('getExploreData');
+    },
+    setTrendCompareSelections(context, selections) {
+      context.commit('SET_TREND_COMPARE_SELECTIONS', selections);
+      let compareWiths = selections.options.filter(o => !!o).map(o => (o.typeId ? o.typeId + "_" : "") + o.id)
+      if (compareWiths.length === 1) {
+        compareWiths = compareWiths[0]
+      }
+      let compareQuery = {
+        ...router.currentRoute.query,
+        trendCompareBy: selections.type.id,
+        trendCompareWith: compareWiths
 
       };
       if (JSON.stringify(compareQuery) !== JSON.stringify(router.currentRoute.query)) {
@@ -604,7 +655,52 @@ export default new Vuex.Store({
     },
     deleteCustomLocation(context, location) {
       context.commit('DELETE_CUSTOM_LOCATION', location)
-    }
+    },
+    setPointCollections(context, pointCollections) {
+      context.commit('SET_POINT_COLLECTIONS', pointCollections)
+    },
+    setSelectedPointTypes(context, pointTypes) {
+      context.commit('SET_SELECTED_POINT_TYPES', pointTypes)
+    },
+    setPointsGeojson(context, geojson) {
+      context.commit('SET_POINTS_GEOJSON', geojson)
+    },
+    togglePointType(context, pointType) {
+      if (!context.state.selectedPointTypes.some(pt => pt.id === pointType)) {
+        let pointTypes = context.state.selectedPointTypes;
+        pointTypes.push(context.state.pointCollections.find(pc => pc.pointType.id === pointType).pointType);
+        context.commit('SET_SELECTED_POINT_TYPES', pointTypes)
+        context.state.pointsGeojson.features = context.state.pointsGeojson.features.concat(context.state.pointCollections
+					.find(pc => pc.pointType.id === pointType)
+					.points
+					.map(p => {
+						return {
+							type: 'Feature',
+							geometry: JSON.parse(p.geojson),
+							properties: {
+								...JSON.parse(p['featureProperties_' + context.state.locale]),
+								id: p.id,
+								typeId: pointType,
+								valueLabel_en: p.valueLabel_en,
+								valueLabel_es: p.valueLabel_es,
+								value: p.value
+							}
+						}
+					})
+				);
+			} else {
+        let pointTypes = context.state.selectedPointTypes.filter(pt => pt.id !== pointType);
+        context.commit('SET_SELECTED_POINT_TYPES', pointTypes)
+        context.state.pointsGeojson.features = context.state.pointsGeojson.features.filter(f => f.properties.typeId !== pointType);
+      }
+    },
+    getReportData(context, data) {
+			if (data.location && data.locationType) {
+				axios.get('/api/location-report', { params: { locationTypeId: data.locationType, locationId: data.location.id } }).then(response => {
+          context.commit('SET_REPORT_DATA', { location: data.location, data: response.data });
+				});
+			}
+		},
   },
   modules: {},
 })

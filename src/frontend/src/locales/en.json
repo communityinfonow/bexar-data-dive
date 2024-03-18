@@ -59,6 +59,11 @@
           "description": "The comparison chart pulls data from multiple local, state and national data sources at the county, ZIP code, SSA (Statistical Small Area), and census tract level to display an indicator, or multiple indicators, across categories."
         }
       },
+      "layouts": {
+        "layout": "View",
+        "tabs": "Tabs",
+        "gallery": "Gallery"
+      },
       "docked_tooltip": {
         "now_viewing": "Now Viewing",
         "range": "Range",

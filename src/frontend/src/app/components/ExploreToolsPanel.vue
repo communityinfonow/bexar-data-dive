@@ -3,6 +3,49 @@
 	<v-col cols="auto" style="max-height: 72px;">
 		<v-form v-if="filters" ref="compareForm" v-model="valid">
 			<v-row class="mt-2 justify-end">
+				<v-col cols="6" v-if="showMapControls" class="d-flex">
+					<v-select
+						:label="$t('tools.community.community_types')"
+						dense
+						flat
+						return-object
+						:items="filters.locationTypeFilter.options"
+						:item-text="'name_' + locale"
+						v-model="selectedLocationType"
+						@change="selectLocationType(selectedLocationType)"
+						:rules="[v => !!v || $t('tools.common.make_selection')]"
+						class="mr-4"
+					>
+					</v-select>
+					<v-select
+						:label="$t('tools.explore.locations')"
+						dense
+						flat
+						return-object
+						:items="pointTypes"
+						:item-text="(item) => item['name_' + locale] + ' (' + item.year + ')'"
+						v-model="panelPointTypes"
+						@change="selectPointType"
+						multiple
+						class="mr-4"
+					>
+						<template v-slot:item="{item}">
+							<v-list-item-content>
+								<v-list-item-title class="d-flex">
+									<div class="mt-1 mr-2">{{ item['name_' + locale] + ' (' + item.year + ')' }}</div>
+									<v-spacer></v-spacer>
+									<v-icon :style="{ 'color': item.color }">mdi-circle</v-icon>
+								</v-list-item-title>
+							</v-list-item-content>
+						</template>
+					</v-select>
+					<v-dialog v-model="locationReportDialog" style="z-index: 10001" width="60%" >
+						<template v-slot:activator="{on, attrs}">
+							<v-btn rounded color="green" small v-bind="attrs" v-on="on">{{ $t('tools.explore.report') }}</v-btn>
+						</template>
+						<location-report :layout="layout" :closeDialog="() => locationReportDialog = false"></location-report>
+					</v-dialog>
+				</v-col>
 				<v-col cols="2" v-if="showCompareOptions">
 					<v-select
 						:label="$t('tools.explore.compare_by')"
@@ -67,7 +110,7 @@
 						<button-menu :downloadData="downloadData" :downloadImage="downloadImage" class="ml-2" style="margin-top: -8px"></button-menu>
 					</div>
 				</v-col>
-				<v-col v-if="showHighlightFilteredLocation" cols="auto" class="d-flex justify-end">
+				<v-col v-if="showHighlightFilteredLocation" cols="6" class="d-flex justify-end">
 					<template v-if="showHighlightFilteredLocation">
 						<v-switch
 							inset
@@ -100,16 +143,19 @@ import i18n from '@/i18n'
 import { mapActions, mapState, mapGetters } from 'vuex'
 import router from '@/app/router/index'
 import ButtonMenu from '@/app/components/ButtonMenu'
+import LocationReport from '@/app/components/LocationReport'
 import html2canvas from 'html2canvas'
+import JSZip from 'jszip'
 
 export default {
 	name: 'ExploreToolsPanel',
 	components: {
-		ButtonMenu
+		ButtonMenu,
+		LocationReport
 	},
 	computed: {
-		...mapState(['filterSelections', 'locale', 'exploreData', 'indicator', 'indicatorMenu']),
-		...mapGetters(['filters']),
+		...mapState(['filterSelections', 'locale', 'exploreData', 'indicator', 'indicatorMenu', 'pointCollections', 'selectedPointTypes']),
+		...mapGetters(['filters', 'pointTypes']),
 		highlight: {
 			get() { return this.highlightFilteredLocation },
 			set(value) { this.setHighlightFilteredLocation(value) }
@@ -131,8 +177,12 @@ export default {
 						name_es: "Indicador"
 				});
 			}
-			items.push(this.filters?.locationFilter.type);
-			items.push(this.filters?.yearFilter.type);
+			if (this.includeLocationFilterInCompareBy) {
+				items.push(this.filters?.locationFilter.type);
+			}
+			if (this.includeYearFilterInCompareBy) {
+				items.push(this.filters?.yearFilter.type);
+			}
 			this.filters?.indicatorFilters.forEach(filter => {
 				let setFilters = Object.entries(this.filterSelections.indicatorFilters || {})
 					.filter(e => e[1].id !== null)
@@ -171,6 +221,24 @@ export default {
 		},
 		dataVisualName: {
 			type: String
+		},
+		includeLocationFilterInCompareBy: {
+			type: Boolean,
+			default: true
+		},
+		includeYearFilterInCompareBy: {
+			type: Boolean,
+			default: true
+		},
+		setCompareSelections: {
+			type: Function
+		},
+		showMapControls: {
+			type: Boolean,
+			default: false
+		},
+		layout: {
+			type: String
 		}
 	},
 	data() {
@@ -182,7 +250,10 @@ export default {
 			compareWith: [],
 			compareWithSelectAll: false,
 			compareCounter: 0,
-			valid: true
+			valid: true,
+			selectedLocationType: null,
+			panelPointTypes: [],
+			locationReportDialog: false
 		}
 	},
 	watch: {
@@ -201,12 +272,16 @@ export default {
 				this.compareWith = this.compareWithItems.filter(w => prev.includes(w.id) && !w.filtered);
 				this.applyComparison();
 			}
+			this.selectedLocationType = this.filters.locationTypeFilter.options.find(o => o.id == this.filterSelections.locationType);
 		},
 		locale() {
 			if (this.compareWithItems?.find(i => i.id === 0)) {
 				this.compareWithItems.find(i => i.id === 0).name_en = i18n.t('tools.tables.select_all');
 				this.compareWithItems.find(i => i.id === 0).name_es = i18n.t('tools.tables.select_all');
 			}
+		},
+		selectedPointTypes() {
+			this.panelPointTypes = this.selectedPointTypes;
 		}
 	},
 	beforeRouteEnter(to, from, next) {
@@ -218,35 +293,37 @@ export default {
 		this.init()
 	},
 	methods: {
-		...mapActions(['setCompareSelections', 'setLoading']),
+		...mapActions(['setLoading', 'selectLocationType', 'togglePointType']),
 		init() {
 			this.initializeCompareByItems();
-			if (router.currentRoute.query.compareBy) {
-				this.compareBy = this.compareByItems.find(i => i.id == router.currentRoute.query.compareBy);
+			let compareByParam = this.dataVisualName === 'compare_chart' ? 'compareBy' : 'trendCompareBy';
+			let compareWithParam = this.dataVisualName === 'compare_chart' ? 'compareWith' : 'trendCompareWith';
+			if (router.currentRoute.query[compareByParam]) {
+				this.compareBy = this.compareByItems.find(i => i.id == router.currentRoute.query[compareByParam]);
 				this.selectCompareBy();
-				if (router.currentRoute.query.compareBy === 'i') {
-					[].concat(router.currentRoute.query.compareWith).forEach(p => {
+				if (router.currentRoute.query[compareByParam] === 'i') {
+					[].concat(router.currentRoute.query[compareWithParam]).forEach(p => {
 						let indicator = this.compareWithItems.find(i => i.id == p && !i.filtered);
 						if (indicator) {
 							this.compareWith.push(indicator);
 						}
 					});
-				} else if (router.currentRoute.query.compareBy === 'l') {
-					[].concat(router.currentRoute.query.compareWith).forEach(p => {
+				} else if (router.currentRoute.query[compareByParam] === 'l') {
+					[].concat(router.currentRoute.query[compareWithParam]).forEach(p => {
 						let location = this.compareWithItems.find(i => i.typeId == p.split("_")[0] && i.id == p.split("_")[1] && !i.filtered);
 						if (location) {
 							this.compareWith.push(location);
 						}
 					});
-				} else if (router.currentRoute.query.compareBy === 'y') {
-					[].concat(router.currentRoute.query.compareWith).forEach(p => {
+				} else if (router.currentRoute.query[compareByParam] === 'y') {
+					[].concat(router.currentRoute.query[compareWithParam]).forEach(p => {
 						let year = this.compareWithItems.find(i => i.id == p && !i.filtered);
 						if (year) {
 							this.compareWith.push(year);
 						}
 					});
 				} else {
-					[].concat(router.currentRoute.query.compareWith).forEach(p => {
+					[].concat(router.currentRoute.query[compareWithParam]).forEach(p => {
 						let item = this.compareWithItems.find(i => i.id == p && !i.filtered);
 						if (item) {
 							this.compareWith.push(item);
@@ -256,6 +333,8 @@ export default {
 				this.selectCompareWith();
 				this.applyComparison();
 			}
+			this.selectedLocationType = this.filters.locationTypeFilter.options.find(o => o.id == this.filterSelections.locationType);
+			this.panelPointTypes = this.selectedPointTypes;
 		},
 		initializeCompareByItems() {
 			this.compareByItems = [];
@@ -267,8 +346,12 @@ export default {
 						name_es: "Indicador"
 				});
 			}
-			this.compareByItems.push(this.filters?.locationFilter.type);
-			this.compareByItems.push(this.filters?.yearFilter.type);
+			if (this.includeLocationFilterInCompareBy) {
+				this.compareByItems.push(this.filters?.locationFilter.type);
+			}
+			if (this.includeYearFilterInCompareBy) {
+				this.compareByItems.push(this.filters?.yearFilter.type);
+			}
 			this.filters?.indicatorFilters.forEach(filter => {
 				this.compareByItems.push(filter.type)
 			});
@@ -338,12 +421,44 @@ export default {
 		},
 		applyComparison() { 
 			this.validateComparison();
-			if (this.valid) {
+			if (this.valid && this.setCompareSelections) {
 				this.setCompareSelections(this.getComparison());
 			}
 		},
 		downloadData() {
 			let fileName = '';
+			let csv = this.createCsvTemplate();
+			if (this.layout === 'gallery') {
+				fileName = 'gallery_data.zip';
+				let zip = new JSZip();
+				console.log(this.createCsvTemplate() + this.createMapCsvData())
+				zip.file('explore_map_data.csv', this.createCsvTemplate() + this.createMapCsvData());
+				zip.file('explore_trend_data.csv', this.createCsvTemplate() + this.createTrendCsvData());
+				zip.file('explore_compare_data.csv', this.createCsvTemplate() + this.createCompareCsvData());
+				zip.generateAsync({type:"blob"}).then((content) => {
+					let downloadLink = document.createElement('a');
+					downloadLink.download = fileName;
+					downloadLink.href = URL.createObjectURL(content);
+					downloadLink.click();
+				});
+			} else {
+				if (this.dataVisualName === 'map') {
+					fileName = 'explore_map_data.csv';
+					csv += this.createMapCsvData();
+				} else if (this.dataVisualName === 'trend_chart') {
+					fileName = 'explore_trend_data.csv';
+					csv += this.createTrendCsvData(); 
+				} else if (this.dataVisualName === 'compare_chart') {
+					fileName = 'explore_compare_data.csv';
+					csv += this.createCompareCsvData();
+				}
+				let downloadLink = document.createElement('a');
+				downloadLink.download = fileName;
+				downloadLink.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+				downloadLink.click();
+			}
+		},
+		createCsvTemplate() {
 			let csv = [
 				i18n.t('tools.common.download.headers.indicator'), 
 				i18n.t('tools.common.download.headers.source'), 
@@ -357,44 +472,16 @@ export default {
 				i18n.t('tools.common.download.headers.value'),
 				i18n.t('tools.common.download.headers.range')
 			].join(',');
-			if (this.dataVisualName === 'map') {
-				fileName = 'explore_map_data.csv';
-				csv += this.exploreData.locationData.map((data) => {
-					let yearData = data.yearData[this.filterSelections.year];
-					if (!yearData) {
-						return '';
-					}
-					return '\n' 
-						+ '"' + ((this.exploreData.category ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.exploreData.indicator['name_' + this.locale]) + '",'
-						+ '"' + this.exploreData.source['name_' + this.locale] + '",'
-						+ '"' + data.location.id + '",'
-						+ '"' + data.locationType['name_' + this.locale] + '",'
-						+ '"' + data.location['name_' + this.locale] + '",'
-						+ this.filterSelections.year + ','
-						+ this.filters.indicatorFilters.map(f => '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"').join(',') + ','
-						+ (yearData.suppressed ? i18n.t('data.suppressed') : yearData.value === null ? i18n.t('data.no_data') : yearData.value) + ','
-            			+ (yearData.moeLow || yearData.moeHigh ? (yearData.moeLow + ' - ' + yearData.moeHigh) : '');
-				}).join('');
-			} else if (this.dataVisualName === 'trend_chart') {
-				fileName = 'explore_trend_data.csv';
-				let data = this.exploreData.locationData.find(data => data.location.id === this.filterSelections.location);
-				csv += Object.entries(data.yearData).map(([year, values]) => {
-					return '\n'
-						+ '"' + ((this.exploreData.category ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.exploreData.indicator['name_' + this.locale]) + '",'
-						+ '"' + this.exploreData.source['name_' + this.locale] + '",'
-						+ '"' + data.location.id + '",'
-						+ '"' + data.locationType['name_' + this.locale] + '",'
-						+ '"' + data.location['name_' + this.locale] + '",'
-						+ year + ','
-						+ this.filters.indicatorFilters.map(f => '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"').join(',') + ','
-						+ (values.suppressed ? i18n.t('data.suppressed') : values.value === null ? i18n.t('data.no_data') : values.value) + ','
-            			+ (values.moeLow || values.moeHigh ? (values.moeLow + ' - ' + values.moeHigh) : '');
-				})
-			} else if (this.dataVisualName === 'compare_chart') {
-				fileName = 'explore_compare_data.csv';
-				let data = this.exploreData.locationData.find(data => data.location.id === this.filterSelections.location);
+
+			return csv;
+		},
+		createMapCsvData() {
+			let csv = this.exploreData.locationData.map((data) => {
 				let yearData = data.yearData[this.filterSelections.year];
-				csv += '\n'
+				if (!yearData) {
+					return '';
+				}
+				return '\n' 
 					+ '"' + ((this.exploreData.category ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.exploreData.indicator['name_' + this.locale]) + '",'
 					+ '"' + this.exploreData.source['name_' + this.locale] + '",'
 					+ '"' + data.location.id + '",'
@@ -404,60 +491,113 @@ export default {
 					+ this.filters.indicatorFilters.map(f => '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"').join(',') + ','
 					+ (yearData.suppressed ? i18n.t('data.suppressed') : yearData.value === null ? i18n.t('data.no_data') : yearData.value) + ','
 					+ (yearData.moeLow || yearData.moeHigh ? (yearData.moeLow + ' - ' + yearData.moeHigh) : '');
-				if (this.compareBy?.id === 'l') {
-					this.exploreData.compareData.forEach(comp => {
-						let compYearData = comp.yearData[this.filterSelections.year];
-						csv += '\n'
-							+ '"' + ((this.exploreData.category ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.exploreData.indicator['name_' + this.locale]) + '",'
-							+ '"' + this.exploreData.source['name_' + this.locale] + '",'
-							+ '"' + comp.location.id + '",'
-							+ '"' + comp.locationType['name_' + this.locale] + '",'
-							+ '"' + comp.location['name_' + this.locale] + '",'
-							+ this.filterSelections.year + ','
-							+ this.filters.indicatorFilters.map(f => '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"').join(',') + ','
-							+ (compYearData.suppressed ? i18n.t('data.suppressed') : compYearData.value === null ? i18n.t('data.no_data') : compYearData.value) + ','
-							+ (compYearData.moeLow || compYearData.moeHigh ? (compYearData.moeLow + ' - ' + compYearData.moeHigh) : '');
-					});
-				} else if (this.compareBy?.id === 'y') {
-					this.compareWith.forEach(year => {
-						let compYearData = data.yearData[year.id] || {};
-						csv += '\n'
-							+ '"' + ((this.exploreData.category ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.exploreData.indicator['name_' + this.locale]) + '",'
-							+ '"' + this.exploreData.source['name_' + this.locale] + '",'
-							+ '"' + data.location.id + '",'
-							+ '"' + data.locationType['name_' + this.locale] + '",'
-							+ '"' + data.location['name_' + this.locale] + '",'
-							+ year.id + ','
-							+ this.filters.indicatorFilters.map(f => '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"').join(',') + ','
-							+ (compYearData.suppressed ? i18n.t('data.suppressed') : !compYearData.value ? i18n.t('data.no_data') : compYearData.value) + ','
-							+ (compYearData.moeLow || compYearData.moeHigh ? (compYearData.moeLow + ' - ' + compYearData.moeHigh) : '');
-					});
-				} else {
-					this.exploreData.compareData?.forEach((comp, index) => {
-						let compYearData = comp.yearData[this.filterSelections.year];
-						csv += '\n'
+			}).join('');
+
+			return csv
+		},
+		createTrendCsvData() {
+			let data = this.exploreData.locationData.find(data => data.location.id === this.filterSelections.location);
+			let csv = Object.entries(data.yearData).map(([year, values]) => {
+				return '\n'
+					+ '"' + ((this.exploreData.category ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.exploreData.indicator['name_' + this.locale]) + '",'
+					+ '"' + this.exploreData.source['name_' + this.locale] + '",'
+					+ '"' + data.location.id + '",'
+					+ '"' + data.locationType['name_' + this.locale] + '",'
+					+ '"' + data.location['name_' + this.locale] + '",'
+					+ year + ','
+					+ this.filters.indicatorFilters.map(f => '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"').join(',') + ','
+					+ (values.suppressed ? i18n.t('data.suppressed') : values.value === null ? i18n.t('data.no_data') : values.value) + ','
+					+ (values.moeLow || values.moeHigh ? (values.moeLow + ' - ' + values.moeHigh) : '');
+			})
+			if (this.exploreData?.trendCompareData) {
+				this.exploreData.trendCompareData?.forEach((comp, index) => {
+					csv += Object.entries(comp.yearData).map(([year, values]) => {
+						return '\n'
 							+ '"' + ((this.exploreData.category ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.exploreData.indicator['name_' + this.locale]) + '",'
 							+ '"' + this.exploreData.source['name_' + this.locale] + '",'
 							+ '"' + data.location.id + '",'
 							+ '"' + data.locationType['name_' + this.locale] + '",'
 							+ '"' + data.location['name_' + this.locale] + '",'
-							+ this.filterSelections.year + ','
+							+ year + ','
 							+ this.filters.indicatorFilters.map(f => {
-									if (f.type.id === this.compareBy?.id) {
-										return '"' + this.compareWith[index]['name_' + this.locale] + '"'; 
-									} else {
-										return '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"';
-									}
-								}).join(',') + ','
-							+ (compYearData.suppressed ? i18n.t('data.suppressed') : compYearData.value === null ? i18n.t('data.no_data') : compYearData.value) + ','
-							+ (compYearData.moeLow || compYearData.moeHigh ? (compYearData.moeLow + ' - ' + compYearData.moeHigh) : '');
-					});
-				}
+								if (f.type.id === this.compareBy?.id) {
+									return '"' + this.compareWith[index]['name_' + this.locale] + '"'; 
+								} else {
+									return '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"';
+								}
+							}).join(',') + ','
+							+ (values.suppressed ? i18n.t('data.suppressed') : values.value === null ? i18n.t('data.no_data') : values.value) + ','
+							+ (values.moeLow || values.moeHigh ? (values.moeLow + ' - ' + values.moeHigh) : '');
+					})	
+				});
 			}
-			let downloadLink = document.createElement('a');
-			downloadLink.download = fileName;
-			downloadLink.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
-			downloadLink.click();
+
+			return csv;
+		},
+		createCompareCsvData() {
+			let data = this.exploreData.locationData.find(data => data.location.id === this.filterSelections.location);
+			let yearData = data.yearData[this.filterSelections.year];
+			let csv = '\n'
+				+ '"' + ((this.exploreData.category ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.exploreData.indicator['name_' + this.locale]) + '",'
+				+ '"' + this.exploreData.source['name_' + this.locale] + '",'
+				+ '"' + data.location.id + '",'
+				+ '"' + data.locationType['name_' + this.locale] + '",'
+				+ '"' + data.location['name_' + this.locale] + '",'
+				+ this.filterSelections.year + ','
+				+ this.filters.indicatorFilters.map(f => '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"').join(',') + ','
+				+ (yearData.suppressed ? i18n.t('data.suppressed') : yearData.value === null ? i18n.t('data.no_data') : yearData.value) + ','
+				+ (yearData.moeLow || yearData.moeHigh ? (yearData.moeLow + ' - ' + yearData.moeHigh) : '');
+			if (this.compareBy?.id === 'l') {
+				this.exploreData.compareData.forEach(comp => {
+					let compYearData = comp.yearData[this.filterSelections.year];
+					csv += '\n'
+						+ '"' + ((this.exploreData.category ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.exploreData.indicator['name_' + this.locale]) + '",'
+						+ '"' + this.exploreData.source['name_' + this.locale] + '",'
+						+ '"' + comp.location.id + '",'
+						+ '"' + comp.locationType['name_' + this.locale] + '",'
+						+ '"' + comp.location['name_' + this.locale] + '",'
+						+ this.filterSelections.year + ','
+						+ this.filters.indicatorFilters.map(f => '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"').join(',') + ','
+						+ (compYearData.suppressed ? i18n.t('data.suppressed') : compYearData.value === null ? i18n.t('data.no_data') : compYearData.value) + ','
+						+ (compYearData.moeLow || compYearData.moeHigh ? (compYearData.moeLow + ' - ' + compYearData.moeHigh) : '');
+				});
+			} else if (this.compareBy?.id === 'y') {
+				this.compareWith.forEach(year => {
+					let compYearData = data.yearData[year.id] || {};
+					csv += '\n'
+						+ '"' + ((this.exploreData.category ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.exploreData.indicator['name_' + this.locale]) + '",'
+						+ '"' + this.exploreData.source['name_' + this.locale] + '",'
+						+ '"' + data.location.id + '",'
+						+ '"' + data.locationType['name_' + this.locale] + '",'
+						+ '"' + data.location['name_' + this.locale] + '",'
+						+ year.id + ','
+						+ this.filters.indicatorFilters.map(f => '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"').join(',') + ','
+						+ (compYearData.suppressed ? i18n.t('data.suppressed') : !compYearData.value ? i18n.t('data.no_data') : compYearData.value) + ','
+						+ (compYearData.moeLow || compYearData.moeHigh ? (compYearData.moeLow + ' - ' + compYearData.moeHigh) : '');
+				});
+			} else {
+				this.exploreData.compareData?.forEach((comp, index) => {
+					let compYearData = comp.yearData[this.filterSelections.year];
+					csv += '\n'
+						+ '"' + ((this.exploreData.category ? this.exploreData.category['name_' + this.locale] + ' - ' : '') + this.exploreData.indicator['name_' + this.locale]) + '",'
+						+ '"' + this.exploreData.source['name_' + this.locale] + '",'
+						+ '"' + data.location.id + '",'
+						+ '"' + data.locationType['name_' + this.locale] + '",'
+						+ '"' + data.location['name_' + this.locale] + '",'
+						+ this.filterSelections.year + ','
+						+ this.filters.indicatorFilters.map(f => {
+								if (f.type.id === this.compareBy?.id) {
+									return '"' + this.compareWith[index]['name_' + this.locale] + '"'; 
+								} else {
+									return '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"';
+								}
+							}).join(',') + ','
+						+ (compYearData.suppressed ? i18n.t('data.suppressed') : compYearData.value === null ? i18n.t('data.no_data') : compYearData.value) + ','
+						+ (compYearData.moeLow || compYearData.moeHigh ? (compYearData.moeLow + ' - ' + compYearData.moeHigh) : '');
+				});
+			}
+
+			return csv;
 		},
 		downloadImage() {
 			this.setLoading(true);
@@ -468,6 +608,12 @@ export default {
 			exploreIndicator.id = 'explore_indicator_download';
 			exploreIndicator.style.position = 'absolute';
 			exploreIndicator.style.top = '-400px';
+			exploreIndicator.style.width = '100%';
+			exploreIndicator.style.color = "#fff";
+			exploreIndicator.classList.add('page-header');
+			exploreIndicator.classList.add('px-12');
+			exploreIndicator.classList.add('pt-12');
+			exploreIndicator.classList.add('pb-8');
 			document.querySelector('main').appendChild(exploreIndicator);
 			document.querySelector('#explore_indicator_download h2').innerHTML = ''
 				+ this.filters.locationFilter.options.find(o => o.typeId == this.filterSelections.locationType && o.id == this.filterSelections.location)['name_' + this.locale]
@@ -480,7 +626,8 @@ export default {
 				+ '</h2>';
 			html2canvas(document.querySelector('header'), { scale: 2 }).then((headerCanvas) => {
 				html2canvas(document.querySelector('#explore_indicator_download'), { scale: 2 }).then((indicatorCanvas) => {
-					html2canvas(document.querySelector('#' + this.dataVisualElementId), { 
+				console.log(this)
+					html2canvas(document.querySelector('#' + (this.layout === 'tabs' ? this.dataVisualElementId : 'gallery-data-visuals')), { 
 						scale: 2.666, 
 						useCORS: true,
 						ignoreElements: (el) => {
@@ -500,7 +647,7 @@ export default {
 						imageCanvas.getContext('2d').drawImage(chartCanvas, 0, headerCanvas.height + indicatorCanvas.height);
 
 						let imageLink = document.createElement('a');
-						imageLink.download = this.dataVisualName + '.png';
+						imageLink.download = (this.layout === 'tabs' ? this.dataVisualName : 'gallery') + '.png';
 						imageLink.href = imageCanvas.toDataURL('image/png').replace('image/png', 'image/octet-stream');
 						imageLink.click();
 
@@ -509,6 +656,13 @@ export default {
 					});
 				});
 			});
+		},
+		selectPointType(pointTypes) {
+			if (this.selectedPointTypes.length > pointTypes.length) {
+				this.togglePointType(this.selectedPointTypes.find(pt => !pointTypes.includes(pt)).id);
+			} else {
+				this.togglePointType(pointTypes.find(pt => !this.selectedPointTypes.includes(pt)).id);
+			}
 		}
 	},
 }

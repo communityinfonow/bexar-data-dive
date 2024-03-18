@@ -2,7 +2,7 @@
 	<div class="fill-height">
 		<v-row class="no-gutters flex-wrap flex-column fill-height">
 			<explore-tools-panel 
-				v-if="filters && filterSelections && exploreData"
+				v-if="filters && filterSelections && exploreData && layout !== 'gallery'"
 				:draw="drawMap"
 				:showHighlightFilteredLocation="true"
 				:highlightFilteredLocation="highlightFilteredLocation"
@@ -11,239 +11,193 @@
 				:setLabelsOrLinesOption="setShowMapLabels"
 				dataVisualElementId="explore_map"
 				dataVisualName="map"
+				:layout="layout"
 			>
 			</explore-tools-panel>
 			<v-col cols="auto" class="grow">
-				<l-map
-					v-if="componentInitialized"
-					ref="exploreMap"
-					id="explore_map"
-					:zoom="zoom"
-					:center="center"
-					:options="{ zoomDelta: 0.5, zoomSnap: 0.5, preferCanvas: true }"
-					v-resize:debounce.100="resizeHandler"
-					@ready="initializeMap"
-				>
-					<l-tile-layer
-						url="https://tiles.stadiamaps.com/tiles/stamen_toner_background/{z}/{x}/{y}{r}.png"
-						:options="{ crossOrigin: 'anonymous' }"
-						:attribution="$t('tools.common.map_attribution')"
-					></l-tile-layer>
-					<l-tile-layer
-						url="https://tiles.stadiamaps.com/tiles/stamen_toner_lines/{z}/{x}/{y}{r}.png"
-						:options="{ crossOrigin: 'anonymous' }"
-						:attribution="$t('tools.common.map_attribution')"
-					></l-tile-layer>
-					<l-tile-layer
-						url="https://tiles.stadiamaps.com/tiles/stamen_toner_labels/{z}/{x}/{y}{r}.png"
-						:options="{ crossOrigin: 'anonymous' }"
-						:attribution="$t('tools.common.map_attribution')"
-					></l-tile-layer>
-					<l-geo-json
-						v-if="geojson"
-						:geojson="geojson"
-						:options="options"
-						:options-style="style"
-					></l-geo-json>
-					<l-geo-json
-						v-if="pointsGeojson"
-						:geojson="pointsGeojson"
-						:options="pointsOptions"
+				<div class="explore-map" :class="{ 'full-height': fullHeight }">
+					<l-map
+						v-if="componentInitialized"
+						ref="exploreMap"
+						id="explore_map"
+						:zoom="zoom"
+						:center="center"
+						:options="{ zoomDelta: 0.5, zoomSnap: 0.5, preferCanvas: true }"
+						v-resize:debounce.100="resizeHandler"
+						@ready="initializeMap"
 					>
-					</l-geo-json>
-					<l-geo-json
-						v-if="highlightFilteredLocation && filteredLocationGeojson"
-						ref="filteredLocation"
-						:geojson="filteredLocationGeojson"
-						:options="filteredLocationOptions"
-						:options-style="style"
-					></l-geo-json>
-					<l-control
-						position="bottomleft"
-						class="legend-control"
-						v-if="exploreData && shadingRanges.length"
-					>
-						<v-card tile outlined :style="{ boxShadow: 'none !important' }">
-							<v-card-title class="pb-0 text--primary">
-								<span v-if="exploreData.category.parentCategoryId">{{ exploreData.category['name_' + locale] }} -&nbsp;</span>
-								{{ exploreData.indicator['name_' + locale] }}
-							</v-card-title>
-							<v-card-text>
-								<v-list
-									dense
-									class="py-0"
-									:style="{ boxShadow: 'none !important' }"
-								>
-									<v-list-item
-										v-for="(range, index) in shadingRanges"
-										:key="'range_' + index"
+						<l-tile-layer
+							url="https://tiles.stadiamaps.com/tiles/stamen_toner_background/{z}/{x}/{y}{r}.png"
+							:options="{ crossOrigin: 'anonymous' }"
+							:attribution="$t('tools.common.map_attribution')"
+						></l-tile-layer>
+						<l-tile-layer
+							url="https://tiles.stadiamaps.com/tiles/stamen_toner_lines/{z}/{x}/{y}{r}.png"
+							:options="{ crossOrigin: 'anonymous' }"
+							:attribution="$t('tools.common.map_attribution')"
+						></l-tile-layer>
+						<l-tile-layer
+							url="https://tiles.stadiamaps.com/tiles/stamen_toner_labels/{z}/{x}/{y}{r}.png"
+							:options="{ crossOrigin: 'anonymous' }"
+							:attribution="$t('tools.common.map_attribution')"
+						></l-tile-layer>
+						<l-geo-json
+							v-if="geojson"
+							:geojson="geojson"
+							:options="options"
+							:options-style="style"
+						></l-geo-json>
+						<l-geo-json
+							v-if="pointsGeojson"
+							:geojson="pointsGeojson"
+							:options="pointsOptions"
+						>
+						</l-geo-json>
+						<l-geo-json
+							v-if="highlightFilteredLocation && filteredLocationGeojson"
+							ref="filteredLocation"
+							:geojson="filteredLocationGeojson"
+							:options="filteredLocationOptions"
+							:options-style="style"
+						></l-geo-json>
+						<l-control
+							position="bottomleft"
+							class="legend-control"
+							v-if="exploreData && shadingRanges.length"
+						>
+							<v-card tile outlined :style="{ boxShadow: 'none !important' }">
+								<v-card-text>
+									<v-list
 										dense
-										class="pl-0"
+										class="py-0"
+										:style="{ boxShadow: 'none !important' }"
 									>
-										<v-list-item-avatar
-											size="20"
-											:color="shadingColors[index]"
-											:style="{ opacity: 0.8 }"
-											class="my-0"
+										<v-list-item
+											v-for="(range, index) in shadingRanges"
+											:key="'range_' + index"
+											dense
+											class="pl-0"
+											:style="{ 'min-height': layout === 'tabs' ? 'auto' : '28px !important' }"
 										>
-										</v-list-item-avatar>
-										<span>
-											{{ range[0].label }}
-											<span v-if="range[0].value !== range[1].value">
-												&nbsp;-&nbsp;
-												{{ range[1].label }}
-											</span>
-										</span>
-									</v-list-item>
-								</v-list>
-								<div class="text--primary text-caption">
-									{{ $t('tools.explore.docked_tooltip.source') }}: {{ exploreData.source['name_' + locale] }}
-								</div>
-							</v-card-text>
-						</v-card>
-					</l-control>
-					<l-control
-						position="bottomright"
-						class="layer-control d-flex flex-column"
-						v-if="layers && layers.length"
-					>
-						<v-expansion-panels accordion class="report-control">
-							<v-expansion-panel v-if="indicator.showReport">
-								<v-expansion-panel-header class="text--primary" data-html2canvas-ignore>
-									<div>
-										<v-icon color="green">mdi-file-document-outline</v-icon>
-										<span class="mx-2">{{ $t('tools.explore.report') }}</span>
-									</div>
-								</v-expansion-panel-header>
-								<v-expansion-panel-content v-if="reportData" :style="{ 'overflow': 'hidden', 'display': 'flex', 'flex-direction': 'column' }">
-									<span class="text-subtitle-1">{{ reportData.location.properties.locationName }}</span>
-									<v-btn icon color="green" class="ml-2" @click="downloadReport">
-										<v-icon>mdi-download</v-icon>
-									</v-btn>
-									<v-simple-table fixed-header :height="this.reportHeight">
-										<thead>
-											<tr>
-												<th>{{ $t('tools.common.download.headers.indicator') }}</th>
-												<th>{{ $t('tools.common.download.headers.year') }}</th>
-												<th>{{ $t('data.value') }}</th>
-												<th>{{ $t('data.moe') }}</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr v-for="(entry, idx) in reportData.data" :key="idx">
-												<td>{{ entry['indicatorName_' + locale] }}</td>
-												<td>{{ entry.year_ }}</td>
-												<td class="text-end">
-													<span v-if="entry.indicatorValue && entry.indicatorName_en === 'Median Household Income'">
-														{{ '$' + entry.indicatorValue.toLocaleString() }}
-													</span>
-													<span v-else-if="entry.indicatorValue && entry.indicatorName_en === 'Retail Food Environment Index'">
-														{{ entry.indicatorValue.toFixed(1).toLocaleString() }}
-													</span>
-													<span v-else-if="entry.indicatorValue">
-														{{ entry.indicatorValue.toFixed(1).toLocaleString() + '%' }}
-													</span>
-													<span v-else>
-														{{ $t('data.no_data') }}
-													</span>
-												</td>
-												<td class="text--secondary">
-													<span v-if="entry.moe && entry.indicatorName_en === 'Median Household Income'">
-														&#177; {{ '$' + entry.moe.toLocaleString() }}
-													</span>
-													<span v-else-if="entry.moe && entry.indicatorName_en === 'Retail Food Environment Index'">
-														{{ entry.moe.toFixed(1).toLocaleString() }}
-													</span>
-													<span v-else-if="entry.moe">
-														&#177; {{ entry.moe.toFixed(1).toLocaleString() + '%' }}
-													</span>
-												</td>
-											</tr>
-										</tbody>
-									</v-simple-table>
-								</v-expansion-panel-content>
-							</v-expansion-panel>
-							<v-expansion-panel v-if="indicator.showPoints">
-								<v-expansion-panel-header class="text--primary" data-html2canvas-ignore>
-									<div>
-										<v-icon color="green">mdi-circle</v-icon>
-										<span class="mx-2">{{ $t('tools.explore.locations') }}</span>
-									</div>
-								</v-expansion-panel-header>
-								<v-expansion-panel-content class="location-options">
-									<div v-for="pointType in pointTypes" :key="pointType.id">
-										<v-checkbox 
-											color="green"
-											:value="pointType" 
-											:label="pointType['name_' + locale] + ' (' + pointType.year + ')'"
-											v-model="selectedPointTypes"
-											@change="togglePointType(pointType.id)"
-											hide-details
-											class="mt-0"
-										>
-											<template v-slot:append>
-												<v-icon :style="{ 'color':pointType.color }">mdi-circle</v-icon>
-											</template>
-										</v-checkbox>
-										<div 
-											v-if="selectedPointTypes.some(pt => pt.id === pointType.id)
-												&& pointScales 
-												&& pointScales.find(ps => ps.pointType.id === pointType.id)
-												&& pointScales.find(ps => ps.pointType.id === pointType.id).min 
-													!== pointScales.find(ps => ps.pointType.id === pointType.id).max"
-											class="d-flex align-center justify-space-between px-10 text-center"
-											
-										>
-											<div
-												v-for="(value, index) in [
-													pointScales.find(ps => ps.pointType.id === pointType.id).min, 
-													pointScales.find(ps => ps.pointType.id === pointType.id).mid, 
-													pointScales.find(ps => ps.pointType.id === pointType.id).max
-												]"
-												:key="'range_' + index"
+											<v-list-item-avatar
+												size="20"
+												:color="shadingColors[index]"
+												:style="{ opacity: 0.8 }"
+												class="my-0"
 											>
-												<v-icon
-													:size="pointScales.find(ps => ps.pointType.id === pointType.id).scale(value)"
-													:style="{ 'color': pointType.color }"
-												>
-													mdi-circle
-												</v-icon>
-												<br>
-												<span>
-													{{ value }}
+											</v-list-item-avatar>
+											<span style="{ 'font-size': this.layout === 'gallery' ? '14px' : 'default' }">
+												{{ range[0].label }}
+												<span v-if="range[0].value !== range[1].value">
+													&nbsp;-&nbsp;
+													{{ range[1].label }}
 												</span>
-											</div>
+											</span>
+										</v-list-item>
+									</v-list>
+								</v-card-text>
+							</v-card>
+						</l-control>
+						<l-control
+							position="bottomright"
+							class="layer-control d-flex flex-column"
+							v-if="layout === 'tabs' && layers && layers.length"
+						>
+							<v-expansion-panels accordion class="report-control">
+								<v-expansion-panel v-if="indicator.showReport">
+									<v-expansion-panel-header class="text--primary" data-html2canvas-ignore>
+										<div>
+											<v-icon color="green">mdi-file-document-outline</v-icon>
+											<span class="mx-2">{{ $t('tools.explore.report') }}</span>
 										</div>
-										<div v-if="selectedPointTypes.some(pt => pt.id === pointType.id) && pointCollections.find(pc => pc.pointType.id === pointType.id).points[0]['valueLabel_' + locale]" class="text-center mb-2">{{ pointCollections.find(pc => pc.pointType.id === pointType.id).points[0]['valueLabel_' + locale] }}</div>
-									</div>
-								</v-expansion-panel-content>
-							</v-expansion-panel>
-							<v-expansion-panel data-html2canvas-ignore>
-								<v-expansion-panel-header class="text--primary">
-									<div>
-										<v-icon color="green">mdi-layers</v-icon>
-										<span class="mx-2">{{ $t('tools.community.community_types') }}</span>
-									</div>
-								</v-expansion-panel-header>
-								<v-expansion-panel-content>
-									<v-radio-group
-									v-model="selectedLocationType"
-									@change="selectLocationType"
-									class="mt-0"
-									>
-									<v-radio 
-										color="green"
-										v-for="layer in layers" 
-										:key="layer.id" 
-										:value="layer" 
-										:label="layer['name_' + locale]">
-									</v-radio>
-									</v-radio-group>
-								</v-expansion-panel-content>
-							</v-expansion-panel>
-						</v-expansion-panels>
-					</l-control>
-				</l-map>
+									</v-expansion-panel-header>
+									<v-expansion-panel-content v-if="reportData" :style="{ 'overflow': 'hidden', 'display': 'flex', 'flex-direction': 'column' }">
+										<location-report></location-report>
+									</v-expansion-panel-content>
+								</v-expansion-panel>
+								<v-expansion-panel v-if="indicator.showPoints">
+									<v-expansion-panel-header class="text--primary" data-html2canvas-ignore>
+										<div>
+											<v-icon color="green">mdi-circle</v-icon>
+											<span class="mx-2">{{ $t('tools.explore.locations') }}</span>
+										</div>
+									</v-expansion-panel-header>
+									<v-expansion-panel-content class="location-options">
+										<div v-for="pointType in pointTypes" :key="pointType.id">
+											<v-checkbox 
+												color="green"
+												:value="pointType" 
+												:label="pointType['name_' + locale] + ' (' + pointType.year + ')'"
+												v-model="mapPointTypes"
+												@change="togglePointType(pointType.id)"
+												hide-details
+												class="mt-0"
+											>
+												<template v-slot:append>
+													<v-icon :style="{ 'color':pointType.color }">mdi-circle</v-icon>
+												</template>
+											</v-checkbox>
+											<div 
+												v-if="selectedPointTypes.some(pt => pt.id === pointType.id)
+													&& pointScales 
+													&& pointScales.find(ps => ps.pointType.id === pointType.id)
+													&& pointScales.find(ps => ps.pointType.id === pointType.id).min 
+														!== pointScales.find(ps => ps.pointType.id === pointType.id).max"
+												class="d-flex align-center justify-space-between px-10 text-center"
+												
+											>
+												<div
+													v-for="(value, index) in [
+														pointScales.find(ps => ps.pointType.id === pointType.id).min, 
+														pointScales.find(ps => ps.pointType.id === pointType.id).mid, 
+														pointScales.find(ps => ps.pointType.id === pointType.id).max
+													]"
+													:key="'range_' + index"
+												>
+													<v-icon
+														:size="pointScales.find(ps => ps.pointType.id === pointType.id).scale(value)"
+														:style="{ 'color': pointType.color }"
+													>
+														mdi-circle
+													</v-icon>
+													<br>
+													<span>
+														{{ value }}
+													</span>
+												</div>
+											</div>
+											<div v-if="selectedPointTypes.some(pt => pt.id === pointType.id) && pointCollections.find(pc => pc.pointType.id === pointType.id).points[0]['valueLabel_' + locale]" class="text-center mb-2">{{ pointCollections.find(pc => pc.pointType.id === pointType.id).points[0]['valueLabel_' + locale] }}</div>
+										</div>
+									</v-expansion-panel-content>
+								</v-expansion-panel>
+								<v-expansion-panel data-html2canvas-ignore>
+									<v-expansion-panel-header class="text--primary">
+										<div>
+											<v-icon color="green">mdi-layers</v-icon>
+											<span class="mx-2">{{ $t('tools.community.community_types') }}</span>
+										</div>
+									</v-expansion-panel-header>
+									<v-expansion-panel-content>
+										<v-radio-group
+										v-model="selectedLocationType"
+										@change="selectLocationType(selectedLocationType)"
+										class="mt-0"
+										>
+										<v-radio 
+											color="green"
+											v-for="layer in layers" 
+											:key="layer.id" 
+											:value="layer" 
+											:label="layer['name_' + locale]">
+										</v-radio>
+										</v-radio-group>
+									</v-expansion-panel-content>
+								</v-expansion-panel>
+							</v-expansion-panels>
+						</l-control>
+					</l-map>
+				</div>
+				<div v-if="showChart" id="location_rank_chart_container" class="location-rank-chart-container"></div>
 			</v-col>
 		</v-row>
 	</div>
@@ -260,7 +214,12 @@ import { feature, featureCollection, multiPolygon } from '@turf/helpers'
 import colorbrewer from 'colorbrewer'
 import { ckmeans } from 'simple-statistics'
 import {scaleLinear} from 'd3-scale'
+import * as echarts from 'echarts/core';
+import { SVGRenderer } from 'echarts/renderers';
+import { AriaComponent, LegendComponent, GridComponent, TooltipComponent } from 'echarts/components';
+import { BarChart } from 'echarts/charts';
 import ExploreToolsPanel from '@/app/components/ExploreToolsPanel'
+import LocationReport from './LocationReport.vue'
 import { format } from '@/services/formatter'
 
 export default {
@@ -270,7 +229,14 @@ export default {
 		LTileLayer,
 		LGeoJson,
 		LControl,
-		ExploreToolsPanel
+		ExploreToolsPanel,
+		LocationReport
+	},
+	props: {
+		layout: {
+			type: String,
+			default: 'tabs'
+		}
 	},
 	data() {
 		return {
@@ -282,15 +248,14 @@ export default {
 			filteredLocationGeojson: null,
 			refreshOptions: false,
 			selectedLocationType: null,
-			pointCollections: [],
-			selectedPointTypes: [],
-			pointsGeojson: featureCollection([]),
-			reportData: null
+			mapPointTypes: [],
+			chart: null,
+			fullHeight: true
 		}
 	},
 	computed: {
-		...mapState(['exploreData', 'locale', 'filterSelections', 'showMapLabels', 'highlightFilteredLocation', 'exploreTab', 'customLocations', 'indicator']),
-		...mapGetters(['locationMenu', 'filters']),
+		...mapState(['exploreData', 'locale', 'filterSelections', 'showMapLabels', 'highlightFilteredLocation', 'exploreTab', 'customLocations', 'indicator', 'pointCollections', 'selectedPointTypes', 'pointsGeojson', 'reportData']),
+		...mapGetters(['locationMenu', 'filters', 'pointTypes']),
 		layers() {
 			return this.filters?.locationTypeFilter?.options?.map(option => {
 				return {
@@ -363,9 +328,6 @@ export default {
 					 { value: range[1], label: format(this.exploreData.indicator.typeId, range[1]) }];
 				});
 		},
-		pointTypes() {
-			return this.pointCollections?.map(pc => pc.pointType)
-		},
 		pointScales() {
 			return this.pointCollections?.filter(pc => pc.points.some(p => p.value))
 				.map(pc => {
@@ -384,8 +346,8 @@ export default {
 					}
 				})
 		},
-		reportHeight() {
-			return this.$refs.exploreMap?.$el?.offsetHeight - 280 + 'px';
+		showChart() {
+			return this.exploreData && this.exploreData.locationData && this.exploreData.locationData.length > 1;
 		}
 	},
 	watch: {
@@ -396,7 +358,7 @@ export default {
 		},
     	locale() {
 			this.drawMap()
-			this.pointsGeojson = featureCollection([])
+			this.setPointsGeojson(featureCollection([]))
 			this.pointTypes.forEach(pt => {
 				this.togglePointType(pt.id)
 			})
@@ -420,7 +382,9 @@ export default {
 			
 		},
 		filteredLocationGeojson(newValue) {
-			this.getReportData(newValue);
+			if (this.selectedLocationType) {
+				this.getReportData({location: newValue, locationType: this.selectedLocationType.id});
+			}
 		},
 		showMapLabels() {
 			this.drawMap();
@@ -432,14 +396,18 @@ export default {
 			if (newValue.id !== oldValue?.id && newValue.showPoints && !oldValue?.showPoints) {
 				this.getPoints()
 			} else if (!newValue.showPoints) {
-				this.pointsGeojson = featureCollection([])
-				this.selectedPointTypes = []
+				this.setPointsGeojson(featureCollection([]))
+				this.setSelectedPointTypes([])
 			}
+		},
+		selectedPointTypes(newValue) {
+			this.mapPointTypes = newValue
 		}
 	},
 	mounted () {
 		setTimeout(() => { 
 			this.componentInitialized = true;
+			echarts.use([SVGRenderer, AriaComponent, LegendComponent, GridComponent, TooltipComponent, BarChart]);
 			if (this.filterSelections) {
 				this.selectedLocationType = this.layers.find(l => l.id === this.filterSelections.locationType);
 			}
@@ -448,6 +416,7 @@ export default {
 			}
 			if (this.indicator?.showPoints) {
 				this.getPoints()
+				this.mapPointTypes = this.selectedPointTypes
 			}
 		}, 100);
 		
@@ -460,7 +429,7 @@ export default {
 		});
 	},
 	methods: {
-		...mapActions(['setDockedTooltip', 'setFilterSelections', 'setShowMapLabels', 'setHighlightFilteredLocation']),
+		...mapActions(['setDockedTooltip', 'selectLocationType', 'setFilterSelections', 'setShowMapLabels', 'setHighlightFilteredLocation', 'setPointCollections', 'setSelectedPointTypes', 'togglePointType', 'getReportData', 'setPointsGeojson']),
 		initializeMap() {
 			this.mapInitialized = true;
 			if (this.exploreData) {
@@ -468,38 +437,8 @@ export default {
 			}
 		},
 		resizeHandler() {
-			if (this.exploreTab === 'map') {
+			if (this.exploreTab === 'map' || this.layout === 'gallery') {
 				this.$refs.exploreMap?.mapObject?.invalidateSize();
-			}
-		},
-		selectLocationType() {
-			let newFilterSelections = JSON.parse(JSON.stringify(this.filterSelections));
-			newFilterSelections.locationType = this.selectedLocationType.id;
-			newFilterSelections.location = this.filters.locationFilter.options.filter(o => o.typeId === this.selectedLocationType.id)[0].id;
-			this.setFilterSelections(newFilterSelections);
-		},
-		togglePointType(pointType) {
-			if (!this.selectedPointTypes.some(pt => pt.id === pointType)) {
-				this.pointsGeojson.features = this.pointsGeojson.features.filter(f => f.properties.typeId !== pointType);
-			} else {
-				this.pointsGeojson.features = this.pointsGeojson.features.concat(this.pointCollections
-					.find(pc => pc.pointType.id === pointType)
-					.points
-					.map(p => {
-						return {
-							type: 'Feature',
-							geometry: JSON.parse(p.geojson),
-							properties: {
-								...JSON.parse(p['featureProperties_' + this.locale]),
-								id: p.id,
-								typeId: pointType,
-								valueLabel_en: p.valueLabel_en,
-								valueLabel_es: p.valueLabel_es,
-								value: p.value
-							}
-						}
-					})
-				);
 			}
 		},
 		selectLocation(location) {
@@ -513,27 +452,33 @@ export default {
 			this.setFilterSelections(newFilterSelections);
 		},
 		drawMap() {
-			if (!this.exploreData) {
-				this.geojson = null;
-				this.filteredLocationGeojson = null;
-				return;
-			}
-			this.setDefaultDockedTooltip();
-			this.geojson = featureCollection(this.exploreData.locationData
-				.filter(ld => !!ld.geojson)
-				.map(ld => feature(this.getLocationDataGeojson(ld), 
-					{
-						locationName: ld.location['name_' + this.locale],
-						value: ld.yearData[this.exploreData.filters.yearFilter.options[0].id]?.value,
-						noData: ld.yearData[this.exploreData.filters.yearFilter.options[0].id]?.value === null,
-						moeLow: ld.yearData[this.exploreData.filters.yearFilter.options[0].id]?.moeLow,
-						moeHigh: ld.yearData[this.exploreData.filters.yearFilter.options[0].id]?.moeHigh,
-						suppressed: ld.yearData[this.exploreData.filters.yearFilter.options[0].id]?.suppressed
-					}, 
-					{ id: ld.location.id }))
-			)
-			this.filteredLocationGeojson = this.geojson.features.find(f => f.id === this.exploreData.filters.locationFilter.options[0]?.id);
-			this.refreshOptions = Math.random(); // force a refresh
+			this.fullHeight = this.exploreData?.filters?.locationTypeFilter?.options[0]?.id === '1'
+			
+			this.$nextTick(() => {
+				this.resizeHandler();
+				if (!this.exploreData) {
+					this.geojson = null;
+					this.filteredLocationGeojson = null;
+					return;
+				}
+				this.setDefaultDockedTooltip();
+				this.geojson = featureCollection(this.exploreData.locationData
+					.filter(ld => !!ld.geojson)
+					.map(ld => feature(this.getLocationDataGeojson(ld), 
+						{
+							locationName: ld.location['name_' + this.locale],
+							value: ld.yearData[this.exploreData.filters.yearFilter.options[0].id]?.value,
+							noData: ld.yearData[this.exploreData.filters.yearFilter.options[0].id]?.value === null,
+							moeLow: ld.yearData[this.exploreData.filters.yearFilter.options[0].id]?.moeLow,
+							moeHigh: ld.yearData[this.exploreData.filters.yearFilter.options[0].id]?.moeHigh,
+							suppressed: ld.yearData[this.exploreData.filters.yearFilter.options[0].id]?.suppressed
+						}, 
+						{ id: ld.location.id }))
+				)
+				this.filteredLocationGeojson = this.geojson.features.find(f => f.id === this.exploreData.filters.locationFilter.options[0]?.id);
+				this.refreshOptions = Math.random(); // force a refresh
+				this.drawChart();
+			});
 		},
 		getLocationDataGeojson(locationData) {
 			let geojson = JSON.parse(locationData.geojson);
@@ -653,50 +598,130 @@ export default {
 				});
 		},
 		getPoints() {
-			axios.get('/api/points').then(response => {
-				this.pointCollections = response.data
-			})
-		},
-		getReportData(location) {
-			if (location && this.selectedLocationType) {
-				axios.get('/api/location-report', { params: { locationTypeId: this.selectedLocationType.id, locationId: location.id } }).then(response => {
-					this.reportData = { location: location, data: null };
-					this.reportData.data = response.data;
-				});
+			if (!this.pointCollections) {
+				axios.get('/api/points').then(response => {
+					this.setPointCollections(response.data)
+					for (let pointType of this.selectedPointTypes) {
+						this.togglePointType(pointType.id)
+					}
+				})
 			}
 		},
-		downloadReport() {
-			let fileName = this.reportData.location.properties.locationName + '.csv';
-			let csv = [i18n.t('tools.common.download.headers.indicator'), i18n.t('tools.common.download.headers.year'), i18n.t('data.value'), i18n.t('data.moe')].join(',') + '\n'
-				+ Object.entries(this.reportData.data).map(i => i[1]).map(i => {
-						let value = '';
-						let moe = '';
-						if (i.indicatorValue && i.indicatorName_en === 'Median Household Income') {
-							value = '"$' + i.indicatorValue.toLocaleString() + '"';
-						} else if (i.indicatorValue && i.indicatorName_en === 'Retail Food Environment Index') {
-							value = '"' + i.indicatorValue.toLocaleString() + '"';
-						} else if (i.indicatorValue) {
-							value = '"' + i.indicatorValue.toFixed(1).toLocaleString() + '%' + '"';
+		drawChart() {
+			if (!this.showChart) {
+				return;
+			}
+			// wait for the chart container to be rendered before drawing the chart
+			this.$nextTick(() => {
+				this.drawChartInternal();
+			});
+		},
+		drawChartInternal() {
+			let filteredLocation = this.exploreData.locationData.find(ld => 
+					ld.location.id === this.exploreData.filters.locationFilter.options[0].id && 
+					ld.location.typeId === this.exploreData.filters.locationTypeFilter.options[0].id);
+			if (!filteredLocation) {
+				this.chart = null;
+				return;
+			} else if (this.chart){
+				this.chart.dispose();
+			}
+			this.chart = echarts.init(document.getElementById('location_rank_chart_container'), null, { renderer: 'svg'});
+			let textStyle = {
+				fontFamily: '"Roboto", sans-serif !important',
+				fontSize: this.layout === 'gallery' ? '12px' : this.smallScreen ? '14px' : '16px'
+			};
+			let option = {};
+			option.animation = false;
+			option.tooltip = {
+				borderColor: '#333',
+				position: 'top',
+			};
+			option.grid = { left: 40, right: 20, top: 20, bottom: 5,containLabel: true };
+			option.yAxis = { 
+				type: 'value', 
+				splitLine: { show: false },
+				splitNumber: 1,
+				axisLabel: textStyle
+			};
+			option.xAxis = { 
+				type: 'category', 
+				data: this.exploreData.locationData.map(l => l.location['name_' + this.locale]),
+				axisTick: { show: false },
+				axisLabel: { show: false }
+			};
+			let seriesData = this.exploreData.locationData
+				.map(ld => {
+					let year = this.exploreData.filters.yearFilter.options[0].id;
+					let value = ld.yearData[year]?.value || 0;
+					let filteredLocation = this.filteredLocationGeojson && ld.location.id === this.filteredLocationGeojson.id;
+					let maxValue = Math.max(...this.exploreData.locationData.map(ld => ld.yearData[year]?.value || 0));
+					let suppressed = ld.yearData[year]?.suppressed;
+					let noData = !ld.yearData[year] || ld.yearData[year]?.value === null;
+					let color = suppressed || noData ? 'transparent' : this.shadingColors[
+						this.shadingRanges.findIndex(
+							range => value >= range[0].value && value <= range[1].value)
+						];
+					let borderColor = suppressed || noData ? 'transparent' : filteredLocation && this.highlightFilteredLocation ? 'orange' : '#666';
+					return  { 
+						value: suppressed || noData ? maxValue : value,
+						suppressed: suppressed,
+						noData: noData,
+						moeLow: ld.yearData[year]?.moeLow,
+						moeHigh: ld.yearData[year]?.moeHigh,
+						location: ld.location['name_' + this.locale],
+						itemStyle: {
+							color: color,
+							borderColor: borderColor,
+							borderWidth: filteredLocation && this.highlightFilteredLocation ? 4 : 1
 						}
-						if (i.moe && i.indicatorName_en === 'Median Household Income') {
-							moe = '"' + '$' + i.moe.toLocaleString() + '"';
-						} else if (i.moe && i.indicatorName_en === 'Retail Food Environment Index') {
-							moe = '"' + i.moe.toLocaleString() + '"';
-						} else if (i.moe) {
-							moe = '"' + i.moe.toFixed(1).toLocaleString() + '%' + '"';
-						}
-						return [i['indicatorName_' + this.locale], i.year_, value, moe].join(',');
-					}).join('\n');
-			let downloadLink = document.createElement('a');
-			downloadLink.download = fileName;
-			downloadLink.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
-			downloadLink.click();
+					};
+				})
+				.sort((a, b) => {
+					if (a.value === null || a.suppressed || a.noData) {
+						return -1;
+					} else if (b.value === null || b.suppressed || b.noData) {
+						return 1;
+					} else {
+						return a.value - b.value;
+					}
+				
+				});
+			option.series = [{
+				data: seriesData,
+				type: 'bar',
+				barCategoryGap: -1,
+				tooltip: {
+					formatter: (params) => {
+						return params.data.location + '<br>' + (params.data.suppressed ? i18n.t('data.suppressed') : format(this.exploreData.indicator.typeId, params.data.value));
+					}
+				},
+				click: (params) => {
+					this.selectLocation(this.exploreData.locationData.find(ld => ld.location['name_' + this.locale] === params.data.location).location.id);
+				}
+			}];
+			this.chart.on('click', (params) => {
+				if (params.data.location) {
+					this.selectLocation(this.exploreData.locationData.find(ld => ld.location['name_' + this.locale] === params.data.location).location.id);
+				}
+			});
+			this.chart.setOption(option);
 		}
 	},
 }
 </script>
 
 <style lang="scss" scoped>
+	::v-deep .explore-map {
+		height: 85%;
+		overflow: hidden;
+	}
+	::v-deep .explore-map.full-height {
+		height: 100%;
+	}
+	.location-rank-chart-container {
+		height: 15%;
+	}
 	::v-deep .leaflet-tooltip.location-label {
 		background: none;
 		border: none;

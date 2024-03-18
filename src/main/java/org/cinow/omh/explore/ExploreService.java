@@ -86,6 +86,7 @@ public class ExploreService {
 				.collect(Collectors.toList()));
 			exploreData.setLocationData(locationData);
 		}
+
 		if (dataRequest.getComparisons() != null) {
 			exploreData.setCompareData(new ArrayList<>());
 			if (dataRequest.getComparisons().getType().getId().equals("i")) { 
@@ -121,6 +122,18 @@ public class ExploreService {
 					} else {
 						exploreData.getCompareData().add(this.exploreRepository.getCustomExploreData(dataRequest, false));
 					}
+				}
+			}
+		}
+
+		if (dataRequest.getTrendComparisons() != null) {
+			exploreData.setTrendCompareData(new ArrayList<>());
+			for (FilterOption option : dataRequest.getTrendComparisons().getOptions()) {
+				dataRequest.getFilters().getIndicatorFilters().put(dataRequest.getTrendComparisons().getType().getId(), option);
+				if (!"7".equals(dataRequest.getFilters().getLocationType())) {
+					exploreData.getTrendCompareData().addAll(this.exploreRepository.getExploreData(dataRequest, false));
+				} else {
+					exploreData.getTrendCompareData().add(this.exploreRepository.getCustomExploreData(dataRequest, false));
 				}
 			}
 		}
