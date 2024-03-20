@@ -71,8 +71,9 @@
               <v-col cols="auto" class="d-flex shrink">
                 <v-tabs v-model="tab" grow color="red">
                   <v-tab v-for="tab in tabs" :key="tab" @click="selectTab(tab)">
+                    <span v-if="layout === 'gallery' && locale === 'es'">&nbsp;Opciones {{ tab === 'map' ? 'de' : 'del' }}&nbsp;</span>
                     {{ $t('tools.explore.tabs.' + tab + '.name') }}
-                    <span v-if="layout === 'gallery'">&nbsp;Options</span>
+                    <span v-if="layout === 'gallery' && locale === 'en'">&nbsp;Options</span>
                   </v-tab>
                 </v-tabs>
                 <div class="d-flex align-center">
