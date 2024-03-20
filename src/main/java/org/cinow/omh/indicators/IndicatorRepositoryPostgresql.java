@@ -15,9 +15,6 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import liquibase.pro.packaged.f;
-import liquibase.pro.packaged.i;
-
 /**
  * {@inheritDoc}
  */
