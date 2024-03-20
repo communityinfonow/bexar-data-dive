@@ -1,9 +1,19 @@
 package org.cinow.omh.locations;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.net.http.HttpResponse.BodyHandlers;
 import java.util.List;
 
+import org.cinow.omh.community.CommunityLocation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 /**
  * Service class for locations.
@@ -74,5 +84,39 @@ public class LocationService {
 		customLocation.setGeojson(this.locationRepository.findCustomLocationGeojson(id));
 		
 		return customLocation;
+	}
+
+	/**
+	 * Find address matches.
+	 * 
+	 * @param address
+	 * @return the address matches in JSON format
+	 * @throws URISyntaxException 
+	 * @throws InterruptedException 
+	 * @throws IOException 
+	 */
+	public String findAddressMatches(String address) throws URISyntaxException, IOException, InterruptedException {
+		if (!StringUtils.hasText(address)) {
+			return null;
+		}
+		String formattedAddress = !address.contains("TX") ? address + " Bexar County, TX" : address;
+		HttpRequest request = HttpRequest.newBuilder()
+				.uri(new URI("https://us1.locationiq.com/v1/search?key=pk.e419f0eb579e34ba72835ef79b389657&format=json&addressdetails=1&normalizeaddress=1&q=" + URLEncoder.encode(formattedAddress, "UTF-8")))
+				.GET()
+				.build();
+		HttpClient client = HttpClient.newHttpClient();
+		HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+
+		return response.body();
+	}
+
+	/**
+	 * Lookup an address.
+	 * 
+	 * @param address the address
+	 * @return the address lookup result
+	 */
+	public List<CommunityLocation> findCommunitiesByPoint(String lat, String lng) {
+		return this.locationRepository.findCommunitiesByPoint(lat, lng);
 	}
 }

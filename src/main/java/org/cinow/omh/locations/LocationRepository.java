@@ -2,6 +2,8 @@ package org.cinow.omh.locations;
 
 import java.util.List;
 
+import org.cinow.omh.community.CommunityLocation;
+
 /**
  * Repository for locations.
  * 
@@ -40,4 +42,6 @@ public interface LocationRepository {
 	List<String> findCustomLocationIds(String id);
 
 	String findCustomLocationGeojson(String id);
+
+	List<CommunityLocation> findCommunitiesByPoint(String lat, String lng);
 }

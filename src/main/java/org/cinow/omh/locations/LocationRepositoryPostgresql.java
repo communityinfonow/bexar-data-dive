@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.List;
 
+import org.cinow.omh.community.CommunityLocation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -141,5 +142,38 @@ public class LocationRepositoryPostgresql implements LocationRepository {
 		paramMap.addValue("id", id);
 
 		return this.namedParameterJdbcTemplate.queryForObject(sql, paramMap, String.class);
+	}
+
+	@Override
+	public List<CommunityLocation> findCommunitiesByPoint(String lat, String lng) {
+		String sql = ""
+			+ " select id_, location_type_id, name_en, name_es, geojson "
+			+ " from ( "
+			+ "   select l.id_, l.location_type_id, l.name_en, l.name_es, lg.geojson::text, rank() over(partition by l.id_, l.location_type_id order by lg.vintage_max_year desc) as ranking "
+			+ "   from tbl_locations l "
+			+ "   join tbl_location_geometries lg on lg.location_id = l.id_ and lg.location_type_id = l.location_type_id "
+			+ "   join tbl_location_types lt on lt.id_ = l.location_type_id "
+			+ "   where l.location_type_id in (2, 4, 5) "
+			+ "     and ST_Contains(ST_GeomFromGeojson(lg.geojson), ST_SetSRID(ST_MakePoint(:lng::double precision, :lat::double precision), 4326)) "
+			+ "   order by lt.sort_order, lg.vintage_max_year"
+			+ " ) tmp "
+			+ " where ranking = 1 ";
+		MapSqlParameterSource paramMap = new MapSqlParameterSource();
+		paramMap.addValue("lat", lat);
+		paramMap.addValue("lng", lng);
+
+		return this.namedParameterJdbcTemplate.query(sql, paramMap, new RowMapper<CommunityLocation>() {
+			@Override
+			public CommunityLocation mapRow(ResultSet rs, int rowNum) throws SQLException {
+				CommunityLocation location = new CommunityLocation();
+				location.setId(rs.getString("id_"));
+				location.setName_en(rs.getString("name_en"));
+				location.setName_es(rs.getString("name_es"));
+				location.setTypeId(rs.getString("location_type_id"));
+				location.setGeojson(rs.getString("geojson"));
+
+				return location;
+			}
+		});
 	}
 }
