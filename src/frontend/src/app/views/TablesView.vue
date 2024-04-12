@@ -550,7 +550,8 @@ export default {
         {
           text: i18n.t('tools.tables.headers.moe_low'),
           value: "moeLowLabel",
-          filterable: false
+          filterable: false,
+          sortable: false
         },
         {
           text: i18n.t('tools.tables.headers.moe_high'),
@@ -561,12 +562,14 @@ export default {
         {
           text: i18n.t('tools.tables.headers.universe'),
           value: "universeValueLabel",
-          filterable: false
+          filterable: false,
+          sortable: false
         },
         {
           text: i18n.t('tools.tables.headers.view'),
           value: "viewLabel",
-          filterable: false
+          filterable: false,
+          sortable: false
         }
       ];
     },
