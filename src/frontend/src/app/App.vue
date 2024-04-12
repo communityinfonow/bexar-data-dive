@@ -182,4 +182,7 @@ main {
   font-size: 1.0rem;
   font-weight: bold;
 }
+::v-deep .leaflet-container {
+  font-family: 'Poppins', sans-serif;
+}
 </style>

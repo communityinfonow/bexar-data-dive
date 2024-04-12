@@ -8,21 +8,32 @@
 					@change="lookupAddress"
 					:search-input.sync="search"	
 					:items="addressMatches"
-					label="Find your community"
-					placeholder="Address"
+					label="Find My Communities"
+					placeholder="Enter an address"
 					prepend-inner-icon="mdi-magnify"
 					solo
-					:hide-no-data="hideNoData"
+					hide-no-data
 					text
 					rounded
-					background-color="grey"
+					background-color="red"
+					dark
+					auto-select-first
+					@keypress.enter.prevent
 				>
+					<template v-slot:append>
+						<v-tooltip bottom z-index="9999" content-class="mt-2">
+							<template v-slot:activator="{ on }">
+								<v-icon v-on="on" style="cursor: pointer;">mdi-information</v-icon>
+							</template>
+							<span>Enter your address to find your Council District, SSA, Census Tract, and Zip Code</span>
+						</v-tooltip>
+					</template>
 				</v-autocomplete>
 		</v-form>
-		<v-dialog v-model="dialog" max-width="800px" @click:outside="close" style="z-index: 10002">
+		<v-dialog v-model="dialog" max-width="60%" @click:outside="close" style="z-index: 10002">
 			<v-card>
 				<v-card-title class="text-subtitle-1">
-					Address Lookup
+					Find My Communities
 					<v-spacer></v-spacer>
 					<v-btn icon @click="close" data-html2canvas-ignore>
 						<v-icon>mdi-close</v-icon>
@@ -78,12 +89,15 @@
 						</v-col>
 						<v-col cols="6">
 							<v-list class="ml-4">
-								<v-list-item v-for="location in locations" :key="location.id" @click.stop="selectCommunity(location)" @mouseenter="communityGeojson = location.geojson" @mouseleave="communityGeojson = null">
+								<v-list-item v-for="location in locations" :key="location.typeId + '_' + location.id" @click.stop="selectCommunity(location)" @mouseenter="communityGeojson = location.geojson" @mouseleave="communityGeojson = null">
 									<v-list-item-content>
-										<v-list-item-title>{{ location['name_' + locale] }}</v-list-item-title>
+										<v-list-item-title>{{ location['name_' + locale].substring(0, location['name_' + locale].lastIndexOf(" ")) }}:</v-list-item-title>
+									</v-list-item-content>
+									<v-list-item-content class="align-end font-weight-bold">
+										<v-list-item-title class="pl-4">{{ location['name_' + locale].substring(location['name_' + locale].lastIndexOf(" ")) }}</v-list-item-title>
 									</v-list-item-content>
 									<v-list-item-action data-html2canvas-ignore>
-										<v-btn text dark plain rounded color="red" @click.stop="selectCommunity(location)">View Community</v-btn>
+										<v-btn text dark plain rounded color="red" @click.stop="selectCommunity(location)">View in My Community</v-btn>
 									</v-list-item-action>
 								</v-list-item>
 							</v-list>
@@ -98,7 +112,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import axios from 'axios'
 import L from 'leaflet'
 import { latLng } from 'leaflet'
@@ -126,7 +140,6 @@ export default {
 			addressMapInitialized: false,
 			dialog: false,
 			search: '',
-			hideNoData: true,
 			addressMatches: [],
 			address: null,
 			locations: null,
@@ -152,7 +165,6 @@ export default {
 		},
 		search(newValue, oldValue) {
 			if (newValue !== oldValue) {
-				this.hideNoData = true;
 				this.findAddressMatches();
 			}
 		}
@@ -166,6 +178,7 @@ export default {
 		}, 100);
 	},
 	methods: {
+		...mapActions(['setLoading']),
 		findAddressMatches() {
 			if (!this.search) {
 				this.addressMatches = [];
@@ -185,9 +198,7 @@ export default {
 							lng:  r.lon
 						}
 					});
-				this.hideNoData = false;
 			}).catch(error => {
-				this.hideNoData = false;
 				console.error(error);
 			});
 		},
@@ -228,20 +239,32 @@ export default {
 			this.close();
 		},
 		download() {
-			html2canvas(document.querySelector('.v-dialog'), {
-				allowTaint: true,
-				useCORS: true,
-				scrollX: 0,
-				scrollY: 0,
-				windowWidth: document.documentElement.offsetWidth,
-				windowHeight: document.documentElement.offsetHeight,
-				scale: 2
-			}).then(canvas => {
-				canvas.toBlob(blob => {
-					let downloadLink = document.createElement('a');
-					downloadLink.download = 'address_communities.png';
-					downloadLink.href = URL.createObjectURL(blob);
-					downloadLink.click();
+			this.setLoading(true);
+			html2canvas(document.querySelector('header'), { scale: 2 }).then((headerCanvas) => {
+				html2canvas(document.querySelector('.v-dialog'), {
+					allowTaint: true,
+					useCORS: true,
+					scrollX: 0,
+					scrollY: 0,
+					windowWidth: document.documentElement.offsetWidth,
+					windowHeight: document.documentElement.offsetHeight,
+					scale: 2
+				}).then(dialogCanvas => {
+					let imageCanvas = document.createElement('canvas');
+					imageCanvas.width = headerCanvas.width * 0.3; // dialog is 60% width, so 30% of scaled header width
+					imageCanvas.height = (headerCanvas.height + dialogCanvas.height) / 2;
+					imageCanvas.getContext('2d').scale(0.5, 0.5);
+					imageCanvas.getContext('2d').fillStyle = 'white';
+					imageCanvas.getContext('2d').fillRect(0, 0, imageCanvas.width * 2, imageCanvas.height * 2);
+					imageCanvas.getContext('2d').drawImage(headerCanvas, 0, 0);
+					imageCanvas.getContext('2d').drawImage(dialogCanvas, 0, headerCanvas.height);
+					
+					let imageLink = document.createElement('a');
+					imageLink.download = 'my_communities.png';
+					imageLink.href = imageCanvas.toDataURL('image/png').replace('image/png', 'image/octet-stream');
+					imageLink.click();
+					
+					this.setLoading(false);
 				});
 			});
 		}
