@@ -368,6 +368,9 @@
                 </v-card>
               </v-menu>
             </template>
+            <template v-slot:item.viewLabel="">
+              <view-menu :indicatorId="indicator.id" :linkToExplore="true" :linkToTables="false" size="x-small"></view-menu>
+            </template>
           </v-data-table>
       </v-col>
     </v-row>
@@ -385,6 +388,7 @@ import ButtonMenu from '@/app/components/ButtonMenu'
 import IndicatorDefinition from '@/app/components/IndicatorDefinition.vue'
 import { getCategoryIconPath } from '@/services/icons'
 import debounce from 'debounce'
+import ViewMenu from '../components/ViewMenu.vue'
 
 export default {
   name: 'TablesView',
@@ -392,7 +396,8 @@ export default {
     MenuToolbar,
     FeaturedCard,
     ButtonMenu,
-    IndicatorDefinition
+    IndicatorDefinition,
+    ViewMenu
   },
   data() {
     return {
@@ -550,11 +555,17 @@ export default {
         {
           text: i18n.t('tools.tables.headers.moe_high'),
           value: "moeHighLabel",
-          filterable: false
+          filterable: false,
+          sortable: false
         },
         {
           text: i18n.t('tools.tables.headers.universe'),
           value: "universeValueLabel",
+          filterable: false
+        },
+        {
+          text: i18n.t('tools.tables.headers.view'),
+          value: "viewLabel",
           filterable: false
         }
       ];

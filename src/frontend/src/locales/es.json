@@ -103,7 +103,8 @@
         "value": "Valor",
         "moe_low": " ME (bajo)",
         "moe_high": "ME (alto)",
-        "universe": "Universo"
+        "universe": "Universo",
+        "view": "Ir"
       },
       "select_all": "Seleccionar todo",
       "clear_selections": "Limpiar selecciones",

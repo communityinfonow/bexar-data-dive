@@ -42,7 +42,7 @@
 							</p>
 					</div>
 					<div>
-						<button-menu :downloadData="downloadData" :downloadImage="downloadImage"></button-menu>
+						<button-menu :downloadData="downloadData" :downloadImage="downloadImage" :viewMenu="true" :indicatorId="item.indicator.id" :linkToExplore="true" :linkToTables="true"></button-menu>
 					</div>
 				</div>
 				<v-row>
