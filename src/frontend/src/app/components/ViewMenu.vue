@@ -6,10 +6,13 @@
 			</v-btn>
 		</template>
 		<v-list>
-			<v-list-item v-if="linkToExplore" :to="exploreUrl">
+			<v-list-item v-if="linkToCommunity" :href="communityUrl">
+				<v-list-item-title>{{ $t('tools.community.name') }}</v-list-item-title>
+			</v-list-item>
+			<v-list-item v-if="linkToExplore" :href="exploreUrl">
 				<v-list-item-title>{{ $t('tools.explore.name') }}</v-list-item-title>
 			</v-list-item>
-			<v-list-item v-if="linkToTables" :to="tablesUrl">
+			<v-list-item v-if="linkToTables" :href="tablesUrl">
 				<v-list-item-title >{{ $t('tools.tables.name') }}</v-list-item-title>
 			</v-list-item>
 		</v-list>
@@ -24,6 +27,42 @@ export default {
 		indicatorId: {
 			type: String,
 			required: true
+		},
+		locationId: {
+			type: String,
+			required: true
+		},
+		locationTypeId: {
+			type: String,
+			required: true
+		},
+		year: {
+			type: String,
+			required: false
+		},
+		raceId: {
+			type: String,
+			required: false
+		},
+		ageId: {
+			type: String,
+			required: false
+		},
+		sexId: {
+			type: String,
+			required: false
+		},
+		educationId: {
+			type: String,
+			required: false
+		},
+		incomeId: {
+			type: String,
+			required: false
+		},
+		linkToCommunity: {
+			type: Boolean,
+			default: false
 		},
 		linkToExplore: {
 			type: Boolean,
@@ -41,11 +80,59 @@ export default {
 	},
 	computed: {
 		...mapState(['locale']),
+		communityUrl() {
+			return '/community?lang=' + this.$router.currentRoute.query.lang + '&locationType=' + this.locationTypeId + '&location=' + this.locationId + '&filterType=1'
+		},
 		exploreUrl() {
-			return '/explore?lang=' + this.$router.currentRoute.query.lang + '&locationType=' + this.$router.currentRoute.query.locationType + '&locationId=' + this.$router.currentRoute.query.location + '&indicator=' + this.indicatorId
+			let url = '/explore?lang=' + this.$router.currentRoute.query.lang 
+				+ '&locationType=' + this.locationTypeId 
+				+ '&location=' + this.locationId 
+				+ '&indicator=' + this.indicatorId
+			if (this.year) {
+				url += '&year=' + this.year
+			}
+			if (this.raceId) {
+				url += '&filter_1=' + this.raceId
+			}
+			if (this.ageId) {
+				url += '&filter_2=' + this.ageId
+			}
+			if (this.sexId) {
+				url += '&filter_3=' + this.sexId
+			}
+			if (this.educationId) {
+				url += '&filter_4=' + this.educationId
+			}
+			if (this.incomeId) {
+				url += '&filter_5=' + this.incomeId
+			}
+
+			return url
 		},
 		tablesUrl() {
-			return '/tables?lang=' + this.$router.currentRoute.query.lang + '&indicator=' + this.indicatorId
+			let url = '/tables?lang=' + this.$router.currentRoute.query.lang 
+				+ '&indicator=' + this.indicatorId 
+				+ '&locations=' + this.locationTypeId + '_' + this.locationId
+			if (this.year) {
+				url += '&years=' + this.year
+			}
+			if (this.raceId) {
+				url += '&races=' + this.raceId
+			}
+			if (this.ageId) {
+				url += '&ages=' + this.ageId
+			}
+			if (this.sexId) {
+				url += '&sexes=' + this.sexId
+			}
+			if (this.educationId) {
+				url += '&educations=' + this.educationId
+			}
+			if (this.incomeId) {
+				url += '&incomes=' + this.incomeId
+			}
+
+			return url
 		},
 	},
 }

@@ -42,7 +42,7 @@
 							</p>
 					</div>
 					<div>
-						<button-menu :downloadData="downloadData" :downloadImage="downloadImage" :viewMenu="true" :indicatorId="item.indicator.id" :linkToExplore="true" :linkToTables="true"></button-menu>
+						<button-menu v-if="showButtonMenu && item.indicator.id" :downloadData="downloadData" :downloadImage="downloadImage" viewMenu :indicatorId="item.indicator.id" :locationTypeId="community.location.typeId" :locationId="community.location.id" :linkToExplore="true" :linkToTables="true"></button-menu>
 					</div>
 				</div>
 				<v-row>
@@ -115,7 +115,10 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['community', 'locale'])
+		...mapState(['community', 'locale']),
+		showButtonMenu() {
+			return this.community?.location
+		}
 	},
 	methods: {
 		...mapActions(['setLoading']),

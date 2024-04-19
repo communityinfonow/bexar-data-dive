@@ -2,7 +2,21 @@
 	<v-btn-toggle rounded borderless>
 		<download-menu :downloadData="downloadData" :downloadImage="downloadImage"></download-menu>
 		<share-menu></share-menu>
-		<view-menu v-if="viewMenu" :indicatorId="indicatorId" :linkToExplore="linkToExplore" :linkToTables="linkToTables"></view-menu>
+		<view-menu v-if="viewMenu" 
+			:indicatorId="indicatorId" 
+			:locationTypeId="locationTypeId" 
+			:locationId="locationId" 
+			:year="year"
+			:raceId="raceId"
+			:ageId="ageId"
+			:sexId="sexId"
+			:educationId="educationId"
+			:incomeId="incomeId"
+			:linkToCommunity="linkToCommunity" 
+			:linkToExplore="linkToExplore" 
+			:linkToTables="linkToTables"
+		>
+		</view-menu>
 		<v-btn icon data-html2canvas-ignore to="help" :aria-label="$t('help_view.name')">
 			<v-icon color="green" width="28px" height="28px">mdi-help-circle</v-icon>
 		</v-btn>
@@ -33,7 +47,35 @@ export default {
 			default: false
 		},
 		indicatorId: {
-			type: Number
+			type: String
+		},
+		locationId: {
+			type: String
+		},
+		locationTypeId: {
+			type: String
+		},
+		year: {
+			type: String
+		},
+		raceId: {
+			type: String
+		},
+		ageId: {
+			type: String
+		},
+		sexId: {
+			type: String
+		},
+		educationId: {
+			type: String
+		},
+		incomeId: {
+			type: String
+		},
+		linkToCommunity: {
+			type: Boolean,
+			default: false
 		},
 		linkToExplore: {
 			type: Boolean,

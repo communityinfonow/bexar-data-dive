@@ -368,8 +368,23 @@
                 </v-card>
               </v-menu>
             </template>
-            <template v-slot:item.viewLabel="">
-              <view-menu :indicatorId="indicator.id" :linkToExplore="true" :linkToTables="false" size="x-small"></view-menu>
+            <template v-slot:item.viewLabel="record">
+              <view-menu 
+                :indicatorId="indicator.id" 
+                :locationTypeId="record.item.locationTypeId" 
+                :locationId="record.item.locationId" 
+                :year="record.item.year" 
+                :raceId="record.item.raceId" 
+                :ageId="record.item.ageId"
+                :sexId="record.item.sexId"
+                :educationId="record.item.educationId"
+                :incomeId="record.item.incomeId"
+                viewMenu 
+                linkToExplore 
+                linkToCommunity 
+                size="x-small"
+              >
+              </view-menu>
             </template>
           </v-data-table>
       </v-col>

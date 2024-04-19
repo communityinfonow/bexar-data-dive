@@ -107,7 +107,7 @@
 								</v-btn>
 							</v-btn-toggle>
 						</div>
-						<button-menu :downloadData="downloadData" :downloadImage="downloadImage" class="ml-2" style="margin-top: -8px"></button-menu>
+						<button-menu v-if="indicator && filterSelections" :downloadData="downloadData" :downloadImage="downloadImage" viewMenu linkToCommunity linkToTables :indicatorId="indicator.id" :locationTypeId="filterSelections.locationType" :locationId="filterSelections.location" class="ml-2" style="margin-top: -8px"></button-menu>
 					</div>
 				</v-col>
 				<v-col v-if="showHighlightFilteredLocation" cols="6" class="d-flex justify-end">
@@ -130,7 +130,22 @@
 							color="red"
 						></v-switch>
 					</template>
-					<button-menu :downloadData="downloadData" :downloadImage="downloadImage" class="ml-2" style="margin-top: -.5em"></button-menu>
+					<button-menu v-if="indicator && filterSelections && filterSelections.location && filterSelections.indicatorFilters" 
+						:downloadData="downloadData" 
+						:downloadImage="downloadImage" 
+						viewMenu linkToCommunity linkToTables 
+						:indicatorId="indicator.id" 
+						:locationTypeId="filterSelections.locationType" 
+						:locationId="filterSelections.location" 
+						:year="filterSelections.year" 
+						:raceId="filterSelections.indicatorFilters[1] ? filterSelections.indicatorFilters[1].id : null" 
+						:ageId="filterSelections.indicatorFilters[2] ? filterSelections.indicatorFilters[2].id : null" 
+						:sexId="filterSelections.indicatorFilters[3] ? filterSelections.indicatorFilters[3].id : null" 
+						:educationId="filterSelections.indicatorFilters[4] ? filterSelections.indicatorFilters[4].id : null" 
+						:incomeId="filterSelections.indicatorFilters[5] ? filterSelections.indicatorFilters[5].id : null" 
+						class="ml-2" style="margin-top: -.5em"
+					>
+					</button-menu>
 				</v-col>
 			</v-row>
 		</v-form>
