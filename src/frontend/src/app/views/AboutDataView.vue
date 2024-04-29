@@ -17,7 +17,7 @@
             <template v-if="item.items">
               <section v-for="subItem in item.items" :key="subItem.id" class="mb-4">
                 <h3 class="mb-4 text-dive-h5" :id="'indicator_' + subItem.indicator.id">{{ item.category['name_' + locale] }} - {{ subItem.indicator['name_' + locale] }}</h3>
-                <section v-if="subItem.indicator['description_' + locale] !== ''" v-html="subItem.indicator['description_' + locale]" style="font-size: 1.25rem"></section>
+                <section v-if="subItem.indicator['description_' + locale] !== ''" class="wrap-text" v-html="subItem.indicator['description_' + locale]" style="font-size: 1.25rem"></section>
                 <p v-if="subItem.indicator['description_' + locale] === ''" style="font-size: 1.25rem">{{ $t('tools.community.coming_soon') }}</p>
                 <v-btn v-if="subItem.indicator.hasData" rounded dark color="red" class="mr-4" @click.stop="openCitationDialog(subItem)">{{ $t('about_data_view.source_citation') }}</v-btn>
                 <v-btn text link rounded color="red" target="_blank" :href="subItem.source.url">{{ $t('about_data_view.visit_source') }} <sup><v-icon x-small color="red">mdi-open-in-new</v-icon></sup></v-btn>
@@ -27,7 +27,7 @@
             <template v-else>
               <h3 class="mb-4 text-dive-h5" :id="'indicator_' + item.indicator.id">{{ item.indicator['name_' + locale] }}</h3>
               <section class="mb-4">
-                <section v-if="!item.items && item.indicator['description_' + locale] !== ''" v-html="item.indicator['description_' + locale]" style="font-size: 1.25rem"></section>
+                <section v-if="!item.items && item.indicator['description_' + locale] !== ''" class="wrap-text" v-html="item.indicator['description_' + locale]" style="font-size: 1.25rem"></section>
                 <p v-if="item.indicator['description_' + locale] === ''" style="font-size: 1.25rem">{{ $t('tools.community.coming_soon') }}</p>
                 <v-btn v-if="item.indicator.hasData" rounded dark color="red" class="mr-4" @click.stop="openCitationDialog(item)">{{ $t('about_data_view.source_citation') }}</v-btn>
                 <v-btn text link rounded color="red" target="_blank" :href="item.source.url">{{ $t('about_data_view.visit_source') }} <sup><v-icon x-small color="red">mdi-open-in-new</v-icon></sup></v-btn>
@@ -252,5 +252,8 @@ export default {
 }
 .cursor-pointer {
   cursor: pointer;
+}
+.wrap-text {
+  word-break: break-word;
 }
 </style>

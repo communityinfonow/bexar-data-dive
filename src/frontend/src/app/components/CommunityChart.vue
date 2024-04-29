@@ -39,10 +39,6 @@ export default {
 		},
 		labelsOrLines: {
 			type: String
-		},
-		orientation: {
-			type: String,
-			default: 'vertical'
 		}
 	},
 	data() {
@@ -54,6 +50,9 @@ export default {
 		...mapState(['locale']),
 		smallScreen() {
 			return document.body.clientWidth <= 1440;
+		},
+		orientation() {
+			return this.smallScreen ? 'horizontal' : 'vertical';
 		}
 	},
 	watch: {

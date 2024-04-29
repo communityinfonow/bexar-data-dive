@@ -155,12 +155,13 @@
               </v-col>
             </v-row>
             <v-spacer></v-spacer>
-            <div v-if="!message" class="d-flex">
+            <div v-if="!message" class="d-flex" :class="$vuetify.breakpoint.smAndDown ? 'flex-column' : ''">
               <v-btn
                 rounded
                 color="red"
                 dark
-                class="mt-4 mr-2 flex-grow-1"
+                class="mt-4 flex-grow-1"
+                :class="$vuetify.breakpoint.smAndDown ? '' : 'mr-2'"
                 @click="saveCustomLocation"
               >
                 {{ $t('tools.custom_locations.save') }}
@@ -169,7 +170,8 @@
                 rounded
                 color="red"
                 dark
-                class="mt-4 ml-2 flex-grow-1"
+                class="mt-4 flex-grow-1"
+                :class="$vuetify.breakpoint.smAndDown ? '' : 'ml-2'"
                 @click="exportCustomLocation"
               >
                 {{ $t('tools.custom_locations.export') }}

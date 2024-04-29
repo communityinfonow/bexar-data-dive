@@ -1,7 +1,9 @@
 <template>
   <v-app-bar app color="white" light flat height="80px" class="d-print-none">
     <v-toolbar-title class="px-4 py-2">
-      <router-link :to="{ name: 'home' }"><img src="/img/bexar-data-dive-logo.svg" style="height: 56px;" alt="Bexar Data Dive Logo" /></router-link>
+      <router-link :to="{ name: 'home' }">
+        <img src="/img/bexar-data-dive-logo.svg" :style="{ 'height': logoHeight }" alt="Bexar Data Dive Logo" />
+      </router-link>
     </v-toolbar-title>
     <v-spacer></v-spacer>
     <v-btn-toggle :value="locale" mandatory group data-html2canvas-ignore class="secondary--text">
@@ -18,6 +20,9 @@ export default {
   name: 'AppHeader',
   computed: {
     ...mapState(['locale']),
+    logoHeight() {
+      return this.$vuetify.breakpoint.smAndDown ? '36px' : '56px'
+    },
   },
   methods: {
     ...mapActions(['setLocale']),

@@ -106,6 +106,12 @@ export default {
 main {
   padding-bottom: 200px !important;
 }
+/* increase the padding on small screens */
+@media screen and (max-width: 1440px) {
+  main {
+    padding-bottom: 300px !important;
+  }
+}
 
 ::v-deep .sticky-menu {
   position: sticky;
