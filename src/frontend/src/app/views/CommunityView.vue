@@ -114,7 +114,7 @@
           </div>
         </section>
       </v-col>
-      <v-col cols="auto" class="shrink sticky-menu" :style="{ 'margin-top': showIntro ? '0' : '-26px' }">
+      <v-col cols="auto" class="shrink sticky-menu" :style="{ 'margin-top': showIntro || $vuetify.breakpoint.smAndDown  ? '0' : '-26px' }">
         <MenuToolbar
           class="flex-column"
           :menu="locationMenu"

@@ -7,8 +7,8 @@
         <br>
         {{ $t('home_view.connecting_line_2') }}
       </h1>
-      <div class="font-weight-medium mt-2" style="font-size: 1.25rem;">{{ $t('home_view.welcome_line_1') }}</div>
-      <div class="font-weight-medium" style="font-size: 1.25rem;">{{ $t('home_view.welcome_line_2') }}</div>
+      <div class="font-weight-medium mt-2" :style="{ 'font-size': $vuetify.breakpoint.mdAndUp ? '1.25rem' : '1.rem' }">{{ $t('home_view.welcome_line_1') }}</div>
+      <div class="font-weight-medium" :style="{ 'font-size': $vuetify.breakpoint.mdAndUp ? '1.25rem' : '1.rem' }">{{ $t('home_view.welcome_line_2') }}</div>
     </section>
     <h2 class="text-dive-h4 text-uppercase mt-16 mb-2 font-weight-light text-center">{{ $t('home_view.available_tools') }}</h2>
     <section class="d-flex" :class="{ 'flex-row': $vuetify.breakpoint.mdAndUp, 'flex-column': $vuetify.breakpoint.smAndDown }">

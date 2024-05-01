@@ -128,6 +128,12 @@ export default {
     z-index: 9999;
     bottom: 12em;
   }
+  /* small screen */
+  @media only screen and (max-width: 1024px) {
+    .visitor-survey-fab {
+      bottom: 40%;
+    }
+  }
   .visitor-survey-fab .v-btn {
     bottom: 36%;
   }
