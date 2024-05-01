@@ -188,6 +188,32 @@ main {
   font-size: 1.0rem;
   font-weight: bold;
 }
+@media only screen and (max-width: 1024px) {
+  ::v-deep .text-dive-h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+::v-deep .text-dive-h2 {
+  font-size: 2.0rem;
+  font-weight: bold;
+}
+::v-deep .text-dive-h3 {
+  font-size: 1.75rem;
+  font-weight: bold;
+}
+::v-deep .text-dive-h4 {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+::v-deep .text-dive-h5 {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+::v-deep .text-dive-h6 {
+  font-size: 1.125rem;
+  font-weight: bold;
+}
+}
 ::v-deep .leaflet-container {
   font-family: 'Poppins', sans-serif;
 }
