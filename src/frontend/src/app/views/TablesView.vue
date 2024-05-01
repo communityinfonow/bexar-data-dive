@@ -76,6 +76,7 @@
             :sort-desc.sync="sortDesc"
             :footer-props="footerOptions"
             :server-items-length="tablesData.totalRows"
+            mobile-breakpoint="1024"
           >
             <!-- FIXME: DRY -->
             <template v-slot:header.locationType="{ header }">
@@ -839,6 +840,11 @@ export default {
 ::v-deep .v-data-table-header .v-icon:after,
 ::v-deep .v-data-table-header .v-data-table-header__sort-badge {
   color: var(--v-green-base) !important;
+}
+@media screen and (max-width: 1024px) {
+  ::v-deep tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, .05);
+  }
 }
 .filter-list {
   min-width: 160px;

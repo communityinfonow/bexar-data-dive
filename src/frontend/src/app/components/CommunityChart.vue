@@ -2,7 +2,7 @@
 	<div 
 		:ref="'chart_container_' + this.indicatorId" 
 		:id="'chart_container_' + this.indicatorId" 
-		:style="{ width: '100%', height: orientation === 'vertical' ? '400px' : '600px' }"
+		:style="{ width: '100%', height: chartHeight }"
 	>
 	</div>
 </template>
@@ -53,6 +53,9 @@ export default {
 		},
 		orientation() {
 			return this.smallScreen ? 'horizontal' : 'vertical';
+		},
+		chartHeight() {
+			return this.smallScreen ? this.data.length * 80 + 'px' : '400px';
 		}
 	},
 	watch: {
@@ -81,7 +84,7 @@ export default {
 			this.chart = echarts.init(document.getElementById('chart_container_' + this.indicatorId), null, { renderer: 'svg'});
 			let textStyle = {
 				fontFamily: '"Roboto", sans-serif !important',
-				fontSize: this.smallScreen ? '14px' : '16px'
+				fontSize: this.smallScreen ? '12px' : '16px'
 			};
 			let option = {};
 			option.grid = { left: 40, right: 200, containLabel: true };
@@ -93,21 +96,29 @@ export default {
 				splitNumber: 1,
 				axisLabel: textStyle
 			};
-			let xAxisData = Array.from(new Set(this.data.map(d => '' + (d.demographicFilter['name_' + this.locale] || i18n.t('data.all')))));
-			if (xAxisData.length < this.maxDemographics) {
-				xAxisData = xAxisData.concat(...Array.from(Array(this.maxDemographics - xAxisData.length))).map(d => d || '')
+			let categoryAxisData = Array.from(new Set(this.data.map(d => '' + (d.demographicFilter['name_' + this.locale] || i18n.t('data.all')))));
+			if (this.orientation === 'horizontal') {
+				categoryAxisData = categoryAxisData.reverse();
+			}
+			if (this.orientation === 'vertical' && categoryAxisData.length < this.maxDemographics) {
+				categoryAxisData = categoryAxisData.concat(...Array.from(Array(this.maxDemographics - categoryAxisData.length))).map(d => d || '')
 			}
 			option[categoryAxis] = [{ 
 				type: 'category', 
-				data: xAxisData,
+				data: categoryAxisData,
 				axisTick: { show: false },
-				axisLabel: { ...textStyle, fontWeight: 'bold', interval: 0, width: '80', overflow: 'break', lineHeight: 20, color: '#333333' }
+				axisLabel: { 
+					...textStyle, 
+					fontWeight: 'bold', 
+					interval: 0, 
+					width: this.orientation === 'vertical' ? '80' : '130', 
+					overflow: 'break', 
+					lineHeight: 20, 
+					color: '#333333' 
+				}
 			}];
 			option.textStyle = textStyle;
 			option.color = '#3b5a98';
-			if (this.orientation === 'horizontal') {
-				option.grid.left = 100;
-			}
 			option.series = [];
 			
 			let series = [
@@ -183,9 +194,12 @@ export default {
 						suppressed: dataPoint.suppressed 
 					}; 
 				});
+			if (this.orientation === 'horizontal') {
+				seriesData = seriesData.reverse();
+			}
 			series[0].data = seriesData;
 			if (this.labelsOrLines === 'lines') {
-				series[1].data = seriesData.map((d, i) => [xAxisData[i], d.moeHigh, d.moeLow]);
+				series[1].data = seriesData.map((d, i) => [categoryAxisData[i], d.moeHigh, d.moeLow, d.value]);
 			}
 			option.series = series;
 			option.aria = { enabled: true };
@@ -211,15 +225,22 @@ export default {
 
 			if (this.labelsOrLines === 'lines') {
 				window.setTimeout(() => {
+					let self = this;
 					this.chart.setOption({
 						series: [
 							{
 								name: 'error',
 								renderItem: function(params, api) {
-									let xValue = api.value(0);
-									let highPoint = api.coord([xValue, api.value(1)]) || 0;
-									let lowPoint = api.coord([xValue, api.value(2)]) || 0;
-									let halfWidth = Math.min(20, api.size([1, 0])[0] * 0.1);
+									let categoryValue = params.dataIndexInside
+									let highPoint = (self.orientation === 'vertical' 
+										? api.coord([categoryValue, api.value(1)]) 
+										: api.coord([api.value(1), categoryValue])) || 0;
+									let lowPoint = (self.orientation === 'vertical' 
+										? api.coord([categoryValue, api.value(2)]) 
+										: api.coord([api.value(2), categoryValue])) || 0;
+									let halfWidth = self.orientation === 'vertical' 
+										? Math.min(20, api.size([1, 0])[0] * 0.1) 
+										: (api.value(3) ? 10 : 0);
 									let style = {
 										stroke: '#b8237e',
 										fill: null,
@@ -231,33 +252,49 @@ export default {
 											{
 												type: 'line',
 												transition: ['shape'],
-												shape: {
+												shape: self.orientation === 'vertical' ? {
 													x1: highPoint[0] - halfWidth,
 													y1: highPoint[1],
 													x2: highPoint[0] + halfWidth,
 													y2: highPoint[1]
+												} : {
+													x1: highPoint[0],
+													y1: highPoint[1] - halfWidth,
+													x2: highPoint[0],
+													y2: highPoint[1] + halfWidth
 												},
 												style: style
 											},
 											{
 												type: 'line',
 												transition: ['shape'],
-												shape: {
+												shape: self.orientation === 'vertical' ? {
 													x1: highPoint[0],
 													y1: highPoint[1],
 													x2: lowPoint[0],
 													y2: lowPoint[1]
+												} : {
+													x1: highPoint[0],
+													y1: highPoint[1],
+													x2: lowPoint[0],
+													y2: lowPoint[1]
+												
 												},
 												style: style
 											},
 											{
 												type: 'line',
 												transition: ['shape'],
-												shape: {
+												shape: self.orientation === 'vertical' ? {
 													x1: lowPoint[0] - halfWidth,
 													y1: lowPoint[1],
 													x2: lowPoint[0] + halfWidth,
 													y2: lowPoint[1]
+												} : {
+													x1: lowPoint[0],
+													y1: lowPoint[1] - halfWidth,
+													x2: lowPoint[0],
+													y2: lowPoint[1] + halfWidth
 												},
 												style: style
 											}
