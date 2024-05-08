@@ -1,9 +1,14 @@
 <template>
 	<v-menu offset-y min-width="300px">
-		<template v-slot:activator="{ on }">
-			<v-btn icon data-html2canvas-ignore v-on="on" :aria-label="$t('featured_card.view')" :x-small="size === 'x-small'">
-				<v-img src="/img/icon_ux_menu_view__active.svg" height="24px" width="24px"></v-img>
-			</v-btn>
+		<template v-slot:activator="{ on: menu, attrs }">
+			<v-tooltip v-model="open" top z-index="9999">
+				<template v-slot:activator="{ on: tooltip }">
+					<v-btn icon data-html2canvas-ignore v-bind="attrs" v-on="{ ...tooltip, ...menu }"  :aria-label="$t('tools.tables.headers.switch')" :x-small="size === 'x-small'">
+						<v-img src="/img/icon_ux_menu_view__active.svg" height="24px" width="24px"></v-img>
+					</v-btn>
+				</template>
+				<span>{{ $t('tools.tables.headers.switch') }}</span>
+			</v-tooltip>
 		</template>
 		<v-list>
 			<v-list-item v-if="linkToCommunity" :href="communityUrl">
@@ -76,6 +81,11 @@ export default {
 			type: String,
 			default: '24px'
 		
+		}
+	},
+	data() {
+		return {
+			open: false
 		}
 	},
 	computed: {

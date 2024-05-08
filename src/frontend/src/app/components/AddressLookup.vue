@@ -1,15 +1,14 @@
 <template>
 	<div>
 		<v-form>
-				<!-- TODO: i18n -->
 				<v-autocomplete
 					v-model="address"
 					return-object
 					@change="lookupAddress"
 					:search-input.sync="search"	
 					:items="addressMatches"
-					label="Find My Communities"
-					placeholder="Enter an address"
+					:label="$t('tools.community.find_communities')"
+					:placeholder="$t('tools.community.enter_address')"
 					prepend-inner-icon="mdi-magnify"
 					solo
 					hide-no-data
@@ -25,7 +24,7 @@
 							<template v-slot:activator="{ on }">
 								<v-icon v-on="on" style="cursor: pointer;">mdi-information</v-icon>
 							</template>
-							<span>Enter your address to find your Council District, SSA, Census Tract, and Zip Code</span>
+							<span>{{ $t('tools.community.find_tooltip') }}</span>
 						</v-tooltip>
 					</template>
 				</v-autocomplete>
@@ -33,7 +32,7 @@
 		<v-dialog v-model="dialog" max-width="60%" @click:outside="close" style="z-index: 10002">
 			<v-card>
 				<v-card-title class="text-subtitle-1">
-					Find My Communities
+					{{ $t('tools.community.find_communities') }}
 					<v-spacer></v-spacer>
 					<v-btn icon @click="close" data-html2canvas-ignore>
 						<v-icon>mdi-close</v-icon>
@@ -45,9 +44,14 @@
 							{{ address.text }}
 						</div>
 						<v-spacer></v-spacer>
-						<v-btn icon data-html2canvas-ignore :aria-label="$t('tools.common.download.name')" @click="download">
-							<v-img src="/img/icon_ux_menu_download__active.svg" contain width="24px" height="24px"></v-img>
-						</v-btn>
+						<v-tooltip v-model="open" bottom z-index="99999">
+							<template v-slot:activator="{ on, attrs }">
+								<v-btn v-bind="attrs" v-on="on" icon data-html2canvas-ignore :aria-label="$t('tools.common.download.name')" @click="download">
+									<v-img src="/img/icon_ux_menu_download__active.svg" contain width="24px" height="24px"></v-img>
+								</v-btn>
+							</template>
+							<span>{{ $t('tools.common.download.name') }}</span>
+						</v-tooltip>
 					</div>
 					<v-row v-if="locations" class="mt-8">
 						<v-col cols="6">
@@ -93,11 +97,11 @@
 									<v-list-item-content>
 										<v-list-item-title>{{ location['name_' + locale].substring(0, location['name_' + locale].lastIndexOf(" ")) }}:</v-list-item-title>
 									</v-list-item-content>
-									<v-list-item-content class="align-end font-weight-bold">
+									<v-list-item-content class="align-end font-weight-bold" style="max-width: 80px;">
 										<v-list-item-title class="pl-4">{{ location['name_' + locale].substring(location['name_' + locale].lastIndexOf(" ")) }}</v-list-item-title>
 									</v-list-item-content>
 									<v-list-item-action data-html2canvas-ignore>
-										<v-btn text dark plain rounded color="red" @click.stop="selectCommunity(location)">View in My Community</v-btn>
+										<v-btn text small dark plain rounded color="red" @click.stop="selectCommunity(location)">{{ $t('tools.community.view_community') }}</v-btn>
 									</v-list-item-action>
 								</v-list-item>
 							</v-list>
@@ -147,7 +151,8 @@ export default {
 			center: latLng(29.43445, -98.473562383),
 			addressGeojson: null,
 			communityGeojson: null,
-			markerIcon: L.divIcon({ html: '<i class="mdi mdi-map-marker"></i>', iconSize: [30, 30], iconAnchor: [15, 30] })
+			markerIcon: L.divIcon({ html: '<i class="mdi mdi-map-marker"></i>', iconSize: [30, 30], iconAnchor: [15, 30] }),
+			open: false
 		}
 	},
 	computed: {

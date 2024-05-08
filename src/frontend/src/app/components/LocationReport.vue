@@ -10,7 +10,7 @@
 				<v-icon>mdi-close</v-icon>
 			</v-btn>
 		</div>
-		<v-simple-table fixed-header :height="this.reportHeight">
+		<v-simple-table id="location-report-table" fixed-header :height="this.reportHeight">
 			<thead>
 				<tr>
 					<th>{{ $t('tools.common.download.headers.indicator') }}</th>
@@ -57,6 +57,7 @@
 <script>
 import { mapState } from 'vuex'
 import i18n from '@/i18n'
+import L from 'leaflet'
 export default {
 	name: 'LocationReport',
 	props: {
@@ -72,6 +73,10 @@ export default {
 		reportHeight() {
 			return document.querySelector('#explore_map').offsetHeight - 280 + 'px';
 		}
+	},
+	mounted() {
+		var elem = L.DomUtil.get('location-report-table');
+		L.DomEvent.on(elem, 'mousewheel', L.DomEvent.stopPropagation);
 	},
 	methods: {
 		downloadReport() {

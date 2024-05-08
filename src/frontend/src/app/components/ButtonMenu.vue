@@ -17,9 +17,14 @@
 			:linkToTables="linkToTables"
 		>
 		</view-menu>
-		<v-btn icon data-html2canvas-ignore to="help" :aria-label="$t('help_view.name')">
-			<v-icon color="green" width="28px" height="28px">mdi-help-circle</v-icon>
-		</v-btn>
+		<v-tooltip v-model="open" top z-index="9999">
+			<template v-slot:activator="{ on }">
+				<v-btn v-on="on" icon data-html2canvas-ignore to="help" :aria-label="$t('help_view.name')">
+					<v-icon color="green" width="28px" height="28px">mdi-help-circle</v-icon>
+				</v-btn>
+			</template>
+			<span>{{ $t('help_view.name') }}</span>
+		</v-tooltip>
 	</v-btn-toggle>
 </template>
 
@@ -84,6 +89,11 @@ export default {
 		linkToTables: {
 			type: Boolean,
 			default: false
+		}
+	},
+	data() {
+		return {
+			open: false
 		}
 	}
 }

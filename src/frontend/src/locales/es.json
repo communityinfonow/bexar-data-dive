@@ -33,7 +33,11 @@
       "age_group": "ese grupo de edad",
       "sex": "ese sexo",
       "education_level": "ese nivel de educación",
-      "income_level": "ese nivel de ingresos"
+      "income_level": "ese nivel de ingresos",
+      "find_communities": "Encontrar mis comunidades",
+      "enter_address": "Introduce una dirección",
+      "find_tooltip": "Ingrese su dirección para encontrar su Distrito de Ayuntamiento, SSA, Área de Censo y Código Postal",
+      "view_community": "Ver en Mi Comunidad"
     },
     "explore": {
       "name": "Exploración de Datos",
@@ -104,7 +108,8 @@
         "moe_low": " ME (bajo)",
         "moe_high": "ME (alto)",
         "universe": "Universo",
-        "view": "Ir"
+        "view": "Ir",
+        "switch": "Cambiar herramientas"
       },
       "select_all": "Seleccionar todo",
       "clear_selections": "Limpiar selecciones",
