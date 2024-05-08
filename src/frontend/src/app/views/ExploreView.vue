@@ -60,15 +60,15 @@
       </v-col>
       <v-col v-if="indicator" cols="auto" class="explore-content">
         <v-row class="fill-height no-gutters mt-4">
-          <v-col cols="3">
-            <v-row class="fill-height no-gutters flex-column px-4">
+          <v-col cols="12" md="3" :class="$vuetify.breakpoint.smAndDown ? 'flex-shrink-1' : ''">
+            <v-row class="no-gutters flex-column px-4" :class="$vuetify.breakpoint.smAndDown ? '' : 'fill-height'">
               <filters-panel></filters-panel>
-              <docked-tooltip class="grow" :helpMessage="dockedTooltipHelpMessage" :activeTab="tab"></docked-tooltip>
+              <docked-tooltip :class="$vuetify.breakpoint.smAndDown ? '' : 'grow'" :helpMessage="dockedTooltipHelpMessage" :activeTab="tab"></docked-tooltip>
             </v-row>
           </v-col>
-          <v-col cols="9" class="px-4">
-            <v-row class="fill-height no-gutters flex-column">
-              <v-col cols="auto" class="d-flex shrink">
+          <v-col cols="12" md="9" class="px-4" :class="$vuetify.breakpoint.smAndDown ? 'tab-content' : ''">
+            <v-row class="fill-height no-gutters" :class="$vuetify.breakpoint.smAndDown && layout === 'gallery' ? 'flex-row' : 'flex-column'">
+              <v-col cols="auto" class="d-flex shrink" :class="$vuetify.breakpoint.smAndDown ? 'flex-column' : ''">
                 <v-tabs v-model="tab" grow color="red">
                   <v-tab v-for="tab in tabs" :key="tab" @click="selectTab(tab)">
                     <span v-if="layout === 'gallery' && locale === 'es'">&nbsp;Opciones {{ tab === 'map' ? 'de' : 'del' }}&nbsp;</span>
@@ -138,17 +138,17 @@
                     </explore-tools-panel>
                   </v-col>
                 </v-row>
-                <v-row id="gallery-data-visuals" class="fill-height no-gutters">
-                  <v-col cols="5" class="fill-height">
+                <v-row id="gallery-data-visuals" class="no-gutters" :class="$vuetify.breakpoint.smAndDown ? 'align-start' : 'fill-height'">
+                  <v-col cols="12" md="5" :class="$vuetify.breakpoint.smAndDown ? 'gallery-map' : 'fill-height'">
                     <v-sheet outlined class="pa-4 fill-height">
                       <explore-map :layout="layout"></explore-map>
                     </v-sheet>
                   </v-col>
-                  <v-col cols="7">
-                    <v-sheet outlined class="pa-4" style="width: 100%; height: 50%;">
+                  <v-col cols="12" md="7">
+                    <v-sheet outlined class="pa-4 gallery-chart">
                       <explore-trend-chart :layout="layout"></explore-trend-chart>
                     </v-sheet>
-                    <v-sheet outlined class="pa-4" style="width: 100%; height: 50%;">
+                    <v-sheet outlined class="pa-4 gallery-chart">
                       <explore-compare-chart :layout="layout"></explore-compare-chart>
                     </v-sheet>
                   </v-col>
@@ -342,5 +342,29 @@ export default {
   }
   .gallery-content {
     height: 690px;
+  }
+  .gallery-chart {
+    width: 100%;
+    height: 50%;
+  }
+  @media screen and (max-width: 1024px){
+    .explore-content {
+      height: auto;
+    }
+    .explore-content:has(.gallery-content) {
+      height: auto;
+    }
+    .tab-content:not(:has(.gallery-content)) {
+      height: 820px;
+    }
+    .gallery-content {
+      height: auto;
+    }
+    .gallery-map {
+      height: 400px;
+    }
+    .gallery-chart {
+      height: 400px;
+    }
   }
 </style>
