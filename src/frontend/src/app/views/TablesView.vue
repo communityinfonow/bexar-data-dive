@@ -368,6 +368,24 @@
                 </v-card>
               </v-menu>
             </template>
+            <template v-slot:item.viewLabel="record">
+              <view-menu 
+                :indicatorId="indicator.id" 
+                :locationTypeId="record.item.locationTypeId" 
+                :locationId="record.item.locationId" 
+                :year="record.item.year" 
+                :raceId="record.item.raceId" 
+                :ageId="record.item.ageId"
+                :sexId="record.item.sexId"
+                :educationId="record.item.educationId"
+                :incomeId="record.item.incomeId"
+                viewMenu 
+                linkToExplore 
+                linkToCommunity 
+                size="x-small"
+              >
+              </view-menu>
+            </template>
           </v-data-table>
       </v-col>
     </v-row>
@@ -385,6 +403,7 @@ import ButtonMenu from '@/app/components/ButtonMenu'
 import IndicatorDefinition from '@/app/components/IndicatorDefinition.vue'
 import { getCategoryIconPath } from '@/services/icons'
 import debounce from 'debounce'
+import ViewMenu from '../components/ViewMenu.vue'
 
 export default {
   name: 'TablesView',
@@ -392,7 +411,8 @@ export default {
     MenuToolbar,
     FeaturedCard,
     ButtonMenu,
-    IndicatorDefinition
+    IndicatorDefinition,
+    ViewMenu
   },
   data() {
     return {
@@ -545,17 +565,26 @@ export default {
         {
           text: i18n.t('tools.tables.headers.moe_low'),
           value: "moeLowLabel",
-          filterable: false
+          filterable: false,
+          sortable: false
         },
         {
           text: i18n.t('tools.tables.headers.moe_high'),
           value: "moeHighLabel",
-          filterable: false
+          filterable: false,
+          sortable: false
         },
         {
           text: i18n.t('tools.tables.headers.universe'),
           value: "universeValueLabel",
-          filterable: false
+          filterable: false,
+          sortable: false
+        },
+        {
+          text: i18n.t('tools.tables.headers.switch'),
+          value: "viewLabel",
+          filterable: false,
+          sortable: false
         }
       ];
     },

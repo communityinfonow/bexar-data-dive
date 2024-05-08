@@ -33,7 +33,11 @@
       "age_group": "age group",
       "sex": "sex",
       "education_level": "education level",
-      "income_level": "income level"
+      "income_level": "income level",
+      "find_communities": "Find My Communities",
+      "enter_address": "Enter an address",
+      "find_tooltip": "Enter your address to find your Council District, SSA, Census Tract, and Zip Code",
+      "view_community": "View in My Community"
     },
     "explore": {
       "name": "Explore Data",
@@ -103,7 +107,9 @@
         "value": "Value",
         "moe_low": " MOE (low)",
         "moe_high": "MOE (high)",
-        "universe": "Universe"
+        "universe": "Universe",
+        "view": "View",
+        "switch": "Switch tools"
       },
       "select_all": "Select all",
       "clear_selections": "Clear selections",

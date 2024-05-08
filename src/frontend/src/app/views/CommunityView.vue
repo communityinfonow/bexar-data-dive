@@ -121,7 +121,8 @@
           :selectItem="selectItem"
           :flattenSingleItems="true"
           :searchType="$t('tools.common.locations')"
-        ></MenuToolbar>
+        >
+        </MenuToolbar>
       </v-col>
       <v-col v-if="showIntro" cols="auto" class="pa-4 grow">
         <l-map
@@ -154,6 +155,12 @@
             :geojson="selectionGeojson"
             :options="options"
           ></l-geo-json>
+          <l-control
+            position="topright"
+            class="address-lookup"
+          >
+            <address-lookup :selectLocation="selectItem"></address-lookup>
+          </l-control>
           <l-control
             position="bottomright"
             class="layer-control"
@@ -222,6 +229,7 @@ import { feature, featureCollection, multiPolygon } from '@turf/helpers'
 import MenuToolbar from '@/app/components/MenuToolbar'
 import CommunityIndicator from '@/app/components/CommunityIndicator'
 import ButtonMenu from '@/app/components/ButtonMenu'
+import AddressLookup from '@/app/components/AddressLookup.vue'
 
 export default {
   name: 'CommunityView',
@@ -232,7 +240,8 @@ export default {
     LGeoJson,
     MenuToolbar,
     CommunityIndicator,
-    ButtonMenu
+    ButtonMenu,
+    AddressLookup
   },
   data() {
     return {
