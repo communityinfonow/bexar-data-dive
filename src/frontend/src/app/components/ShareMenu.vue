@@ -1,9 +1,14 @@
 <template>
 	<v-menu offset-y min-width="300px">
-		<template v-slot:activator="{ on }">
-			<v-btn icon data-html2canvas-ignore v-on="on" :aria-label="$t('tools.common.share.name')">
-				<v-img src="/img/icon_ux_menu_share__active.svg" width="24px" height="24px"></v-img>
-			</v-btn>
+		<template v-slot:activator="{ on: menu, attrs }">
+			<v-tooltip v-model="open" top z-index="9999">
+				<template v-slot:activator="{ on: tooltip }">
+					<v-btn icon data-html2canvas-ignore v-bind="attrs" v-on="{ ...tooltip, ...menu }" :aria-label="$t('tools.common.share.name')">
+						<v-img src="/img/icon_ux_menu_share__active.svg" width="24px" height="24px"></v-img>
+					</v-btn>
+				</template>
+				<span>{{ $t('tools.common.share.name') }}</span>
+			</v-tooltip>
 		</template>
 		<v-card class="pa-4">
 			<v-text-field
@@ -31,7 +36,8 @@ export default {
 	data() {
 		return {
 			shareUrl: window.location.href,
-			shareMessages: []
+			shareMessages: [],
+			open: false
 		}
 	},
 	computed: {

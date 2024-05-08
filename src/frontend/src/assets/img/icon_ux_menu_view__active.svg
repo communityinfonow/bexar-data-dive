@@ -1,89 +1,39 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   width="54.403271mm"
-   height="54.403625mm"
-   viewBox="0 0 54.40327 54.403626"
+   viewBox="0 0 24 24"
    version="1.1"
-   id="svg417"
+   id="svg1"
+   sodipodi:docname="swap-horizontal-circle.svg"
    inkscape:version="1.3.2 (091e20ef0f, 2023-11-25)"
-   sodipodi:docname="icon_ux_menu_view__active.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:dc="http://purl.org/dc/elements/1.1/">
+   xmlns:svg="http://www.w3.org/2000/svg">
   <defs
-     id="defs411" />
+     id="defs1" />
   <sodipodi:namedview
-     id="base"
+     id="namedview1"
      pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
      inkscape:pageopacity="0.0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="0.35"
-     inkscape:cx="-74.285714"
-     inkscape:cy="341.42857"
-     inkscape:document-units="mm"
-     inkscape:current-layer="layer1"
-     inkscape:document-rotation="0"
-     showgrid="false"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="33.875"
+     inkscape:cx="12"
+     inkscape:cy="11.97048"
      inkscape:window-width="1920"
      inkscape:window-height="1011"
      inkscape:window-x="0"
      inkscape:window-y="32"
      inkscape:window-maximized="1"
-     inkscape:showpageshadow="2"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1" />
-  <metadata
-     id="metadata414">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-      </cc:Work>
-    </rdf:RDF>
-  </metadata>
-  <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
-     id="layer1"
-     transform="translate(-125.33685,-57.555936)">
-    <g
-       id="g465"
-       transform="matrix(0.35277777,0,0,-0.35277777,152.53849,111.95956)">
-      <path
-         d="m 0,0 v 0 c -42.585,0 -77.107,34.522 -77.107,77.107 v 0 c 0,42.585 34.522,77.108 77.107,77.108 v 0 c 42.585,0 77.107,-34.523 77.107,-77.108 v 0 C 77.107,34.522 42.585,0 0,0"
-         style="fill:#3aa38f;fill-opacity:1;fill-rule:nonzero;stroke:none"
-         id="path467" />
-    </g>
-    <g
-       id="g1"
-       transform="matrix(0.36,0,0,0.36,113.83731,30.740276)"
-       style="fill:#ffffff">
-      <g
-         id="g2841"
-         transform="matrix(0.35277777,0,0,-0.35277777,104.4076,120.45586)"
-         style="fill:#ffffff">
-        <path
-           d="m 0,0 c -39.769,0 -72.125,-32.355 -72.125,-72.124 0,-39.77 32.356,-72.125 72.125,-72.125 39.77,0 72.125,32.355 72.125,72.125 C 72.125,-32.355 39.77,0 0,0 m 0,-176.297 c -57.441,0 -104.173,46.732 -104.173,104.173 0,57.441 46.732,104.173 104.173,104.173 57.441,0 104.173,-46.732 104.173,-104.173 0,-57.441 -46.732,-104.173 -104.173,-104.173"
-           style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
-           id="path2843" />
-      </g>
-      <g
-         id="g2845"
-         transform="matrix(0.35277777,0,0,-0.35277777,142.28679,184.36614)"
-         style="fill:#ffffff">
-        <path
-           d="m 0,0 v 0 c -8.869,-8.869 -23.383,-8.869 -32.252,0 l -21.122,21.122 c -8.563,8.563 -8.563,22.575 0,31.138 l 1.114,1.114 c 8.563,8.563 22.575,8.563 31.138,0 L 0,32.252 C 8.869,23.383 8.869,8.869 0,0"
-           style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
-           id="path2847" />
-      </g>
-    </g>
-  </g>
+     inkscape:current-layer="svg1" />
+  <path
+     d="M 24,12 C 24,5.4 18.6,0 12,0 5.4,0 0,5.4 0,12 c 0,6.6 5.4,12 12,12 6.6,0 12,-5.4 12,-12 m -8.4,-6.6 4.2,4.2 -4.2,4.2 v -3 H 10.8 V 8.4 h 4.8 v -3 M 8.4,18.6 4.2,14.4 8.4,10.2 v 3 h 4.8 v 2.4 H 8.4 Z"
+     id="path1"
+     style="fill:#3aa38f;fill-opacity:1;stroke-width:1.2"
+     inkscape:export-filename="menu_view_new.svg"
+     inkscape:export-xdpi="96"
+     inkscape:export-ydpi="96" />
 </svg>

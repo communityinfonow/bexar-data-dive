@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.cinow.omh.community.CommunityLocation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -34,6 +35,9 @@ public class LocationService {
 	 */
 	@Autowired
 	private LocationRepository locationRepository;
+
+	@Value("${locationiq.apikey}")
+	private String locationiqApiKey;
 	
 	/**
 	 * Build the location menu.
@@ -101,7 +105,8 @@ public class LocationService {
 		}
 		String formattedAddress = !address.contains("TX") ? address + " Bexar County, TX" : address;
 		HttpRequest request = HttpRequest.newBuilder()
-				.uri(new URI("https://us1.locationiq.com/v1/search?key=pk.e419f0eb579e34ba72835ef79b389657&format=json&addressdetails=1&normalizeaddress=1&q=" + URLEncoder.encode(formattedAddress, "UTF-8")))
+				.uri(new URI("https://us1.locationiq.com/v1/search?key=" + locationiqApiKey 
+					+ "&format=json&addressdetails=1&normalizeaddress=1&q=" + URLEncoder.encode(formattedAddress, "UTF-8")))
 				.GET()
 				.build();
 		HttpClient client = HttpClient.newHttpClient();

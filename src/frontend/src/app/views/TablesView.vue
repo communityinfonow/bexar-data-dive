@@ -582,7 +582,7 @@ export default {
           sortable: false
         },
         {
-          text: i18n.t('tools.tables.headers.view'),
+          text: i18n.t('tools.tables.headers.switch'),
           value: "viewLabel",
           filterable: false,
           sortable: false
