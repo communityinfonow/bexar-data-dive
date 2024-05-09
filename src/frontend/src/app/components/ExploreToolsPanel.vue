@@ -3,7 +3,7 @@
 	<v-col cols="auto" :style="{ 'max-height': panelMaxHeight }">
 		<v-form v-if="filters" ref="compareForm" v-model="valid">
 			<v-row class="mt-2 justify-end">
-				<v-col cols="12" md="6" v-if="showMapControls" class="d-flex">
+				<v-col md="12" lg="6" v-if="showMapControls" class="d-flex">
 					<v-select
 						:label="$t('tools.community.community_types')"
 						dense
@@ -46,7 +46,7 @@
 						<location-report :layout="layout" :closeDialog="() => locationReportDialog = false"></location-report>
 					</v-dialog>
 				</v-col>
-				<v-col cols="12" md="2" v-if="showCompareOptions">
+				<v-col md="12" lg="2" v-if="showCompareOptions">
 					<v-select
 						:label="$t('tools.explore.compare_by')"
 						dense
@@ -60,7 +60,7 @@
 					>
 					</v-select>
 				</v-col>
-				<v-col cols="12" md="4" v-if="showCompareOptions">
+				<v-col md="12" lg="4" v-if="showCompareOptions">
 					<v-autocomplete
 						:label="$t('tools.explore.compare_with')"
 						dense
@@ -78,7 +78,7 @@
 					>
 					</v-autocomplete>
 				</v-col>
-				<v-col cols="12" md="2" v-if="showCompareOptions">
+				<v-col md="12" lg="2" v-if="showCompareOptions">
 					<v-btn
 						color="red"
 						rounded
@@ -88,7 +88,7 @@
 						{{ $t('tools.explore.compare') }}
 					</v-btn>
 				</v-col>
-				<v-col cols="12" md="4" v-if="!showHighlightFilteredLocation">
+				<v-col md="12" lg="4" v-if="!showHighlightFilteredLocation">
 					<div class="d-flex justify-end">
 						<div class="v-input v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select pt-1 flex-grow-0 flex-shrink-1">
 							<label aria-label id="labelsOrLinesLabel" class="v-label v-label--active theme--light" style="left: 0px; right: auto; position: absolute;">{{ $t('tools.common.chart_options') }}</label>
@@ -110,7 +110,7 @@
 						<button-menu v-if="indicator && filterSelections" :downloadData="downloadData" :downloadImage="downloadImage" viewMenu linkToCommunity linkToTables :indicatorId="indicator.id" :locationTypeId="filterSelections.locationType" :locationId="filterSelections.location" class="ml-2" style="margin-top: -8px"></button-menu>
 					</div>
 				</v-col>
-				<v-col v-if="showHighlightFilteredLocation" cols="12" md="6" class="d-flex justify-end">
+				<v-col v-if="showHighlightFilteredLocation" md="12" lg="6" class="d-flex justify-end">
 					<template v-if="showHighlightFilteredLocation">
 						<v-switch
 							inset
@@ -172,7 +172,7 @@ export default {
 		...mapState(['filterSelections', 'locale', 'exploreData', 'indicator', 'indicatorMenu', 'pointCollections', 'selectedPointTypes']),
 		...mapGetters(['filters', 'pointTypes']),
 		panelMaxHeight() {
-			return this.$vuetify.breakpoint.smAndDown ? '' : '72px'
+			return this.$vuetify.breakpoint.mdAndDown ? '' : '72px'
 		},
 		highlight: {
 			get() { return this.highlightFilteredLocation },

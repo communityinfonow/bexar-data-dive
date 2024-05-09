@@ -15,7 +15,7 @@
           </div>
           <div v-if="community">
             <v-row>
-              <v-col cols="2" sm="4">
+              <v-col md="4" lg="2" >
                 <l-map
                   v-if="componentInitialized"
                   ref="communityMap"
@@ -48,7 +48,7 @@
                   ></l-geo-json>
                 </l-map>
               </v-col>
-              <v-col cols="10" sm="8">
+              <v-col md="8" lg="10">
                 <div class="d-flex flex-column fill-height">
                   <div class="d-flex flex-row justify-space-between">
                     <h1 class="text-dive-h3" id="community_name">
@@ -114,7 +114,7 @@
           </div>
         </section>
       </v-col>
-      <v-col cols="auto" class="shrink sticky-menu" :style="{ 'margin-top': showIntro || $vuetify.breakpoint.smAndDown  ? '0' : '-26px' }">
+      <v-col cols="auto" class="shrink sticky-menu" :style="{ 'margin-top': showIntro || $vuetify.breakpoint.mdAndDown  ? '0' : '-26px' }">
         <MenuToolbar
           class="flex-column"
           :menu="locationMenu"

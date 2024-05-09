@@ -37,7 +37,7 @@
           <h2 class="text-dive-h4 text-uppercase mt-16 mb-2 text-center font-weight-light">{{ $t('tools.common.featured_indicators') }}</h2>
           <p style="margin: 0 30%; font-size: 1.25em;">{{ $t('tools.tables.get_started') }}</p>
         </section>
-        <section class="d-flex" :class="{ 'flex-row': $vuetify.breakpoint.mdAndUp, 'flex-column': $vuetify.breakpoint.smAndDown }">
+        <section class="d-flex" :class="{ 'flex-row': $vuetify.breakpoint.lgAndUp, 'flex-column': $vuetify.breakpoint.mdAndDown }">
           <template v-for="indicator in featuredIndicators">
             <featured-card 
               :key="indicator.id" 
@@ -76,7 +76,7 @@
             :sort-desc.sync="sortDesc"
             :footer-props="footerOptions"
             :server-items-length="tablesData.totalRows"
-            mobile-breakpoint="1024"
+            mobile-breakpoint="1264"
           >
             <!-- FIXME: DRY -->
             <template v-slot:header.locationType="{ header }">
@@ -841,7 +841,7 @@ export default {
 ::v-deep .v-data-table-header .v-data-table-header__sort-badge {
   color: var(--v-green-base) !important;
 }
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 1264px) {
   ::v-deep tbody tr:nth-of-type(odd) {
     background-color: rgba(0, 0, 0, .05);
   }

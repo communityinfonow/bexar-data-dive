@@ -21,7 +21,7 @@ export default {
   computed: {
     ...mapState(['locale']),
     logoHeight() {
-      return this.$vuetify.breakpoint.smAndDown ? '36px' : '56px'
+      return this.$vuetify.breakpoint.mdAndDown ? '36px' : '56px'
     },
   },
   methods: {

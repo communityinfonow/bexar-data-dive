@@ -2,7 +2,7 @@
   <v-toolbar dense class="menu-toolbar d-print-none px-8">
     <v-toolbar-items style="width: 100%;">
       <v-row style="max-width: 100%;">
-        <v-col cols="10" sm="8">
+        <v-col md="8" lg="10" >
           <v-slide-group show-arrows style="height: 100%;">
             <template v-for="category in sortedMenu.categories">
               <v-slide-item :key="'category_' + category.id" v-if="category.items.length">
@@ -12,7 +12,7 @@
             </template>
           </v-slide-group>
         </v-col>
-        <v-col cols="2" sm="4" class="mt-1">
+        <v-col md="4" lg="2" class="mt-1">
           <v-autocomplete
             :label="$t('tools.common.search') + ' ' + searchType"
             :placeholder="$t('tools.common.search') + ' ' + searchType"

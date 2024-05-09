@@ -129,7 +129,7 @@ export default {
     bottom: 12em;
   }
   /* small screen */
-  @media only screen and (max-width: 1024px) {
+  @media only screen and (max-width: 1264px) {
     .visitor-survey-fab {
       bottom: 40%;
     }

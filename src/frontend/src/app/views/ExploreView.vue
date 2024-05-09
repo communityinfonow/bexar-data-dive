@@ -39,7 +39,7 @@
             <h2 class="text-dive-h4 mt-16 mb-2 font-weight-light text-center" style="text-transform: uppercase;">{{ $t('tools.common.featured_indicators') }}</h2>
             <p style="margin: 0 30%; font-size: 1.25em;">{{ $t('tools.tables.get_started') }}</p>
           </section>
-          <section v-if="featuredIndicators" class="d-flex" :class="{ 'flex-row': $vuetify.breakpoint.mdAndUp, 'flex-column': $vuetify.breakpoint.smAndDown }">
+          <section v-if="featuredIndicators" class="d-flex" :class="{ 'flex-row': $vuetify.breakpoint.lgAndUp, 'flex-column': $vuetify.breakpoint.mdAndDown }">
             <template v-for="indicator in featuredIndicators">
               <featured-card 
                 :key="indicator.id" 
@@ -60,15 +60,15 @@
       </v-col>
       <v-col v-if="indicator" cols="auto" class="explore-content">
         <v-row class="fill-height no-gutters mt-4">
-          <v-col cols="12" md="3" :class="$vuetify.breakpoint.smAndDown ? 'flex-shrink-1' : ''">
-            <v-row class="no-gutters flex-column px-4" :class="$vuetify.breakpoint.smAndDown ? '' : 'fill-height'">
+          <v-col md="12" lg="3" :class="$vuetify.breakpoint.mdAndDown ? 'flex-shrink-1' : ''">
+            <v-row class="no-gutters flex-column px-4" :class="$vuetify.breakpoint.mdAndDown ? '' : 'fill-height'">
               <filters-panel></filters-panel>
-              <docked-tooltip :class="$vuetify.breakpoint.smAndDown ? '' : 'grow'" :helpMessage="dockedTooltipHelpMessage" :activeTab="tab"></docked-tooltip>
+              <docked-tooltip :class="$vuetify.breakpoint.mdAndDown ? '' : 'grow'" :helpMessage="dockedTooltipHelpMessage" :activeTab="tab"></docked-tooltip>
             </v-row>
           </v-col>
-          <v-col cols="12" md="9" class="px-4" :class="$vuetify.breakpoint.smAndDown ? 'tab-content' : ''">
-            <v-row class="fill-height no-gutters" :class="$vuetify.breakpoint.smAndDown && layout === 'gallery' ? 'flex-row' : 'flex-column'">
-              <v-col cols="auto" class="d-flex shrink" :class="$vuetify.breakpoint.smAndDown ? 'flex-column' : ''">
+          <v-col md="12" lg="9" class="px-4" :class="$vuetify.breakpoint.mdAndDown ? 'tab-content' : ''">
+            <v-row class="fill-height no-gutters" :class="$vuetify.breakpoint.mdAndDown && layout === 'gallery' ? 'flex-row' : 'flex-column'">
+              <v-col cols="auto" class="d-flex shrink" :class="$vuetify.breakpoint.mdAndDown ? 'flex-column' : ''">
                 <v-tabs v-model="tab" grow color="red">
                   <v-tab v-for="tab in tabs" :key="tab" @click="selectTab(tab)">
                     <span v-if="layout === 'gallery' && locale === 'es'">&nbsp;Opciones {{ tab === 'map' ? 'de' : 'del' }}&nbsp;</span>
@@ -138,13 +138,13 @@
                     </explore-tools-panel>
                   </v-col>
                 </v-row>
-                <v-row id="gallery-data-visuals" class="no-gutters" :class="$vuetify.breakpoint.smAndDown ? 'align-start' : 'fill-height'">
-                  <v-col cols="12" md="5" :class="$vuetify.breakpoint.smAndDown ? 'gallery-map' : 'fill-height'">
+                <v-row id="gallery-data-visuals" class="no-gutters" :class="$vuetify.breakpoint.mdAndDown ? 'align-start' : 'fill-height'">
+                  <v-col md="12" lg="5" :class="$vuetify.breakpoint.mdAndDown ? 'gallery-map' : 'fill-height'">
                     <v-sheet outlined class="pa-4 fill-height">
                       <explore-map :layout="layout"></explore-map>
                     </v-sheet>
                   </v-col>
-                  <v-col cols="12" md="7">
+                  <v-col md="12" lg="7">
                     <v-sheet outlined class="pa-4 gallery-chart">
                       <explore-trend-chart :layout="layout"></explore-trend-chart>
                     </v-sheet>
@@ -347,7 +347,7 @@ export default {
     width: 100%;
     height: 50%;
   }
-  @media screen and (max-width: 1024px){
+  @media screen and (max-width: 1264px){
     .explore-content {
       height: auto;
     }

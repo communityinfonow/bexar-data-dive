@@ -10,8 +10,8 @@
       <div v-if="$t('announcements_view.welcome')" class="font-weight-medium mt-2" style="font-size: 1.25rem;" v-html="$t('announcements_view.welcome')"></div>
     </section>
     <v-row class="no-gutters">
-      <v-col cols="7" class="pa-4 col col-auto">
-        <section v-for="item in announcements" :key="item.id" class="mb-8 mt-4">
+      <v-col md="12" lg="7" class="pa-4 col col-auto">
+        <section v-for="item in announcements" :key="item.id" class="mb-8 mt-4 announcement">
           <h2 class="mb-2 text-dive-h4" :id="'question_' + item.id">{{ item['title_' + locale]}}</h2>
           <h3 class="mb-4 text-subtitle-1">{{ new Date(item.date + 'T00:00:00').toLocaleDateString() }}</h3>
           <section class="mb-8">
@@ -70,4 +70,8 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+::v-deep .announcement img {
+  max-width: 100%;
+}
+</style>

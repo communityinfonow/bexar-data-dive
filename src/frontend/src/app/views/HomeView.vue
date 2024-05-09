@@ -7,11 +7,11 @@
         <br>
         {{ $t('home_view.connecting_line_2') }}
       </h1>
-      <div class="font-weight-medium mt-2" :style="{ 'font-size': $vuetify.breakpoint.mdAndUp ? '1.25rem' : '1.rem' }">{{ $t('home_view.welcome_line_1') }}</div>
-      <div class="font-weight-medium" :style="{ 'font-size': $vuetify.breakpoint.mdAndUp ? '1.25rem' : '1.rem' }">{{ $t('home_view.welcome_line_2') }}</div>
+      <div class="font-weight-medium mt-2" :style="{ 'font-size': $vuetify.breakpoint.lgAndUp ? '1.25rem' : '1.rem' }">{{ $t('home_view.welcome_line_1') }}</div>
+      <div class="font-weight-medium" :style="{ 'font-size': $vuetify.breakpoint.lgAndUp ? '1.25rem' : '1.rem' }">{{ $t('home_view.welcome_line_2') }}</div>
     </section>
     <h2 class="text-dive-h4 text-uppercase mt-16 mb-2 font-weight-light text-center">{{ $t('home_view.available_tools') }}</h2>
-    <section class="d-flex" :class="{ 'flex-row': $vuetify.breakpoint.mdAndUp, 'flex-column': $vuetify.breakpoint.smAndDown }">
+    <section class="d-flex" :class="{ 'flex-row': $vuetify.breakpoint.lgAndUp, 'flex-column': $vuetify.breakpoint.mdAndDown }">
       <template v-for="tool in tools">
         <featured-card 
           v-if="tool.showOnHome"
@@ -34,7 +34,6 @@
         <v-card
           v-if="bexarDataFacts && locationMenu"
           flat
-          width="100%"
           class="mt-5 mx-4 featured-card"
         >
           <v-card-title class="flex-nowrap featured-card-title did-you-know black--text py-12" style="padding-left: 16.667%">
@@ -135,7 +134,7 @@
           <v-spacer></v-spacer>
           <v-btn 
             color="red"
-            class="white--text font-weight-bold px-2"
+            class="white--text font-weight-bold px-2 ml-2"
             style="letter-spacing: 1.25px" 
             rounded
             :to="'/announcements#' + announcement.id"

@@ -88,7 +88,7 @@
               @change="selectLocationType"
             ></v-select>
             <v-row class="selection-lists mb-2" style="overflow-y: auto;">
-              <v-col :md="6" :sm="12" v-if="$vuetify.breakpoint.smAndDown">
+              <v-col md="12" lg="6" v-if="$vuetify.breakpoint.mdAndDown">
                 <span class="text-subtitle-2">{{ $t('tools.custom_locations.selected_locations') }}</span>
                 <p v-if="!customLocationGeojson.features.length" class="mt-2 mb-0 font-italic">{{ $t('tools.custom_locations.no_locations_selected') }}</p>
                 <v-list v-if="selectionGeojson" style="overflow-y: auto;">
@@ -109,7 +109,7 @@
                   </v-list-item-group>
                 </v-list>
               </v-col>
-              <v-col :md="6" :sm="12">
+              <v-col md="12" lg="6">
                 <span class="text-subtitle-2">{{ $t('tools.custom_locations.available_locations') }}</span>
                 <p class="mt-2 mb-0 font-italic" :class="!selectionForm && customLocationGeojson.features.length < 2 ? 'error--text' : ''">{{ $t('tools.custom_locations.two_locations') }}</p>
                 <v-list v-if="selectionGeojson" style="overflow-y: auto;">
@@ -132,7 +132,7 @@
                   </v-list-item-group>
                 </v-list>
               </v-col>
-              <v-col :md="6" :sm="12" v-if="$vuetify.breakpoint.mdAndUp">
+              <v-col md="12" lg="6" v-if="$vuetify.breakpoint.lgAndUp">
                 <span class="text-subtitle-2">{{ $t('tools.custom_locations.selected_locations') }}</span>
                 <p v-if="!customLocationGeojson.features.length" class="mt-2 mb-0 font-italic">{{ $t('tools.custom_locations.no_locations_selected') }}</p>
                 <v-list v-if="selectionGeojson" style="overflow-y: auto;">
@@ -155,13 +155,13 @@
               </v-col>
             </v-row>
             <v-spacer></v-spacer>
-            <div v-if="!message" class="d-flex" :class="$vuetify.breakpoint.smAndDown ? 'flex-column' : ''">
+            <div v-if="!message" class="d-flex" :class="$vuetify.breakpoint.mdAndDown ? 'flex-column' : ''">
               <v-btn
                 rounded
                 color="red"
                 dark
                 class="mt-4 flex-grow-1"
-                :class="$vuetify.breakpoint.smAndDown ? '' : 'mr-2'"
+                :class="$vuetify.breakpoint.mdAndDown ? '' : 'mr-2'"
                 @click="saveCustomLocation"
               >
                 {{ $t('tools.custom_locations.save') }}
@@ -171,7 +171,7 @@
                 color="red"
                 dark
                 class="mt-4 flex-grow-1"
-                :class="$vuetify.breakpoint.smAndDown ? '' : 'ml-2'"
+                :class="$vuetify.breakpoint.mdAndDown ? '' : 'ml-2'"
                 @click="exportCustomLocation"
               >
                 {{ $t('tools.custom_locations.export') }}

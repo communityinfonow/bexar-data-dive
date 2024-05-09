@@ -107,7 +107,7 @@ main {
   padding-bottom: 200px !important;
 }
 /* increase the padding on small screens */
-@media screen and (max-width: 1440px) {
+@media screen and (max-width: 1264px) {
   main {
     padding-bottom: 300px !important;
   }
@@ -188,7 +188,7 @@ main {
   font-size: 1.0rem;
   font-weight: bold;
 }
-@media only screen and (max-width: 1024px) {
+@media only screen and (max-width: 1264px) {
   ::v-deep .text-dive-h1 {
   font-size: 2.5rem;
   font-weight: bold;
