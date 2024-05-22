@@ -227,6 +227,10 @@
     "welcome": "Consulte las respuestas a preguntas comunes sobre Dive.",
     "questions": "Preguntas"
   },
+  "corrections_view": {
+    "name": "Data Corrections (es)",
+    "welcome": "Data corrections in Dive. (es)"
+  },
   "announcements_view": {
     "name": "Anuncios",
     "welcome": "Aprenda que funciones nuevas, actualizaciones de los datos y oportunidades de capacitación están disponibles."

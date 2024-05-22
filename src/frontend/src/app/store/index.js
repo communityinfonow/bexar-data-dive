@@ -38,6 +38,7 @@ export default new Vuex.Store({
     tablesData: null,
     aboutData: null,
     faqs: null,
+    corrections: null,
     announcements: null,
     surveySubmitted: false,
     customLocations: [],
@@ -290,6 +291,9 @@ export default new Vuex.Store({
     },
     SET_FAQS(state, data) {
       state.faqs = data;
+    },
+    SET_CORRECTIONS(state, data) {
+      state.corrections = data;
     },
     SET_ANNOUNCEMENTS(state, data) {
       state.announcements = data;
@@ -608,6 +612,11 @@ export default new Vuex.Store({
     getFaqs(context) {
       return axios.get('/api/faqs').then(response => {
         context.commit('SET_FAQS', response.data.filter(f => !!f.display))
+      });
+    },
+    getCorrections(context) {
+      return axios.get('/api/data-corrections').then(response => {
+        context.commit('SET_CORRECTIONS', response.data)
       });
     },
     getAnnouncements(context) {

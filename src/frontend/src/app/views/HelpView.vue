@@ -39,6 +39,7 @@
       >
       </featured-card>
       <faqs-view v-if="selectedMenuItem && selectedMenuItem.categoryId === 'faqs'" :selectedFaq="selectedMenuItem"></faqs-view>
+      <data-corrections-view v-if="selectedMenuItem && selectedMenuItem.categoryId === 'data-corrections'" :selectedCorrection="selectedMenuItem"></data-corrections-view>
       <about-tools-view v-if="selectedMenuItem && selectedMenuItem.categoryId === 'about-tools'"></about-tools-view>
     </v-row>
   </v-container>
@@ -49,6 +50,7 @@ import i18n from '@/i18n'
 import { mapState, mapGetters, mapActions } from 'vuex'
 import FeaturedCard from '@/app/components/FeaturedCard'
 import FaqsView from '@/app/views/FaqsView'
+import DataCorrectionsView from '@/app/views/DataCorrectionsView'
 import AboutToolsView from '@/app/views/AboutToolsView'
 import MenuToolbar from '@/app/components/MenuToolbar'
 import router from '@/app/router/index'
@@ -59,6 +61,7 @@ export default {
   components: {
     FeaturedCard,
     FaqsView,
+    DataCorrectionsView,
     AboutToolsView,
     MenuToolbar
   },
