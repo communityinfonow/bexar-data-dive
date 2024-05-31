@@ -32,7 +32,7 @@ import { mapActions, mapState, mapGetters } from 'vuex'
 import i18n from '@/i18n'
 import * as echarts from 'echarts/core';
 import { SVGRenderer } from 'echarts/renderers';
-import { AriaComponent, LegendComponent, GridComponent, TooltipComponent } from 'echarts/components';
+import { AriaComponent, LegendComponent, GridComponent, TooltipComponent, DataZoomComponent, DataZoomSliderComponent } from 'echarts/components';
 import { LineChart, BarChart, CustomChart } from 'echarts/charts';
 import ExploreToolsPanel from '@/app/components/ExploreToolsPanel'
 import { format } from '@/services/formatter'
@@ -87,7 +87,7 @@ export default {
 	},
 	mounted () {
 		setTimeout(() => { 
-			echarts.use([SVGRenderer, AriaComponent, LegendComponent, GridComponent, LineChart, BarChart, CustomChart, TooltipComponent]);
+			echarts.use([SVGRenderer, AriaComponent, LegendComponent, GridComponent, LineChart, BarChart, CustomChart, TooltipComponent, DataZoomComponent, DataZoomSliderComponent]);
 			this.chart = echarts.init(document.getElementById('trend_chart_container'), null, { renderer: 'svg'});
 			window.addEventListener('resize', () => {
 				if (this.exploreTab === 'trend' || this.layout === 'gallery') {
@@ -139,6 +139,19 @@ export default {
 				splitNumber: 1,
 				axisLabel: Object.assign({}, textStyle)
 			};
+			option.dataZoom = [
+				{
+					type: 'slider',
+					show: true,
+					yAxisIndex: 0,
+					left: 0,
+					//backgroundColor: 'rgb(59,90,152, 0.1)',
+					//borderColor: 'rgb(59,90,152)',
+					fillerColor: 'rgb(59,90,152, .25)',
+					textStyle: { fontFamily: '"Roboto", sans-serif !important' },
+
+				}
+			];
 			let trendYears = Array.from(new Set([...this.exploreData.locationData.flatMap(ld => Object.keys(ld.yearData))]));
 			trendYears.sort();
 			option.xAxis = { 
