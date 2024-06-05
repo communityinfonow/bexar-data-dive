@@ -373,12 +373,12 @@ export default new Vuex.Store({
       }
     },
     getIndicatorMenu(context) {
-      axios.get('/api/indicator-menu').then(response => {
+      return axios.get('/api/indicator-menu').then(response => {
         context.commit('SET_INDICATOR_MENU', response.data)
       })
     },
     getLocationMenu(context) {
-      axios.get('/api/location-menu').then(response => {
+      return axios.get('/api/location-menu').then(response => {
         context.commit('SET_LOCATION_MENU', response.data)
       })
     },
@@ -478,6 +478,7 @@ export default new Vuex.Store({
       context.dispatch('setFilterSelections', newFilterSelections);
     },
     setFilterSelections(context, selections) {
+      console.log(selections)
       context.commit('SET_FILTER_SELECTIONS', selections);
       let filterQuery = {
         ...router.currentRoute.query,
