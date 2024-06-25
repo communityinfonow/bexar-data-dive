@@ -5,7 +5,7 @@
       <span class="float-left ml-4" style="line-height: 40px; font-size: 1.2em;">{{ $t('app.name') }}</span>
     </div>
     <v-spacer></v-spacer>
-    <span><img src="/img/cinow_logo.png" style="height: 30px;" alt="CI:Now Logo" /></span>
+    <span><img src="/img/cinow_logo.png" style="height: 30px;" alt="CINow Logo" /></span>
   </div>
 </template>
 

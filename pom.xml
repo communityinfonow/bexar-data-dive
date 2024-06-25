@@ -12,7 +12,7 @@
 	<artifactId>omh</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>omh</name>
-	<description>CI:Now Web Mapping and Reporting</description>
+	<description>CINow Web Mapping and Reporting</description>
 	<properties>
 		<java.version>11</java.version>
 		<node.version>v16.13.2</node.version>

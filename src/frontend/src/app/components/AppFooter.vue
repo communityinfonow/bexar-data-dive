@@ -9,7 +9,7 @@
       <span>
         {{ $t('app.copyright') }} &copy; {{ new Date().getFullYear() }}&nbsp;<a href="https://cinow.info" class="link--text">{{ $t('app.cinow') }}</a>. {{ $t('app.all_rights_reserved') }}
       </span>
-      <img src="/img/cinow_logo.png" class="ml-4" style="height: 30px;" alt="CI:Now Logo" />
+      <img src="/img/cinow_logo.png" class="ml-4" style="height: 30px;" alt="CINow Logo" />
     </div>
   </v-footer>
 </template>
