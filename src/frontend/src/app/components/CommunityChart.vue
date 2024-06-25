@@ -49,7 +49,7 @@ export default {
 	computed: {
 		...mapState(['locale']),
 		smallScreen() {
-			return document.body.clientWidth <= 1440;
+			return document.body.clientWidth < 1264;
 		},
 		orientation() {
 			return this.smallScreen ? 'horizontal' : 'vertical';

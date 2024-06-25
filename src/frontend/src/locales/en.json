@@ -37,7 +37,8 @@
       "find_communities": "Find My Communities",
       "enter_address": "Enter an address",
       "find_tooltip": "Enter your address to find your Council District, SSA, Census Tract, and Zip Code",
-      "view_community": "View in My Community"
+      "view_community": "View in My Community",
+      "view": "View"
     },
     "explore": {
       "name": "Explore Data",

@@ -22,7 +22,7 @@
 						id="explore_map"
 						:zoom="zoom"
 						:center="center"
-						:options="{ zoomDelta: 0.5, zoomSnap: 0.5, preferCanvas: true }"
+						:options="{ zoomDelta: 0.5, zoomSnap: 0.5, preferCanvas: true, dragging: mobile ? false : true, touchZoom: mobile ? false : true }"
 						v-resize:debounce.100="resizeHandler"
 						@ready="initializeMap"
 					>
@@ -256,6 +256,9 @@ export default {
 	computed: {
 		...mapState(['exploreData', 'locale', 'filterSelections', 'showMapLabels', 'highlightFilteredLocation', 'exploreTab', 'customLocations', 'indicator', 'pointCollections', 'selectedPointTypes', 'pointsGeojson', 'reportData']),
 		...mapGetters(['locationMenu', 'filters', 'pointTypes']),
+		mobile() {
+			return L.Browser.mobile
+		},
 		layers() {
 			return this.filters?.locationTypeFilter?.options?.map(option => {
 				return {
@@ -504,7 +507,10 @@ export default {
 				);
 			}
 
-			layer.on('mouseover', (layer) => {
+			let tooltipOnEvent = L.Browser.mobile ? 'mousedown' : 'mouseover';
+			let tooltipOffEvent = L.Browser.mobile ? 'mouseup' : 'mouseout';
+			let selectLocationEvent = 'click';
+			layer.on(tooltipOnEvent, (layer) => {
 				this.setDockedTooltip({
 					value: layer.target.feature.properties.value,
 					suppressed: layer.target.feature.properties.suppressed,
@@ -516,10 +522,10 @@ export default {
 					indicatorFilters: this.exploreData?.filters?.indicatorFilters
 				});
 			});
-			layer.on('mouseout', () => {
+			layer.on(tooltipOffEvent, () => {
 				this.setDefaultDockedTooltip()
 			});
-			layer.on('click', (e) => {
+			layer.on(selectLocationEvent, (e) => {
 				this.selectLocation(e.target.feature.id);
 			});
 		},

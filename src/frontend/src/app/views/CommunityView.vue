@@ -15,7 +15,7 @@
           </div>
           <div v-if="community">
             <v-row>
-              <v-col md="4" lg="2" >
+              <v-col sm="4" lg="2" >
                 <l-map
                   v-if="componentInitialized"
                   ref="communityMap"
@@ -48,7 +48,7 @@
                   ></l-geo-json>
                 </l-map>
               </v-col>
-              <v-col md="8" lg="10">
+              <v-col sm="8" lg="10">
                 <div class="d-flex flex-column fill-height">
                   <div class="d-flex flex-row justify-space-between">
                     <h1 class="text-dive-h3" id="community_name">

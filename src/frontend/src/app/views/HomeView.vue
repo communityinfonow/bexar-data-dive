@@ -11,7 +11,7 @@
       <div class="font-weight-medium" :style="{ 'font-size': $vuetify.breakpoint.lgAndUp ? '1.25rem' : '1.rem' }">{{ $t('home_view.welcome_line_2') }}</div>
     </section>
     <h2 class="text-dive-h4 text-uppercase mt-16 mb-2 font-weight-light text-center">{{ $t('home_view.available_tools') }}</h2>
-    <section class="d-flex" :class="{ 'flex-row': $vuetify.breakpoint.lgAndUp, 'flex-column': $vuetify.breakpoint.mdAndDown }">
+    <section class="d-flex" :class="{ 'flex-row': $vuetify.breakpoint.smAndUp, 'flex-column': $vuetify.breakpoint.xsAndDown }">
       <template v-for="tool in tools">
         <featured-card 
           v-if="tool.showOnHome"
