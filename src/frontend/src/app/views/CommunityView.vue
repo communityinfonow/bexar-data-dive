@@ -130,7 +130,7 @@
           ref="selectionMap"
           :zoom="zoom"
           :center="center"
-          :options="{ zoomDelta: 0.5, zoomSnap: 0.5, preferCanvas: true }"
+          :options="{ zoomDelta: 0.5, zoomSnap: 0.5, preferCanvas: true, dragging: mobile ? false : true, touchZoom: mobile ? false : true }"
           :style="{ height: '100%', 'min-height': '600px' }"
           v-resize:debounce.100="resizeHandler"
           @ready="initializeSelectionMap"
@@ -262,6 +262,9 @@ export default {
   computed: {
     ...mapState(['locale', 'community', 'customLocations', 'filterTypes' ]),
     ...mapGetters(['locationMenu']),
+    mobile() {
+			return L.Browser.mobile
+		},
     showIntro() {
       return !this.community && !router.currentRoute.query.location;
     },
