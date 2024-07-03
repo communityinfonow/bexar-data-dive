@@ -22,7 +22,7 @@
             ref="selectionMap"
             :zoom="zoom"
             :center="center"
-            :options="{ zoomDelta: 0.5, zoomSnap: 0.5, preferCanvas: true }"
+            :options="{ zoomDelta: 0.5, zoomSnap: 0.5, preferCanvas: true, dragging: mobile ? false : true, touchZoom: mobile ? false : true }"
             :style="{ height: '100%', 'min-height': '300px' }"
             v-resize:debounce.100="resizeHandler"
             @ready="initializeSelectionMap"
@@ -247,6 +247,7 @@
 import i18n from '@/i18n'
 import { mapActions, mapState, mapGetters } from 'vuex'
 import axios from 'axios'
+import L from 'leaflet'
 import { latLng } from 'leaflet'
 import { LMap, LTileLayer, LGeoJson } from 'vue2-leaflet'
 import { feature, featureCollection } from '@turf/helpers'
@@ -282,6 +283,9 @@ export default {
   computed: {
     ...mapState(['locale', 'customLocations' ]),
     ...mapGetters(['locationMenu']),
+    mobile() {
+			return L.Browser.mobile
+		},
     breadcrumbs() {
       let crumbs = [
         {

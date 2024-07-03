@@ -37,7 +37,7 @@
           <h2 class="text-dive-h4 text-uppercase mt-16 mb-2 text-center font-weight-light">{{ $t('tools.common.featured_indicators') }}</h2>
           <p style="margin: 0 30%; font-size: 1.25em;">{{ $t('tools.tables.get_started') }}</p>
         </section>
-        <section class="d-flex" :class="{ 'flex-row': $vuetify.breakpoint.lgAndUp, 'flex-column': $vuetify.breakpoint.mdAndDown }">
+        <section class="d-flex" :class="{ 'flex-row': $vuetify.breakpoint.smAndUp, 'flex-column': $vuetify.breakpoint.xsAndDown }">
           <template v-for="indicator in featuredIndicators">
             <featured-card 
               :key="indicator.id" 

@@ -8,6 +8,7 @@
     class="d-print-none"
     width="320"
     permanent
+    touchless
   >
     <v-list nav>
       <v-list-item-group

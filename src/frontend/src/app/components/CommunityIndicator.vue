@@ -9,7 +9,7 @@
 				<p>{{ $t('data.not_aggregable') }}</p>
 			</template>
 			<template v-else-if="item.indicator.hasData && item.year">
-				<div class="d-flex justify-space-between" :class="$vuetify.breakpoint.mdAndDown ? 'flex-column' : ''">
+				<div class="d-flex justify-space-between" :class="$vuetify.breakpoint.smAndDown ? 'flex-column' : ''">
 					<div>
 						<h3 class="text-h6 font-weight-bold d-flex">
 							<div>

@@ -54,7 +54,7 @@
 						</v-tooltip>
 					</div>
 					<v-row v-if="locations" class="mt-8">
-						<v-col cols="6">
+						<v-col sm="12" lg="6">
 							<l-map
 								v-if="componentInitialized"
 								ref="addressMap"
@@ -91,7 +91,7 @@
 								></l-geo-json>
 							</l-map>
 						</v-col>
-						<v-col cols="6">
+						<v-col sm="12" lg="6">
 							<v-list class="ml-4">
 								<v-list-item v-for="location in locations" :key="location.typeId + '_' + location.id" @click.stop="selectCommunity(location)" @mouseenter="communityGeojson = location.geojson" @mouseleave="communityGeojson = null">
 									<v-list-item-content>
@@ -101,7 +101,10 @@
 										<v-list-item-title class="pl-4">{{ location['name_' + locale].substring(location['name_' + locale].lastIndexOf(" ")) }}</v-list-item-title>
 									</v-list-item-content>
 									<v-list-item-action data-html2canvas-ignore>
-										<v-btn text small dark plain rounded color="red" @click.stop="selectCommunity(location)">{{ $t('tools.community.view_community') }}</v-btn>
+										<v-btn text small dark plain rounded color="red" @click.stop="selectCommunity(location)">
+											<span v-if="$vuetify.breakpoint.lgAndUp">{{ $t('tools.community.view_community') }}</span>
+											<span v-if="$vuetify.breakpoint.mdAndDown">{{ $t('tools.community.view') }}</span>
+										</v-btn>
 									</v-list-item-action>
 								</v-list-item>
 							</v-list>
