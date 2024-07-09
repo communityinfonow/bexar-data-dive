@@ -35,7 +35,7 @@
         :name="$t('help_view.guides_trainings_name')"
         :description="$t('help_view.guides_trainings_description')"
         :primary_button_text="$t('featured_card.view')"
-        href="https://cinow.info/dive-guides/"
+        href="https://cinow.info/online-tools-posts/bexar-data-dive/"
       >
       </featured-card>
       <faqs-view v-if="selectedMenuItem && selectedMenuItem.categoryId === 'faqs'" :selectedFaq="selectedMenuItem"></faqs-view>
