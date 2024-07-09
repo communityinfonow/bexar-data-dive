@@ -14,6 +14,7 @@ public class DataCorrection {
 	private List<String> years;
 	private List<LocationType> locationTypes;
 	private List<FilterType> filterTypes;
+	//TODO: include a note about the correction?
 
 	public int getId() {
 		return id;

@@ -1,5 +1,10 @@
 <template>
-  <v-btn text tile @click="selectItem(item)" style="height: 100%;">
+  <v-btn text tile 
+    :href="item.href ? item.href : null"
+		:target="item.href ? '_blank' : null"
+    @click="!item.href ? selectItem(item) : null"
+    style="height: 100%;"
+  >
     <v-list-item-title v-if="!singleItem" :class="textClass">
       {{ itemName }}
     </v-list-item-title>

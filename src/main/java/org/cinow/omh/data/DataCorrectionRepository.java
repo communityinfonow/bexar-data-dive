@@ -4,6 +4,8 @@ import java.util.List;
 
 public interface DataCorrectionRepository {
 	
+	List<DataCorrection> findDisplayed();
+
 	List<DataCorrection> findAll();
 
 	void add(DataCorrection dataCorrection);

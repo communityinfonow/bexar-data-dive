@@ -2,9 +2,11 @@ package org.cinow.omh.data;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.cinow.omh.filters.FilterType;
 import org.cinow.omh.indicators.Indicator;
@@ -25,6 +27,23 @@ public class DataCorrectionRepositoryPostgresql implements DataCorrectionReposit
 
 	@Autowired
 	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+	@Override
+	public List<DataCorrection> findDisplayed() {
+		String sql = ""
+			+ " select dc.id_, dc.indicator_id, dc.date_corrected, dc.years, dc.location_type_ids, dc.filter_type_ids, "
+			+ "   i.name_en as indicator_name_en, i.name_es as indicator_name_es, "
+			+ "   lt.id_ as location_type_id, lt.name_en as location_type_name_en, lt.name_es as location_type_name_es, "
+			+ "   ft.id_ as filter_type_id, ft.name_en as filter_type_name_en, ft.name_es as filter_type_name_es "
+			+ " from tbl_data_corrections dc "
+			+ "   join tbl_indicators i on i.id_ = dc.indicator_id "
+			+ "   left join tbl_location_types lt on location_type_ids @> array[lt.id_] "
+			+ "   left join tbl_filter_types ft on filter_type_ids @> array[ft.id_] "
+			+ " where cd.display = true "
+			+ " order by dc.date_corrected desc, lt.sort_order, ft.id_ ";
+
+		return this.jdbcTemplate.query(sql, extractor);
+	}
 	
 	@Override
 	public List<DataCorrection> findAll() {
@@ -45,15 +64,16 @@ public class DataCorrectionRepositoryPostgresql implements DataCorrectionReposit
 	@Override
 	public void add(DataCorrection dataCorrection) {
 		String sql = ""
-			+ " insert into tbl_data_corrections (indicator_id, date_corrected, years, location_type_ids, filter_type_ids) "
-			+ " values (:indicatorId, :dateCorrected, :years, :locationTypeIds, :filterTypeIds) ";
+			+ " insert into tbl_data_corrections (indicator_id, date_corrected, years, location_type_ids, filter_type_ids, display) "
+			+ " values (:indicatorId::numeric, :dateCorrected::date, :years, :locationTypeIds::numeric[], :filterTypeIds::numeric[], :display) ";
 
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
 		paramMap.addValue("indicatorId", dataCorrection.getIndicator().getId());
 		paramMap.addValue("dateCorrected", dataCorrection.getDateCorrected());
-		paramMap.addValue("years", dataCorrection.getYears());
-		paramMap.addValue("locationTypeIds", dataCorrection.getLocationTypes().stream().map(LocationType::getId).toArray());
-		paramMap.addValue("filterTypeIds", dataCorrection.getFilterTypes().stream().map(FilterType::getId).toArray());
+		paramMap.addValue("years", dataCorrection.getYears().toArray(new String[0]), Types.ARRAY);
+		paramMap.addValue("locationTypeIds", dataCorrection.getLocationTypes().stream().map(LocationType::getId).collect(Collectors.toList()).toArray(new String[0]), Types.ARRAY);
+		paramMap.addValue("filterTypeIds", dataCorrection.getFilterTypes().stream().map(FilterType::getId).collect(Collectors.toList()).toArray(new String[0]), Types.ARRAY);
+		paramMap.addValue("display", true);
 
 		this.namedParameterJdbcTemplate.update(sql, paramMap);
 		
@@ -63,7 +83,7 @@ public class DataCorrectionRepositoryPostgresql implements DataCorrectionReposit
 	public void update(DataCorrection dataCorrection) {
 		String sql = ""
 			+ " update tbl_data_corrections "
-			+ " set indicator_id = :indicatorId, date_corrected = :dateCorrected, years = :years, location_type_ids = :locationTypeIds, filter_type_ids = :filterTypeIds "
+			+ " set indicator_id = :indicatorId::numeric, date_corrected = :dateCorrected::date, years = :years, location_type_ids = :locationTypeIds, filter_type_ids = :filterTypeIds "
 			+ " where id_ = :id ";
 
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
@@ -71,8 +91,8 @@ public class DataCorrectionRepositoryPostgresql implements DataCorrectionReposit
 		paramMap.addValue("indicatorId", dataCorrection.getIndicator().getId());
 		paramMap.addValue("dateCorrected", dataCorrection.getDateCorrected());
 		paramMap.addValue("years", dataCorrection.getYears());
-		paramMap.addValue("locationTypeIds", dataCorrection.getLocationTypes().stream().map(LocationType::getId).toArray());
-		paramMap.addValue("filterTypeIds", dataCorrection.getFilterTypes().stream().map(FilterType::getId).toArray());
+		paramMap.addValue("locationTypeIds", dataCorrection.getLocationTypes().stream().map(LocationType::getId).collect(Collectors.toList()).toArray(new Integer[0]), Types.ARRAY);
+		paramMap.addValue("filterTypeIds", dataCorrection.getFilterTypes().stream().map(FilterType::getId).collect(Collectors.toList()).toArray(new Integer[0]), Types.ARRAY);
 
 		this.namedParameterJdbcTemplate.update(sql, paramMap);
 		

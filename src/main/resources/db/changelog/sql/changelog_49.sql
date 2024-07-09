@@ -8,5 +8,6 @@ create table if not exists tbl_data_corrections (
 	date_corrected date not null,
 	years text[] not null,
 	location_type_ids numeric[] not null,
-	filter_type_ids numeric[] not null
+	filter_type_ids numeric[] not null,
+	display boolean not null default true
 );

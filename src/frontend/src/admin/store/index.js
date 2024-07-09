@@ -15,6 +15,7 @@ export default new Vuex.Store({
     types: null,
     sources: null,
     announcements: null,
+    dataCorrections: null,
     filterTypes: null,
     filterOptions: null,
     auditLog: null,
@@ -27,6 +28,11 @@ export default new Vuex.Store({
           key: 'announcements',
           name: 'Announcements',
           route: '/admin/announcements'
+        },
+        {
+          key: 'data-corrections',
+          name: 'Data Corrections',
+          route: '/admin/data-corrections'
         },
         {
           key: 'indicators',
@@ -94,6 +100,9 @@ export default new Vuex.Store({
     },
     SET_ANNOUNCEMENTS(state, announcements) {
       state.announcements = announcements
+    },
+    SET_DATA_CORRECTIONS(state, dataCorrections) {
+      state.dataCorrections = dataCorrections
     },
     SET_AUDIT_LOG(state, auditLog) {
       state.auditLog = auditLog
@@ -200,6 +209,21 @@ export default new Vuex.Store({
     updateAnnouncement(context, ann) {
       return axios.put('/api/admin/announcements', ann).then(() => {
         context.dispatch('getAnnouncements');
+      });
+    },
+    getDataCorrections(context) {
+      return axios.get('/api/admin/data-corrections').then((response) => {
+        context.commit('SET_DATA_CORRECTIONS', response.data);
+      });
+    },
+    addDataCorrection(context, correction) {
+      return axios.post('/api/admin/data-corrections', correction).then(() => {
+        context.dispatch('getDataCorrections')
+      });
+    },
+    updateDataCorrection(context, correction) {
+      return axios.put('/api/admin/data-corrections', correction).then(() => {
+        context.dispatch('getDataCorrections');
       });
     },
     getAuditLog(context) {
