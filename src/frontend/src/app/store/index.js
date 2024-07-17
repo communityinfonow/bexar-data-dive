@@ -223,6 +223,38 @@ export default new Vuex.Store({
                 name_es: i18n.t('about_tools_view.name'),
                 hasData: true
             }]
+          },
+          {
+            id: 'guides-trainings',
+            name_en: i18n.t('help_view.guides_trainings_name'),
+            name_es: i18n.t('help_view.guides_trainings_name'),
+            description_en: i18n.t('help_view.guides_trainings_description'),
+            description_es: i18n.t('help_view.guides_trainings_description'),
+            subcategories: null,
+            items: [{
+              categoryId: 'guides-trainings',
+              id: 'guides-trainings',
+              name_en: i18n.t('help_view.guides_trainings_name'),
+              name_es: i18n.t('help_view.guides_trainings_name'),
+              hasData: true,
+              href: 'https://cinow.info/online-tools-posts/bexar-data-dive/'
+            }],
+            href: 'https://cinow.info/online-tools-posts/bexar-data-dive/'
+          },
+          {
+            id: 'data-corrections',
+            name_en: i18n.t('corrections_view.name'),
+            name_es: i18n.t('corrections_view.name'),
+            description_en: i18n.t('corrections_view.welcome'),
+            description_es: i18n.t('corrections_view.welcome'),
+            subcategories: null,
+            items: [{
+              categoryId: 'data-corrections',
+              id: 'data-correctionsabout-tools',
+              name_en: i18n.t('corrections_view.name'),
+              name_es: i18n.t('corrections_view.name'),
+              hasData: true
+          }]
           }
         ]
       }

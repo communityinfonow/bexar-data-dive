@@ -16,7 +16,7 @@
 				<div 
 					ref="compare_chart_container" 
 					id="compare_chart_container" 
-					style="width: 100%; height: 100%;"
+					:style="{ width: '100%', height: '100%' }"
 				>
 				</div>
 			</v-col>
@@ -54,7 +54,10 @@ export default {
 		...mapState(['locale', 'exploreData', 'compareSelections', 'compareLabelsOrLines', 'exploreTab', 'indicator', 'filterSelections']),
 		...mapGetters(['filters']),
 		smallScreen() {
-			return document.body.clientWidth <= 1440;
+			return document.body.clientWidth < 1264;
+		},
+		orientation() {
+			return this.smallScreen ? 'horizontal' : 'vertical';
 		}
 	},
 	watch: {
@@ -129,31 +132,36 @@ export default {
 				fontSize: this.layout === 'gallery' ? '12px' : this.smallScreen ? '14px' : '16px'
 			};
 			let option = {};
-			option.grid = { left: 40, right: 20, containLabel: true };
-			option.yAxis = { 
+			option.grid = { 
+				left: this.orientation === 'vertical' ? 100 :  40, 
+				right: this.orientation === 'vertical' ? 100 : 20, 
+				containLabel: true };
+			let valueAxis = this.orientation === 'vertical' ? 'yAxis' : 'xAxis';
+			let categoryAxis = this.orientation === 'vertical' ? 'xAxis' : 'yAxis';
+			option[valueAxis] = { 
 				type: 'value', 
 				splitLine: { show: false },
 				splitNumber: 1,
 				axisLabel: textStyle
 			};
-			let xAxisData = [];
+			let categoryAxisData = [];
 			if (this.exploreData.compareData) {
 				if (this.compareSelections.type.id === 'i') {
-					xAxisData.push(this.indicator['name_' + this.locale]);
+					categoryAxisData.push(this.indicator['name_' + this.locale]);
 				} else if (this.compareSelections.type.id === 'l') {
-					xAxisData.push(this.exploreData.filters.locationFilter.options[0]['name_' + this.locale]);
+					categoryAxisData.push(this.exploreData.filters.locationFilter.options[0]['name_' + this.locale]);
 				} else if (this.compareSelections.type.id === 'y') {
-					xAxisData.push(this.exploreData.filters.yearFilter.options[0]['name_' + this.locale]);
+					categoryAxisData.push(this.exploreData.filters.yearFilter.options[0]['name_' + this.locale]);
 				} else if (this.exploreData.filters.indicatorFilters.find(f => f.type.id === this.compareSelections.type.id).options[0]) {
-					xAxisData.push(this.exploreData.filters.indicatorFilters.find(f => f.type.id === this.compareSelections.type.id).options[0]['name_' + this.locale])
+					categoryAxisData.push(this.exploreData.filters.indicatorFilters.find(f => f.type.id === this.compareSelections.type.id).options[0]['name_' + this.locale])
 				}
-				xAxisData.push(...this.compareSelections.options.filter(o => !!o).map(o => o['name_' + this.locale]))
+				categoryAxisData.push(...this.compareSelections.options.filter(o => !!o).map(o => o['name_' + this.locale]))
 			} else {
-				xAxisData.push('')
+				categoryAxisData.push('')
 			}
-			option.xAxis = { 
+			option[categoryAxis] = { 
 				type: 'category', 
-				data: xAxisData,
+				data: categoryAxisData,
 				axisTick: { show: false },
 				axisLabel: { 
 					...textStyle, 
@@ -161,7 +169,6 @@ export default {
 					width: this.layout === 'gallery' ? '80' : '100', 
 					overflow: 'break', 
 					lineHeight: 16, 
-					rotate: this.smallScreen ? 45 : 0,
 					margin: this.smallScreen ? 20 : 10
 				},
 				name: this.compareSelections 
@@ -221,7 +228,7 @@ export default {
 				},
 				label: { 
 					show: true,  
-					position: 'top',
+					position: this.orientation === 'vertical' ? 'top' : 'right',
 					formatter: (o) => {
 						if (o.data.suppressed) {
 							return '{a|' + i18n.t('data.suppressed') + '}';
@@ -243,13 +250,13 @@ export default {
 					},
 					rich: { 
 						a: {
-							align: 'center',
+							align: this.orientation === 'vertical' ? 'center' : 'left',
 							fontSize: this.smallScreen || this.layout === 'gallery' ? '12px' : '16px',
 							lineHeight: '20',
 							color: '#333333'
 						},
 						b: {
-							align: 'center',
+							align: this.orientation === 'vertical' ? 'center' : 'left',
 							fontSize: this.smallScreen || this.layout === 'gallery' ? '10px' : '14px',
 							lineHeight: '16',
 							color: '#666666'
@@ -270,9 +277,9 @@ export default {
 			}
 			let axisMax = Math.ceil(maxValue / rounder) * rounder;
 			let axisMin = Math.floor(minValue / rounder) * rounder;
-			option.yAxis.max = axisMax;
-			option.yAxis.min = axisMin;
-			option.yAxis.axisLabel.formatter = (value) => {
+			option[valueAxis].max = axisMax;
+			option[valueAxis].min = axisMin;
+			option[valueAxis].axisLabel.formatter = (value) => {
 				return value === axisMin || value === axisMax || value === 0 ? value : ''	;
 			};
 			option.aria = { enabled: true };
@@ -280,17 +287,25 @@ export default {
 			this.chart.setOption(option);
 			if (this.compareLabelsOrLines === 'lines') {
 				window.setTimeout(() => {
-					let errorSeriesData = seriesData.map((d, i) => [xAxisData[i], d.moeHigh, d.moeLow]);
+					let errorSeriesData = seriesData.map((d, i) => [categoryAxisData[i], d.moeHigh, d.moeLow]);
+					let self = this;
 					this.chart.setOption({
 						series: [
 							{
 								name: 'error',
 								data: errorSeriesData,
 								renderItem: function(params, api) {
-									let xValue = api.value(0);
-									let highPoint = api.coord([xValue, api.value(1)]) || 0;
-									let lowPoint = api.coord([xValue, api.value(2)]) || 0;
-									let halfWidth = api.size([1, 0])[0] * 0.1;
+									let categoryValue = params.dataIndexInside;
+									let highPoint = (self.orientation === 'vertical' 
+										? api.coord([categoryValue, api.value(1)]) 
+										: api.coord([api.value(1), categoryValue])) || 0;
+									let lowPoint = (self.orientation === 'vertical' 
+										? api.coord([categoryValue, api.value(2)]) 
+										: api.coord([api.value(2), categoryValue])) || 0;
+									let halfWidth = self.orientation === 'vertical' 
+										? Math.min(20, api.size([1, 0])[0] * 0.1) 
+										: 10;
+									console.log(highPoint, lowPoint, halfWidth)
 									let style = {
 										stroke: '#b8237e',
 										fill: null,
@@ -302,33 +317,49 @@ export default {
 											{
 												type: 'line',
 												transition: ['shape'],
-												shape: {
+												shape: self.orientation === 'vertical' ? {
 													x1: highPoint[0] - halfWidth,
 													y1: highPoint[1],
 													x2: highPoint[0] + halfWidth,
 													y2: highPoint[1]
+												} : {
+													x1: highPoint[0],
+													y1: highPoint[1] - halfWidth,
+													x2: highPoint[0],
+													y2: highPoint[1] + halfWidth
 												},
 												style: style
 											},
 											{
 												type: 'line',
 												transition: ['shape'],
-												shape: {
+												shape: self.orientation === 'vertical' ? {
 													x1: highPoint[0],
 													y1: highPoint[1],
 													x2: lowPoint[0],
 													y2: lowPoint[1]
+												} : {
+													x1: highPoint[0],
+													y1: highPoint[1],
+													x2: lowPoint[0],
+													y2: lowPoint[1]
+												
 												},
 												style: style
 											},
 											{
 												type: 'line',
 												transition: ['shape'],
-												shape: {
+												shape: self.orientation === 'vertical' ? {
 													x1: lowPoint[0] - halfWidth,
 													y1: lowPoint[1],
 													x2: lowPoint[0] + halfWidth,
 													y2: lowPoint[1]
+												} : {
+													x1: lowPoint[0],
+													y1: lowPoint[1] - halfWidth,
+													x2: lowPoint[0],
+													y2: lowPoint[1] + halfWidth
 												},
 												style: style
 											}

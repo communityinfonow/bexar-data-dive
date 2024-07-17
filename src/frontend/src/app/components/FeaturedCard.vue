@@ -160,7 +160,7 @@
 		},
 		computed: {
 			maxWidth() {
-				if (this.$vuetify.breakpoint.mdAndDown) {
+				if (this.$vuetify.breakpoint.xsAndDown) {
 					return '';
 				}
 

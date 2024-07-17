@@ -344,7 +344,8 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 	@Override
 	public List<Indicator> findIndicators() {
 		String sql = ""
-			+ " select id_, indicator_category_id, indicator_type_id, name_en, name_es, description_en, description_es, source_id, featured, display, rate_per, is_aggregable, show_points, show_report "
+			+ " select id_, indicator_category_id, indicator_type_id, name_en, name_es, description_en, description_es, source_id, featured, display, rate_per, is_aggregable, show_points, show_report, "
+			+ "   case when exists (select 1 from mv_indicator_metadata where indicator_id = id_ and has_data = true limit 1) then true else false end as has_data "
 			+ " from tbl_indicators "
 			+ " order by id_";
 
@@ -363,6 +364,7 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 				indicator.getSource().setId(rs.getString("source_id"));
 				indicator.setFeatured(rs.getBoolean("featured"));
 				indicator.setDisplay(rs.getBoolean("display"));
+				indicator.setHasData(rs.getBoolean("has_data"));
 				indicator.setRatePer(rs.getInt("rate_per"));
 				indicator.setAggregable(rs.getBoolean("is_aggregable"));
 				indicator.setShowPoints(rs.getBoolean("show_points"));

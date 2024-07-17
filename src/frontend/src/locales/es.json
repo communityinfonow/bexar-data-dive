@@ -37,7 +37,8 @@
       "find_communities": "Encontrar mis comunidades",
       "enter_address": "Introduce una dirección",
       "find_tooltip": "Ingrese su dirección para encontrar su Distrito de Ayuntamiento, SSA, Área de Censo y Código Postal",
-      "view_community": "Ver en Mi Comunidad"
+      "view_community": "Ver en Mi Comunidad",
+      "view": "Ver"
     },
     "explore": {
       "name": "Exploración de Datos",

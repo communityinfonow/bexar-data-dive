@@ -39,7 +39,7 @@
             <h2 class="text-dive-h4 mt-16 mb-2 font-weight-light text-center" style="text-transform: uppercase;">{{ $t('tools.common.featured_indicators') }}</h2>
             <p style="margin: 0 30%; font-size: 1.25em;">{{ $t('tools.tables.get_started') }}</p>
           </section>
-          <section v-if="featuredIndicators" class="d-flex" :class="{ 'flex-row': $vuetify.breakpoint.lgAndUp, 'flex-column': $vuetify.breakpoint.mdAndDown }">
+          <section v-if="featuredIndicators" class="d-flex" :class="{ 'flex-row': $vuetify.breakpoint.smAndUp, 'flex-column': $vuetify.breakpoint.xsAndDown }">
             <template v-for="indicator in featuredIndicators">
               <featured-card 
                 :key="indicator.id" 
@@ -60,13 +60,13 @@
       </v-col>
       <v-col v-if="indicator" cols="auto" class="explore-content">
         <v-row class="fill-height no-gutters mt-4">
-          <v-col md="12" lg="3" :class="$vuetify.breakpoint.mdAndDown ? 'flex-shrink-1' : ''">
-            <v-row class="no-gutters flex-column px-4" :class="$vuetify.breakpoint.mdAndDown ? '' : 'fill-height'">
-              <filters-panel></filters-panel>
-              <docked-tooltip :class="$vuetify.breakpoint.mdAndDown ? '' : 'grow'" :helpMessage="dockedTooltipHelpMessage" :activeTab="tab"></docked-tooltip>
+          <v-col sm="12" lg="3">
+            <v-row class="no-gutters px-4" :class="$vuetify.breakpoint.mdAndDown ? 'flex-row' : 'flex-column fill-height'">
+              <filters-panel :style="{ 'width': $vuetify.breakpoint.mdAndDown ? '50%' : '' }"></filters-panel>
+              <docked-tooltip :style="{ 'width': $vuetify.breakpoint.mdAndDown ? '50%' : '' }" :helpMessage="dockedTooltipHelpMessage" :activeTab="tab"></docked-tooltip>
             </v-row>
           </v-col>
-          <v-col md="12" lg="9" class="px-4" :class="$vuetify.breakpoint.mdAndDown ? 'tab-content' : ''">
+          <v-col sm="12" lg="9" class="px-4" :class="$vuetify.breakpoint.mdAndDown ? 'tab-content' : ''">
             <v-row class="fill-height no-gutters" :class="$vuetify.breakpoint.mdAndDown && layout === 'gallery' ? 'flex-row' : 'flex-column'">
               <v-col cols="auto" class="d-flex shrink" :class="$vuetify.breakpoint.mdAndDown ? 'flex-column' : ''">
                 <v-tabs v-model="tab" grow color="red">
@@ -76,7 +76,7 @@
                     <span v-if="layout === 'gallery' && locale === 'en'">&nbsp;Options</span>
                   </v-tab>
                 </v-tabs>
-                <div class="d-flex align-center">
+                <div v-if="$vuetify.breakpoint.lgAndUp" class="d-flex align-center">
                   <label aria-label id="layoutLabel" class="v-label v-label--active theme--light mx-4">{{ $t('tools.explore.layouts.layout') }}</label>
                   <v-btn-toggle v-model="layout" class="my-2" color="red" mandatory aria-labelledby="layoutLabel" rounded>
                     <v-btn :value="'tabs'" color="red" dark small><v-icon color="white" class="mr-2">mdi-tab</v-icon>{{ $t('tools.explore.layouts.tabs') }}</v-btn>
@@ -85,7 +85,7 @@
                 </div>
               </v-col>
               <v-col  v-if="layout === 'tabs'" cols="auto" class="grow">
-                <v-tabs-items v-model="tab" class="fill-height">
+                <v-tabs-items v-model="tab" class="fill-height" touchless>
                   <v-tab-item v-for="tab in tabs" :key="tab" transition="none" reverse-transition="none" class="fill-height">
                     <explore-map v-if="tab === 'map'"></explore-map>
                     <explore-trend-chart v-if="tab === 'trend'"></explore-trend-chart>

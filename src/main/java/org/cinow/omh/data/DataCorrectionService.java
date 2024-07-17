@@ -11,6 +11,10 @@ public class DataCorrectionService {
 	@Autowired
 	private DataCorrectionRepository dataCorrectionRepository;
 
+	public List<DataCorrection> findDisplayed() {
+		return dataCorrectionRepository.findDisplayed();
+	}
+
 	public List<DataCorrection> findAll() {
 		return dataCorrectionRepository.findAll();
 	}

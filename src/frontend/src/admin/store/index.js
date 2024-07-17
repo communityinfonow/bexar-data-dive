@@ -15,6 +15,7 @@ export default new Vuex.Store({
     types: null,
     sources: null,
     announcements: null,
+    dataCorrections: null,
     filterTypes: null,
     filterOptions: null,
     auditLog: null,
@@ -27,6 +28,11 @@ export default new Vuex.Store({
           key: 'announcements',
           name: 'Announcements',
           route: '/admin/announcements'
+        },
+        {
+          key: 'data-corrections',
+          name: 'Data Corrections',
+          route: '/admin/data-corrections'
         },
         {
           key: 'indicators',
@@ -94,6 +100,9 @@ export default new Vuex.Store({
     },
     SET_ANNOUNCEMENTS(state, announcements) {
       state.announcements = announcements
+    },
+    SET_DATA_CORRECTIONS(state, dataCorrections) {
+      state.dataCorrections = dataCorrections
     },
     SET_AUDIT_LOG(state, auditLog) {
       state.auditLog = auditLog
@@ -200,6 +209,48 @@ export default new Vuex.Store({
     updateAnnouncement(context, ann) {
       return axios.put('/api/admin/announcements', ann).then(() => {
         context.dispatch('getAnnouncements');
+      });
+    },
+    getDataCorrections(context) {
+      return axios.get('/api/admin/data-corrections').then((response) => {
+        let corrections = response.data.map(c => {
+          return {
+            ...c,
+            locationTypes: c.locationTypes.map(lt => lt.id),
+            filterTypes: c.filterTypes.map(ft => ft.id),
+            indicator: c.indicator.id
+          }
+        })
+        context.commit('SET_DATA_CORRECTIONS', corrections);
+      });
+    },
+    addDataCorrection(context, correction) {
+      let correctionObject = {
+        dateCorrected: correction.dateCorrected,
+        indicator: { id: correction.indicator },
+        years: correction.years,
+        locationTypes: correction.locationTypes?.map(lt => ({ id: lt })) || null,
+        filterTypes: correction.filterTypes?.map(ft => ({ id: ft })) || null,
+        note: correction.note,
+        display: correction.display
+      };
+      return axios.post('/api/admin/data-corrections', correctionObject).then(() => {
+        context.dispatch('getDataCorrections')
+      });
+    },
+    updateDataCorrection(context, correction) {
+      let correctionObject = {
+        id: correction.id,
+        dateCorrected: correction.dateCorrected,
+        indicator: { id: correction.indicator },
+        years: correction.years,
+        locationTypes: correction.locationTypes?.map(lt => ({ id: lt })) || null,
+        filterTypes: correction.filterTypes?.map(ft => ({ id: ft })) || null,
+        note: correction.note,
+        display: correction.display
+      };
+      return axios.put('/api/admin/data-corrections', correctionObject).then(() => {
+        context.dispatch('getDataCorrections');
       });
     },
     getAuditLog(context) {

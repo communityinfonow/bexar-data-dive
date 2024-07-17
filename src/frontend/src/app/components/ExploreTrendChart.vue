@@ -61,7 +61,7 @@ export default {
 		...mapState(['locale', 'exploreData', 'trendCompareSelections', 'trendLabelsOrLines', 'exploreTab', 'indicator', 'filterSelections']),
 		...mapGetters(['filters']),
 		smallScreen() {
-			return document.body.clientWidth <= 1440;
+			return document.body.clientWidth < 1264;
 		}
 	},
 	watch: {

@@ -1,8 +1,8 @@
 <template>
   <v-container v-if="corrections" fluid class="pa-0">
-    <div  v-for="item in corrections" :key="item.id" :class="'mx-8 mb-8 ' + (item.id === 1 ? 'mt-4' : '')" :id="'correction_' + item.id">
-      <v-divider v-if="item.id !== 1" class="my-12"></v-divider>
-      <v-row class="no-gutters">
+    <div  v-for="(item, index) in corrections" :key="item.id" :class="'mx-8 mb-8 ' + (item.id === 1 ? 'mt-4' : '')" :id="'correction_' + item.id">
+      <v-divider v-if="index !== 0" class="my-8"></v-divider>
+      <v-row class="no-gutters" :class="index === 0 ? 'mt-8' : ''">
         <v-col cols="12" class="pa-4 col col-auto">
           <h2 class="mb-4 text-dive-h5 blue--text">{{ item.indicator['name_' + locale] }} ({{ new Date(item.dateCorrected).toLocaleDateString() }})</h2>
           <v-list dense>
@@ -22,6 +22,12 @@
               <v-list-item-content>
                 Filter Types:
                 {{ item.filterTypes.length ? item.filterTypes.map(ft => ft['name_' + locale]).join(', ') : 'All' }}
+              </v-list-item-content> <!-- FIXME: i18n -->
+            </v-list-item>
+            <v-list-item v-if="item.note">
+              <v-list-item-content>
+                Note:
+                {{ item.note }}
               </v-list-item-content> <!-- FIXME: i18n -->
             </v-list-item>
           </v-list>
