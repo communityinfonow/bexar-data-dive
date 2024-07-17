@@ -24,6 +24,12 @@
                 {{ item.filterTypes.length ? item.filterTypes.map(ft => ft['name_' + locale]).join(', ') : 'All' }}
               </v-list-item-content> <!-- FIXME: i18n -->
             </v-list-item>
+            <v-list-item v-if="item.note">
+              <v-list-item-content>
+                Note:
+                {{ item.note }}
+              </v-list-item-content> <!-- FIXME: i18n -->
+            </v-list-item>
           </v-list>
         </v-col>
       </v-row>

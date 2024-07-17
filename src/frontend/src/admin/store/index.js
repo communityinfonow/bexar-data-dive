@@ -213,16 +213,43 @@ export default new Vuex.Store({
     },
     getDataCorrections(context) {
       return axios.get('/api/admin/data-corrections').then((response) => {
-        context.commit('SET_DATA_CORRECTIONS', response.data);
+        let corrections = response.data.map(c => {
+          return {
+            ...c,
+            locationTypes: c.locationTypes.map(lt => lt.id),
+            filterTypes: c.filterTypes.map(ft => ft.id),
+            indicator: c.indicator.id
+          }
+        })
+        context.commit('SET_DATA_CORRECTIONS', corrections);
       });
     },
     addDataCorrection(context, correction) {
-      return axios.post('/api/admin/data-corrections', correction).then(() => {
+      let correctionObject = {
+        dateCorrected: correction.dateCorrected,
+        indicator: { id: correction.indicator },
+        years: correction.years,
+        locationTypes: correction.locationTypes?.map(lt => ({ id: lt })) || null,
+        filterTypes: correction.filterTypes?.map(ft => ({ id: ft })) || null,
+        note: correction.note,
+        display: correction.display
+      };
+      return axios.post('/api/admin/data-corrections', correctionObject).then(() => {
         context.dispatch('getDataCorrections')
       });
     },
     updateDataCorrection(context, correction) {
-      return axios.put('/api/admin/data-corrections', correction).then(() => {
+      let correctionObject = {
+        id: correction.id,
+        dateCorrected: correction.dateCorrected,
+        indicator: { id: correction.indicator },
+        years: correction.years,
+        locationTypes: correction.locationTypes?.map(lt => ({ id: lt })) || null,
+        filterTypes: correction.filterTypes?.map(ft => ({ id: ft })) || null,
+        note: correction.note,
+        display: correction.display
+      };
+      return axios.put('/api/admin/data-corrections', correctionObject).then(() => {
         context.dispatch('getDataCorrections');
       });
     },

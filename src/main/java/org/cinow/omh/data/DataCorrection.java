@@ -14,7 +14,8 @@ public class DataCorrection {
 	private List<String> years;
 	private List<LocationType> locationTypes;
 	private List<FilterType> filterTypes;
-	//TODO: include a note about the correction?
+	private String note;
+	private boolean display;
 
 	public int getId() {
 		return id;
@@ -51,5 +52,17 @@ public class DataCorrection {
 	}
 	public void setFilterTypes(List<FilterType> filterTypes) {
 		this.filterTypes = filterTypes;
-	}	
+	}
+	public String getNote() {
+		return note;
+	}
+	public void setNote(String note) {
+		this.note = note;
+	}
+	public boolean isDisplay() {
+		return display;
+	}
+	public void setDisplay(boolean display) {
+		this.display = display;
+	}
 }

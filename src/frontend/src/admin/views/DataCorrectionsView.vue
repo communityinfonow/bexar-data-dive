@@ -9,6 +9,9 @@
 							<v-select
 								v-model="dc.indicator"
 								:items="sortedIndicators"
+								:item-value="item => item.id"
+								:item-text="item => item.name_en"
+								:item-disabled="item => !item.hasData"
 								label="Indicator"
 								required
 								:rules="[rules.required]"
@@ -59,10 +62,51 @@
 									</v-btn>
 								</v-date-picker>
 							</v-menu>
-							<p>TODO: year multi-select...will need all filters for indicator(s) that have data corrections already...</p>
-							<p>TODO: location multi-select</p>
-							<p>TODO: filter type multi-select</p>
-							<p>TODO: display toggle</p>
+							<template v-if="updateDataCorrectionFilters[idx]">
+								<v-select
+									v-if="updateDataCorrectionFilters[idx].yearFilter"
+									v-model="dc.years"
+									:items="updateDataCorrectionFilters[idx].yearFilter.options"
+									:item-value="item => item.id"
+									:item-text="item => item.name_en"
+									label="Years"
+									required
+									:rules="[rules.required]"
+									multiple
+								>
+								</v-select>
+								<v-select
+									v-if="updateDataCorrectionFilters[idx].locationTypeFilter"
+									v-model="dc.locationTypes"
+									:items="updateDataCorrectionFilters[idx].locationTypeFilter.options"
+									:item-value="item => item.id"
+									:item-text="item => item.name_en"
+									label="Location Types"
+									required
+									:rules="[rules.required]"
+									multiple
+								>
+								</v-select>
+								<v-select
+									v-if="updateDataCorrectionFilters[idx].indicatorFilters"
+									v-model="dc.filterTypes"
+									:items="updateDataCorrectionFilters[idx].indicatorFilters.map(f => f.type)"
+									:item-value="item => item.id"
+									:item-text="item => item.name_en"
+									label="Filter Types"
+									required
+									:rules="[rules.required]"
+									multiple
+								>
+								</v-select>
+								<v-textarea
+									v-model="dc.note"
+									label="Note"
+									auto-grow
+								>
+								</v-textarea>
+								<v-switch label="Display" v-model="dc.display"></v-switch>
+							</template>	
 						</v-card-text>
 						<v-card-actions>
 							<v-btn rounded color="red" @click="updateHandler(dc, idx)">
@@ -82,12 +126,13 @@
 							<v-select
 								v-model="newDataCorrection.indicator"
 								:items="sortedIndicators"
+								:item-value="item => item.id"
 								:item-text="item => item.name_en"
-								return-object
+								:item-disabled="item => !item.hasData"
 								label="Indicator"
 								required
 								:rules="[rules.required]"
-								@change="getFilters(newDataCorrection.indicator)"
+								@change="getFilters(newDataCorrection.indicator, null)"
 							>
 							</v-select>
 							<v-menu
@@ -139,8 +184,8 @@
 								v-if="filters.yearFilter"
 								v-model="newDataCorrection.years"
 								:items="filters.yearFilter.options"
-								item-text="name_en"
-								item-value="id"
+								:item-text="item => item.name_en"
+								:item-value="item => item.id"
 								label="Years"
 								required
 								:rules="[rules.required]"
@@ -151,13 +196,12 @@
 								v-if="filters.locationTypeFilter"
 								v-model="newDataCorrection.locationTypes"
 								:items="filters.locationTypeFilter.options"
-								item-text="name_en"
-								item-value="id"
+								:item-text="item => item.name_en"
+								:item-value="item => item.id"
 								label="Location Types"
 								required
 								:rules="[rules.required]"
 								multiple
-								return-object
 							>
 							</v-select>
 							<v-select
@@ -169,9 +213,14 @@
 								required
 								:rules="[rules.required]"
 								multiple
-								return-object
 							>
 							</v-select>
+							<v-textarea
+								v-model="newDataCorrection.note"
+								label="Note"
+								auto-grow
+							>
+							</v-textarea>
 							<v-switch label="Display" v-model="newDataCorrection.display"></v-switch>
 						</v-card-text>
 						<v-card-actions>
@@ -196,7 +245,7 @@ export default {
 	name: 'DataCorrectionsView',
 	mounted () {
 		this.getIndicators();
-		//this.getDataCorrections();
+		this.getDataCorrectionsAndFilters();
 	},
 	data() {
 		return {
@@ -206,7 +255,8 @@ export default {
 			addForm: null,
 			updateForms: [],
 			newDataCorrection: {},
-			updateDataCorrectionDateMenus: {},
+			updateDataCorrectionDateMenus: [],
+			updateDataCorrectionFilters: [],
 			newDataCorrectionDateMenu: false,
 			messageText: '',
 			message: false,
@@ -229,22 +279,36 @@ export default {
 			'addDataCorrection', 
 			'updateDataCorrection'
 		]),
-		getFilters(indicator) {
-			console.log(indicator)
+		getDataCorrectionsAndFilters() {
+			this.getDataCorrections().then(() => {
+				this.updateForms = this.dataCorrections.map(() => null);
+				this.dataCorrections.forEach((dc, idx) => this.updateDataCorrectionDateMenus[idx] = false);
+				this.updateDataCorrectionFilters = this.dataCorrections.map(() => null);
+				this.dataCorrections.forEach((dc, idx) => this.getFilters(dc.indicator, idx));
+			});
+		},
+		getFilters(indicator, idx) {
+			console.log('getFilters', indicator, idx)
 			return axios.get('/api/filters', { params: {
-				indicator: indicator.id
+				indicator: indicator
 			}}).then(response => { 
-				this.filters = response.data;
+				if (idx === null) {
+					this.filters = response.data;
+				} else {
+					this.$set(this.updateDataCorrectionFilters, idx, response.data);
+				}
 			})
 		},
 		addHandler() {
 			this.$refs.add_form.validate();
 			if (this.addForm) {
+				this.newDataCorrection.filterTypes = this.newDataCorrection.filterTypes || [];
 				this.addDataCorrection(this.newDataCorrection).then(() => {
 					this.newDataCorrection = {};
 					this.messageText = 'Data correction added'
 					this.message = true;
 					this.$refs.add_form.resetValidation();
+					this.getDataCorrectionsAndFilters();
 				});
 			}
 		},
@@ -255,6 +319,7 @@ export default {
 					this.messageText = 'Data correction updated'
 					this.message = true;
 					this.$refs.update_forms[idx].resetValidation();
+					this.getDataCorrectionsAndFilters();
 				});
 			}
 		}
