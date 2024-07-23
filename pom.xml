@@ -117,6 +117,16 @@
 							<arguments>build</arguments>
 						</configuration>
 					</execution>
+					<execution>
+						<id>yarn components build</id>
+						<goals>
+							<goal>yarn</goal>
+						</goals>
+						<phase>generate-resources</phase>
+						<configuration>
+							<arguments>build --target wc --dest components --inline-vue --name dive src/app/components/embed/*.vue</arguments>
+						</configuration>
+					</execution>
 				</executions>
 				<configuration>
 					<nodeVersion>${node.version}</nodeVersion>
@@ -138,6 +148,10 @@
 							<resources>
 								<resource>
 									<directory>src/frontend/dist</directory>
+									<filtering>true</filtering>
+								</resource>
+								<resource>
+									<directory>src/frontend/components</directory>
 									<filtering>true</filtering>
 								</resource>
 							</resources>

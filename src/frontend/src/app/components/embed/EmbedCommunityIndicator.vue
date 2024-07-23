@@ -13,10 +13,12 @@
 </template>
 
 <script>
+import store from '@/app/store/index.js'
 import CommunityIndicator from '@/app/components/CommunityIndicator'
 import { mapActions, mapState } from 'vuex'
 export default {
-	name: 'CommunityIndicatorWebComponent',
+	name: 'EmbedCommunityIndicator',
+	store,
 	components: { CommunityIndicator },
 	props: {
 		locale: {
@@ -46,12 +48,6 @@ export default {
 	computed: {
 		...mapState(['locationMenu', 'indicatorMenu', 'community']),
 		item() {
-			if (this.community?.indicatorData) {
-				console.log(this.indicatorId)
-				console.log(this.community?.indicatorData
-					.flatMap(c => c.indicators.concat(c.subcategories?.flatMap(sc => sc.indicators) || []))
-					.map(i => i.indicator?.id))
-			}
 			return this.community?.indicatorData
 				.flatMap(c => c.indicators.concat(c.subcategories?.flatMap(sc => sc.indicators) || []))
 				.find(i => i.indicator.id === this.indicatorId)
@@ -61,7 +57,6 @@ export default {
 			this.community?.indicatorData
 				.map(c => c.subcategories)
 				.find(sc => {
-					console.log(sc)
 					if (sc?.flatMap(i => i.id).includes(this.indicatorId)) {
 						name = sc.name
 					}
@@ -73,16 +68,11 @@ export default {
 			return this.community ? Math.max(...this.community.indicatorData.flatMap(id => id.indicators.concat(id.subcategories.flatMap(sc => sc.indicators))).map(i => i.demographicData.length)) : 0;
 		},
 	},
-	watch: {
-		locationMenu(newValue) {
-			if (newValue) {
-				this.getCommunityData({ community: newValue.categories.find(c => c.id === this.locationTypeId).items.find(l => l.id === this.locationId), filterType: this.compareById })
-			}
-		}
-	},
 	mounted() {
 		this.getLocationMenu()
 		this.getIndicatorMenu()
+		console.log('loading data')
+		this.getCommunityData({ community: { id: this.locationId, categoryId: this.locationTypeId }, filterType: this.compareById })
 	},
 	methods: {
 		...mapActions(['getLocationMenu', 'getIndicatorMenu', 'getCommunityData'])

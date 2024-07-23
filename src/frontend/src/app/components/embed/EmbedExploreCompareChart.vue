@@ -1,15 +1,17 @@
 <template>
 	<div v-if="exploreData" style="height: 600px;">
-		<explore-trend-chart></explore-trend-chart>
+		<explore-compare-chart></explore-compare-chart>
 	</div>
 </template>
 
 <script>
-import ExploreTrendChart from '@/app/components/ExploreTrendChart'
+import store from '@/app/store/index.js'
+import ExploreCompareChart from '@/app/components/ExploreCompareChart'
 import { mapActions, mapState } from 'vuex'
 export default {
-	name: 'ExploreTrendChartWebComponent',
-	components: { ExploreTrendChart },
+	name: 'EmbedExploreCompareChart',
+	store,
+	components: { ExploreCompareChart },
 	props: {
 		locale: {
 			type: String

@@ -21,7 +21,9 @@
 </template>
 
 <script>
+import store from '@/app/store/index.js'
 import { mapState } from 'vuex'
+import vuetify from '@/plugins/vuetify'
 import AppHeader from '@/app/components/AppHeader'
 import PrintHeader from '@/app/components/PrintHeader'
 import AppFooter from '@/app/components/AppFooter'
@@ -30,6 +32,8 @@ import VisitorSurvey from '@/app/components/VisitorSurvey'
 
 export default {
   name: 'App',
+  store,
+  vuetify,
   components: { AppHeader, PrintHeader, AppFooter, NavigationDrawer, VisitorSurvey },
   computed: {
     ...mapState(['loading'])

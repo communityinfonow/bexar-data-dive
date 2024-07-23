@@ -5,10 +5,12 @@
 </template>
 
 <script>
+import store from '@/app/store/index.js'
 import ExploreMap from '@/app/components/ExploreMap'
 import { mapActions, mapState } from 'vuex'
 export default {
-	name: 'ExploreMapWebComponent',
+	name: 'EmbedExploreMap',
+	store,
 	components: { ExploreMap },
 	props: {
 		locale: {
