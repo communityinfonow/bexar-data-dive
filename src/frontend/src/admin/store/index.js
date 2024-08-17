@@ -218,7 +218,8 @@ export default new Vuex.Store({
             ...c,
             locationTypes: c.locationTypes.map(lt => lt.id),
             filterTypes: c.filterTypes.map(ft => ft.id),
-            indicator: c.indicator.id
+            indicator: c.indicator.id,
+            source: c.source.id
           }
         })
         context.commit('SET_DATA_CORRECTIONS', corrections);
@@ -228,6 +229,7 @@ export default new Vuex.Store({
       let correctionObject = {
         dateCorrected: correction.dateCorrected,
         indicator: { id: correction.indicator },
+        source: { id: correction.source },
         years: correction.years,
         locationTypes: correction.locationTypes?.map(lt => ({ id: lt })) || null,
         filterTypes: correction.filterTypes?.map(ft => ({ id: ft })) || null,
@@ -243,6 +245,7 @@ export default new Vuex.Store({
         id: correction.id,
         dateCorrected: correction.dateCorrected,
         indicator: { id: correction.indicator },
+        source: { id: correction.source },
         years: correction.years,
         locationTypes: correction.locationTypes?.map(lt => ({ id: lt })) || null,
         filterTypes: correction.filterTypes?.map(ft => ({ id: ft })) || null,

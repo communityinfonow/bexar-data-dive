@@ -6,7 +6,23 @@
 				<v-form ref="update_forms" v-model="updateForms[idx]">
 					<v-card class="mb-8">
 						<v-card-text>
+							<v-btn-toggle v-model="dc.correctionType">
+								<v-btn value="indicator">Indicator</v-btn>
+								<v-btn value="source">Source</v-btn>
+							</v-btn-toggle>
 							<v-select
+								v-if="dc.correctionType === 'source'"
+								v-model="dc.source"
+								:items="sources"
+								:item-value="item => item.id"
+								:item-text="item => item.name_en"
+								label="Source"
+								required
+								:rules="[rules.required]"
+							>
+							</v-select>
+							<v-select
+								v-if="dc.correctionType === 'indicator'"
 								v-model="dc.indicator"
 								:items="sortedIndicators"
 								:item-value="item => item.id"
@@ -90,7 +106,7 @@
 								<v-select
 									v-if="updateDataCorrectionFilters[idx].indicatorFilters"
 									v-model="dc.filterTypes"
-									:items="updateDataCorrectionFilters[idx].indicatorFilters.map(f => f.type)"
+									:items="[{ id: null, name_en: 'No Filter'}].concat(updateDataCorrectionFilters[idx].indicatorFilters.map(f => f.type))"
 									:item-value="item => item.id"
 									:item-text="item => item.name_en"
 									label="Filter Types"
@@ -123,7 +139,23 @@
 					<v-card class="mb-8">
 						<v-card-title>Add Data Correction</v-card-title>
 						<v-card-text>
+							<v-btn-toggle v-model="newDataCorrection.correctionType">
+								<v-btn value="indicator">Indicator</v-btn>
+								<v-btn value="source">Source</v-btn>
+							</v-btn-toggle>
 							<v-select
+								v-if="newDataCorrection.correctionType === 'source'"
+								v-model="newDataCorrection.source"
+								:items="sources"
+								:item-value="item => item.id"
+								:item-text="item => item.name_en"
+								label="Source"
+								required
+								:rules="[rules.required]"
+								@change="getFilters(newDataCorrection, null)"
+							/>
+							<v-select
+								v-if="newDataCorrection.correctionType === 'indicator'"
 								v-model="newDataCorrection.indicator"
 								:items="sortedIndicators"
 								:item-value="item => item.id"
@@ -132,7 +164,7 @@
 								label="Indicator"
 								required
 								:rules="[rules.required]"
-								@change="getFilters(newDataCorrection.indicator, null)"
+								@change="getFilters(newDataCorrection, null)"
 							>
 							</v-select>
 							<v-menu
@@ -207,8 +239,9 @@
 							<v-select
 								v-if="filters.indicatorFilters"
 								v-model="newDataCorrection.filterTypes"
-								:items="filters.indicatorFilters.map(f => f.type)"
+								:items="[{ id: null, name_en: 'No Filter'}].concat(filters.indicatorFilters.map(f => f.type))"
 								:item-text="t => t.name_en"
+								:item-value="t => t.id"
 								label="Filter Types"
 								required
 								:rules="[rules.required]"
@@ -245,6 +278,7 @@ export default {
 	name: 'DataCorrectionsView',
 	mounted () {
 		this.getIndicators();
+		this.getSources();
 		this.getDataCorrectionsAndFilters();
 	},
 	data() {
@@ -264,7 +298,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['indicators', 'dataCorrections']),
+		...mapState(['indicators', 'sources', 'dataCorrections']),
 		ready() {
 			return this.indicators
 		},
@@ -275,6 +309,7 @@ export default {
 	methods: {
 		...mapActions([
 			'getIndicators',
+			'getSources',
 			'getDataCorrections', 
 			'addDataCorrection', 
 			'updateDataCorrection'
@@ -284,13 +319,15 @@ export default {
 				this.updateForms = this.dataCorrections.map(() => null);
 				this.dataCorrections.forEach((dc, idx) => this.updateDataCorrectionDateMenus[idx] = false);
 				this.updateDataCorrectionFilters = this.dataCorrections.map(() => null);
-				this.dataCorrections.forEach((dc, idx) => this.getFilters(dc.indicator, idx));
+				this.dataCorrections.forEach((dc, idx) => {
+					this.getFilters(dc, idx)
+				});
 			});
 		},
-		getFilters(indicator, idx) {
-			console.log('getFilters', indicator, idx)
+		getFilters(correction, idx) {
 			return axios.get('/api/filters', { params: {
-				indicator: indicator
+				indicator: correction.indicator,
+				source: correction.source
 			}}).then(response => { 
 				if (idx === null) {
 					this.filters = response.data;

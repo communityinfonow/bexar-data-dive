@@ -4,7 +4,11 @@
       <v-divider v-if="index !== 0" class="my-8"></v-divider>
       <v-row class="no-gutters" :class="index === 0 ? 'mt-8' : ''">
         <v-col cols="12" class="pa-4 col col-auto">
-          <h2 class="mb-4 text-dive-h5 blue--text">{{ item.indicator['name_' + locale] }} ({{ new Date(item.dateCorrected).toLocaleDateString() }})</h2>
+          <h2 class="mb-4 text-dive-h5 blue--text">
+            <span v-if="item.correctionType === 'indicator'">{{ item.indicator['name_' + locale] }}</span>
+            <span v-if="item.correctionType === 'source'">{{ item.source['name_' + locale] }}</span>
+            ({{ new Date(item.dateCorrected).toLocaleDateString() }})
+          </h2>
           <v-list dense>
             <v-list-item>
               <v-list-item-content>
