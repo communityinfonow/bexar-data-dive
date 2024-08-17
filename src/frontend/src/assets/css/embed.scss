@@ -1,0 +1,68 @@
+main {
+	padding-bottom: 0px !important;
+  }
+  /* increase the padding on small screens */
+  @media screen and (max-width: 1264px) {
+	main {
+	  padding-bottom: 0px !important;
+	}
+}
+
+.embed.v-application {
+	background-color: transparent;
+}
+.embed .container {
+	height: 100%;
+}
+.embed .definition-tooltip-container {
+	background: transparent;
+}
+
+.embed .definition-tooltip {
+	color: $color-primary;
+	background-color: $color-light;
+	border: 1px solid $color-primary;
+	border-radius: 1em;
+	padding: 1em;
+}
+.embed .definition-tooltip-wedge {
+	content: "";
+	width: 0;
+	height: 0;
+	border-top: 20px solid transparent;
+	border-bottom: 20px solid transparent;
+	border-right: 20px solid $color-primary;
+	position: absolute;
+	top: 20px !important;
+	left: -3px;
+}
+.embed .definition-tooltip-wedge::after {
+	content: "";
+	width: 0;
+	height: 0;
+	border-top: 20px solid transparent;
+	border-bottom: 20px solid transparent;
+	border-right: 20px solid $color-light;
+	position: absolute;
+	top: -20px !important;
+	left: 1px;
+}
+/*
+.embed .v-application--wrap,
+.embed .container,
+.embed .community-indicator {
+	height: 100%;
+}*/
+.v-application .blue--text {
+	color: #3b5a98 !important;
+}
+.v-application .link--text {
+	color: #B8237E;
+}
+.v-application .white--text {
+	color: #fff;
+
+}
+.theme--light.v-chip:not(.v-chip--active).secondary {
+	background: #1C54A5;
+}
