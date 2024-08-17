@@ -124,6 +124,7 @@
       "highlight_location": "Highlight filtered location",
       "labels": "Labels",
       "click_copy": "Click below to copy the link",
+      "click_copy_embed": "Click below to copy the embed code",
       "copy_success": "Copied to clipboard!",
       "copy_failure": "Sorry, we are unable to access your clipboard to automatically copy the link. Please manually copy the link above.",
       "about_data": "About the indicator",

@@ -124,6 +124,7 @@
       "highlight_location": "Resaltar ubicación filtrada",
       "labels": "Etiquetas",
       "click_copy": "Haz clic debajo para copiar el enlace",
+      "click_copy_embed": "Haz clic debajo para copiar el código de inserción",
       "copy_success": "¡Copiado al portapapeles!",
       "copy_failure": "Lo sentimos, no podemos acceder a tu portapapeles para copiar el enlace de forma automática. Por favor, copia el enlace de arriba de forma manual.",
       "about_data": "Sobre el indicador",
