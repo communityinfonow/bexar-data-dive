@@ -17,7 +17,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.RequestHeaderRequestMatcher;
 
 @EnableWebSecurity
@@ -33,7 +32,9 @@ public class SecurityConfig {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		// @formatter:off
         http
-			.cors()
+			.cors().and()
+			.csrf().disable()
+			.headers().frameOptions().disable()
 			.and()
             .authorizeRequests(a -> a
                 .antMatchers("/admin", "/admin/**", "/api/admin/**").access("hasRole('bdd-admin')")
@@ -55,9 +56,6 @@ public class SecurityConfig {
             )
 			.logout(l -> l
 				.logoutSuccessUrl("/").permitAll()
-			)
-			.csrf(c -> c
-				.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
 			)
             .oauth2Login()
 			.defaultSuccessUrl(loginSuccessUrl)

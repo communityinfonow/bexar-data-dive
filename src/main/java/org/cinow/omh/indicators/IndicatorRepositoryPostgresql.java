@@ -67,7 +67,7 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 			+ "   case when exists (select 1 from mv_indicator_metadata where indicator_id = id_ and has_data = true limit 1) then true else false end as has_data, "
 			+ "   case when exists (select 1 from mv_indicator_metadata where indicator_id = id_ and has_moe = true limit 1) then true else false end as has_moe, "
 			+ "   is_aggregable, show_points, show_report "
-			+ " from tbl_indicators "
+			+ " from tbl_indicators i "
 			+ " where indicator_category_id = :indicator_category_id::numeric "
 			+ "   and display = true"
 			+ " order by id_::numeric ";
@@ -107,7 +107,7 @@ public class IndicatorRepositoryPostgresql implements IndicatorRepository {
 			+ "   case when exists (select 1 from mv_indicator_metadata where indicator_id = id_ and has_data = true limit 1) then true else false end as has_data, "
 			+ "   case when exists (select 1 from mv_indicator_metadata where indicator_id = id_ and has_moe = true limit 1) then true else false end as has_moe, "
 			+ "   is_aggregable "
-			+ " from tbl_indicators "
+			+ " from tbl_indicators i "
 			+ " where id_ = :id::numeric "
 			+ "   and display = true ";
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();

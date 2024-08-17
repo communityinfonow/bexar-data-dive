@@ -1,8 +1,11 @@
 package org.cinow.omh.tables;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.cinow.omh.data.DataCorrectionRepository;
 import org.cinow.omh.filters.FilterRepository;
 import org.cinow.omh.filters.IndicatorFilter;
 import org.cinow.omh.indicators.IndicatorRepository;
@@ -42,6 +45,9 @@ public class TablesService {
 	@Autowired
 	private FilterRepository filterRepository;
 
+	@Autowired
+	private DataCorrectionRepository dataCorrectionRepository;
+
 	/**
 	 * Gets the tables data.
 	 * 
@@ -51,6 +57,27 @@ public class TablesService {
 	public TablesData getTablesData(TablesDataRequest request) {
 		TablesData tablesData = new TablesData();
 		tablesData.setIndicator(this.indicatorRepository.getIndicator(request.getIndicator()));
+		List<String> filterTypes = new ArrayList<>();
+		if (request.getRaces() != null) {
+			filterTypes.add("1");
+		}
+		if (request.getAges() != null) {
+			filterTypes.add("2");
+		}
+		if (request.getSexes() != null) {
+			filterTypes.add("3");
+		}
+		if (request.getEducations() != null) {
+			filterTypes.add("4");
+		}
+		if (request.getIncomes() != null) {
+			filterTypes.add("5");
+		}
+		tablesData.getIndicator().setRecentCorrection(this.dataCorrectionRepository.hasRecent(
+			request.getIndicator(), 
+			request.getYears(),
+			request.getLocations().stream().map(l -> l.split("_")[0]).collect(Collectors.toSet()),
+			filterTypes));
 		tablesData.setCategory(this.indicatorRepository.getIndicatorCategory(request.getIndicator()));
 		tablesData.setSource(this.sourceRepository.getSourceByIndicator(request.getIndicator()));
 		this.tablesRepository.populateTablesData(request, tablesData);
