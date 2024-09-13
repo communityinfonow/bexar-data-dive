@@ -1,24 +1,41 @@
 <template>
-	<div v-if="item">
-		<community-indicator
-			:locale="locale"
-			:item="item"
-			:parentName="parentName"
-			:maxDemographics="maxDemographics"
-			:filterType="{ id: compareById }"
-			:labelsOrLines="labelsOrLines"
-		>
-		</community-indicator>
+	<div v-if="item" data-app="true" id="app" class="embed community v-application v-application--is-ltr theme--light">
+		<div class="v-application--wrap">
+			<main class="v-main">
+				<div class="v-main__wrap">
+					<div class="container pa-0 container--fluid">
+						<community-indicator
+							:locale="locale"
+							:community="community"
+							:item="item"
+							:parentName="parentName"
+							:maxDemographics="maxDemographics"
+							:filterType="{ id: compareById }"
+							:labelsOrLines="labelsOrLines"
+							embedded
+						>
+						</community-indicator>
+					</div>
+				</div>
+			</main>
+		</div>
 	</div>
 </template>
 
 <script>
+import router from '@/app/router'
 import store from '@/app/store/index.js'
+import vuetify from '@/plugins/vuetify'
+import i18n from '@/i18n'
 import CommunityIndicator from '@/app/components/CommunityIndicator'
 import { mapActions, mapState } from 'vuex'
+import axios from 'axios'
 export default {
 	name: 'EmbedCommunityIndicator',
+	router,
 	store,
+	vuetify,
+	i18n,
 	components: { CommunityIndicator },
 	props: {
 		locale: {
@@ -42,15 +59,16 @@ export default {
 	},
 	data() {
 		return {
-			
+			community: null
 		}
 	},
 	computed: {
-		...mapState(['locationMenu', 'indicatorMenu', 'community']),
+		...mapState(['locationMenu', 'indicatorMenu']),
 		item() {
-			return this.community?.indicatorData
+			let i = this.community?.indicatorData
 				.flatMap(c => c.indicators.concat(c.subcategories?.flatMap(sc => sc.indicators) || []))
 				.find(i => i.indicator.id === this.indicatorId)
+			return i
 		},
 		parentName() {
 			let name = null
@@ -68,18 +86,25 @@ export default {
 			return this.community ? Math.max(...this.community.indicatorData.flatMap(id => id.indicators.concat(id.subcategories.flatMap(sc => sc.indicators))).map(i => i.demographicData.length)) : 0;
 		},
 	},
+	created() {
+		axios.defaults.baseURL = process.env.VUE_APP_DOMAIN
+	},
 	mounted() {
-		this.getLocationMenu()
-		this.getIndicatorMenu()
-		console.log('loading data')
-		this.getCommunityData({ community: { id: this.locationId, categoryId: this.locationTypeId }, filterType: this.compareById })
+		this.getCommunityData({ 
+			community: { id: this.locationId, categoryId: this.locationTypeId }, 
+			filterType: this.compareById 
+		}).then(data => {
+			this.community = data
+		});
 	},
 	methods: {
-		...mapActions(['getLocationMenu', 'getIndicatorMenu', 'getCommunityData'])
-	},
+		...mapActions(['getCommunityData'])
+	}
 }
 </script>
 
-<style lang="scss" scoped>
-
+<style lang="scss">
+	@import "vuetify/dist/vuetify.min.css";
+	@import "@/assets/css/app.scss";
+	@import "@/assets/css/embed.scss";
 </style>

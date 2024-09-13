@@ -2,16 +2,20 @@
 	<div class="fill-height">
 		<v-row class="no-gutters flex-wrap flex-column fill-height">
 			<explore-tools-panel 
-				v-if="filters && filterSelections && exploreData && layout !== 'gallery'"
+				v-if="!embedded && filters && filterSelections && exploreData && layout !== 'gallery'"
 				:showCompareOptions="true"
 				:labelsOrLinesOption="trendLabelsOrLines"
 				:setLabelsOrLinesOption="setTrendLabelsOrLines"
 				dataVisualElementId="trend_chart_container"
 				dataVisualName="trend_chart"
+				:beforeDataVisualDownload="beforeDataVisualDownload"
+				:afterDataVisualDownload="afterDataVisualDownload"
 				:includeLocationFilterInCompareBy="false"
 				:includeYearFilterInCompareBy="false"
 				:setCompareSelections="setTrendCompareSelections"
 				:layout="layout"
+				tagName="explore-trend-chart"
+				:tagAttributes="tagAttributes"
 			>
 			</explore-tools-panel>
 			<v-col cols="auto" class="grow">
@@ -43,25 +47,58 @@ export default {
 		ExploreToolsPanel
 	},
 	props: {
+		locale: {
+			type: String
+		},
+		exploreData: {
+			type: Object
+		},
+		trendCompareSelections: {
+			type: Object
+		},
+		trendLabelsOrLines: {
+			type: String
+		},
+		filterSelections: {
+			type: Object
+		},
 		tab: {
 			type: String,
 		},
 		layout: {
 			type: String,
 			default: 'tabs'
+		},
+		embedded: {
+			type: Boolean,
+			default: false
 		}
 	},
 	data() {
 		return {
 			chart: null,
+			chartContainer: null,
 			seriesColors: ['#3B5A98', '#F05A28', '#F6921E', '#B8237E', '#3AA38F', '#84ACCE', '#E77478', '#663F46', '#C5DCA0'],
 		}
 	},
 	computed: {
-		...mapState(['locale', 'exploreData', 'trendCompareSelections', 'trendLabelsOrLines', 'exploreTab', 'indicator', 'filterSelections']),
+		...mapState(['exploreTab']),
 		...mapGetters(['filters']),
 		smallScreen() {
 			return document.body.clientWidth < 1264;
+		},
+		tagAttributes() {
+			return { 
+				locale: this.locale, 
+				'location-id': this.exploreData.filters.locationFilter.options[0].id, 
+				'location-type-id': this.exploreData.filters.locationTypeFilter.options[0].id, 
+				'indicator-id': this.exploreData.indicator.id, 
+				'year': this.exploreData.filters.yearFilter.options[0].id, 
+				'indicator-filters': this.exploreData.filters.indicatorFilters?.map(f => f.type.id + '_' + f.options[0].id).join(','), 
+				'trend-compare-by': this.trendCompareSelections?.type.id, 
+				'trend-compare-with': this.trendCompareSelections?.options.map(o => o.id).join(','), 
+				'labels-or-lines': this.trendLabelsOrLines
+			}
 		}
 	},
 	watch: {
@@ -87,10 +124,11 @@ export default {
 	},
 	mounted () {
 		setTimeout(() => { 
+			this.chartContainer = this.$refs.trend_chart_container;
 			echarts.use([SVGRenderer, AriaComponent, LegendComponent, GridComponent, LineChart, BarChart, CustomChart, TooltipComponent, DataZoomComponent, DataZoomSliderComponent]);
-			this.chart = echarts.init(document.getElementById('trend_chart_container'), null, { renderer: 'svg'});
+			this.chart = echarts.init(this.chartContainer, null, { renderer: 'svg'});
 			window.addEventListener('resize', () => {
-				if (this.exploreTab === 'trend' || this.layout === 'gallery') {
+				if (!this.embedded && (this.exploreTab === 'trend' || this.layout === 'gallery')) {
 					this.chart.resize();
 				}
 			});
@@ -106,7 +144,7 @@ export default {
 			if (this.chart) {
 				this.chart.dispose();
 			}
-			this.chart = echarts.init(document.getElementById('trend_chart_container'), null, { renderer: 'svg'});
+			this.chart = echarts.init(this.chartContainer, null, { renderer: 'svg'});
 			this.chart.on('mouseover', (params) => {
 				if (params.componentType === 'series') {
 					let comparedIndicatorFilters = params.data.indicatorFilters ? JSON.parse(JSON.stringify(params.data.indicatorFilters)) : null;
@@ -139,19 +177,6 @@ export default {
 				splitNumber: 1,
 				axisLabel: Object.assign({}, textStyle)
 			};
-			option.dataZoom = [
-				{
-					type: 'slider',
-					show: true,
-					yAxisIndex: 0,
-					left: 0,
-					//backgroundColor: 'rgb(59,90,152, 0.1)',
-					//borderColor: 'rgb(59,90,152)',
-					fillerColor: 'rgb(59,90,152, .25)',
-					textStyle: { fontFamily: '"Roboto", sans-serif !important' },
-
-				}
-			];
 			let trendYears = Array.from(new Set([...this.exploreData.locationData.flatMap(ld => Object.keys(ld.yearData))]));
 			trendYears.sort();
 			option.xAxis = { 
@@ -188,10 +213,10 @@ export default {
 			option.series = []
 			let allValues = []
 			seriesData.forEach((indicatorData, index) => {
-				allValues = allValues.concat(Object.values(indicatorData).map(yd => yd.value || 0));
+				allValues = allValues.concat(Object.values(indicatorData).filter(yd => !!yd.value).map(yd => yd.value));
 				if (this.trendLabelsOrLines === 'lines') {
-					allValues = allValues.concat(...Object.values(indicatorData).map(yd => yd.moeHigh || 0));
-					allValues = allValues.concat(...Object.values(indicatorData).map(yd => yd.moeLow || 0));
+					allValues = allValues.concat(...Object.values(indicatorData).filter(yd => !!yd.moeHigh).map(yd => yd.moeHigh));
+					allValues = allValues.concat(...Object.values(indicatorData).filter(yd => !!yd.moeLow).map(yd => yd.moeLow));
 				}
 				option.series.push({
 					// first series for valid values
@@ -225,9 +250,9 @@ export default {
 							} else if (o.data.noData) {
 								return '';
 							} else if (this.trendLabelsOrLines === 'labels') {
-								let rows = ['{a|' + i18n.t('data.value') +': ' + format(this.exploreData.indicator.typeId, o.data.value) + '}'];
+								let rows = ['{a|' + i18n.t('data.value', this.locale) +': ' + format(this.exploreData.indicator.typeId, o.data.value) + '}'];
 								if (o.data.moeLow || o.data.moeHigh) {
-									rows.push('{b|' + i18n.t('data.moe_range') 
+									rows.push('{b|' + i18n.t('data.moe_range', this.locale) 
 										+ ': ' 
 										+ format(this.exploreData.indicator.typeId, o.data.moeLow)
 										+ " - "
@@ -250,32 +275,6 @@ export default {
 								fontSize: this.smallScreen || this.layout === 'gallery' ? '10px' : '14px',
 								color: '#666666'
 							}
-						}
-					}
-				})
-				option.series.push({
-					// second series for nulls/no data
-					data: trendYears
-						.map(ty => {
-							let yd = indicatorData[ty];
-							if (yd?.value !== null && !yd?.suppressed) {
-								return null;
-							}
-							return { 
-								value: 0, 
-								noData: yd?.value === null,
-								suppressed: yd?.suppressed,
-								moeLow: null, 
-								moeHigh: null
-							}; 
-						}),
-					type: 'bar',
-					cursor: 'default',
-					label: {
-						show: true,
-						position: 'top',
-						formatter: (o) => {
-							return o.data.suppressed ? i18n.t('data.suppressed') : (!o.data.value ? i18n.t('data.no_data') : o.data.value)
 						}
 					}
 				})
@@ -323,8 +322,66 @@ export default {
 				}
 			})
 
+			console.log(seriesData)
+			// series for suppressed data
+			if (seriesData.some(sd => Object.values(sd).some(yd => yd.suppressed))) {
+				option.series.push({
+					data: trendYears
+						.map(ty => {
+							if (!seriesData.some(sd => sd[ty]?.suppressed)) {
+								return null;
+							}
+							return { 
+								value: 0, 
+								noData: false,
+								suppressed: true,
+								moeLow: null, 
+								moeHigh: null
+							}; 
+						}),
+					type: 'bar',
+					cursor: 'default',
+					label: {
+						show: true,
+						position: 'top',
+						formatter: () => {
+							return i18n.t('data.suppressed', this.locale)
+						}
+					}
+				})
+			}
+
+			// series for no data
+			if (seriesData.some(sd => Object.values(sd).some(yd => (yd.value === null && !yd.suppressed)))) {
+				option.series.push({
+					data: trendYears
+						.map(ty => {
+							if (!seriesData.some(sd => sd[ty]?.value === null && !sd[ty]?.suppressed)) {
+								return null;
+							}
+							return { 
+								value: 0, 
+								noData: true,
+								suppressed: false,
+								moeLow: null, 
+								moeHigh: null
+							}; 
+						}),
+					type: 'bar',
+					cursor: 'default',
+					label: {
+						show: true,
+						position: 'top',
+						formatter: () => {
+							return i18n.t('data.no_data', this.locale)
+						}
+					}
+				})
+			}
+
 			let maxValue = Math.max(...allValues);
 			let minValue = Math.min(0, ...allValues);
+			let minDataValue = Math.min(...allValues);
 			let rounder = 1;
 			for (let i = 1; i < Math.floor(maxValue).toString().length; i++) {
 				rounder = rounder * 10;
@@ -335,10 +392,44 @@ export default {
 			option.yAxis.min = axisMin;
 			option.aria = { enabled: true };
 			option.yAxis.axisLabel.formatter = (value) => {
-				return value === axisMin || value === axisMax || value === 0 ? Number(value).toLocaleString() : '';
+				let valueRounded = Math.round(value * 10) / 10;
+				let dataZoomStartValueRounded = Math.round(this.chart.getOption().dataZoom[0].startValue * 10) / 10;
+				let dataZoomEndValueRounded = Math.round(this.chart.getOption().dataZoom[0].endValue * 10) / 10;
+				return valueRounded === dataZoomStartValueRounded || valueRounded === dataZoomEndValueRounded || valueRounded === 0 ? valueRounded : '';
 			};
+			// sometimes the formatter doesn't catch the min/max values due to rounding errors, so we force them to show
+			option.yAxis.axisLabel.showMinLabel = true;
+			option.yAxis.axisLabel.showMaxLabel = true;
+			option.dataZoom = [
+				{
+					type: 'slider',
+					show: true,
+					yAxisIndex: 0,
+					left: 0,
+					fillerColor: 'rgb(59,90,152, .25)',
+					textStyle: { fontFamily: '"Roboto", sans-serif !important' },
+					labelPrecision: 1,
+					realtime: false
 
-			if (this.trendCompareSelections) {
+				}
+			];
+			this.chart.on('datazoom', () => {
+				var option = this.chart.getOption();
+				let maxRange = option.dataZoom[0].endValue;
+				let minRange = option.dataZoom[0].startValue;
+				let start = minRange > minDataValue ? minDataValue : minRange;
+				let end = maxRange < maxValue ? maxValue : maxRange;
+				if (minRange > minDataValue || maxRange < maxValue) {
+					this.chart.dispatchAction({
+						type: 'dataZoom',
+						dataZoomIndex: 0,
+						startValue: start,
+						endValue: end
+					});
+				}
+			});
+
+			if (this.trendCompareSelections || (this.embedded && this.trendLabelsOrLines === 'lines')) {
 				option.legend = {
 					top: 0,
 					left: 'center',
@@ -356,9 +447,13 @@ export default {
 						params.forEach(p => {
 							if (p.seriesType === 'line' && p.seriesName.indexOf('_moe_') === -1) {
 								let row = ''
-								row += '<span>' + p.marker + p.seriesName + ': ' + format(this.exploreData.indicator.typeId, p.value) + '</span>'
+								row += '<span>' 
+									+ p.marker + p.seriesName 
+									+ ': ' 
+									+ (p.data.suppressed ? i18n.t('data.suppressed', this.locale) : (p.data.value === null ? i18n.t('data.no_data', this.locale) : format(this.exploreData.indicator.typeId, p.value)))
+									+ '</span>'
 								if (p.data.moeLow || p.data.moeHigh) {
-									row += '<span class="ml-3 text-subtitle-2 font-weight-light">' + i18n.t('data.moe_range') + ': ' + format(this.exploreData.indicator.typeId, p.data.moeLow)
+									row += '<span class="ml-3 text-subtitle-2 font-weight-light">' + i18n.t('data.moe_range', this.locale) + ': ' + format(this.exploreData.indicator.typeId, p.data.moeLow)
 									row += ' - ' + format(this.exploreData.indicator.typeId, p.data.moeHigh) + '</span>'
 								}
 								rows.push(row)
@@ -370,6 +465,12 @@ export default {
 			}
 
 			this.chart.setOption(option);
+		},
+		beforeDataVisualDownload() {
+			this.chart.setOption({ dataZoom: [{ show: false }] });
+		},
+		afterDataVisualDownload() {
+			this.chart.setOption({ dataZoom: [{ show: true }] });
 		}
 	}
 }

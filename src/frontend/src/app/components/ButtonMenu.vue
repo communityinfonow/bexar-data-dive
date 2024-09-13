@@ -1,7 +1,7 @@
 <template>
 	<v-btn-toggle rounded borderless>
 		<download-menu :downloadData="downloadData" :downloadImage="downloadImage"></download-menu>
-		<share-menu></share-menu>
+		<share-menu :tagName="tagName" :tagAttributes="tagAttributes" :layout="layout"></share-menu>
 		<view-menu v-if="viewMenu" 
 			:indicatorId="indicatorId" 
 			:locationTypeId="locationTypeId" 
@@ -89,6 +89,15 @@ export default {
 		linkToTables: {
 			type: Boolean,
 			default: false
+		},
+		tagName: {
+			type: String
+		},
+		tagAttributes: {
+			type: Object
+		},
+		layout: {
+			type: String
 		}
 	},
 	data() {

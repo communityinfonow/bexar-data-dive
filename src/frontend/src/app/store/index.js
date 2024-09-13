@@ -250,7 +250,7 @@ export default new Vuex.Store({
             subcategories: null,
             items: [{
               categoryId: 'data-corrections',
-              id: 'data-correctionsabout-tools',
+              id: 'data-corrections',
               name_en: i18n.t('corrections_view.name'),
               name_es: i18n.t('corrections_view.name'),
               hasData: true
@@ -405,14 +405,22 @@ export default new Vuex.Store({
       }
     },
     getIndicatorMenu(context) {
-      return axios.get('/api/indicator-menu').then(response => {
-        context.commit('SET_INDICATOR_MENU', response.data)
-      })
+      if (!this.state.indicatorMenu) {
+        return axios.get('/api/indicator-menu').then(response => {
+          context.commit('SET_INDICATOR_MENU', response.data)
+        })
+      } else {
+        return Promise.resolve();
+      }
     },
     getLocationMenu(context) {
-      return axios.get('/api/location-menu').then(response => {
-        context.commit('SET_LOCATION_MENU', response.data)
-      })
+      if (!this.state.locationMenu) {
+        return axios.get('/api/location-menu').then(response => {
+          context.commit('SET_LOCATION_MENU', response.data)
+        })
+      } else {
+        return Promise.resolve();
+      }
     },
     getBexarDataFacts(context) {
       axios.get('/api/bexar-data-facts').then(response => {
@@ -432,13 +440,14 @@ export default new Vuex.Store({
       }
     },
     getCommunityData(context, data) {
-      axios.get('/api/community-data', { params: { 
+      return axios.get('/api/community-data', { params: { 
           location: data.community.id, 
           locationType: data.community.categoryId,
           filterType: data.filterType
         }
       }).then(response => {
-        context.commit('SET_COMMUNITY', response.data)
+          context.commit('SET_COMMUNITY', response.data)
+          return response.data
       })
     },
     setIndicator(context, indicator) {
@@ -477,14 +486,14 @@ export default new Vuex.Store({
     },
     getExploreData(context) {
       if (!this.state.filterSelections) {
-        return;
+        return Promise.resolve();
       }
       if (this.state.abortController) {
         this.state.abortController.abort();
       }
       this.state.abortController = new AbortController();
       const signal = this.state.abortController.signal;
-      axios.post('/api/explore-data', {
+      return axios.post('/api/explore-data', {
         indicator: context.state.indicator.id, 
         filters: this.state.filterSelections,
         comparisons: this.state.compareSelections,
@@ -492,6 +501,8 @@ export default new Vuex.Store({
       }, { signal }).then(response => {
         this.state.abortController = null;
         context.commit('SET_EXPLORE_DATA', response.data)
+
+        return response.data
       })
     },
     setExploreData(context, data) {
@@ -510,7 +521,6 @@ export default new Vuex.Store({
       context.dispatch('setFilterSelections', newFilterSelections);
     },
     setFilterSelections(context, selections) {
-      console.log(selections)
       context.commit('SET_FILTER_SELECTIONS', selections);
       let filterQuery = {
         ...router.currentRoute.query,
@@ -527,7 +537,7 @@ export default new Vuex.Store({
           query: filterQuery
         });
       }
-      context.dispatch('getExploreData');
+      return context.dispatch('getExploreData');
     },
     setCompareSelections(context, selections) {
       context.commit('SET_COMPARE_SELECTIONS', selections);
@@ -546,7 +556,7 @@ export default new Vuex.Store({
           query: compareQuery
         });
       }
-      context.dispatch('getExploreData');
+      return context.dispatch('getExploreData');
     },
     setTrendCompareSelections(context, selections) {
       context.commit('SET_TREND_COMPARE_SELECTIONS', selections);
@@ -565,7 +575,7 @@ export default new Vuex.Store({
           query: compareQuery
         });
       }
-      context.dispatch('getExploreData');
+      return context.dispatch('getExploreData');
     },
     getTablesData(context, request) {
       let filterQuery = {

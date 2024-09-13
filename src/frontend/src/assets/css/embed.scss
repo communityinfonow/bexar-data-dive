@@ -9,7 +9,13 @@ main {
 }
 
 .embed.v-application {
+	background-color: white;
+}
+.embed.v-application.community {
 	background-color: transparent;
+}
+.embed .v-application--wrap {
+	min-height: auto;
 }
 .embed .container {
 	height: 100%;
@@ -25,7 +31,7 @@ main {
 	border-radius: 1em;
 	padding: 1em;
 }
-.embed .definition-tooltip-wedge {
+::v-deep .embed .definition-tooltip-wedge {
 	content: "";
 	width: 0;
 	height: 0;
@@ -36,7 +42,7 @@ main {
 	top: 20px !important;
 	left: -3px;
 }
-.embed .definition-tooltip-wedge::after {
+::v-deep .embed .definition-tooltip-wedge::after {
 	content: "";
 	width: 0;
 	height: 0;

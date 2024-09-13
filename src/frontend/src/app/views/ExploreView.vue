@@ -15,9 +15,12 @@
                 {{ exploreData.category['name_' + locale] }} - 
               </span>
               {{ indicator['name_' + locale] }}
-              <indicator-definition :indicator="indicator"></indicator-definition>
+              <indicator-definition :embedded="false" :locale="locale" :indicator="indicator"></indicator-definition>
             </h1>
             <h2 v-if="source" class="text-subtitle-1 mb-2">{{ source['name_' + locale] }}</h2>
+            <v-alert v-if="exploreData.indicator.recentCorrection" class="mt-2" color="yellow" dense dismissible>
+              <span v-html="$t('corrections_view.notice', locale)"></span>
+            </v-alert>
           </div>
           <div v-if="showIntro" class="font-weight-medium mt-2" style="font-size: 1.25rem;">
             {{ $t('tools.explore.headline') }}
@@ -87,9 +90,9 @@
               <v-col  v-if="layout === 'tabs'" cols="auto" class="grow">
                 <v-tabs-items v-model="tab" class="fill-height" touchless>
                   <v-tab-item v-for="tab in tabs" :key="tab" transition="none" reverse-transition="none" class="fill-height">
-                    <explore-map v-if="tab === 'map'"></explore-map>
-                    <explore-trend-chart v-if="tab === 'trend'"></explore-trend-chart>
-                    <explore-compare-chart v-if="tab === 'compare'"></explore-compare-chart>
+                    <explore-map v-if="tab === 'map'" :locale="locale" :exploreData="exploreData" :filterSelections="filterSelections" :showMapLabels="showMapLabels" :highlightFilteredLocation="highlightFilteredLocation"></explore-map>
+                    <explore-trend-chart v-if="tab === 'trend'" :locale="locale" :exploreData="exploreData" :trendCompareSelections="trendCompareSelections" :trendLabelsOrLines="trendLabelsOrLines" :filterSelections="filterSelections"></explore-trend-chart>
+                    <explore-compare-chart v-if="tab === 'compare'" :locale="locale" :exploreData="exploreData" :compareSelections="compareSelections" :compareLabelsOrLines="compareLabelsOrLines" :filterSelections="filterSelections"></explore-compare-chart>
                   </v-tab-item>
                 </v-tabs-items>
               </v-col>
@@ -141,15 +144,15 @@
                 <v-row id="gallery-data-visuals" class="no-gutters" :class="$vuetify.breakpoint.mdAndDown ? 'align-start' : 'fill-height'">
                   <v-col md="12" lg="5" :class="$vuetify.breakpoint.mdAndDown ? 'gallery-map' : 'fill-height'">
                     <v-sheet outlined class="pa-4 fill-height">
-                      <explore-map :layout="layout"></explore-map>
+                      <explore-map :layout="layout" :locale="locale" :exploreData="exploreData" :filterSelections="filterSelections" :showMapLabels="showMapLabels" :highlightFilteredLocation="highlightFilteredLocation"></explore-map>
                     </v-sheet>
                   </v-col>
                   <v-col md="12" lg="7">
                     <v-sheet outlined class="pa-4 gallery-chart">
-                      <explore-trend-chart :layout="layout"></explore-trend-chart>
+                      <explore-trend-chart :layout="layout" :locale="locale" :exploreData="exploreData"  :trendCompareSelections="trendCompareSelections" :trendLabelsOrLines="trendLabelsOrLines" :filterSelections="filterSelections"></explore-trend-chart>
                     </v-sheet>
                     <v-sheet outlined class="pa-4 gallery-chart">
-                      <explore-compare-chart :layout="layout"></explore-compare-chart>
+                      <explore-compare-chart :layout="layout" :locale="locale" :exploreData="exploreData" :compareSelections="compareSelections" :compareLabelsOrLines="compareLabelsOrLines" :filterSelections="filterSelections"></explore-compare-chart>
                     </v-sheet>
                   </v-col>
                 </v-row>
@@ -198,7 +201,7 @@ export default {
   },
   computed: {
     ...mapState(['indicatorMenu', 'indicator', 'source', 'locale', 'featuredIndicators', 'exploreData', 'filterSelections',
-      'highlightFilteredLocation', 'showMapLabels', 'trendLabelsOrLines', 'compareLabelsOrLines']),
+      'highlightFilteredLocation', 'showMapLabels', 'trendLabelsOrLines', 'compareLabelsOrLines', 'compareSelections', 'trendCompareSelections']),
     ...mapGetters(['filters']),
     showIntro() {
       return !this.indicator && !router.currentRoute.query.indicator;

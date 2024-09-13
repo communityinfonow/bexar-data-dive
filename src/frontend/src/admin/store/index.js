@@ -233,7 +233,8 @@ export default new Vuex.Store({
         years: correction.years,
         locationTypes: correction.locationTypes?.map(lt => ({ id: lt })) || null,
         filterTypes: correction.filterTypes?.map(ft => ({ id: ft })) || null,
-        note: correction.note,
+        note_en: correction.note_en,
+        note_es: correction.note_es,
         display: correction.display
       };
       return axios.post('/api/admin/data-corrections', correctionObject).then(() => {
@@ -249,7 +250,8 @@ export default new Vuex.Store({
         years: correction.years,
         locationTypes: correction.locationTypes?.map(lt => ({ id: lt })) || null,
         filterTypes: correction.filterTypes?.map(ft => ({ id: ft })) || null,
-        note: correction.note,
+        note_en: correction.note_en,
+        note_es: correction.note_es,
         display: correction.display
       };
       return axios.put('/api/admin/data-corrections', correctionObject).then(() => {

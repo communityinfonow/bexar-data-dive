@@ -124,7 +124,10 @@
       "highlight_location": "Highlight filtered location",
       "labels": "Labels",
       "click_copy": "Click below to copy the link",
-      "click_copy_embed": "Click below to copy the embed code",
+      "click_copy_embed_script": "Click below to copy the embed script tag",
+      "click_copy_embed_component": "Click below to copy the embed web component",
+      "embed_script_hint": "Add this script tag once at the end of the <body> of your website's HTML",
+      "embed_component_hint": "Add this web component tag anywhere in the <body> of your website's HTML",
       "copy_success": "Copied to clipboard!",
       "copy_failure": "Sorry, we are unable to access your clipboard to automatically copy the link. Please manually copy the link above.",
       "about_data": "About the indicator",
@@ -152,7 +155,9 @@
         }
       },
       "share": {
-        "name": "Share"
+        "name": "Share",
+        "link": "Share a link to Dive",
+        "embed": "or, embed Dive in your website"
       },
       "chart_options": "Chart options",
       "chart_options_labels": "Labels",
@@ -231,7 +236,12 @@
   },
   "corrections_view": {
     "name": "Data Corrections",
-    "welcome": "Data corrections in Dive."
+    "welcome": "Data corrections in Dive.",
+    "years": "Years",
+    "location_types": "Location Types",
+    "filter_types": "Filter Types",
+    "note": "Note",
+    "notice": "This indicator and filter selection has had a data correction in the last 90 days. See the <a href='/help?category=data-corrections' class='link--text'>Data Corrections</a> page for more information."
   },
   "announcements_view": {
     "name": "Announcements",

@@ -2,7 +2,7 @@
 	<div class="fill-height">
 		<v-row class="no-gutters flex-wrap flex-column fill-height">
 			<explore-tools-panel 
-				v-if="filters && filterSelections && exploreData && layout !== 'gallery'"
+				v-if="!embedded && filters && filterSelections && exploreData && layout !== 'gallery'"
 				:showCompareOptions="true"
 				:labelsOrLinesOption="compareLabelsOrLines"
 				:setLabelsOrLinesOption="setCompareLabelsOrLines"
@@ -10,6 +10,8 @@
 				dataVisualName="compare_chart"
 				:setCompareSelections="setCompareSelections"
 				:layout="layout"
+				tagName="explore-compare-chart"
+				:tagAttributes="tagAttributes"
 			>
 			</explore-tools-panel>
 			<v-col cols="auto" class="grow">
@@ -29,7 +31,7 @@ import { mapActions, mapState, mapGetters } from 'vuex'
 import i18n from '@/i18n'
 import * as echarts from 'echarts/core';
 import { SVGRenderer } from 'echarts/renderers';
-import { AriaComponent, LegendComponent, GridComponent } from 'echarts/components';
+import { AriaComponent, LegendComponent, GridComponent,TooltipComponent } from 'echarts/components';
 import { BarChart, CustomChart } from 'echarts/charts';
 import ExploreToolsPanel from '@/app/components/ExploreToolsPanel'
 import { format } from '@/services/formatter'
@@ -40,24 +42,59 @@ export default {
 		ExploreToolsPanel
 	},
 	props: {
+		locale: {
+			type: String
+		},
+		exploreData: {
+			type: Object
+		},
+		compareSelections: {
+			type: Object
+		},
+		compareLabelsOrLines: {
+			type: String
+		},
+		filterSelections: {
+			type: Object
+		},
 		layout: {
 			type: String,
 			default: 'tabs'
+		},
+		embedded: {
+			type: Boolean,
+			default: false
 		}
 	},
 	data() {
 		return {
-			chart: null
+			chart: null,
+			chartContainer: null,
+			smallScreen: false,
 		}
 	},
 	computed: {
-		...mapState(['locale', 'exploreData', 'compareSelections', 'compareLabelsOrLines', 'exploreTab', 'indicator', 'filterSelections']),
+		...mapState(['exploreTab']),
 		...mapGetters(['filters']),
-		smallScreen() {
-			return document.body.clientWidth < 1264;
-		},
 		orientation() {
 			return this.smallScreen ? 'horizontal' : 'vertical';
+		},
+		tagAttributes() {
+			return { 
+				locale: this.locale, 
+				'location-id': this.exploreData.filters.locationFilter.options[0].id, 
+				'location-type-id': this.exploreData.filters.locationTypeFilter.options[0].id, 
+				'indicator-id': this.exploreData.indicator.id, 
+				'year': this.exploreData.filters.yearFilter.options[0].id, 
+				'indicator-filters': this.exploreData.filters.indicatorFilters?.map(f => f.type.id + '_' + f.options[0].id).join(','), 
+				'compare-by': this.compareSelections?.type.id, 
+				'compare-with': this.compareSelections?.options
+					.map(o => {
+						return this.compareSelections?.type.id === 'l' ? o.typeId + '_' + o.id : o.id
+					})
+					.join(','), 
+				'labels-or-lines': this.compareLabelsOrLines
+			}
 		}
 	},
 	watch: {
@@ -82,11 +119,13 @@ export default {
 		}
 	},
 	mounted () {
+		this.smallScreen = document.body.clientWidth < 1264 || this.chartContainer?.offsetWidth < 1264;
 		setTimeout(() => { 
-			echarts.use([SVGRenderer, AriaComponent, LegendComponent, GridComponent, BarChart, CustomChart]);
-			this.chart = echarts.init(document.getElementById('compare_chart_container'), null, { renderer: 'svg'});
+			this.chartContainer = this.$refs.compare_chart_container;
+			echarts.use([SVGRenderer, AriaComponent, LegendComponent, GridComponent, BarChart, CustomChart, TooltipComponent]);
+			this.chart = echarts.init(this.chartContainer, null, { renderer: 'svg'});
 			window.addEventListener('resize', () => {
-				if (this.exploreTab === 'compare' || this.layout === 'gallery') {
+				if (!this.embedded && (this.exploreTab === 'compare' || this.layout === 'gallery')) {
 					this.chart.resize();
 				}
 			});
@@ -106,7 +145,7 @@ export default {
 			} else {
 				this.chart.dispose();
 			}
-			this.chart = echarts.init(document.getElementById('compare_chart_container'), null, { renderer: 'svg'});
+			this.chart = echarts.init(this.chartContainer, null, { renderer: 'svg'});
 			this.chart.on('mouseover', (params) => {
 				if (params.componentType === 'series') {
 					let comparedIndicatorFilters = params.data.indicatorFilters ? JSON.parse(JSON.stringify(params.data.indicatorFilters)) : null;
@@ -133,9 +172,12 @@ export default {
 			};
 			let option = {};
 			option.grid = { 
-				left: this.orientation === 'vertical' ? 100 :  40, 
-				right: this.orientation === 'vertical' ? 100 : 20, 
-				containLabel: true };
+				left: 40,
+				right: this.orientation === 'horizontal' ? 80 : 40, 
+				top: 40, 
+				bottom: 40, 
+				containLabel: true 
+			};
 			let valueAxis = this.orientation === 'vertical' ? 'yAxis' : 'xAxis';
 			let categoryAxis = this.orientation === 'vertical' ? 'xAxis' : 'yAxis';
 			option[valueAxis] = { 
@@ -147,7 +189,7 @@ export default {
 			let categoryAxisData = [];
 			if (this.exploreData.compareData) {
 				if (this.compareSelections.type.id === 'i') {
-					categoryAxisData.push(this.indicator['name_' + this.locale]);
+					categoryAxisData.push(this.exploreData.indicator['name_' + this.locale]);
 				} else if (this.compareSelections.type.id === 'l') {
 					categoryAxisData.push(this.exploreData.filters.locationFilter.options[0]['name_' + this.locale]);
 				} else if (this.compareSelections.type.id === 'y') {
@@ -231,13 +273,13 @@ export default {
 					position: this.orientation === 'vertical' ? 'top' : 'right',
 					formatter: (o) => {
 						if (o.data.suppressed) {
-							return '{a|' + i18n.t('data.suppressed') + '}';
+							return '{a|' + i18n.t('data.suppressed', this.locale) + '}';
 						} else if (o.data.noData) {
-							return '{a|' + i18n.t('data.no_data') + '}';
+							return '{a|' + i18n.t('data.no_data', this.locale) + '}';
 						} else if (this.compareLabelsOrLines === 'labels') {
-							let rows = ['{a|' + i18n.t('data.value') +': ' + format(this.exploreData.indicator.typeId, o.data.value) + '}'];
+							let rows = ['{a|' + i18n.t('data.value', this.locale) +': ' + format(this.exploreData.indicator.typeId, o.data.value) + '}'];
 							if (o.data.moeLow || o.data.moeHigh) {
-								rows.push('{b|' + (this.smallScreen ? '' : (i18n.t('data.moe_range') + ': ') )
+								rows.push('{b|' + (this.smallScreen ? '' : (i18n.t('data.moe_range', this.locale) + ': ') )
 									+ (this.layout === 'gallery' ? '\n' : '')
 									+ format(this.exploreData.indicator.typeId, o.data.moeLow)
 									+ " - "
@@ -283,6 +325,30 @@ export default {
 				return value === axisMin || value === axisMax || value === 0 ? value : ''	;
 			};
 			option.aria = { enabled: true };
+			if (this.embedded && this.compareLabelsOrLines === 'lines') {
+				option.tooltip = {
+					trigger: 'axis',
+					axisPointer: {
+						type: 'shadow'
+					},
+					textStyle: Object.assign({}, textStyle),
+					formatter: (params) => {
+						let rows = [(params[0].name && params[0].name !== '') ? params[0].name : this.exploreData.indicator['name_' + this.locale]];
+						params.forEach(p => {
+							if (p.seriesType === 'bar' && p.seriesName.indexOf('_moe_') === -1) {
+								let row = ''
+								row += '<span>' + p.marker + i18n.t('data.value', this.locale) + ': ' + format(this.exploreData.indicator.typeId, p.value) + '</span>'
+								if (p.data.moeLow || p.data.moeHigh) {
+									row += '<span class="ml-3 text-subtitle-2 font-weight-light">' + i18n.t('data.moe_range', this.locale) + ': ' + format(this.exploreData.indicator.typeId, p.data.moeLow)
+									row += ' - ' + format(this.exploreData.indicator.typeId, p.data.moeHigh) + '</span>'
+								}
+								rows.push(row)
+							}
+						});
+						return rows.join('<br/>');
+					}
+				};
+			}
 
 			this.chart.setOption(option);
 			if (this.compareLabelsOrLines === 'lines') {
@@ -305,7 +371,6 @@ export default {
 									let halfWidth = self.orientation === 'vertical' 
 										? Math.min(20, api.size([1, 0])[0] * 0.1) 
 										: 10;
-									console.log(highPoint, lowPoint, halfWidth)
 									let style = {
 										stroke: '#b8237e',
 										fill: null,

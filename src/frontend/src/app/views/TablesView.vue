@@ -9,14 +9,18 @@
             </template>
           </v-breadcrumbs>
           <h1 v-if="showIntro" class="text-dive-h3">{{ $t('tools.tables.name') }}</h1>
-          <h1 v-if="tablesData && indicator" class="text-dive-h3">
-            <span>
+          <div v-if="tablesData && indicator" >
+            <h1 class="text-dive-h3">
               <span v-if="tablesData.category.parentCategoryId">{{ tablesData.category['name_' + locale] }} - </span>
               {{ tablesData.indicator['name_' + locale] }}
-              <indicator-definition :indicator="indicator"></indicator-definition>
+              <indicator-definition :embedded="false" :locale="locale" :indicator="indicator"></indicator-definition>
               <h2 class="text-subtitle-1 mb-2">{{ tablesData.source['name_' + locale] }}</h2>
-            </span>
-          </h1>
+            </h1>
+            <v-alert v-if="tablesData.indicator.recentCorrection" class="mt-2" color="yellow" dense dismissible>
+                <span v-html="$t('corrections_view.notice', locale)"></span>
+              </v-alert>
+          </div>
+
           <div v-if="showIntro" class="font-weight-medium mt-2" style="font-size: 1.25rem;">
             {{ $t('tools.tables.headline') }}
             {{ $t('tools.tables.long_description') }}

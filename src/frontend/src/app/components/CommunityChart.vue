@@ -8,17 +8,23 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import i18n from '@/i18n'
 import * as echarts from 'echarts/core';
 import { SVGRenderer } from 'echarts/renderers';
-import { AriaComponent, LegendComponent, GridComponent, TitleComponent } from 'echarts/components';
+import { AriaComponent, LegendComponent, GridComponent, TitleComponent, TooltipComponent } from 'echarts/components';
 import { BarChart, CustomChart } from 'echarts/charts';
 import { format } from '@/services/formatter'
 
 export default {
 	name: 'CommunityChart',
 	props: {
+		locale: {
+			type: String
+		},
+		embedded: {
+			type: Boolean,
+			default: false
+		},
 		indicatorId: {
 			type: String
 		},
@@ -43,19 +49,17 @@ export default {
 	},
 	data() {
 		return {
-			chart: null
+			chart: null,
+			chartContainer: null,
+			smallScreen: false,
 		}
 	},
 	computed: {
-		...mapState(['locale']),
-		smallScreen() {
-			return document.body.clientWidth < 1264;
-		},
 		orientation() {
 			return this.smallScreen ? 'horizontal' : 'vertical';
 		},
 		chartHeight() {
-			return this.smallScreen ? this.data.length * 80 + 'px' : '400px';
+			return this.smallScreen ? (this.data.length * 60 + 80) + 'px' : '400px';
 		}
 	},
 	watch: {
@@ -70,24 +74,32 @@ export default {
 		}
 	},
 	mounted () {
-		echarts.use([SVGRenderer, AriaComponent, LegendComponent, GridComponent, BarChart, CustomChart, TitleComponent]);
+		echarts.use([SVGRenderer, AriaComponent, LegendComponent, GridComponent, BarChart, CustomChart, TitleComponent, TooltipComponent]);
+		this.chartContainer = this.$el;
+		this.smallScreen = document.body.clientWidth < 1264 || this.chartContainer?.offsetWidth < 1264;
 		window.addEventListener('resize', () => {
 			this.chart.resize();
 		});
-		this.drawChart();
+		this.$nextTick(() => this.drawChart());
 	},
 	methods: {
 		drawChart() {
 			if (this.chart) {
 				this.chart.dispose();
 			}
-			this.chart = echarts.init(document.getElementById('chart_container_' + this.indicatorId), null, { renderer: 'svg'});
+			this.chart = echarts.init(this.chartContainer, null, { renderer: 'svg'});
 			let textStyle = {
 				fontFamily: '"Roboto", sans-serif !important',
 				fontSize: this.smallScreen ? '12px' : '16px'
 			};
 			let option = {};
-			option.grid = { left: 40, right: 200, containLabel: true };
+			option.grid = { 
+				left: this.orientation === 'horizontal' ? 140 : 40, 
+				right: this.orientation === 'horizontal' ? 140 : 40, 
+				top: 40, 
+				bottom: 40, 
+				containLabel: true 
+			};
 			let valueAxis = this.orientation === 'vertical' ? 'yAxis' : 'xAxis';
 			let categoryAxis = this.orientation === 'vertical' ? 'xAxis' : 'yAxis';
 			option[valueAxis] = { 
@@ -96,7 +108,7 @@ export default {
 				splitNumber: 1,
 				axisLabel: textStyle
 			};
-			let categoryAxisData = Array.from(new Set(this.data.map(d => '' + (d.demographicFilter['name_' + this.locale] || i18n.t('data.all')))));
+			let categoryAxisData = Array.from(new Set(this.data.map(d => '' + (d.demographicFilter['name_' + this.locale] || i18n.t('data.all', this.locale)))));
 			if (this.orientation === 'horizontal') {
 				categoryAxisData = categoryAxisData.reverse();
 			}
@@ -111,7 +123,7 @@ export default {
 					...textStyle, 
 					fontWeight: 'bold', 
 					interval: 0, 
-					width: this.orientation === 'vertical' ? '80' : '130', 
+					width: this.orientation === 'vertical' ? '80' : '140', 
 					overflow: 'break', 
 					lineHeight: 20, 
 					color: '#333333' 
@@ -135,16 +147,16 @@ export default {
 						position: this.orientation === 'vertical' ? 'top' : 'right',
 						formatter: (o) => {
 							if (o.data.suppressed) {
-								return '{a|' + i18n.t('data.suppressed') + '}';
+								return '{a|' + i18n.t('data.suppressed', this.locale) + '}';
 							} else if (o.data.noData) {
-								return '{a|' + i18n.t('data.no_data') + '}';
+								return '{a|' + i18n.t('data.no_data', this.locale) + '}';
 							} else if (this.labelsOrLines !== 'labels') {
 								return '';
 							}
 
-							let rows = ['{a|' + i18n.t('data.value') +': ' + format(this.indicatorType.id, o.data.value) + '}'];
+							let rows = ['{a|' + i18n.t('data.value', this.locale) +': ' + format(this.indicatorType.id, o.data.value) + '}'];
 							if (o.data.moeLow || o.data.moeHigh) {
-								rows.push('{b|' + i18n.t('data.moe_range') 
+								rows.push('{b|' + i18n.t('data.moe_range', this.locale) 
 									+ ': ' 
 									+ format(this.indicatorType.id, o.data.moeLow)
 									+ " - "
@@ -221,6 +233,30 @@ export default {
 			option[valueAxis].axisLabel.formatter = (value) => {
 				return value === axisMin || value === axisMax || value === 0 ? value : ''	;
 			};
+			if (this.embedded && this.labelsOrLines === 'lines') {
+				option.tooltip = {
+					trigger: 'axis',
+					axisPointer: {
+						type: 'shadow'
+					},
+					textStyle: Object.assign({}, textStyle),
+					formatter: (params) => {
+						let rows = [params[0].name]
+						params.forEach(p => {
+							if (p.seriesType === 'bar' && p.seriesName.indexOf('_moe_') === -1) {
+								let row = ''
+								row += '<span>' + p.marker + i18n.t('data.value', this.locale) + ': ' + format(this.indicatorType.id, p.value) + '</span>'
+								if (p.data.moeLow || p.data.moeHigh) {
+									row += '<span class="ml-3 text-subtitle-2 font-weight-light">' + i18n.t('data.moe_range', this.locale) + ': ' + format(this.indicatorType.id, p.data.moeLow)
+									row += ' - ' + format(this.indicatorType.id, p.data.moeHigh) + '</span>'
+								}
+								rows.push(row)
+							}
+						});
+						return rows.join('<br/>');
+					}
+				};
+			}
 			this.chart.setOption(option);
 
 			if (this.labelsOrLines === 'lines') {

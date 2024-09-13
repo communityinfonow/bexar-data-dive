@@ -33,7 +33,7 @@ public class DataCorrectionRepositoryPostgresql implements DataCorrectionReposit
 	@Override
 	public List<DataCorrection> findDisplayed() {
 		String sql = ""
-			+ " select dc.id_, dc.indicator_id, dc.date_corrected, dc.years, dc.location_type_ids, dc.filter_type_ids, dc.note, dc.source_id,"
+			+ " select dc.id_, dc.indicator_id, dc.date_corrected, dc.years, dc.location_type_ids, dc.filter_type_ids, dc.note_en, dc.note_es, dc.source_id,"
 			+ "   i.name_en as indicator_name_en, i.name_es as indicator_name_es, "
 			+ "   s.name_en as source_name_en, s.name_es as source_name_es, "
 			+ "   lt.id_ as location_type_id, lt.name_en as location_type_name_en, lt.name_es as location_type_name_es, "
@@ -53,7 +53,7 @@ public class DataCorrectionRepositoryPostgresql implements DataCorrectionReposit
 	@Override
 	public List<DataCorrection> findAll() {
 		String sql = ""
-			+ " select dc.id_, dc.indicator_id, dc.date_corrected, dc.years, dc.location_type_ids, dc.filter_type_ids, dc.note, dc.source_id, "
+			+ " select dc.id_, dc.indicator_id, dc.date_corrected, dc.years, dc.location_type_ids, dc.filter_type_ids, dc.note_en, dc.note_es, dc.source_id, "
 			+ "   i.name_en as indicator_name_en, i.name_es as indicator_name_es, "
 			+ "   s.name_en as source_name_en, s.name_es as source_name_es, "
 			+ "   lt.id_ as location_type_id, lt.name_en as location_type_name_en, lt.name_es as location_type_name_es, "
@@ -72,8 +72,8 @@ public class DataCorrectionRepositoryPostgresql implements DataCorrectionReposit
 	@Override
 	public void add(DataCorrection dataCorrection) {
 		String sql = ""
-			+ " insert into tbl_data_corrections (indicator_id, date_corrected, years, location_type_ids, filter_type_ids, note, display, source_id) "
-			+ " values (:indicatorId::numeric, :dateCorrected::date, :years, :locationTypeIds::numeric[], :filterTypeIds::numeric[], :note, :display, :source_id::numeric) ";
+			+ " insert into tbl_data_corrections (indicator_id, date_corrected, years, location_type_ids, filter_type_ids, note_en, note_es, display, source_id) "
+			+ " values (:indicatorId::numeric, :dateCorrected::date, :years, :locationTypeIds::numeric[], :filterTypeIds::numeric[], :note_en, :note_es, :display, :source_id::numeric) ";
 
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
 		paramMap.addValue("indicatorId", dataCorrection.getIndicator() != null ? dataCorrection.getIndicator().getId() : null);
@@ -93,7 +93,8 @@ public class DataCorrectionRepositoryPostgresql implements DataCorrectionReposit
 		} else {
 			paramMap.addValue("filterTypeIds", new String[0], Types.ARRAY);
 		}
-		paramMap.addValue("note", dataCorrection.getNote());
+		paramMap.addValue("note_en", dataCorrection.getNote_en());
+		paramMap.addValue("note_es", dataCorrection.getNote_es());
 		paramMap.addValue("display", true);
 		paramMap.addValue("source_id", dataCorrection.getSource() != null ? dataCorrection.getSource().getId() : null);
 
@@ -105,7 +106,7 @@ public class DataCorrectionRepositoryPostgresql implements DataCorrectionReposit
 	public void update(DataCorrection dataCorrection) {
 		String sql = ""
 			+ " update tbl_data_corrections "
-			+ " set indicator_id = :indicatorId::numeric, date_corrected = :dateCorrected::date, years = :years::numeric[], location_type_ids = :locationTypeIds::numeric[], filter_type_ids = :filterTypeIds::numeric[], note = :note, display = :display, source_id = :source_id::numeric "
+			+ " set indicator_id = :indicatorId::numeric, date_corrected = :dateCorrected::date, years = :years::numeric[], location_type_ids = :locationTypeIds::numeric[], filter_type_ids = :filterTypeIds::numeric[], note_en = :note_en, note_es = :note_es, display = :display, source_id = :source_id::numeric "
 			+ " where id_ = :id ";
 
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
@@ -127,7 +128,8 @@ public class DataCorrectionRepositoryPostgresql implements DataCorrectionReposit
 		} else {
 			paramMap.addValue("filterTypeIds", new String[0], Types.ARRAY);
 		}
-		paramMap.addValue("note", dataCorrection.getNote());
+		paramMap.addValue("note_en", dataCorrection.getNote_en());
+		paramMap.addValue("note_es", dataCorrection.getNote_es());
 		paramMap.addValue("display", dataCorrection.isDisplay());
 		paramMap.addValue("source_id", dataCorrection.getSource() != null ? dataCorrection.getSource().getId() : null);
 
@@ -214,7 +216,8 @@ public class DataCorrectionRepositoryPostgresql implements DataCorrectionReposit
 					dataCorrection.setYears(Arrays.asList((String[]) rs.getArray("years").getArray()));
 					dataCorrection.setLocationTypes(new ArrayList<>());
 					dataCorrection.setFilterTypes(new ArrayList<>());
-					dataCorrection.setNote(rs.getString("note"));
+					dataCorrection.setNote_en(rs.getString("note_en"));
+					dataCorrection.setNote_es(rs.getString("note_es"));
 					dataCorrection.setDisplay(true);
 					Source source = new Source();
 					source.setId(rs.getString("source_id"));

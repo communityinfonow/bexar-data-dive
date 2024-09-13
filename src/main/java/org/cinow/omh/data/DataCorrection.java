@@ -17,7 +17,8 @@ public class DataCorrection {
 	private List<String> years;
 	private List<LocationType> locationTypes;
 	private List<FilterType> filterTypes;
-	private String note;
+	private String note_en;
+	private String note_es;
 	private boolean display;
 
 	public int getId() {
@@ -68,11 +69,17 @@ public class DataCorrection {
 	public void setFilterTypes(List<FilterType> filterTypes) {
 		this.filterTypes = filterTypes;
 	}
-	public String getNote() {
-		return note;
+	public String getNote_en() {
+		return note_en;
 	}
-	public void setNote(String note) {
-		this.note = note;
+	public void setNote_en(String note_en) {
+		this.note_en = note_en;
+	}
+	public String getNote_es() {
+		return note_es;
+	}
+	public void setNote_es(String note_es) {
+		this.note_es = note_es;
 	}
 	public boolean isDisplay() {
 		return display;

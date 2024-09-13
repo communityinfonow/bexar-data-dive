@@ -116,8 +116,14 @@
 								>
 								</v-select>
 								<v-textarea
-									v-model="dc.note"
-									label="Note"
+									v-model="dc.note_en"
+									label="Note (English)"
+									auto-grow
+								>
+								</v-textarea>
+								<v-textarea
+									v-model="dc.note_es"
+									label="Note (Spanish)"
 									auto-grow
 								>
 								</v-textarea>
@@ -249,8 +255,14 @@
 							>
 							</v-select>
 							<v-textarea
-								v-model="newDataCorrection.note"
-								label="Note"
+								v-model="newDataCorrection.note_en"
+								label="Note (English)"
+								auto-grow
+							>
+							</v-textarea>
+							<v-textarea
+								v-model="newDataCorrection.note_es"
+								label="Note (Spanish)"
 								auto-grow
 							>
 							</v-textarea>

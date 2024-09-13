@@ -107,7 +107,23 @@
 								</v-btn>
 							</v-btn-toggle>
 						</div>
-						<button-menu v-if="indicator && filterSelections" :downloadData="downloadData" :downloadImage="downloadImage" viewMenu linkToCommunity linkToTables :indicatorId="indicator.id" :locationTypeId="filterSelections.locationType" :locationId="filterSelections.location" class="ml-2" style="margin-top: -8px"></button-menu>
+						<button-menu 
+							v-if="indicator && filterSelections" 
+							:downloadData="downloadData" 
+							:downloadImage="downloadImage" 
+							viewMenu 
+							linkToCommunity 
+							linkToTables 
+							:indicatorId="indicator.id" 
+							:locationTypeId="filterSelections.locationType" 
+							:locationId="filterSelections.location" 
+							class="ml-2" 
+							style="margin-top: -8px"
+							:tagName="tagName"
+							:tagAttributes="tagAttributes"
+							:layout="layout"
+						>
+						</button-menu>
 					</div>
 				</v-col>
 				<v-col v-if="showHighlightFilteredLocation" sm="12" lg="6" class="d-flex justify-end">
@@ -144,6 +160,8 @@
 						:educationId="filterSelections.indicatorFilters[4] ? filterSelections.indicatorFilters[4].id : null" 
 						:incomeId="filterSelections.indicatorFilters[5] ? filterSelections.indicatorFilters[5].id : null" 
 						class="ml-2" style="margin-top: -.5em"
+						:tagName="tagName"
+						:tagAttributes="tagAttributes"
 					>
 					</button-menu>
 				</v-col>
@@ -237,6 +255,12 @@ export default {
 		dataVisualElementId: {
 			type: String
 		},
+		beforeDataVisualDownload: {
+			type: Function
+		},
+		afterDataVisualDownload: {
+			type: Function
+		},
 		dataVisualName: {
 			type: String
 		},
@@ -257,6 +281,12 @@ export default {
 		},
 		layout: {
 			type: String
+		},
+		tagName: {
+			type: String
+		},
+		tagAttributes: {
+			type: Object
 		}
 	},
 	data() {
@@ -641,6 +671,9 @@ export default {
 				+ '<h2 class="text-subtitle-1 mb-2">'
 				+ this.filters.indicatorFilters.map(f => f.type['name_' + this.locale] + ': ' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale]).join(', ')
 				+ '</h2>';
+			if (this.dataVisualName === 'trend_chart') {
+				this.beforeDataVisualDownload();
+			}
 			html2canvas(document.querySelector('header'), { scale: 2 }).then((headerCanvas) => {
 				html2canvas(document.querySelector('#explore_indicator_download'), { scale: 2 }).then((indicatorCanvas) => {
 					html2canvas(document.querySelector('#' + (this.layout === 'tabs' ? this.dataVisualElementId : 'gallery-data-visuals')), { 
@@ -669,6 +702,9 @@ export default {
 
 						document.querySelector('main').removeChild(exploreIndicator);
 						this.setLoading(false);
+						if (this.dataVisualName === 'trend_chart') {
+							this.afterDataVisualDownload();
+						}
 					});
 				});
 			});

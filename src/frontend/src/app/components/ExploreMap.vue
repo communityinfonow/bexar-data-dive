@@ -2,7 +2,7 @@
 	<div class="fill-height">
 		<v-row class="no-gutters flex-wrap flex-column fill-height">
 			<explore-tools-panel 
-				v-if="filters && filterSelections && exploreData && layout !== 'gallery'"
+				v-if="!embedded && filters && filterSelections && exploreData && layout !== 'gallery'"
 				:draw="drawMap"
 				:showHighlightFilteredLocation="true"
 				:highlightFilteredLocation="highlightFilteredLocation"
@@ -12,6 +12,8 @@
 				dataVisualElementId="explore_map"
 				dataVisualName="map"
 				:layout="layout"
+				tagName="explore-map"
+				:tagAttributes="tagAttributes"
 			>
 			</explore-tools-panel>
 			<v-col cols="auto" class="grow">
@@ -23,23 +25,24 @@
 						:zoom="zoom"
 						:center="center"
 						:options="{ zoomDelta: 0.5, zoomSnap: 0.5, preferCanvas: true, dragging: mobile ? false : true, touchZoom: mobile ? false : true }"
+						class="fill-height"
 						v-resize:debounce.100="resizeHandler"
 						@ready="initializeMap"
 					>
 						<l-tile-layer
 							url="https://tiles.stadiamaps.com/tiles/stamen_toner_background/{z}/{x}/{y}{r}.png"
 							:options="{ crossOrigin: 'anonymous' }"
-							:attribution="$t('tools.common.map_attribution')"
+							:attribution="$t('tools.common.map_attribution', locale)"
 						></l-tile-layer>
 						<l-tile-layer
 							url="https://tiles.stadiamaps.com/tiles/stamen_toner_lines/{z}/{x}/{y}{r}.png"
 							:options="{ crossOrigin: 'anonymous' }"
-							:attribution="$t('tools.common.map_attribution')"
+							:attribution="$t('tools.common.map_attribution', locale)"
 						></l-tile-layer>
 						<l-tile-layer
 							url="https://tiles.stadiamaps.com/tiles/stamen_toner_labels/{z}/{x}/{y}{r}.png"
 							:options="{ crossOrigin: 'anonymous' }"
-							:attribution="$t('tools.common.map_attribution')"
+							:attribution="$t('tools.common.map_attribution', locale)"
 						></l-tile-layer>
 						<l-geo-json
 							v-if="geojson"
@@ -101,14 +104,14 @@
 						<l-control
 							position="bottomright"
 							class="layer-control d-flex flex-column"
-							v-if="layout === 'tabs' && layers && layers.length"
+							v-if="!embedded && layout === 'tabs' && layers && layers.length"
 						>
 							<v-expansion-panels accordion class="report-control">
 								<v-expansion-panel v-if="indicator.showReport">
 									<v-expansion-panel-header class="text--primary" data-html2canvas-ignore>
 										<div>
 											<v-icon color="green">mdi-file-document-outline</v-icon>
-											<span class="mx-2">{{ $t('tools.explore.report') }}</span>
+											<span class="mx-2">{{ $t('tools.explore.report', locale) }}</span>
 										</div>
 									</v-expansion-panel-header>
 									<v-expansion-panel-content v-if="reportData" :style="{ 'overflow': 'hidden', 'display': 'flex', 'flex-direction': 'column' }">
@@ -119,7 +122,7 @@
 									<v-expansion-panel-header class="text--primary" data-html2canvas-ignore>
 										<div>
 											<v-icon color="green">mdi-circle</v-icon>
-											<span class="mx-2">{{ $t('tools.explore.locations') }}</span>
+											<span class="mx-2">{{ $t('tools.explore.locations', locale) }}</span>
 										</div>
 									</v-expansion-panel-header>
 									<v-expansion-panel-content class="location-options">
@@ -174,7 +177,7 @@
 									<v-expansion-panel-header class="text--primary">
 										<div>
 											<v-icon color="green">mdi-layers</v-icon>
-											<span class="mx-2">{{ $t('tools.community.community_types') }}</span>
+											<span class="mx-2">{{ $t('tools.community.community_types', locale) }}</span>
 										</div>
 									</v-expansion-panel-header>
 									<v-expansion-panel-content>
@@ -197,7 +200,7 @@
 						</l-control>
 					</l-map>
 				</div>
-				<div v-if="showChart" id="location_rank_chart_container" class="location-rank-chart-container"></div>
+				<div v-if="showChart" id="location_rank_chart_container" ref="location_rank_chart_container" class="location-rank-chart-container"></div>
 			</v-col>
 		</v-row>
 	</div>
@@ -233,6 +236,25 @@ export default {
 		LocationReport
 	},
 	props: {
+		locale: {
+			type: String
+		},
+		exploreData: {
+			type: Object
+		},
+		filterSelections: {
+			type: Object
+		},
+		showMapLabels: {
+			type: Boolean
+		},
+		highlightFilteredLocation: {
+			type: Boolean
+		},
+		embedded: {
+			type: Boolean,
+			default: false
+		},
 		layout: {
 			type: String,
 			default: 'tabs'
@@ -250,14 +272,27 @@ export default {
 			selectedLocationType: null,
 			mapPointTypes: [],
 			chart: null,
-			fullHeight: true
+			fullHeight: true,
+			chartContainer: null
 		}
 	},
 	computed: {
-		...mapState(['exploreData', 'locale', 'filterSelections', 'showMapLabels', 'highlightFilteredLocation', 'exploreTab', 'customLocations', 'indicator', 'pointCollections', 'selectedPointTypes', 'pointsGeojson', 'reportData']),
+		...mapState(['exploreTab', 'customLocations', 'indicator', 'pointCollections', 'selectedPointTypes', 'pointsGeojson', 'reportData']),
 		...mapGetters(['locationMenu', 'filters', 'pointTypes']),
 		mobile() {
 			return L.Browser.mobile
+		},
+		tagAttributes() {
+			return { 
+				locale: this.locale, 
+				'location-id': this.exploreData?.filters?.locationFilter?.options[0]?.id, 
+				'location-type-id': this.exploreData?.filters?.locationTypeFilter?.options[0]?.id, 
+				'indicator-id': this.exploreData?.indicator?.id, 
+				'year': this.exploreData?.filters?.yearFilter?.options[0]?.id, 
+				'indicator-filters': this.exploreData?.filters?.indicatorFilters?.map(f => f.type?.id + '_' + f.options[0]?.id).join(','), 
+				'highlight-filtered-location': this.highlightFilteredLocation ? 'true' : 'false', 
+				'show-map-labels': this.showMapLabels ? 'true' : 'false'
+			}
 		},
 		layers() {
 			return this.filters?.locationTypeFilter?.options?.map(option => {
@@ -362,7 +397,7 @@ export default {
     	locale() {
 			this.drawMap()
 			this.setPointsGeojson(featureCollection([]))
-			this.pointTypes.forEach(pt => {
+			this.pointTypes?.forEach(pt => {
 				this.togglePointType(pt.id)
 			})
 		},
@@ -412,7 +447,7 @@ export default {
 			this.componentInitialized = true;
 			echarts.use([SVGRenderer, AriaComponent, LegendComponent, GridComponent, TooltipComponent, BarChart]);
 			if (this.filterSelections) {
-				this.selectedLocationType = this.layers.find(l => l.id === this.filterSelections.locationType);
+				this.selectedLocationType = this.layers?.find(l => l.id === this.filterSelections.locationType);
 			}
 			if (this.mapInitialized && this.exploreData) {
 				this.drawMap();
@@ -498,10 +533,18 @@ export default {
 			if (this.showMapLabels) {
 				layer.bindTooltip(layer.feature.properties.locationName.replace('Zip Code', 'Zip').replace('Census Tract', 'Tract') 
 						+ '<br>' 
-						+ (layer.feature.properties.suppressed ? i18n.t('data.suppressed') : format(this.exploreData.indicator.typeId, layer.feature.properties.value)), 
+						+ (layer.feature.properties.suppressed ? i18n.t('data.suppressed', this.locale) : format(this.exploreData.indicator.typeId, layer.feature.properties.value)), 
 					{
 						className: 'location-label',
 						permanent: true, 
+						direction: 'center'
+					}
+				);
+			} else if (this.embedded) {
+				layer.bindTooltip(layer.feature.properties.locationName.replace('Zip Code', 'Zip').replace('Census Tract', 'Tract') 
+						+ '<br>' 
+						+ (layer.feature.properties.suppressed ? i18n.t('data.suppressed', this.locale) : format(this.exploreData.indicator.typeId, layer.feature.properties.value)), 
+					{
 						direction: 'center'
 					}
 				);
@@ -511,7 +554,7 @@ export default {
 			let tooltipOffEvent = L.Browser.mobile ? 'mouseup' : 'mouseout';
 			let selectLocationEvent = 'click';
 			layer.on(tooltipOnEvent, (layer) => {
-				this.setDockedTooltip({
+				!this.embedded && this.setDockedTooltip({
 					value: layer.target.feature.properties.value,
 					suppressed: layer.target.feature.properties.suppressed,
 					noData: layer.target.feature.properties.noData,
@@ -523,10 +566,10 @@ export default {
 				});
 			});
 			layer.on(tooltipOffEvent, () => {
-				this.setDefaultDockedTooltip()
+				!this.embedded && this.setDefaultDockedTooltip()
 			});
 			layer.on(selectLocationEvent, (e) => {
-				this.selectLocation(e.target.feature.id);
+				!this.embedded && this.selectLocation(e.target.feature.id);
 			});
 		},
 		onEachFilteredLocationFeature(feature, layer) {
@@ -536,17 +579,25 @@ export default {
 			if (this.showMapLabels) {
 				layer.bindTooltip(layer.feature.properties.locationName.replace('Zip Code', 'Zip').replace('Census Tract', 'Tract') 
 						+ '<br>' 
-						+ (layer.feature.properties.suppressed ? i18n.t('data.suppressed') : format(this.exploreData.indicator.typeId, layer.feature.properties.value)), 
+						+ (layer.feature.properties.suppressed ? i18n.t('data.suppressed', this.locale) : format(this.exploreData.indicator.typeId, layer.feature.properties.value)), 
 					{
 						className: 'location-label',
 						permanent: true, 
 						direction: 'center'
 					}
 				);
+			} else if (this.embedded) {
+				layer.bindTooltip(layer.feature.properties.locationName.replace('Zip Code', 'Zip').replace('Census Tract', 'Tract') 
+						+ '<br>' 
+						+ (layer.feature.properties.suppressed ? i18n.t('data.suppressed', this.locale) : format(this.exploreData.indicator.typeId, layer.feature.properties.value)), 
+					{
+						direction: 'center'
+					}
+				);
 			}
 
 			layer.on('mouseover', (layer) => {
-				this.setDockedTooltip({
+				!this.embedded && this.setDockedTooltip({
 					value: layer.target.feature.properties.value,
 					suppressed: layer.target.feature.properties.suppressed,
 					noData: layer.target.feature.properties.noData,
@@ -558,10 +609,10 @@ export default {
 				});
 			});
 			layer.on('mouseout', () => {
-				this.setDefaultDockedTooltip()
+				!this.embedded && this.setDefaultDockedTooltip()
 			});
 			layer.on('click', (e) => {
-				this.selectLocation(e.target.feature.id);
+				!this.embedded && this.selectLocation(e.target.feature.id);
 			});
 		},
 		pointToLayer(feature, latlng) {
@@ -632,7 +683,8 @@ export default {
 			} else if (this.chart){
 				this.chart.dispose();
 			}
-			this.chart = echarts.init(document.getElementById('location_rank_chart_container'), null, { renderer: 'svg'});
+			this.chartContainer = this.$refs.location_rank_chart_container;
+			this.chart = echarts.init(this.chartContainer, null, { renderer: 'svg'});
 			let textStyle = {
 				fontFamily: '"Roboto", sans-serif !important',
 				fontSize: this.layout === 'gallery' ? '12px' : this.smallScreen ? '14px' : '16px'
@@ -699,16 +751,16 @@ export default {
 				barCategoryGap: -1,
 				tooltip: {
 					formatter: (params) => {
-						return params.data.location + '<br>' + (params.data.suppressed ? i18n.t('data.suppressed') : format(this.exploreData.indicator.typeId, params.data.value));
+						return params.data.location + '<br>' + (params.data.suppressed ? i18n.t('data.suppressed', this.locale) : format(this.exploreData.indicator.typeId, params.data.value));
 					}
 				},
 				click: (params) => {
-					this.selectLocation(this.exploreData.locationData.find(ld => ld.location['name_' + this.locale] === params.data.location).location.id);
+					!this.embedded && this.selectLocation(this.exploreData.locationData.find(ld => ld.location['name_' + this.locale] === params.data.location).location.id);
 				}
 			}];
 			this.chart.on('click', (params) => {
 				if (params.data.location) {
-					this.selectLocation(this.exploreData.locationData.find(ld => ld.location['name_' + this.locale] === params.data.location).location.id);
+					!this.embedded &&  this.selectLocation(this.exploreData.locationData.find(ld => ld.location['name_' + this.locale] === params.data.location).location.id);
 				}
 			});
 			this.chart.setOption(option);

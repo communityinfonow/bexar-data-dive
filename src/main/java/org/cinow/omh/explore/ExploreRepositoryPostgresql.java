@@ -153,7 +153,7 @@ public class ExploreRepositoryPostgresql implements ExploreRepository {
 		String sql = ""
 			+ " with trend_interval as (select trend_interval from tbl_sources where id_ = (select source_id from tbl_indicators where id_ = :indicator::numeric)) "
 			+ " select l.id_ as l_id, l.name_en as l_name_en, l.name_es as l_name_es, "
-			+ "   7 as lt_id, 'Custom' as lt_name_en, 'Custom (es)' as lt_name_es, "
+			+ "   7 as lt_id, 'Custom' as lt_name_en, 'Personalizadas' as lt_name_es, "
 			+ "   cl.id_ as cl_id, cl.name_ as cl_name, cl.geojson as lg_geojson, "
 			+ "   i.indicator_type_id as it_id, i.is_aggregable, i.rate_per, "
 			+ "   iv.year_ as iv_year, round(iv.indicator_value, 1) as iv_indicator_value, iv.suppress as iv_suppressed, round(iv.moe_low, 1) as iv_moe_low, round(iv.moe_high, 1) as iv_moe_high, round(iv.universe_value, 1) as iv_universe_value, iv.count_value as iv_count_value, iv.universe_moe as iv_universe_moe, iv.count_moe as iv_count_moe "

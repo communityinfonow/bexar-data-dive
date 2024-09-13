@@ -12,27 +12,27 @@
           <v-list dense>
             <v-list-item>
               <v-list-item-content>
-                Years:
+                {{ $t('corrections_view.years') }}:
                 {{ item.years.length ? item.years.join(', ') : 'All' }}
-              </v-list-item-content> <!-- FIXME: i18n -->
+              </v-list-item-content>
             </v-list-item>
             <v-list-item>
               <v-list-item-content>
-                Location Types: 
+                {{ $t('corrections_view.location_types') }}: 
                 {{ item.locationTypes.length ? item.locationTypes.map(lt => lt['name_' + locale]).join(', ') : 'All' }}
-              </v-list-item-content> <!-- FIXME: i18n -->
+              </v-list-item-content>
             </v-list-item>
             <v-list-item>
               <v-list-item-content>
-                Filter Types:
+                {{ $t('corrections_view.filter_types') }}:
                 {{ item.filterTypes.length ? item.filterTypes.map(ft => ft['name_' + locale]).join(', ') : 'All' }}
-              </v-list-item-content> <!-- FIXME: i18n -->
+              </v-list-item-content>
             </v-list-item>
-            <v-list-item v-if="item.note">
+            <v-list-item v-if="item['note_' + locale]">
               <v-list-item-content>
-                Note:
-                {{ item.note }}
-              </v-list-item-content> <!-- FIXME: i18n -->
+                {{ $t('corrections_view.note') }}:
+                {{ item['note_' + locale] }}
+              </v-list-item-content>
             </v-list-item>
           </v-list>
         </v-col>
