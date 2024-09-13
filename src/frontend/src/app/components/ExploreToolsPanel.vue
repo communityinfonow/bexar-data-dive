@@ -535,7 +535,8 @@ export default {
 					+ '"' + data.locationType['name_' + this.locale] + '",'
 					+ '"' + data.location['name_' + this.locale] + '",'
 					+ this.filterSelections.year + ','
-					+ this.filters.indicatorFilters.map(f => '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"').join(',') + ','
+					+ this.filters.indicatorFilters.map(f => '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"').join(',') 
+					+ (this.filters.indicatorFilters.length ? ',' : '')
 					+ (yearData.suppressed ? i18n.t('data.suppressed') : yearData.value === null ? i18n.t('data.no_data') : yearData.value) + ','
 					+ (yearData.moeLow || yearData.moeHigh ? (yearData.moeLow + ' - ' + yearData.moeHigh) : '');
 			}).join('');
@@ -552,7 +553,8 @@ export default {
 					+ '"' + data.locationType['name_' + this.locale] + '",'
 					+ '"' + data.location['name_' + this.locale] + '",'
 					+ year + ','
-					+ this.filters.indicatorFilters.map(f => '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"').join(',') + ','
+					+ this.filters.indicatorFilters.map(f => '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"').join(',')
+					+ (this.filters.indicatorFilters.length ? ',' : '')
 					+ (values.suppressed ? i18n.t('data.suppressed') : values.value === null ? i18n.t('data.no_data') : values.value) + ','
 					+ (values.moeLow || values.moeHigh ? (values.moeLow + ' - ' + values.moeHigh) : '');
 			})
@@ -572,7 +574,8 @@ export default {
 								} else {
 									return '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"';
 								}
-							}).join(',') + ','
+							}).join(',')
+							+ (this.filters.indicatorFilters.length ? ',' : '')
 							+ (values.suppressed ? i18n.t('data.suppressed') : values.value === null ? i18n.t('data.no_data') : values.value) + ','
 							+ (values.moeLow || values.moeHigh ? (values.moeLow + ' - ' + values.moeHigh) : '');
 					})	
@@ -591,7 +594,8 @@ export default {
 				+ '"' + data.locationType['name_' + this.locale] + '",'
 				+ '"' + data.location['name_' + this.locale] + '",'
 				+ this.filterSelections.year + ','
-				+ this.filters.indicatorFilters.map(f => '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"').join(',') + ','
+				+ this.filters.indicatorFilters.map(f => '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"').join(',')
+				+ (this.filters.indicatorFilters.length ? ',' : '')
 				+ (yearData.suppressed ? i18n.t('data.suppressed') : yearData.value === null ? i18n.t('data.no_data') : yearData.value) + ','
 				+ (yearData.moeLow || yearData.moeHigh ? (yearData.moeLow + ' - ' + yearData.moeHigh) : '');
 			if (this.compareBy?.id === 'l') {
@@ -604,7 +608,8 @@ export default {
 						+ '"' + comp.locationType['name_' + this.locale] + '",'
 						+ '"' + comp.location['name_' + this.locale] + '",'
 						+ this.filterSelections.year + ','
-						+ this.filters.indicatorFilters.map(f => '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"').join(',') + ','
+						+ this.filters.indicatorFilters.map(f => '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"').join(',')
+						+ (this.filters.indicatorFilters.length ? ',' : '')
 						+ (compYearData.suppressed ? i18n.t('data.suppressed') : compYearData.value === null ? i18n.t('data.no_data') : compYearData.value) + ','
 						+ (compYearData.moeLow || compYearData.moeHigh ? (compYearData.moeLow + ' - ' + compYearData.moeHigh) : '');
 				});
@@ -618,7 +623,8 @@ export default {
 						+ '"' + data.locationType['name_' + this.locale] + '",'
 						+ '"' + data.location['name_' + this.locale] + '",'
 						+ year.id + ','
-						+ this.filters.indicatorFilters.map(f => '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"').join(',') + ','
+						+ this.filters.indicatorFilters.map(f => '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"').join(',')
+						+ (this.filters.indicatorFilters.length ? ',' : '')
 						+ (compYearData.suppressed ? i18n.t('data.suppressed') : !compYearData.value ? i18n.t('data.no_data') : compYearData.value) + ','
 						+ (compYearData.moeLow || compYearData.moeHigh ? (compYearData.moeLow + ' - ' + compYearData.moeHigh) : '');
 				});
@@ -638,7 +644,8 @@ export default {
 								} else {
 									return '"' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale] + '"';
 								}
-							}).join(',') + ','
+							}).join(',')
+						+ (this.filters.indicatorFilters.length ? ',' : '')
 						+ (compYearData.suppressed ? i18n.t('data.suppressed') : compYearData.value === null ? i18n.t('data.no_data') : compYearData.value) + ','
 						+ (compYearData.moeLow || compYearData.moeHigh ? (compYearData.moeLow + ' - ' + compYearData.moeHigh) : '');
 				});
