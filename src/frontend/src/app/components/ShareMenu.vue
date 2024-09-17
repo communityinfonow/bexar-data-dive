@@ -28,6 +28,10 @@
 			</v-text-field>
 			<div v-if="tagName && tagName !== ''">
 				<p class="text-h6">{{ $t('tools.common.share.embed') }}</p>
+				<p class="text-body-2">{{ $t('tools.common.share.embed_guide_1') }}
+					<a target="_blank" href="https://cinow.info/wp-content/uploads/2024/09/Dive-Guide-How-to-embed-Dive-maps-and-charts-in-your-website-ENG-and-SPA.pdf">{{ $t('tools.common.share.embed_guide_2') }}</a>
+					{{ $t('tools.common.share.embed_guide_3') }}
+				</p>
 				<v-text-field
 					prepend-icon="mdi-code-tags"
 					readonly

@@ -157,7 +157,10 @@
       "share": {
         "name": "Share",
         "link": "Share a link to Dive",
-        "embed": "or, embed Dive in your website"
+        "embed": "or, embed Dive in your website",
+        "embed_guide_1": "Click",
+        "embed_guide_2": "here",
+        "embed_guide_3": "to learn more about embedding Dive in your website"
       },
       "chart_options": "Chart options",
       "chart_options_labels": "Labels",

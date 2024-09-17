@@ -157,7 +157,10 @@
       "share": {
         "name": "Compartir",
         "link": "Comparte un enlace a Dive",
-        "embed": "o incorpora Dive en su sitio web"
+        "embed": "o incorpora Dive en su sitio web",
+        "embed_guide_1": "Haga clic",
+        "embed_guide_2": "aquí",
+        "embed_guide_3": "para obtener más información sobre cómo incorporar Dive en su sitio web"
       },
       "chart_options": "Opciones del gráfico",
       "chart_options_labels": "Etiquetas",
