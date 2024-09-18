@@ -107,7 +107,7 @@ export default {
 			return i18n.t('tools.common.click_copy_embed_component');
 		},
 		embedScriptCode() {
-			return '<script src="' + process.env.VUE_APP_DOMAIN + ' + /dive.min.js"></' + 'script>';
+			return '<script src="' + process.env.VUE_APP_DOMAIN + '/' + 'dive.min.js"></' + 'script>';
 		},
 		embedComponentCode() {
 			let embedLines = [];

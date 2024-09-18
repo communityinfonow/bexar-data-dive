@@ -322,7 +322,6 @@ export default {
 				}
 			})
 
-			console.log(seriesData)
 			// series for suppressed data
 			if (seriesData.some(sd => Object.values(sd).some(yd => yd.suppressed))) {
 				option.series.push({
