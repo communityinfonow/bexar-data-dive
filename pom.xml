@@ -17,7 +17,7 @@
 		<java.version>11</java.version>
 		<node.version>v16.13.2</node.version>
 		<yarn.version>v1.22.4</yarn.version>
-		<env>${env}</env>
+		<env>${environment}</env>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -125,7 +125,7 @@
 						</goals>
 						<phase>generate-resources</phase>
 						<configuration>
-							<arguments>build --mode=${env} --target wc --dest components --inline-vue --name dive src/app/components/embed/*.vue</arguments>
+							<arguments>build --mode=${environment} --target wc --dest components --inline-vue --name dive src/app/components/embed/*.vue</arguments>
 						</configuration>
 					</execution>
 				</executions>
