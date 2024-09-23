@@ -72,6 +72,39 @@ public class FilterRepositoryPostgresql implements FilterRepository {
 	 * {@inheritDoc}
 	 */
 	@Override
+	public Filter getLocationTypeFilterBySource(String sourceId) {
+		String sql = ""
+			+ " select distinct id_, name_en, name_es, sort_order "
+			+ " from tbl_location_types "
+			+ " where exists (select 1 from tbl_indicator_values where indicator_id in (select id_ from tbl_indicators where source_id = :source_id::numeric) and location_type_id = id_) "
+			+ " order by sort_order ";
+
+		MapSqlParameterSource paramMap = new MapSqlParameterSource();
+		paramMap.addValue("source_id", sourceId);
+
+		return this.namedParameterJdbcTemplate.query(sql, paramMap, new ResultSetExtractor<Filter>() {
+			@Override
+			public Filter extractData(ResultSet rs) throws SQLException, DataAccessException {
+				Filter filter = new Filter();
+				filter.setType(new FilterType());
+				filter.getType().setName_en("Location Type");
+				filter.getType().setName_es("Tipo de Ubicación");
+				while (rs.next()) {
+					FilterOption option = new FilterOption();
+					option.setId(rs.getString("id_"));
+					option.setName_en(rs.getString("name_en"));
+					option.setName_es(rs.getString("name_es"));
+					filter.getOptions().add(option);
+				}
+				return filter;
+			}	
+		});
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public Filter getLocationFilter() {
 		String sql = ""
 			+ " select l.id_, l.location_type_id, l.name_en, l.name_es "
@@ -135,6 +168,40 @@ public class FilterRepositoryPostgresql implements FilterRepository {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Filter getYearFilterBySource(String sourceId) {
+		String sql = ""
+			+ " select distinct year_ "
+			+ " from mv_indicator_years "
+			+ " where indicator_id in (select id_ from tbl_indicators where source_id = :source_id::numeric) "
+			+ " order by year_ desc ";
+
+		MapSqlParameterSource paramMap = new MapSqlParameterSource();
+		paramMap.addValue("source_id", sourceId);
+
+		return this.namedParameterJdbcTemplate.query(sql, paramMap, new ResultSetExtractor<Filter>() {
+			@Override
+			public Filter extractData(ResultSet rs) throws SQLException, DataAccessException {
+				Filter filter = new Filter();
+				filter.setType(new FilterType());
+				filter.getType().setId("y");
+				filter.getType().setName_en("Year");
+				filter.getType().setName_es("Año");
+				while (rs.next()) {
+					FilterOption option = new FilterOption();
+					option.setId(rs.getString("year_"));
+					option.setName_en(rs.getString("year_"));
+					option.setName_es(rs.getString("year_"));
+					filter.getOptions().add(option);
+				}
+				return filter;
+			}	
+		});
+	}
+
+	/**
 	 * {@inheritDoc}}
 	 */
 	@Override
@@ -148,6 +215,51 @@ public class FilterRepositoryPostgresql implements FilterRepository {
 
 		MapSqlParameterSource paramMap = new MapSqlParameterSource();
 		paramMap.addValue("indicator_id", indicatorId);
+
+		return this.namedParameterJdbcTemplate.query(sql, paramMap, new ResultSetExtractor<List<IndicatorFilter>>() {
+			@Override
+			public List<IndicatorFilter> extractData(ResultSet rs)
+					throws SQLException, DataAccessException {
+				
+				List<IndicatorFilter> filters = new ArrayList<>();
+				IndicatorFilter filter = new IndicatorFilter();
+				String typeId = "0";
+				while (rs.next()) {
+					if (!rs.getString("type_id").equals(typeId)) {
+						typeId = rs.getString("type_id");
+						filter = new IndicatorFilter();
+						FilterType type = new FilterType();
+						type.setId(rs.getString("type_id"));
+						type.setName_en(rs.getString("type_name_en"));
+						type.setName_es(rs.getString("type_name_es"));
+						filter.setType(type);
+						filters.add(filter);
+					}
+					FilterOption option = new FilterOption();
+					option.setId(rs.getString("option_id"));
+					option.setName_en(rs.getString("option_name_en"));
+					option.setName_es(rs.getString("option_name_es"));
+					filter.getOptions().add(option);
+				}
+				return filters;
+			}	
+		});
+	}
+
+	/**
+	 * {@inheritDoc}}
+	 */
+	@Override
+	public List<IndicatorFilter> getIndicatorFiltersBySource(String sourceId) {
+		String sql = ""
+			+ " select distinct type_id, type_name_en, type_name_es, "
+			+ " 	option_id, option_name_en, option_name_es, sort_order "
+			+ " from mv_indicator_filters "
+			+ " where indicator_id in (select id_ from tbl_indicators where source_id = :source_id::numeric) "
+			+ " order by type_id, sort_order ";
+
+		MapSqlParameterSource paramMap = new MapSqlParameterSource();
+		paramMap.addValue("source_id", sourceId);
 
 		return this.namedParameterJdbcTemplate.query(sql, paramMap, new ResultSetExtractor<List<IndicatorFilter>>() {
 			@Override

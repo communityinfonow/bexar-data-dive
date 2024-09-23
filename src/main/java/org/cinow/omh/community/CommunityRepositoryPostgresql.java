@@ -46,6 +46,24 @@ public class CommunityRepositoryPostgresql implements CommunityRepository {
 			+ "   ic.id_ as category_id, ic.parent_category_id, ic.name_en as category_name_en, ic.name_es as category_name_es, "
 			+ "   i.id_ as indicator_id, i.name_en as indicator_name_en, i.name_es as indicator_name_es, i.description_en as indicator_description_en, i.description_es as indicator_description_es, i.rate_per, i.is_aggregable, "
 			+ "   case when exists (select 1 from mv_indicator_metadata where indicator_id = i.id_ and has_data = true limit 1) then true else false end as has_data, "
+			+ "   case when exists (select 1 "
+			+ "    from tbl_data_corrections dc "
+			+ "    where (dc.indicator_id = id_ or dc.source_id = i.source_id) and display = true "
+			+ "      and date_corrected > current_date - interval '90 days' "
+			+ "      and (dc.years @> array[iv.year_] or dc.years  = '{}') "
+			+ "      and (dc.location_type_ids @> array[:location_type_id::numeric] or dc.location_type_ids  = '{}') ";
+		if (StringUtils.equals(filterType, FilterTypes.RACE.getId())) {
+			sql += " and (dc.filter_type_ids @> array[1::numeric] or dc.filter_type_ids  = '{}') ";
+		} else if (StringUtils.equals(filterType, FilterTypes.AGE.getId())) {
+			sql += " and (dc.filter_type_ids @> array[2::numeric] or dc.filter_type_ids  = '{}') ";
+		} else if (StringUtils.equals(filterType, FilterTypes.SEX.getId())) {
+			sql += " and (dc.filter_type_ids @> array[3::numeric] or dc.filter_type_ids  = '{}') ";
+		} else if (StringUtils.equals(filterType, FilterTypes.EDUCATION.getId())) {
+			sql += " and (dc.filter_type_ids @> array[4::numeric] or dc.filter_type_ids  = '{}') ";
+		} else if (StringUtils.equals(filterType, FilterTypes.INCOME.getId())) {
+			sql += " and (dc.filter_type_ids @> array[5::numeric] or dc.filter_type_ids  = '{}') ";
+		}
+		sql += "   ) then true else false end as recent_correction, "
 			+ "   it.id_ as indicator_type_id, it.name_ as indicator_type_name, "
 			+ "   iv.year_, round(iv.indicator_value, 1) as indicator_value, iv.suppress, round(iv.moe_low, 1) as moe_low, round(iv.moe_high, 1) as moe_high, round(iv.universe_value, 1) as universe_value, round(iv.count_value, 1) as count_value, round(iv.universe_moe, 1) as universe_moe, round(iv.count_moe, 1) as count_moe, "
 			+ "   s.id_ as source_id, s.name_en as source_name_en, s.name_es as source_name_es, s.url_ as source_url, "
@@ -113,6 +131,7 @@ public class CommunityRepositoryPostgresql implements CommunityRepository {
 						indicatorData.getIndicator().setHasData(rs.getBoolean("has_data"));
 						indicatorData.getIndicator().setRatePer(rs.getInt("rate_per"));
 						indicatorData.getIndicator().setAggregable(rs.getBoolean("is_aggregable"));
+						indicatorData.getIndicator().setRecentCorrection(rs.getBoolean("recent_correction"));
 						indicatorData.setIndicatorType(new IndicatorType());
 						indicatorData.getIndicatorType().setId(rs.getString("indicator_type_id"));
 						indicatorData.getIndicatorType().setName(rs.getString("indicator_type_name"));

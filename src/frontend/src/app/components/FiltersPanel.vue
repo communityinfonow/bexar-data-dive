@@ -172,8 +172,23 @@ export default {
 		initFilters() {
 			this.applyNeeded = false;
 			this.indicatorFilterSelections = {}
-			this.selectedLocationType = router.currentRoute.query.locationType || this.filters?.locationTypeFilter.options[0]?.id
-			this.selectedLocation = router.currentRoute.query.location || this.filters?.locationFilter.options.find(o => o.typeId == this.selectedLocationType)?.id
+			// default location type to the query param, or SSA if available, and fall back to county
+			let locationType = router.currentRoute.query.locationType;
+			let location = router.currentRoute.query.location;
+			if (!locationType) {
+				if (this.filters?.locationTypeFilter.options.find(o => o.id === '4')) {
+					locationType = '4';
+					location = '1'
+				} else if (this.filters?.locationTypeFilter.options.find(o => o.id === '3')) {
+					locationType = '3';
+					location = '78212';
+				} else {
+					locationType = '1'
+					location = '48029';
+				}
+			}
+			this.selectedLocationType = locationType;
+			this.selectedLocation = location;
 			this.selectedYear = router.currentRoute.query.year || this.filters?.yearFilter.options[0]?.name_en
 			this.filters?.indicatorFilters.forEach((filter) => {
 				let option = filter.options[0];

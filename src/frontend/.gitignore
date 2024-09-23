@@ -1,6 +1,7 @@
 .DS_Store
 node_modules
 /dist
+/components
 
 /tests/e2e/videos/
 /tests/e2e/screenshots/
@@ -24,3 +25,6 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+
+# embeddable component build artifacts
+public/dive*.js*

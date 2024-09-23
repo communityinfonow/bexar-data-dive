@@ -93,6 +93,7 @@ public class CommunityService {
 			mergedIndicator.setYear(filterCategory.getIndicators().get(0).getYear());
 			mergedIndicator.setDemographicData(filterCategory.getIndicators()
 				.stream()
+				.filter(indicator -> indicator.getDemographicData() != null && !indicator.getDemographicData().isEmpty())
 				.map(indicator -> {
 					CommunityDataPoint dataPoint = indicator.getDemographicData().get(0);
 					dataPoint.setDemographicFilter(new FilterOption());

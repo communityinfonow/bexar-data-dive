@@ -9,14 +9,18 @@
             </template>
           </v-breadcrumbs>
           <h1 v-if="showIntro" class="text-dive-h3">{{ $t('tools.tables.name') }}</h1>
-          <h1 v-if="tablesData && indicator" class="text-dive-h3">
-            <span>
+          <div v-if="tablesData && indicator" >
+            <h1 class="text-dive-h3">
               <span v-if="tablesData.category.parentCategoryId">{{ tablesData.category['name_' + locale] }} - </span>
               {{ tablesData.indicator['name_' + locale] }}
-              <indicator-definition :indicator="indicator"></indicator-definition>
+              <indicator-definition :embedded="false" :locale="locale" :indicator="indicator"></indicator-definition>
               <h2 class="text-subtitle-1 mb-2">{{ tablesData.source['name_' + locale] }}</h2>
-            </span>
-          </h1>
+            </h1>
+            <v-alert v-if="tablesData.indicator.recentCorrection" class="mt-2" color="yellow" dense dismissible>
+                <span v-html="$t('corrections_view.notice', locale)"></span>
+              </v-alert>
+          </div>
+
           <div v-if="showIntro" class="font-weight-medium mt-2" style="font-size: 1.25rem;">
             {{ $t('tools.tables.headline') }}
             {{ $t('tools.tables.long_description') }}
@@ -37,7 +41,7 @@
           <h2 class="text-dive-h4 text-uppercase mt-16 mb-2 text-center font-weight-light">{{ $t('tools.common.featured_indicators') }}</h2>
           <p style="margin: 0 30%; font-size: 1.25em;">{{ $t('tools.tables.get_started') }}</p>
         </section>
-        <section class="d-flex" :class="{ 'flex-row': $vuetify.breakpoint.mdAndUp, 'flex-column': $vuetify.breakpoint.smAndDown }">
+        <section class="d-flex" :class="{ 'flex-row': $vuetify.breakpoint.smAndUp, 'flex-column': $vuetify.breakpoint.xsAndDown }">
           <template v-for="indicator in featuredIndicators">
             <featured-card 
               :key="indicator.id" 
@@ -76,6 +80,7 @@
             :sort-desc.sync="sortDesc"
             :footer-props="footerOptions"
             :server-items-length="tablesData.totalRows"
+            mobile-breakpoint="1264"
           >
             <!-- FIXME: DRY -->
             <template v-slot:header.locationType="{ header }">
@@ -839,6 +844,11 @@ export default {
 ::v-deep .v-data-table-header .v-icon:after,
 ::v-deep .v-data-table-header .v-data-table-header__sort-badge {
   color: var(--v-green-base) !important;
+}
+@media screen and (max-width: 1264px) {
+  ::v-deep tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, .05);
+  }
 }
 .filter-list {
   min-width: 160px;

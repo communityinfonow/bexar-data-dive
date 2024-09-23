@@ -1,9 +1,9 @@
 <template>
 	<!-- max-height to fix odd extra space below the col that started showing up after the icon button menus were added -->
-	<v-col cols="auto" style="max-height: 72px;">
+	<v-col cols="auto" :style="{ 'max-height': panelMaxHeight }">
 		<v-form v-if="filters" ref="compareForm" v-model="valid">
 			<v-row class="mt-2 justify-end">
-				<v-col cols="6" v-if="showMapControls" class="d-flex">
+				<v-col sm="12" lg="6" v-if="showMapControls" class="d-flex">
 					<v-select
 						:label="$t('tools.community.community_types')"
 						dense
@@ -46,7 +46,7 @@
 						<location-report :layout="layout" :closeDialog="() => locationReportDialog = false"></location-report>
 					</v-dialog>
 				</v-col>
-				<v-col cols="2" v-if="showCompareOptions">
+				<v-col sm="12" lg="2" v-if="showCompareOptions">
 					<v-select
 						:label="$t('tools.explore.compare_by')"
 						dense
@@ -60,7 +60,7 @@
 					>
 					</v-select>
 				</v-col>
-				<v-col cols="4" v-if="showCompareOptions">
+				<v-col sm="12" lg="4" v-if="showCompareOptions">
 					<v-autocomplete
 						:label="$t('tools.explore.compare_with')"
 						dense
@@ -78,7 +78,7 @@
 					>
 					</v-autocomplete>
 				</v-col>
-				<v-col cols="2" v-if="showCompareOptions">
+				<v-col sm="12" lg="2" v-if="showCompareOptions">
 					<v-btn
 						color="red"
 						rounded
@@ -88,7 +88,7 @@
 						{{ $t('tools.explore.compare') }}
 					</v-btn>
 				</v-col>
-				<v-col cols="4" v-if="!showHighlightFilteredLocation">
+				<v-col sm="12" lg="4" v-if="!showHighlightFilteredLocation">
 					<div class="d-flex justify-end">
 						<div class="v-input v-input--is-label-active v-input--is-dirty theme--light v-text-field v-text-field--is-booted v-select pt-1 flex-grow-0 flex-shrink-1">
 							<label aria-label id="labelsOrLinesLabel" class="v-label v-label--active theme--light" style="left: 0px; right: auto; position: absolute;">{{ $t('tools.common.chart_options') }}</label>
@@ -107,10 +107,26 @@
 								</v-btn>
 							</v-btn-toggle>
 						</div>
-						<button-menu v-if="indicator && filterSelections" :downloadData="downloadData" :downloadImage="downloadImage" viewMenu linkToCommunity linkToTables :indicatorId="indicator.id" :locationTypeId="filterSelections.locationType" :locationId="filterSelections.location" class="ml-2" style="margin-top: -8px"></button-menu>
+						<button-menu 
+							v-if="indicator && filterSelections" 
+							:downloadData="downloadData" 
+							:downloadImage="downloadImage" 
+							viewMenu 
+							linkToCommunity 
+							linkToTables 
+							:indicatorId="indicator.id" 
+							:locationTypeId="filterSelections.locationType" 
+							:locationId="filterSelections.location" 
+							class="ml-2" 
+							style="margin-top: -8px"
+							:tagName="tagName"
+							:tagAttributes="tagAttributes"
+							:layout="layout"
+						>
+						</button-menu>
 					</div>
 				</v-col>
-				<v-col v-if="showHighlightFilteredLocation" cols="6" class="d-flex justify-end">
+				<v-col v-if="showHighlightFilteredLocation" sm="12" lg="6" class="d-flex justify-end">
 					<template v-if="showHighlightFilteredLocation">
 						<v-switch
 							inset
@@ -144,6 +160,8 @@
 						:educationId="filterSelections.indicatorFilters[4] ? filterSelections.indicatorFilters[4].id : null" 
 						:incomeId="filterSelections.indicatorFilters[5] ? filterSelections.indicatorFilters[5].id : null" 
 						class="ml-2" style="margin-top: -.5em"
+						:tagName="tagName"
+						:tagAttributes="tagAttributes"
 					>
 					</button-menu>
 				</v-col>
@@ -171,6 +189,9 @@ export default {
 	computed: {
 		...mapState(['filterSelections', 'locale', 'exploreData', 'indicator', 'indicatorMenu', 'pointCollections', 'selectedPointTypes']),
 		...mapGetters(['filters', 'pointTypes']),
+		panelMaxHeight() {
+			return this.$vuetify.breakpoint.mdAndDown ? '' : '72px'
+		},
 		highlight: {
 			get() { return this.highlightFilteredLocation },
 			set(value) { this.setHighlightFilteredLocation(value) }
@@ -234,6 +255,12 @@ export default {
 		dataVisualElementId: {
 			type: String
 		},
+		beforeDataVisualDownload: {
+			type: Function
+		},
+		afterDataVisualDownload: {
+			type: Function
+		},
 		dataVisualName: {
 			type: String
 		},
@@ -254,6 +281,12 @@ export default {
 		},
 		layout: {
 			type: String
+		},
+		tagName: {
+			type: String
+		},
+		tagAttributes: {
+			type: Object
 		}
 	},
 	data() {
@@ -645,6 +678,9 @@ export default {
 				+ '<h2 class="text-subtitle-1 mb-2">'
 				+ this.filters.indicatorFilters.map(f => f.type['name_' + this.locale] + ': ' + this.filterSelections.indicatorFilters[f.type.id]['name_' + this.locale]).join(', ')
 				+ '</h2>';
+			if (this.dataVisualName === 'trend_chart') {
+				this.beforeDataVisualDownload();
+			}
 			html2canvas(document.querySelector('header'), { scale: 2 }).then((headerCanvas) => {
 				html2canvas(document.querySelector('#explore_indicator_download'), { scale: 2 }).then((indicatorCanvas) => {
 					html2canvas(document.querySelector('#' + (this.layout === 'tabs' ? this.dataVisualElementId : 'gallery-data-visuals')), { 
@@ -673,6 +709,9 @@ export default {
 
 						document.querySelector('main').removeChild(exploreIndicator);
 						this.setLoading(false);
+						if (this.dataVisualName === 'trend_chart') {
+							this.afterDataVisualDownload();
+						}
 					});
 				});
 			});

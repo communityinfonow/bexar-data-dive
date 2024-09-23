@@ -54,6 +54,28 @@ public class FilterService {
 	}
 
 	/**
+	 * Get the filters by data source.
+	 * 
+	 * NOTE: Does not include compatible filter types or location type years.
+	 * 
+	 * @param indicatorId the source id
+	 * @return the filters
+	 */
+	public Filters getFiltersBySource(String sourceId) {
+		Filters filters = new Filters();
+		filters.setLocationTypeFilter(this.filterRepository.getLocationTypeFilterBySource(sourceId));
+		filters.setLocationFilter(this.filterRepository.getLocationFilter());
+		filters.getLocationFilter().setOptions(filters.getLocationFilter().getOptions()
+			.stream()
+			.filter(o -> filters.getLocationTypeFilter().getOptions().stream().anyMatch(lt -> lt.getId().equals(o.getTypeId())))
+			.collect(Collectors.toList()));
+		filters.setYearFilter(this.filterRepository.getYearFilterBySource(sourceId));
+		filters.setIndicatorFilters(this.filterRepository.getIndicatorFiltersBySource(sourceId));
+
+		return filters;
+	}
+
+	/**
 	 * Finds the filter types.
 	 * 
 	 * @return the filter types

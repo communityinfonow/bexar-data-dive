@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import AdminView from '@/admin/views/AdminView.vue'
 import AnnouncementsView from '@/admin/views/AnnouncementsView.vue'
+import DataCorrectionsView from '@/admin/views/DataCorrectionsView.vue'
 import IndicatorsView from '@/admin/views/IndicatorsView.vue'
 import FiltersView from '@/admin/views/FiltersView.vue'
 import SourcesView from '@/admin/views/SourcesView.vue'
@@ -25,6 +26,11 @@ const routes = [
     path: '/admin/announcements',
     name: 'announcements',
     component: AnnouncementsView,
+  },
+  {
+    path: '/admin/data-corrections',
+    name: 'data-corrections',
+    component: DataCorrectionsView,
   },
   {
     path: '/admin/indicators',

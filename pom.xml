@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.7.11</version>
+		<version>2.7.18</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>org.cinow</groupId>
@@ -17,6 +17,7 @@
 		<java.version>11</java.version>
 		<node.version>v16.13.2</node.version>
 		<yarn.version>v1.22.4</yarn.version>
+		<env>${environment}</env>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -50,7 +51,7 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<scope>runtime</scope>
+			<version>42.3.10</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -117,6 +118,16 @@
 							<arguments>build</arguments>
 						</configuration>
 					</execution>
+					<execution>
+						<id>yarn components build</id>
+						<goals>
+							<goal>yarn</goal>
+						</goals>
+						<phase>generate-resources</phase>
+						<configuration>
+							<arguments>build --mode=${environment} --target wc --dest components --inline-vue --name dive src/app/components/embed/*.vue</arguments>
+						</configuration>
+					</execution>
 				</executions>
 				<configuration>
 					<nodeVersion>${node.version}</nodeVersion>
@@ -138,6 +149,10 @@
 							<resources>
 								<resource>
 									<directory>src/frontend/dist</directory>
+									<filtering>true</filtering>
+								</resource>
+								<resource>
+									<directory>src/frontend/components</directory>
 									<filtering>true</filtering>
 								</resource>
 							</resources>
