@@ -14,7 +14,7 @@ public class MaterializedViewRepositoryPostgresql implements MaterializedViewRep
 	public void populateMaterializedViews() {
 		String sql = " select 1 from mv_indicator_metadata ";
 		try {
-		this.jdbcTemplate.execute(sql);
+			this.jdbcTemplate.execute(sql);
 		} catch (UncategorizedSQLException e) {
 			if ("55000".equals(e.getSQLException().getSQLState())) {
 				this.jdbcTemplate.execute(" select refresh_materialized_views() ");

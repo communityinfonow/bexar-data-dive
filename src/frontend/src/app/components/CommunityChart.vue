@@ -2,23 +2,29 @@
 	<div 
 		:ref="'chart_container_' + this.indicatorId" 
 		:id="'chart_container_' + this.indicatorId" 
-		:style="{ width: '100%', height: orientation === 'vertical' ? '400px' : '600px' }"
+		:style="{ width: '100%', height: chartHeight }"
 	>
 	</div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import i18n from '@/i18n'
 import * as echarts from 'echarts/core';
 import { SVGRenderer } from 'echarts/renderers';
-import { AriaComponent, LegendComponent, GridComponent, TitleComponent } from 'echarts/components';
+import { AriaComponent, LegendComponent, GridComponent, TitleComponent, TooltipComponent } from 'echarts/components';
 import { BarChart, CustomChart } from 'echarts/charts';
 import { format } from '@/services/formatter'
 
 export default {
 	name: 'CommunityChart',
 	props: {
+		locale: {
+			type: String
+		},
+		embedded: {
+			type: Boolean,
+			default: false
+		},
 		indicatorId: {
 			type: String
 		},
@@ -39,21 +45,21 @@ export default {
 		},
 		labelsOrLines: {
 			type: String
-		},
-		orientation: {
-			type: String,
-			default: 'vertical'
 		}
 	},
 	data() {
 		return {
-			chart: null
+			chart: null,
+			chartContainer: null,
+			smallScreen: false,
 		}
 	},
 	computed: {
-		...mapState(['locale']),
-		smallScreen() {
-			return document.body.clientWidth <= 1440;
+		orientation() {
+			return this.smallScreen ? 'horizontal' : 'vertical';
+		},
+		chartHeight() {
+			return this.smallScreen ? (this.data.length * 60 + 80) + 'px' : '400px';
 		}
 	},
 	watch: {
@@ -68,24 +74,32 @@ export default {
 		}
 	},
 	mounted () {
-		echarts.use([SVGRenderer, AriaComponent, LegendComponent, GridComponent, BarChart, CustomChart, TitleComponent]);
+		echarts.use([SVGRenderer, AriaComponent, LegendComponent, GridComponent, BarChart, CustomChart, TitleComponent, TooltipComponent]);
+		this.chartContainer = this.$el;
+		this.smallScreen = document.body.clientWidth < 1264 || this.chartContainer?.offsetWidth < 1264;
 		window.addEventListener('resize', () => {
 			this.chart.resize();
 		});
-		this.drawChart();
+		this.$nextTick(() => this.drawChart());
 	},
 	methods: {
 		drawChart() {
 			if (this.chart) {
 				this.chart.dispose();
 			}
-			this.chart = echarts.init(document.getElementById('chart_container_' + this.indicatorId), null, { renderer: 'svg'});
+			this.chart = echarts.init(this.chartContainer, null, { renderer: 'svg'});
 			let textStyle = {
 				fontFamily: '"Roboto", sans-serif !important',
-				fontSize: this.smallScreen ? '14px' : '16px'
+				fontSize: this.smallScreen ? '12px' : '16px'
 			};
 			let option = {};
-			option.grid = { left: 40, right: 200, containLabel: true };
+			option.grid = { 
+				left: this.orientation === 'horizontal' ? 140 : 40, 
+				right: this.orientation === 'horizontal' ? 140 : 40, 
+				top: 40, 
+				bottom: 40, 
+				containLabel: true 
+			};
 			let valueAxis = this.orientation === 'vertical' ? 'yAxis' : 'xAxis';
 			let categoryAxis = this.orientation === 'vertical' ? 'xAxis' : 'yAxis';
 			option[valueAxis] = { 
@@ -94,21 +108,29 @@ export default {
 				splitNumber: 1,
 				axisLabel: textStyle
 			};
-			let xAxisData = Array.from(new Set(this.data.map(d => '' + (d.demographicFilter['name_' + this.locale] || i18n.t('data.all')))));
-			if (xAxisData.length < this.maxDemographics) {
-				xAxisData = xAxisData.concat(...Array.from(Array(this.maxDemographics - xAxisData.length))).map(d => d || '')
+			let categoryAxisData = Array.from(new Set(this.data.map(d => '' + (d.demographicFilter['name_' + this.locale] || i18n.t('data.all', this.locale)))));
+			if (this.orientation === 'horizontal') {
+				categoryAxisData = categoryAxisData.reverse();
+			}
+			if (this.orientation === 'vertical' && categoryAxisData.length < this.maxDemographics) {
+				categoryAxisData = categoryAxisData.concat(...Array.from(Array(this.maxDemographics - categoryAxisData.length))).map(d => d || '')
 			}
 			option[categoryAxis] = [{ 
 				type: 'category', 
-				data: xAxisData,
+				data: categoryAxisData,
 				axisTick: { show: false },
-				axisLabel: { ...textStyle, fontWeight: 'bold', interval: 0, width: '80', overflow: 'break', lineHeight: 20, color: '#333333' }
+				axisLabel: { 
+					...textStyle, 
+					fontWeight: 'bold', 
+					interval: 0, 
+					width: this.orientation === 'vertical' ? '80' : '140', 
+					overflow: 'break', 
+					lineHeight: 20, 
+					color: '#333333' 
+				}
 			}];
 			option.textStyle = textStyle;
 			option.color = '#3b5a98';
-			if (this.orientation === 'horizontal') {
-				option.grid.left = 100;
-			}
 			option.series = [];
 			
 			let series = [
@@ -125,16 +147,16 @@ export default {
 						position: this.orientation === 'vertical' ? 'top' : 'right',
 						formatter: (o) => {
 							if (o.data.suppressed) {
-								return '{a|' + i18n.t('data.suppressed') + '}';
+								return '{a|' + i18n.t('data.suppressed', this.locale) + '}';
 							} else if (o.data.noData) {
-								return '{a|' + i18n.t('data.no_data') + '}';
+								return '{a|' + i18n.t('data.no_data', this.locale) + '}';
 							} else if (this.labelsOrLines !== 'labels') {
 								return '';
 							}
 
-							let rows = ['{a|' + i18n.t('data.value') +': ' + format(this.indicatorType.id, o.data.value) + '}'];
+							let rows = ['{a|' + i18n.t('data.value', this.locale) +': ' + format(this.indicatorType.id, o.data.value) + '}'];
 							if (o.data.moeLow || o.data.moeHigh) {
-								rows.push('{b|' + i18n.t('data.moe_range') 
+								rows.push('{b|' + i18n.t('data.moe_range', this.locale) 
 									+ ': ' 
 									+ format(this.indicatorType.id, o.data.moeLow)
 									+ " - "
@@ -184,9 +206,12 @@ export default {
 						suppressed: dataPoint.suppressed 
 					}; 
 				});
+			if (this.orientation === 'horizontal') {
+				seriesData = seriesData.reverse();
+			}
 			series[0].data = seriesData;
 			if (this.labelsOrLines === 'lines') {
-				series[1].data = seriesData.map((d, i) => [xAxisData[i], d.moeHigh, d.moeLow]);
+				series[1].data = seriesData.map((d, i) => [categoryAxisData[i], d.moeHigh, d.moeLow, d.value]);
 			}
 			option.series = series;
 			option.aria = { enabled: true };
@@ -208,19 +233,50 @@ export default {
 			option[valueAxis].axisLabel.formatter = (value) => {
 				return value === axisMin || value === axisMax || value === 0 ? value : ''	;
 			};
+			if (this.embedded && this.labelsOrLines === 'lines') {
+				option.tooltip = {
+					trigger: 'axis',
+					axisPointer: {
+						type: 'shadow'
+					},
+					textStyle: Object.assign({}, textStyle),
+					formatter: (params) => {
+						let rows = [params[0].name]
+						params.forEach(p => {
+							if (p.seriesType === 'bar' && p.seriesName.indexOf('_moe_') === -1) {
+								let row = ''
+								row += '<span>' + p.marker + i18n.t('data.value', this.locale) + ': ' + format(this.indicatorType.id, p.value) + '</span>'
+								if (p.data.moeLow || p.data.moeHigh) {
+									row += '<span class="ml-3 text-subtitle-2 font-weight-light">' + i18n.t('data.moe_range', this.locale) + ': ' + format(this.indicatorType.id, p.data.moeLow)
+									row += ' - ' + format(this.indicatorType.id, p.data.moeHigh) + '</span>'
+								}
+								rows.push(row)
+							}
+						});
+						return rows.join('<br/>');
+					}
+				};
+			}
 			this.chart.setOption(option);
 
 			if (this.labelsOrLines === 'lines') {
 				window.setTimeout(() => {
+					let self = this;
 					this.chart.setOption({
 						series: [
 							{
 								name: 'error',
 								renderItem: function(params, api) {
-									let xValue = api.value(0);
-									let highPoint = api.coord([xValue, api.value(1)]) || 0;
-									let lowPoint = api.coord([xValue, api.value(2)]) || 0;
-									let halfWidth = Math.min(20, api.size([1, 0])[0] * 0.1);
+									let categoryValue = params.dataIndexInside
+									let highPoint = (self.orientation === 'vertical' 
+										? api.coord([categoryValue, api.value(1)]) 
+										: api.coord([api.value(1), categoryValue])) || 0;
+									let lowPoint = (self.orientation === 'vertical' 
+										? api.coord([categoryValue, api.value(2)]) 
+										: api.coord([api.value(2), categoryValue])) || 0;
+									let halfWidth = self.orientation === 'vertical' 
+										? Math.min(20, api.size([1, 0])[0] * 0.1) 
+										: (api.value(3) ? 10 : 0);
 									let style = {
 										stroke: '#b8237e',
 										fill: null,
@@ -232,33 +288,49 @@ export default {
 											{
 												type: 'line',
 												transition: ['shape'],
-												shape: {
+												shape: self.orientation === 'vertical' ? {
 													x1: highPoint[0] - halfWidth,
 													y1: highPoint[1],
 													x2: highPoint[0] + halfWidth,
 													y2: highPoint[1]
+												} : {
+													x1: highPoint[0],
+													y1: highPoint[1] - halfWidth,
+													x2: highPoint[0],
+													y2: highPoint[1] + halfWidth
 												},
 												style: style
 											},
 											{
 												type: 'line',
 												transition: ['shape'],
-												shape: {
+												shape: self.orientation === 'vertical' ? {
 													x1: highPoint[0],
 													y1: highPoint[1],
 													x2: lowPoint[0],
 													y2: lowPoint[1]
+												} : {
+													x1: highPoint[0],
+													y1: highPoint[1],
+													x2: lowPoint[0],
+													y2: lowPoint[1]
+												
 												},
 												style: style
 											},
 											{
 												type: 'line',
 												transition: ['shape'],
-												shape: {
+												shape: self.orientation === 'vertical' ? {
 													x1: lowPoint[0] - halfWidth,
 													y1: lowPoint[1],
 													x2: lowPoint[0] + halfWidth,
 													y2: lowPoint[1]
+												} : {
+													x1: lowPoint[0],
+													y1: lowPoint[1] - halfWidth,
+													x2: lowPoint[0],
+													y2: lowPoint[1] + halfWidth
 												},
 												style: style
 											}

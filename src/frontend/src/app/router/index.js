@@ -8,6 +8,7 @@ import CustomLocationsView from '@/app/views/CustomLocationsView.vue'
 import AboutToolsView from '@/app/views/AboutToolsView.vue'
 import AboutDataView from '@/app/views/AboutDataView.vue'
 import FaqsView from '@/app/views/FaqsView.vue'
+import DataCorrectionsView from '@/app/views/DataCorrectionsView.vue'
 import AnnouncementsView from '@/app/views/AnnouncementsView.vue'
 import UnauthorizedView from '@/app/views/UnauthorizedView.vue'
 import HelpView from '@/app/views/HelpView.vue'
@@ -63,6 +64,11 @@ const routes = [
     path: '/faqs',
     name: 'faqs',
     component: FaqsView,
+  },
+  {
+    path: '/data-corrections',
+    name: 'data-corrections',
+    component: DataCorrectionsView,
   },
   {
     path: '/announcements',

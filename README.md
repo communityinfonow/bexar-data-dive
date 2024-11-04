@@ -33,4 +33,4 @@ To run the webapp locally:
 1. Access the webapp at ```http://localhost:3000```
 
 ## Building
-The webapp is run locally with an independent API and UI, but combined into a single package during the build. To build the Spring Boot JAR with embedded Tomcat, run ```mvn clean package```. The JAR will be found in ```/target/omh.jar```
+The webapp is run locally with an independent API and UI, but combined into a single package during the build. To build the Spring Boot JAR with embedded Tomcat, run ```mvn clean package -Denvironment={env}```. The JAR will be found in ```/target/omh.jar```

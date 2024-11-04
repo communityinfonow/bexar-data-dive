@@ -335,7 +335,7 @@ public class TablesRepositoryPostgresql implements TablesRepository{
 		}
 		sql +=	"  union "
 			+	"  select cl.id_ as location_id, iv.location_id as component_location_id, cl.name_ as location_en, cl.name_ as location_es, "
-			+	" 	 7 as location_type_id, 'Custom' as location_type_en, 'Custom (es)' as location_type_es, "
+			+	" 	 7 as location_type_id, 'Custom' as location_type_en, 'Personalizadas' as location_type_es, "
 			+	" 	 iv.year_, round(iv.indicator_value, 1) as indicator_value, round(iv.moe_low, 1) as moe_low, round(iv.moe_high, 1) as moe_high, round(iv.universe_value, 1) as universe_value, round(iv.count_value, 1) as count_value, iv.universe_moe as universe_moe, iv.count_moe as count_moe, iv.suppress, "
 			+	" 	 race.id_ as race_id, coalesce(race.name_en, 'All') as race_en, coalesce(race.name_es, 'Todos') as race_es, "
 			+	" 	 age.id_ as age_id, coalesce(age.name_en, 'All') as age_en, coalesce(age.name_es, 'Todos') as age_es, "
@@ -377,7 +377,7 @@ public class TablesRepositoryPostgresql implements TablesRepository{
 			sql += " and (inc.id_::text in (:inc_ids) or (:include_all_incs and inc.id_ is null)) ";
 		}
 		if (StringUtils.hasText(request.getSearch())) {
-			sql += "   and (lower('Custom') like lower(:search) or lower('Custom (es)') like lower(:search) ";
+			sql += "   and (lower('Custom') like lower(:search) or lower('Personalizadas') like lower(:search) ";
 			sql += "   or lower(cl.name_) like lower(:search) or lower(cl.name_) like lower(:search) ";
 			sql += "   or lower(year_) like lower(:search) ";
 			sql += "   or lower(race.name_en) like lower(:search) or lower(race.name_es) like lower(:search) ";

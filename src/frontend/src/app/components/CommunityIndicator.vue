@@ -6,10 +6,10 @@
 					<span v-if="parentName">{{ parentName }} - </span>
 					{{ item.indicator['name_' + locale]}}
 				</h3>
-				<p>{{ $t('data.not_aggregable') }}</p>
+				<p>{{ $t('data.not_aggregable', locale) }}</p>
 			</template>
 			<template v-else-if="item.indicator.hasData && item.year">
-				<div class="d-flex justify-space-between">
+				<div class="d-flex justify-space-between" :class="$vuetify.breakpoint.smAndDown ? 'flex-column' : ''">
 					<div>
 						<h3 class="text-h6 font-weight-bold d-flex">
 							<div>
@@ -17,38 +17,55 @@
 							{{ item.indicator['name_' + locale]}}<span v-if="item.indicator['name_' + locale]">:</span>
 							</div>
 							<v-chip color="secondary" label class="mx-2" v-if="item.indicator['name_' + locale]">
-								<span v-if="item.demographicData[0].suppressed" class="text-h6 mb-0">{{ $t('data.suppressed') }}</span>
-								<span v-else-if="item.demographicData[0].value === null" class="text-h6 mb-0">{{ $t('data.no_data') }}</span>
+								<span v-if="item.demographicData[0].suppressed" class="text-h6 mb-0">{{ $t('data.suppressed', locale) }}</span>
+								<span v-else-if="item.demographicData[0].value === null" class="text-h6 mb-0">{{ $t('data.no_data', locale) }}</span>
 								<template v-else>
 									<div class="text-h6 font-weight-bold mb-0">{{ formatValue(item.indicatorType.id, item.demographicData[0].value) }}</div>
-									<div v-if="item.demographicData[0].moeLow && item.demographicData[0].moeHigh" class="ml-2">{{ $t('data.moe_range') }} {{ formatValue(item.indicatorType.id, item.demographicData[0].moeLow) }} - {{ formatValue(item.indicatorType.id, item.demographicData[0].moeHigh) }}</div> 
+									<div v-if="item.demographicData[0].moeLow && item.demographicData[0].moeHigh" class="ml-2">{{ $t('data.moe_range', locale) }} {{ formatValue(item.indicatorType.id, item.demographicData[0].moeLow) }} - {{ formatValue(item.indicatorType.id, item.demographicData[0].moeHigh) }}</div> 
 								</template>
 							</v-chip>
-							<indicator-definition v-if="item.indicator['name_' + locale]" :indicator="item.indicator"></indicator-definition>
+							<indicator-definition v-if="item.indicator['name_' + locale]" :embedded="embedded" :locale="locale" :indicator="item.indicator"></indicator-definition>
 						</h3>
 						<p class="text-subtitle-1 mb-0">
 							{{ community.location['name_' + locale]}}, 
 							{{ item.source['name_' + locale] }} ({{ item.year }})
 						</p>
 						<p v-if="item.indicator['name_' + locale] && item.demographicData.filter(i => i.demographicFilter.id !== null).length" :id="'community_indicator_chart_title_' + item.indicator.id" class="text-subtitle-1 mb-4 blue--text">
-								{{ $t('tools.community.percentage_of') }}
-								<span class="text-normal font-weight-bold">"{{ (parentName ? parentName + ' - ' : '') + item.indicator['name_' + locale] }}"</span>
-								{{ $t('tools.community.who_are') }}
-								<span v-if="filterType.id === '1'">{{ $t('tools.community.race_ethnicity') }}</span>
-								<span v-if="filterType.id === '2'">{{ $t('tools.community.age_group') }}</span>
-								<span v-if="filterType.id === '3'">{{ $t('tools.community.sex') }}</span>
-								<span v-if="filterType.id === '4'">{{ $t('tools.community.education_level') }}</span>
-								<span v-if="filterType.id === '5'">{{ $t('tools.community.income_level') }}</span>
-							</p>
+							{{ $t('tools.community.percentage_of', locale) }}
+							<span class="text-normal font-weight-bold">"{{ (parentName ? parentName + ' - ' : '') + item.indicator['name_' + locale] }}"</span>
+							{{ $t('tools.community.who_are', locale) }}
+							<span v-if="filterType.id === '1'">{{ $t('tools.community.race_ethnicity', locale) }}</span>
+							<span v-if="filterType.id === '2'">{{ $t('tools.community.age_group', locale) }}</span>
+							<span v-if="filterType.id === '3'">{{ $t('tools.community.sex', locale) }}</span>
+							<span v-if="filterType.id === '4'">{{ $t('tools.community.education_level', locale) }}</span>
+							<span v-if="filterType.id === '5'">{{ $t('tools.community.income_level', locale) }}</span>
+						</p>
+						<v-alert v-if="item.indicator.recentCorrection" class="mt-2" color="yellow" dense dismissible>
+							<span v-html="$t('corrections_view.notice', locale)"></span>
+						</v-alert>
 					</div>
 					<div>
-						<button-menu v-if="showButtonMenu && item.indicator.id" :downloadData="downloadData" :downloadImage="downloadImage" viewMenu :indicatorId="item.indicator.id" :locationTypeId="community.location.typeId" :locationId="community.location.id" :linkToExplore="true" :linkToTables="true"></button-menu>
+						<button-menu 
+							v-if="!embedded && showButtonMenu && item.indicator.id" 
+							:downloadData="downloadData" 
+							:downloadImage="downloadImage" 
+							viewMenu 
+							:indicatorId="item.indicator.id" 
+							:locationTypeId="community.location.typeId" 
+							:locationId="community.location.id" 
+							:linkToExplore="true" 
+							:linkToTables="true" 
+							tagName="community-indicator"
+							:tagAttributes="tagAttributes"
+						>
+						</button-menu>
 					</div>
 				</div>
 				<v-row>
 					<v-col cols="12">
 						<template v-if="item.demographicData.filter(i => i.demographicFilter.id !== null).length">
 							<community-chart
+								:locale="locale"
 								:indicatorId="item.indicator.id" 
 								:indicatorType=item.indicatorType
 								:indicatorName="(parentName ? parentName + ' - ' : '') + item.indicator['name_' + locale]"
@@ -56,10 +73,11 @@
 								:maxDemographics="maxDemographics" 
 								:filterType="filterType"
 								:labelsOrLines="labelsOrLines"
+								:embedded="embedded"
 							>
 							</community-chart>
 						</template>
-						<p v-else>{{ $t('tools.community.no_disaggregation')}}</p>
+						<p v-else>{{ $t('tools.community.no_disaggregation', locale)}}</p>
 					</v-col>
 				</v-row>
 			</template>
@@ -68,14 +86,27 @@
 					<span v-if="parentName">{{ parentName }} - </span>
 					{{ item.indicator['name_' + locale]}}
 				</h3>
-				<p>{{ $t('tools.community.no_data_geography') }}</p>
+				<p>{{ $t('tools.community.no_data_geography', locale) }}</p>
 			</template>
 			<template v-else>
 				<h3 class="text-h6 font-weight-bold">
 					<span v-if="parentName">{{ parentName }} - </span>
 					{{ item.indicator['name_' + locale]}}
 				</h3>
-				<p>{{ $t('tools.community.working_add_data') }}</p>
+				<p>{{ $t('tools.community.working_add_data', locale) }}</p>
+			</template>
+			<template v-if="embedded">
+				<div class="d-flex justify-space-between">
+					<a target="_blank" :href="diveUrl">
+						<img :src="domain + '/img/bexar-data-dive-logo.svg'" style="height: 28px" alt="Bexar Data Dive Logo" />
+					</a>
+					<a target="_blank" href="https://cinow.info">
+						<img :src="domain + '/img/cinow_logo.png'" class="ml-4" style="height: 28px;" alt="CINow Logo" />
+					</a>
+				</div>
+				<div class="text-right mt-2">
+					{{ $t('app.copyright', locale) }} &copy; {{ new Date().getFullYear() }}&nbsp;<a href="https://cinow.info" class="link--text">{{ $t('app.cinow', locale) }}</a>. {{ $t('app.all_rights_reserved', locale) }}
+				</div>
 			</template>
 		</section>
 	</div>
@@ -83,7 +114,7 @@
 
 <script>
 import i18n from '@/i18n'
-import { mapActions, mapState } from 'vuex'
+import { mapActions } from 'vuex'
 import CommunityChart from '@/app/components/CommunityChart'
 import { format } from '@/services/formatter'
 import html2canvas from 'html2canvas'
@@ -98,6 +129,16 @@ export default {
 		ButtonMenu
 	},
 	props: {
+		locale: {
+			type: String
+		},
+		community: {
+			type: Object
+		},
+		embedded: {
+			type: Boolean,
+			default: false
+		},
 		item: {
 			type: Object
 		},
@@ -115,9 +156,31 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['community', 'locale']),
 		showButtonMenu() {
 			return this.community?.location
+		},
+		tagAttributes() {
+			return { 
+				locale: this.locale, 
+				'location-id': this.community.location.id, 
+				'location-type-id': this.community.location.typeId, 
+				'indicator-id': this.item.indicator.id, 
+				'compare-by-id': this.filterType.id, 
+				'labels-or-lines': this.labelsOrLines, 
+			}
+		},
+		diveUrl() {
+			let url = 'https://dive.cinow.info/community'
+				+ '?lang=' + this.locale
+				+ '&location=' + this.community?.location.id
+				+ '&locationType=' + this.community?.location.typeId
+				+ '&filterType=' + this.filterType?.id
+				+ '#community_indicator_' + this.item.indicator.id
+
+			return url
+		},
+		domain() {
+			return process.env.VUE_APP_DOMAIN
 		}
 	},
 	methods: {

@@ -33,7 +33,11 @@ public class FilterController {
 	 * @return the filters
 	 */
 	@GetMapping(path = "/api/filters", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Filters> getFilters(@RequestParam String indicator) {
+	public ResponseEntity<Filters> getFilters(@RequestParam(required = false) String indicator, @RequestParam(required =false) String source) {
+		if (source != null) {
+			return ResponseEntity.ok(this.filterService.getFiltersBySource(source));
+		}
+
 		return ResponseEntity.ok(this.filterService.getFilters(indicator));
 	}
 

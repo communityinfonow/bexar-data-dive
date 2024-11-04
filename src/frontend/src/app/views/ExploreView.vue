@@ -15,9 +15,12 @@
                 {{ exploreData.category['name_' + locale] }} - 
               </span>
               {{ indicator['name_' + locale] }}
-              <indicator-definition :indicator="indicator"></indicator-definition>
+              <indicator-definition :embedded="false" :locale="locale" :indicator="indicator"></indicator-definition>
             </h1>
             <h2 v-if="source" class="text-subtitle-1 mb-2">{{ source['name_' + locale] }}</h2>
+            <v-alert v-if="exploreData.indicator.recentCorrection" class="mt-2" color="yellow" dense dismissible>
+              <span v-html="$t('corrections_view.notice', locale)"></span>
+            </v-alert>
           </div>
           <div v-if="showIntro" class="font-weight-medium mt-2" style="font-size: 1.25rem;">
             {{ $t('tools.explore.headline') }}
@@ -39,7 +42,7 @@
             <h2 class="text-dive-h4 mt-16 mb-2 font-weight-light text-center" style="text-transform: uppercase;">{{ $t('tools.common.featured_indicators') }}</h2>
             <p style="margin: 0 30%; font-size: 1.25em;">{{ $t('tools.tables.get_started') }}</p>
           </section>
-          <section v-if="featuredIndicators" class="d-flex" :class="{ 'flex-row': $vuetify.breakpoint.mdAndUp, 'flex-column': $vuetify.breakpoint.smAndDown }">
+          <section v-if="featuredIndicators" class="d-flex" :class="{ 'flex-row': $vuetify.breakpoint.smAndUp, 'flex-column': $vuetify.breakpoint.xsAndDown }">
             <template v-for="indicator in featuredIndicators">
               <featured-card 
                 :key="indicator.id" 
@@ -60,15 +63,15 @@
       </v-col>
       <v-col v-if="indicator" cols="auto" class="explore-content">
         <v-row class="fill-height no-gutters mt-4">
-          <v-col cols="3">
-            <v-row class="fill-height no-gutters flex-column px-4">
-              <filters-panel></filters-panel>
-              <docked-tooltip class="grow" :helpMessage="dockedTooltipHelpMessage" :activeTab="tab"></docked-tooltip>
+          <v-col sm="12" lg="3">
+            <v-row class="no-gutters px-4" :class="$vuetify.breakpoint.mdAndDown ? 'flex-row' : 'flex-column fill-height'">
+              <filters-panel :style="{ 'width': $vuetify.breakpoint.mdAndDown ? '50%' : '' }"></filters-panel>
+              <docked-tooltip :style="{ 'width': $vuetify.breakpoint.mdAndDown ? '50%' : '' }" :helpMessage="dockedTooltipHelpMessage" :activeTab="tab"></docked-tooltip>
             </v-row>
           </v-col>
-          <v-col cols="9" class="px-4">
-            <v-row class="fill-height no-gutters flex-column">
-              <v-col cols="auto" class="d-flex shrink">
+          <v-col sm="12" lg="9" class="px-4" :class="$vuetify.breakpoint.mdAndDown ? 'tab-content' : ''">
+            <v-row class="fill-height no-gutters" :class="$vuetify.breakpoint.mdAndDown && layout === 'gallery' ? 'flex-row' : 'flex-column'">
+              <v-col cols="auto" class="d-flex shrink" :class="$vuetify.breakpoint.mdAndDown ? 'flex-column' : ''">
                 <v-tabs v-model="tab" grow color="red">
                   <v-tab v-for="tab in tabs" :key="tab" @click="selectTab(tab)">
                     <span v-if="layout === 'gallery' && locale === 'es'">&nbsp;Opciones {{ tab === 'map' ? 'de' : 'del' }}&nbsp;</span>
@@ -76,7 +79,7 @@
                     <span v-if="layout === 'gallery' && locale === 'en'">&nbsp;Options</span>
                   </v-tab>
                 </v-tabs>
-                <div class="d-flex align-center">
+                <div v-if="$vuetify.breakpoint.lgAndUp" class="d-flex align-center">
                   <label aria-label id="layoutLabel" class="v-label v-label--active theme--light mx-4">{{ $t('tools.explore.layouts.layout') }}</label>
                   <v-btn-toggle v-model="layout" class="my-2" color="red" mandatory aria-labelledby="layoutLabel" rounded>
                     <v-btn :value="'tabs'" color="red" dark small><v-icon color="white" class="mr-2">mdi-tab</v-icon>{{ $t('tools.explore.layouts.tabs') }}</v-btn>
@@ -85,11 +88,11 @@
                 </div>
               </v-col>
               <v-col  v-if="layout === 'tabs'" cols="auto" class="grow">
-                <v-tabs-items v-model="tab" class="fill-height">
+                <v-tabs-items v-model="tab" class="fill-height" touchless>
                   <v-tab-item v-for="tab in tabs" :key="tab" transition="none" reverse-transition="none" class="fill-height">
-                    <explore-map v-if="tab === 'map'"></explore-map>
-                    <explore-trend-chart v-if="tab === 'trend'"></explore-trend-chart>
-                    <explore-compare-chart v-if="tab === 'compare'"></explore-compare-chart>
+                    <explore-map v-if="tab === 'map'" :locale="locale" :exploreData="exploreData" :filterSelections="filterSelections" :showMapLabels="showMapLabels" :highlightFilteredLocation="highlightFilteredLocation"></explore-map>
+                    <explore-trend-chart v-if="tab === 'trend'" :locale="locale" :exploreData="exploreData" :trendCompareSelections="trendCompareSelections" :trendLabelsOrLines="trendLabelsOrLines" :filterSelections="filterSelections"></explore-trend-chart>
+                    <explore-compare-chart v-if="tab === 'compare'" :locale="locale" :exploreData="exploreData" :compareSelections="compareSelections" :compareLabelsOrLines="compareLabelsOrLines" :filterSelections="filterSelections"></explore-compare-chart>
                   </v-tab-item>
                 </v-tabs-items>
               </v-col>
@@ -138,18 +141,18 @@
                     </explore-tools-panel>
                   </v-col>
                 </v-row>
-                <v-row id="gallery-data-visuals" class="fill-height no-gutters">
-                  <v-col cols="5" class="fill-height">
+                <v-row id="gallery-data-visuals" class="no-gutters" :class="$vuetify.breakpoint.mdAndDown ? 'align-start' : 'fill-height'">
+                  <v-col md="12" lg="5" :class="$vuetify.breakpoint.mdAndDown ? 'gallery-map' : 'fill-height'">
                     <v-sheet outlined class="pa-4 fill-height">
-                      <explore-map :layout="layout"></explore-map>
+                      <explore-map :layout="layout" :locale="locale" :exploreData="exploreData" :filterSelections="filterSelections" :showMapLabels="showMapLabels" :highlightFilteredLocation="highlightFilteredLocation"></explore-map>
                     </v-sheet>
                   </v-col>
-                  <v-col cols="7">
-                    <v-sheet outlined class="pa-4" style="width: 100%; height: 50%;">
-                      <explore-trend-chart :layout="layout"></explore-trend-chart>
+                  <v-col md="12" lg="7">
+                    <v-sheet outlined class="pa-4 gallery-chart">
+                      <explore-trend-chart :layout="layout" :locale="locale" :exploreData="exploreData"  :trendCompareSelections="trendCompareSelections" :trendLabelsOrLines="trendLabelsOrLines" :filterSelections="filterSelections"></explore-trend-chart>
                     </v-sheet>
-                    <v-sheet outlined class="pa-4" style="width: 100%; height: 50%;">
-                      <explore-compare-chart :layout="layout"></explore-compare-chart>
+                    <v-sheet outlined class="pa-4 gallery-chart">
+                      <explore-compare-chart :layout="layout" :locale="locale" :exploreData="exploreData" :compareSelections="compareSelections" :compareLabelsOrLines="compareLabelsOrLines" :filterSelections="filterSelections"></explore-compare-chart>
                     </v-sheet>
                   </v-col>
                 </v-row>
@@ -198,7 +201,7 @@ export default {
   },
   computed: {
     ...mapState(['indicatorMenu', 'indicator', 'source', 'locale', 'featuredIndicators', 'exploreData', 'filterSelections',
-      'highlightFilteredLocation', 'showMapLabels', 'trendLabelsOrLines', 'compareLabelsOrLines']),
+      'highlightFilteredLocation', 'showMapLabels', 'trendLabelsOrLines', 'compareLabelsOrLines', 'compareSelections', 'trendCompareSelections']),
     ...mapGetters(['filters']),
     showIntro() {
       return !this.indicator && !router.currentRoute.query.indicator;
@@ -342,5 +345,29 @@ export default {
   }
   .gallery-content {
     height: 690px;
+  }
+  .gallery-chart {
+    width: 100%;
+    height: 50%;
+  }
+  @media screen and (max-width: 1264px){
+    .explore-content {
+      height: auto;
+    }
+    .explore-content:has(.gallery-content) {
+      height: auto;
+    }
+    .tab-content:not(:has(.gallery-content)) {
+      height: 820px;
+    }
+    .gallery-content {
+      height: auto;
+    }
+    .gallery-map {
+      height: 400px;
+    }
+    .gallery-chart {
+      height: 400px;
+    }
   }
 </style>

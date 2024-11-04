@@ -17,7 +17,7 @@
         :searchType="$t('help_view.name')"
       ></MenuToolbar>
     </section>
-    <v-row class="no-gutters">
+    <section class="d-flex">
       <template v-if="!selectedMenuItem">
         <featured-card 
           v-for="item in helpMenu.categories" 
@@ -26,21 +26,15 @@
           :name="item['name_' + locale]"
           :description="item['description_' + locale]"
           :primary_button_text="$t('featured_card.view')"
-          :click_route="selectTool"
+          :click_route="!item.href ? selectTool : null"
+          :href="item.href"
         >
         </featured-card>
       </template>
-      <featured-card
-         v-if="!selectedMenuItem"
-        :name="$t('help_view.guides_trainings_name')"
-        :description="$t('help_view.guides_trainings_description')"
-        :primary_button_text="$t('featured_card.view')"
-        href="https://cinow.info/online-tools-posts/bexar-data-dive/"
-      >
-      </featured-card>
       <faqs-view v-if="selectedMenuItem && selectedMenuItem.categoryId === 'faqs'" :selectedFaq="selectedMenuItem"></faqs-view>
+      <data-corrections-view v-if="selectedMenuItem && selectedMenuItem.categoryId === 'data-corrections'" :selectedCorrection="selectedMenuItem"></data-corrections-view>
       <about-tools-view v-if="selectedMenuItem && selectedMenuItem.categoryId === 'about-tools'"></about-tools-view>
-    </v-row>
+    </section>
   </v-container>
 </template>
 
@@ -49,6 +43,7 @@ import i18n from '@/i18n'
 import { mapState, mapGetters, mapActions } from 'vuex'
 import FeaturedCard from '@/app/components/FeaturedCard'
 import FaqsView from '@/app/views/FaqsView'
+import DataCorrectionsView from '@/app/views/DataCorrectionsView'
 import AboutToolsView from '@/app/views/AboutToolsView'
 import MenuToolbar from '@/app/components/MenuToolbar'
 import router from '@/app/router/index'
@@ -59,6 +54,7 @@ export default {
   components: {
     FeaturedCard,
     FaqsView,
+    DataCorrectionsView,
     AboutToolsView,
     MenuToolbar
   },

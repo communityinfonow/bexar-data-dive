@@ -37,7 +37,8 @@
       "find_communities": "Encontrar mis comunidades",
       "enter_address": "Introduce una dirección",
       "find_tooltip": "Ingrese su dirección para encontrar su Distrito de Ayuntamiento, SSA, Área de Censo y Código Postal",
-      "view_community": "Ver en Mi Comunidad"
+      "view_community": "Ver en Mi Comunidad",
+      "view": "Ver"
     },
     "explore": {
       "name": "Exploración de Datos",
@@ -123,6 +124,10 @@
       "highlight_location": "Resaltar ubicación filtrada",
       "labels": "Etiquetas",
       "click_copy": "Haz clic debajo para copiar el enlace",
+      "click_copy_embed_script": "Haga clic a continuación para copiar la etiqueta del código de incrustación",
+      "click_copy_embed_component": "Haga clic a continuación para copiar el componente del código de incrustación",
+      "embed_script_hint": "Agregue esta etiqueta del código de incrustación una vez al final del <cuerpo> del HTML de su sitio web",
+      "embed_component_hint": "Agregue este componente del código de incrustación en cualquier parte del <cuerpo> del HTML de su sitio web",
       "copy_success": "¡Copiado al portapapeles!",
       "copy_failure": "Lo sentimos, no podemos acceder a tu portapapeles para copiar el enlace de forma automática. Por favor, copia el enlace de arriba de forma manual.",
       "about_data": "Sobre el indicador",
@@ -150,7 +155,12 @@
         }
       },
       "share": {
-        "name": "Compartir"
+        "name": "Compartir",
+        "link": "Comparte un enlace a Dive",
+        "embed": "o incorpora Dive en su sitio web",
+        "embed_guide_1": "Haga clic",
+        "embed_guide_2": "aquí",
+        "embed_guide_3": "para obtener más información sobre cómo incorporar Dive en su sitio web"
       },
       "chart_options": "Opciones del gráfico",
       "chart_options_labels": "Etiquetas",
@@ -226,6 +236,15 @@
     "name": "Preguntas Frecuentes",
     "welcome": "Consulte las respuestas a preguntas comunes sobre Dive.",
     "questions": "Preguntas"
+  },
+  "corrections_view": {
+    "name": "Correcciones de datos",
+    "welcome": "Correcciones de datos en Dive",
+    "years": "Años",
+    "location_types": "Tipos de Ubicación",
+    "filter_types": "Tipos de Filtro",
+    "note": "Nota",
+    "notice": "Este indicador y selección de filtros ha tenido una corrección de datos en los últimos 90 días. Consulte la página de <a href='/help?category=data-corrections' class='link--text'>Correcciones de Datos</a> para obtener más información."
   },
   "announcements_view": {
     "name": "Anuncios",

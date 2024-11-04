@@ -23,7 +23,7 @@
 				<v-btn 
 					v-if="view_route" 
 					color="red"
-					class="white--text font-weight-bold px-2" 
+					class="white--text font-weight-bold px-2 ml-2" 
 					rounded
 					:to="view_route"
 					:aria-label="$t('featured_card.view') + ' ' + name"
@@ -33,7 +33,7 @@
 				<v-btn 
 					v-if="href" 
 					color="red"
-					class="white--text font-weight-bold px-2" 
+					class="white--text font-weight-bold px-2 ml-2" 
 					rounded
 					:href="href"
 					:aria-label="$t('featured_card.view') + ' ' + name"
@@ -43,7 +43,7 @@
 				<v-btn 
 					v-if="click_route" 
 					color="red" 
-					class="white--text font-weight-bold px-2"
+					class="white--text font-weight-bold px-2 ml-2"
 					@click="click_route(item)" 
 					:aria-label="$t('featured_card.view') + ' ' + name"
 					rounded
@@ -160,7 +160,7 @@
 		},
 		computed: {
 			maxWidth() {
-				if (this.$vuetify.breakpoint.smAndDown) {
+				if (this.$vuetify.breakpoint.xsAndDown) {
 					return '';
 				}
 

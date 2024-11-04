@@ -19,6 +19,14 @@ public interface FilterRepository {
 	Filter getLocationTypeFilter(String indicatorId);
 
 	/**
+	 * Get the location type filter.
+	 *
+	 * @param sourceId the source id
+	 * @return the filter
+	 */
+	Filter getLocationTypeFilterBySource(String sourceId);
+
+	/**
 	 * Get the location filter.
 	 *
 	 * @return the filter
@@ -32,6 +40,14 @@ public interface FilterRepository {
 	 * @return the filter
 	 */
 	Filter getYearFilter(String indicatorId);
+
+	/**
+	 * Get the year filter.
+	 *
+	 * @param sourceId the source id
+	 * @return the filter
+	 */
+	Filter getYearFilterBySource(String sourceId);
 	
 	/**
 	 * Get the indicator filters.
@@ -40,6 +56,14 @@ public interface FilterRepository {
 	 * @return the filters
 	 */
 	List<IndicatorFilter> getIndicatorFilters(String indicatorId);
+
+	/**
+	 * Get the indicator filters.
+	 *
+	 * @param sourceId the source id
+	 * @return the filters
+	 */
+	List<IndicatorFilter> getIndicatorFiltersBySource(String sourceId);
 
 	/**
 	 * Gets the compatible filter type ids.

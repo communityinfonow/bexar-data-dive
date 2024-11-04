@@ -90,6 +90,11 @@ public class Indicator {
 	private boolean showReport;
 
 	/**
+	 * Whether the indicator has a recent correction.
+	 */
+	private boolean recentCorrection;
+
+	/**
 	 * @return the id
 	 */
 	public String getId() {
@@ -318,5 +323,19 @@ public class Indicator {
 	 */
 	public void setShowReport(boolean showReport) {
 		this.showReport = showReport;
+	}
+
+	/**
+	 * @return the recentCorrection
+	 */
+	public boolean isRecentCorrection() {
+		return recentCorrection;
+	}
+
+	/**
+	 * @param recentCorrection the recentCorrection to set
+	 */
+	public void setRecentCorrection(boolean recentCorrection) {
+		this.recentCorrection = recentCorrection;
 	}
 }

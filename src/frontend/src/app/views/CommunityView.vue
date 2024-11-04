@@ -15,7 +15,7 @@
           </div>
           <div v-if="community">
             <v-row>
-              <v-col cols="2">
+              <v-col sm="4" lg="2" >
                 <l-map
                   v-if="componentInitialized"
                   ref="communityMap"
@@ -48,7 +48,7 @@
                   ></l-geo-json>
                 </l-map>
               </v-col>
-              <v-col cols="10">
+              <v-col sm="8" lg="10">
                 <div class="d-flex flex-column fill-height">
                   <div class="d-flex flex-row justify-space-between">
                     <h1 class="text-dive-h3" id="community_name">
@@ -114,7 +114,7 @@
           </div>
         </section>
       </v-col>
-      <v-col cols="auto" class="shrink sticky-menu" :style="{ 'margin-top': showIntro ? '0' : '-26px' }">
+      <v-col cols="auto" class="shrink sticky-menu" :style="{ 'margin-top': showIntro || $vuetify.breakpoint.mdAndDown  ? '0' : '-26px' }">
         <MenuToolbar
           class="flex-column"
           :menu="locationMenu"
@@ -130,7 +130,7 @@
           ref="selectionMap"
           :zoom="zoom"
           :center="center"
-          :options="{ zoomDelta: 0.5, zoomSnap: 0.5, preferCanvas: true }"
+          :options="{ zoomDelta: 0.5, zoomSnap: 0.5, preferCanvas: true, dragging: mobile ? false : true, touchZoom: mobile ? false : true }"
           :style="{ height: '100%', 'min-height': '600px' }"
           v-resize:debounce.100="resizeHandler"
           @ready="initializeSelectionMap"
@@ -201,12 +201,12 @@
               <template v-if="item.indicators">
                 <div :key="'category_' + item.category.id">
                   <template v-for="subItem in item.indicators">
-                    <community-indicator :item="subItem" :parentName="item.category['name_' + locale]" :key="'sub_indicator_' + subItem.indicator.id" :maxDemographics="maxDemographics" :filterType="filterTypes.find(ft => ft.id === selectedFilterType)" :labelsOrLines="labelsOrLines"></community-indicator>
+                    <community-indicator :locale="locale" :community="community" :item="subItem" :parentName="item.category['name_' + locale]" :key="'sub_indicator_' + subItem.indicator.id" :maxDemographics="maxDemographics" :filterType="filterTypes.find(ft => ft.id === selectedFilterType)" :labelsOrLines="labelsOrLines"></community-indicator>
                   </template>
                 </div>
               </template>
               <template v-else>
-                <community-indicator :item="item" :key="'indicator_' + item.indicator.id" :maxDemographics="maxDemographics" :filterType="filterTypes.find(ft => ft.id === selectedFilterType)" :labelsOrLines="labelsOrLines"></community-indicator>
+                <community-indicator :locale="locale" :community="community" :item="item" :key="'indicator_' + item.indicator.id" :maxDemographics="maxDemographics" :filterType="filterTypes.find(ft => ft.id === selectedFilterType)" :labelsOrLines="labelsOrLines"></community-indicator>
               </template>
             </template>
           </div>
@@ -262,6 +262,9 @@ export default {
   computed: {
     ...mapState(['locale', 'community', 'customLocations', 'filterTypes' ]),
     ...mapGetters(['locationMenu']),
+    mobile() {
+			return L.Browser.mobile
+		},
     showIntro() {
       return !this.community && !router.currentRoute.query.location;
     },
