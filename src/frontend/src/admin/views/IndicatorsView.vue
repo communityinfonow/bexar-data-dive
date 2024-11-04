@@ -63,7 +63,7 @@
 								:items="sourceOptions"
 								item-text="name_en"
 								item-value="id"
-								v-model="ind.sourceId"
+								v-model="ind.source.id"
 								:rules="[rules.required]"
 							>
 							</v-select>
@@ -142,7 +142,7 @@
 								:items="sourceOptions"
 								item-text="name_en"
 								item-value="id"
-								v-model="newIndicator.sourceId"
+								v-model="newIndicator.source.id"
 								:rules="[rules.required]"
 							>
 							</v-select>
@@ -183,7 +183,7 @@ export default {
 			},
 			addForm: null,
 			updateForms: [],
-			newIndicator: {},
+			newIndicator: { source: {} },
 			messageText: '',
 			message: false
 		}
@@ -207,7 +207,7 @@ export default {
 			this.$refs.add_form.validate();
 			if (this.addForm) {
 				this.addIndicator(this.newIndicator).then(() => {
-					this.newIndicator = {};
+					this.newIndicator = { source: {} };
 					this.messageText = 'Indicator added'
 					this.message = true;
 					this.$refs.add_form.resetValidation();
